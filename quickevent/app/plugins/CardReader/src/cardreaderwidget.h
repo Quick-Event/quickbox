@@ -57,8 +57,8 @@ public:
 	~CardReaderWidget() Q_DECL_OVERRIDE;
 
 	//Q_SIGNAL void sendSICommand(int cmd, const QByteArray& data_params);
-	Q_SIGNAL void logRequest(qf::core::Log::Level level, const QString &msg);
-	void emitLogRequest(qf::core::Log::Level level, const QString &msg) {emit logRequest(level, msg);}
+	Q_SIGNAL void logRequest(NecroLog::Level level, const QString &msg);
+	void emitLogRequest(NecroLog::Level level, const QString &msg) {emit logRequest(level, msg);}
 
 	void settleDownInPartWidget(CardReaderPartWidget *part_widget);
 
@@ -69,8 +69,8 @@ public:
 
 	void onDbEventNotify(const QString &domain, int connection_id, const QVariant &data);
 private slots:
-	void appendLog(qf::core::Log::Level level, const QString &msg);
-	void processDriverInfo(qf::core::Log::Level level, const QString &msg);
+	void appendLog(NecroLog::Level level, const QString &msg);
+	void processDriverInfo(NecroLog::Level level, const QString &msg);
 	void processDriverRawData(const QByteArray &data);
 	void onOpenCommTriggered(bool checked);
 

@@ -5,6 +5,7 @@
 
 #include <QCoreApplication>
 #include <QDir>
+#include <QTextStream>
 #include <QUrl>
 
 using namespace qf::core::utils;

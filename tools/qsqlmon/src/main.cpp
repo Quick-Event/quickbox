@@ -3,7 +3,6 @@
 #include "appversion.h"
 
 #include <qf/core/log.h>
-#include <qf/core/logdevice.h>
 
 //#include <QDialog>
 #include <Qt>
@@ -19,9 +18,10 @@ int main(int argc, char *argv[])
 	QCoreApplication::setApplicationName("qsqlmon");
 	QCoreApplication::setApplicationVersion(APP_VERSION);
 
-	qf::core::LogDevice::setDefinedCategories(QStringList() << "TimeScope");
-	qf::core::LogDevice::setGlobalTresholds(argc, argv);
-	QScopedPointer<qf::core::LogDevice> file_log_device(qf::core::FileLogDevice::install());
+	std::vector<std::string> shv_args = NecroLog::setCLIOptions(argc, argv);
+	QStringList args;
+	for(const auto &s : shv_args)
+		args << QString::fromStdString(s);
 
 	qfInfo() << QCoreApplication::applicationName() << "ver." << QCoreApplication::applicationVersion();
 

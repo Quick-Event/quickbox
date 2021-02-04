@@ -3,7 +3,7 @@
 
 #include "dockablewidget.h"
 
-#include <qf/core/logcore.h>
+#include <qf/core/logentrymap.h>
 
 #include <QTableView>
 
@@ -49,7 +49,7 @@ public:
 	explicit LogWidget(QWidget *parent = nullptr);
 	~LogWidget();
 
-	Q_SLOT void addLog(qf::core::Log::Level severity, const QString& category, const QString &file, int line, const QString& msg, const QDateTime& time_stamp, const QString &function, const QVariant &user_data = QVariant());
+	Q_SLOT void addLog(NecroLog::Level severity, const QString& category, const QString &file, int line, const QString& msg, const QDateTime& time_stamp, const QString &function, const QVariant &user_data = QVariant());
 	Q_SLOT void addLogEntry(const qf::core::LogEntryMap &le);
 	Q_SLOT void checkScrollToLastEntry();
 
@@ -57,17 +57,17 @@ public:
 	virtual void setLogTableModel(qf::core::model::LogTableModel *m);
 	qf::core::model::LogTableModel* logTableModel();
 
-	Q_SIGNAL void severityTresholdChanged(qf::core::Log::Level lvl);
-	void setSeverityTreshold(qf::core::Log::Level lvl);
-	qf::core::Log::Level severityTreshold() const;
+	Q_SIGNAL void severityTresholdChanged(NecroLog::Level lvl);
+	void setSeverityTreshold(NecroLog::Level lvl);
+	NecroLog::Level severityTreshold() const;
 protected:
 	QAbstractButton* clearButton();
 	QAbstractButton* tableMenuButton();
 	QTableView* tableView() const;
 
 	void clearCategoryActions();
-	virtual void addCategoryActions(const QString &caption, const QString &id, qf::core::Log::Level level = qf::core::Log::Level::Invalid);
-	QMap<QString, core::Log::Level> selectedLogCategories() const;
+	virtual void addCategoryActions(const QString &caption, const QString &id, NecroLog::Level level = NecroLog::Level::Invalid);
+	QMap<QString, NecroLog::Level> selectedLogCategories() const;
 	virtual void registerLogCategories();
 
 	virtual void onDockWidgetVisibleChanged(bool visible);

@@ -4,6 +4,7 @@
 #include <qf/qmlwidgets/framework/logwidget.h>
 
 namespace qf { namespace core { class LogEntryMap; }}
+namespace qf { namespace core { namespace model { class LogEntryMap; }}}
 
 class LoggerLogDevice;
 
@@ -20,7 +21,7 @@ public:
 private:
 	void registerLogCategories() Q_DECL_OVERRIDE;
 private:
-	LoggerLogDevice *m_logDevice = nullptr;
+	qf::core::model::LogTableModel *m_logModel = nullptr;
 };
 
 #endif // LOGGERWIDGET_H

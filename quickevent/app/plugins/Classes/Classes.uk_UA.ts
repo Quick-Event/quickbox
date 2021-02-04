@@ -81,7 +81,7 @@
     <message>
         <location filename="src/classestableview.cpp" line="29"/>
         <source>Get text</source>
-        <translation type="unfinished"></translation>
+        <translation>Отримати текст</translation>
     </message>
     <message>
         <location filename="src/classestableview.cpp" line="29"/>
@@ -159,7 +159,7 @@
     <message>
         <location filename="src/classeswidget.cpp" line="182"/>
         <source>Vacants before</source>
-        <translation type="unfinished"></translation>
+        <translation>Вакансій перед</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="183"/>
@@ -169,7 +169,7 @@
     <message>
         <location filename="src/classeswidget.cpp" line="183"/>
         <source>Vacant every</source>
-        <translation type="unfinished"></translation>
+        <translation>Вакансій кожного</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="184"/>
@@ -179,7 +179,7 @@
     <message>
         <location filename="src/classeswidget.cpp" line="184"/>
         <source>Vacants after</source>
-        <translation type="unfinished"></translation>
+        <translation>Вакансій після</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="185"/>
@@ -229,17 +229,17 @@
     <message>
         <location filename="src/classeswidget.cpp" line="192"/>
         <source>Relay start number</source>
-        <translation type="unfinished"></translation>
+        <translation>Стартовий номер естафети</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="193"/>
         <source>Legs</source>
-        <translation type="unfinished"></translation>
+        <translation>Етапи</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="193"/>
         <source>Relay leg count</source>
-        <translation type="unfinished"></translation>
+        <translation>Кількість етапів естафети</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="235"/>
@@ -294,7 +294,7 @@
     <message>
         <location filename="src/classeswidget.cpp" line="287"/>
         <source>Stage </source>
-        <translation type="unfinished"></translation>
+        <translation>Забіг </translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="323"/>

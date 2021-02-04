@@ -51,7 +51,7 @@
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="87"/>
         <source>Finish time of third runner in current class.</source>
-        <translation type="unfinished"></translation>
+        <translation>Фінішний час третього учасника поточної групи.</translation>
     </message>
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="88"/>
@@ -61,7 +61,7 @@
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="89"/>
         <source>Time until new finished competitors should not affect standings on first three places.</source>
-        <translation type="unfinished"></translation>
+        <translation>Час до нового фінішера не повинен впливати на перші три місця.</translation>
     </message>
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="91"/>
@@ -81,7 +81,7 @@
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="93"/>
         <source>Number of finished competitors not printed in results.</source>
-        <translation type="unfinished"></translation>
+        <translation>Кількість фінішерів не надруковано в результаті.</translation>
     </message>
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="94"/>
@@ -91,7 +91,7 @@
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="95"/>
         <source>Time since recent results printout.</source>
-        <translation type="unfinished"></translation>
+        <translation>Час від найновішого результату надруковано.</translation>
     </message>
 </context>
 <context>
@@ -99,12 +99,12 @@
     <message>
         <location filename="src/eventstatisticsoptions.ui" line="14"/>
         <source>Dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Діалог</translation>
     </message>
     <message>
         <location filename="src/eventstatisticsoptions.ui" line="20"/>
         <source>Show print dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Показати діалог друку</translation>
     </message>
     <message>
         <location filename="src/eventstatisticsoptions.ui" line="27"/>
@@ -124,22 +124,22 @@
     <message>
         <location filename="src/eventstatisticsoptions.ui" line="56"/>
         <source>Results auto print</source>
-        <translation type="unfinished"></translation>
+        <translation>Автоматичний друк результатів</translation>
     </message>
     <message>
         <location filename="src/eventstatisticsoptions.ui" line="62"/>
         <source>Or last print time is greater than</source>
-        <translation type="unfinished"></translation>
+        <translation>Або останній надрукований час більше за</translation>
     </message>
     <message>
         <location filename="src/eventstatisticsoptions.ui" line="72"/>
         <source> min</source>
-        <translation type="unfinished"></translation>
+        <translation> мін</translation>
     </message>
     <message>
         <location filename="src/eventstatisticsoptions.ui" line="82"/>
         <source>When new runners count is</source>
-        <translation type="unfinished"></translation>
+        <translation>Коли кількість нових учасників  є</translation>
     </message>
     <message>
         <location filename="src/eventstatisticsoptions.ui" line="92"/>
@@ -152,37 +152,37 @@
     <message>
         <location filename="src/eventstatisticswidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Форма</translation>
     </message>
     <message>
         <location filename="src/eventstatisticswidget.ui" line="59"/>
         <source>Print results for classes with new runners</source>
-        <translation type="unfinished"></translation>
+        <translation>Друкувати результати для груп з новими учасниками</translation>
     </message>
     <message>
         <location filename="src/eventstatisticswidget.ui" line="73"/>
         <source>Print results in selected rows</source>
-        <translation type="unfinished"></translation>
+        <translation>Друкувати результати для вибраних рядків</translation>
     </message>
     <message>
         <location filename="src/eventstatisticswidget.ui" line="87"/>
         <source>Clear new results in selected rows</source>
-        <translation type="unfinished"></translation>
+        <translation>Очистити нових результатів для вибраних рядків</translation>
     </message>
     <message>
         <location filename="src/eventstatisticswidget.ui" line="101"/>
         <source>Reload table</source>
-        <translation type="unfinished"></translation>
+        <translation>Перезавантажити таблицю</translation>
     </message>
     <message>
         <location filename="src/eventstatisticswidget.ui" line="115"/>
         <source>Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Опції</translation>
     </message>
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="585"/>
         <source>Results by classes</source>
-        <translation type="unfinished"></translation>
+        <translation>Результати по групам</translation>
     </message>
 </context>
 <context>
@@ -190,22 +190,22 @@
     <message>
         <location filename="src/printawardsoptionsdialogwidget.ui" line="14"/>
         <source>Dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Діалог</translation>
     </message>
     <message>
         <location filename="src/printawardsoptionsdialogwidget.ui" line="20"/>
         <source>Number of places in each class</source>
-        <translation type="unfinished"></translation>
+        <translation>Кількість місць в кожній групі</translation>
     </message>
     <message>
         <location filename="src/printawardsoptionsdialogwidget.ui" line="40"/>
         <source>Awards report</source>
-        <translation type="unfinished"></translation>
+        <translation>Звіт по нагородах</translation>
     </message>
     <message>
         <location filename="src/printawardsoptionsdialogwidget.ui" line="50"/>
         <source>Stage number</source>
-        <translation type="unfinished"></translation>
+        <translation>Номер забігу</translation>
     </message>
 </context>
 <context>
@@ -213,17 +213,17 @@
     <message>
         <location filename="src/findrunnerwidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Форма</translation>
     </message>
     <message>
         <location filename="src/findrunnerwidget.ui" line="20"/>
         <source>Name, registration, SI</source>
-        <translation type="unfinished"></translation>
+        <translation>Ім&apos;я, реєстрація, ЧІП</translation>
     </message>
     <message>
         <location filename="src/findrunnerwidget.ui" line="30"/>
         <source>Use this SI card also in next stages</source>
-        <translation type="unfinished"></translation>
+        <translation>Використати цей ЧІП для наступних забігів також</translation>
     </message>
 </context>
 <context>
@@ -231,7 +231,7 @@
     <message>
         <location filename="src/nstagesreportoptionsdialog.ui" line="14"/>
         <source>Report Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Опції звіту</translation>
     </message>
     <message>
         <location filename="src/nstagesreportoptionsdialog.ui" line="22"/>

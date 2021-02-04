@@ -6,7 +6,7 @@
     <message>
         <location filename="src/competitorwidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Форма</translation>
     </message>
     <message>
         <location filename="src/competitorwidget.ui" line="38"/>
@@ -136,7 +136,7 @@
     <message>
         <location filename="src/competitorswidget.ui" line="20"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Форма</translation>
     </message>
     <message>
         <location filename="src/competitorswidget.cpp" line="72"/>
@@ -187,12 +187,12 @@
     <message>
         <location filename="src/competitorswidget.cpp" line="127"/>
         <source>Edit on punch</source>
-        <translation type="unfinished"></translation>
+        <translation>Редагування на відмітці</translation>
     </message>
     <message>
         <location filename="src/competitorswidget.cpp" line="128"/>
         <source>Show Edit/Insert competitor dialog box when card is inserted into the reader station (reader mode &quot;Entries&quot; required)</source>
-        <translation type="unfinished"></translation>
+        <translation>Відкрити діалог Редагування/Додавання учасника коли ЧІП вставлено в станцію зчитування (Потребує режиму &quot;Entries&quot; считувача)</translation>
     </message>
     <message>
         <location filename="src/competitorswidget.cpp" line="133"/>

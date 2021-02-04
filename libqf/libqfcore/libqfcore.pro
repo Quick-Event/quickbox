@@ -7,13 +7,22 @@ TARGET=qfcore
 #message (QF_PROJECT_TOP_BUILDDIR: $$QF_PROJECT_TOP_BUILDDIR)
 
 isEmpty(QF_PROJECT_TOP_BUILDDIR) {
-	QF_PROJECT_TOP_BUILDDIR = $$OUT_PWD/../..
+    QF_PROJECT_TOP_BUILDDIR = $$OUT_PWD/../..
 }
 else {
-	message ( QF_PROJECT_TOP_BUILDDIR is not empty and set to $$QF_PROJECT_TOP_BUILDDIR )
+    message ( QF_PROJECT_TOP_BUILDDIR is not empty and set to $$QF_PROJECT_TOP_BUILDDIR )
 	message ( This is obviously done in file $$QF_PROJECT_TOP_SRCDIR/.qmake.conf )
 }
 message ( QF_PROJECT_TOP_BUILDDIR == '$$QF_PROJECT_TOP_BUILDDIR' )
+
+isEmpty(QF_PROJECT_TOP_SRCDIR) {
+    QF_PROJECT_TOP_SRCDIR = $$PWD/../..
+}
+else {
+    message ( QF_PROJECT_TOP_SRCDIR is not empty and set to $$QF_PROJECT_TOP_SRCDIR )
+	message ( This is obviously done in file $$QF_PROJECT_TOP_SRCDIR/.qmake.conf )
+}
+message ( QF_PROJECT_TOP_SRCDIR == '$$QF_PROJECT_TOP_SRCDIR' )
 
 unix:DESTDIR = $$QF_PROJECT_TOP_BUILDDIR/lib
 win32:DESTDIR = $$QF_PROJECT_TOP_BUILDDIR/bin
@@ -26,9 +35,21 @@ CONFIG += hide_symbols
 
 DEFINES += QFCORE_BUILD_DLL
 
-include($$PWD/src/src.pri)
+INCLUDEPATH += $$QF_PROJECT_TOP_SRCDIR/3rdparty/necrolog/include
 
-include ($$PWD/../../crosscompile-support.pri)
+android: LIBEXT = "_$${QT_ARCH}"
+else: LIBEXT = ""
+
+LIBS +=      \
+	-lnecrolog$${LIBEXT}
+
+win32: LIBS +=  \
+    -L$$QF_PROJECT_TOP_BUILDDIR/bin  \
+
+unix: LIBS +=  \
+    -L$$QF_PROJECT_TOP_BUILDDIR/lib  \
+
+include($$PWD/src/src.pri)
 
 RESOURCES += \
 	$$PWD/images/images.qrc \

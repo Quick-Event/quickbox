@@ -111,7 +111,7 @@ ReportItemReport* ReportProcessor::documentInstanceRoot()
 			m_documentInstanceRoot = qobject_cast<ReportItemReport*>(o);
 		}
 		if(!m_documentInstanceRoot) {
-			qfError() << "Error creating root object from component:" << m_reportDocumentComponent << m_reportDocumentComponent->url();
+			qfError() << "Error creating root object from component:" << m_reportDocumentComponent << m_reportDocumentComponent->url().toString();
 			qfError() << "Created object:" << o;
 			Q_FOREACH(auto err, m_reportDocumentComponent->errors())
 				qfError() << err.toString();

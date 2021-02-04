@@ -3,10 +3,10 @@
 //#include <Competitors/competitorsplugin.h>
 
 #include <qf/qmlwidgets/framework/mainwindow.h>
+#include <qf/qmlwidgets/log.h>
 
 #include <qf/core/utils/table.h>
 #include <qf/core/model/sqltablemodel.h>
-#include <qf/core/log.h>
 #include <qf/core/assert.h>
 
 #include <QCompleter>

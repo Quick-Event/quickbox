@@ -4,10 +4,12 @@
 #include <quickevent/core/og/timems.h>
 #include <quickevent/core/si/siid.h>
 
+#include <qf/qmlwidgets/log.h>
+#include <qf/qmlwidgets/framework/mainwindow.h>
+
 #include <qf/core/sql/connection.h>
 #include <qf/core/sql/transaction.h>
 #include <qf/core/assert.h>
-#include <qf/qmlwidgets/framework/mainwindow.h>
 
 #include <QMimeData>
 /*

@@ -11,22 +11,22 @@
     <message>
         <location filename="src/reportoptionsdialog.ui" line="35"/>
         <source>Stages count</source>
-        <translation type="unfinished"></translation>
+        <translation>Кількість забігів</translation>
     </message>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="41"/>
         <source>Number of stages</source>
-        <translation type="unfinished"></translation>
+        <translation>Кількість забігів</translation>
     </message>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="54"/>
         <source>Legs count</source>
-        <translation type="unfinished"></translation>
+        <translation>Кількість етапів</translation>
     </message>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="60"/>
         <source>Number of legs</source>
-        <translation type="unfinished"></translation>
+        <translation>Кількість етапів</translation>
     </message>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="73"/>
@@ -56,7 +56,7 @@
     <message>
         <location filename="src/reportoptionsdialog.ui" line="120"/>
         <source>Doesn&apos;t match</source>
-        <translation type="unfinished"></translation>
+        <translation>Не відповідає</translation>
     </message>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="127"/>
@@ -71,47 +71,47 @@
     <message>
         <location filename="src/reportoptionsdialog.ui" line="143"/>
         <source>Result options</source>
-        <translation type="unfinished"></translation>
+        <translation>Опції результату</translation>
     </message>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="149"/>
         <source>Number of places in each class</source>
-        <translation type="unfinished"></translation>
+        <translation>Кількість місць в кожній групі</translation>
     </message>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="172"/>
         <source>Exclude DISQ</source>
-        <translation type="unfinished"></translation>
+        <translation>Виключаючи ДІСК</translation>
     </message>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="182"/>
         <source>Starters options</source>
-        <translation type="unfinished"></translation>
+        <translation>Опції стартувальників</translation>
     </message>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="200"/>
         <source>Space after line</source>
-        <translation type="unfinished"></translation>
+        <translation>Простір після лінії</translation>
     </message>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="210"/>
         <source>mm</source>
-        <translation type="unfinished"></translation>
+        <translation>мм</translation>
     </message>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="223"/>
         <source>Start options</source>
-        <translation type="unfinished"></translation>
+        <translation>Опції старту</translation>
     </message>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="241"/>
         <source>Print vacants</source>
-        <translation type="unfinished"></translation>
+        <translation>Друкувати вакансії</translation>
     </message>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="248"/>
         <source>Print start numbers</source>
-        <translation type="unfinished"></translation>
+        <translation>Друкувати стартові номери</translation>
     </message>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="258"/>
@@ -154,12 +154,12 @@
     <message>
         <location filename="src/reportoptionsdialog.ui" line="397"/>
         <source>Break type</source>
-        <translation type="unfinished"></translation>
+        <translation>Тип поділу</translation>
     </message>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="405"/>
         <source>None</source>
-        <translation type="unfinished"></translation>
+        <translation>Немає</translation>
     </message>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="410"/>

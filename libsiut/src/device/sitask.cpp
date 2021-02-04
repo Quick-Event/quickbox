@@ -192,7 +192,7 @@ void SiTaskReadStationBackupMemory::onSiMessageReceived(const SIMessageData &msg
 		if(cmd == SIMessageData::Command::GetSystemData) {
 			QByteArray hdr = msg.data();
 			bool is_overflow = hdr[6];
-			//qfInfo().noquote() << msg.dump();
+			//qfInfo() << msg.dump();
 			logCardRead() << "is memory overflow:" << is_overflow;
 
 			//m_blockCount = m_isOverflow? MEMORY_SIZE: (m_memoryDataPointer - MEMORY_START) / m_blockSize + 1;
@@ -239,7 +239,7 @@ void SiTaskReadStationBackupMemory::onSiMessageReceived(const SIMessageData &msg
 					ba = ba.mid(0, m_memoryDataPointer - m_readDataPointer);
 				}
 			}
-			//qfInfo().noquote() << SIMessageData::dumpData(ba, 16);
+			//qfInfo() << SIMessageData::dumpData(ba, 16);
 			m_data.append(ba);
 			emit progress(m_progressPhase++, (int)m_blockCount);
 			if(!--m_blockCount) {
@@ -356,7 +356,7 @@ SiTaskReadCard::~SiTaskReadCard()
 void SiTaskReadCard::finishAndDestroy(bool ok, QVariant result)
 {
 	if(ok) {
-		logCardRead().noquote() << m_card.toString();
+		logCardRead() << m_card.toString();
 		if(!m_withAutosend)
 			sendACK();
 	}
@@ -381,7 +381,7 @@ void SiTaskReadCard5::onSiMessageReceived(const SIMessageData &msg)
 		const QByteArray data = msg.data();
 		int base = 5;
 		qfDebug() << "Card5 data";
-		qfDebug().noquote() << SIMessageData::dumpData(data.mid(base), 16);
+		qfDebug() << SIMessageData::dumpData(data.mid(base), 16);
 		int station_number = (int)SIPunch::getUnsigned(data, base - 2);
 		int card_number = (int)SIPunch::getUnsigned(data, base + 4);
 		int cs = (uint8_t)data[base + 6];
@@ -416,7 +416,7 @@ void SiTaskReadCard5::onSiMessageReceived(const SIMessageData &msg)
 		m_card.setStartTime(start_time);
 		m_card.setFinishTime(finish_time);
 		m_card.setPunches(punches);
-		//qfInfo().noquote() << "\n" << m_card.toString();
+		//qfInfo() << "\n" << m_card.toString();
 		finishAndDestroy(true, m_card);
 	}
 	else {
@@ -447,7 +447,7 @@ void SiTaskReadCard6::onSiMessageReceived(const SIMessageData &msg)
 		const QByteArray data = msg.data();
 		int block_number = (uint8_t)data[base-1];
 		logCardRead() << "Card6 data, block number:" << block_number;
-		qfDebug().noquote() << SIMessageData::dumpData(data.mid(base), 4);
+		qfDebug() << SIMessageData::dumpData(data.mid(base), 4);
 		if(block_number == 0) {
 			int station_number = (int)SIPunch::getUnsigned(data, base - 3);
 			int card_number = (int)SIPunch::getUnsigned(data, base + 11, 3);
@@ -549,7 +549,7 @@ void SiTaskReadCard8::onSiMessageReceived(const SIMessageData &msg)
 		const QByteArray data = msg.data();
 		int block_number = (uint8_t)data[base-1];
 		logCardRead() << "Card8 data, block number:" << block_number;
-		qfDebug().noquote() << SIMessageData::dumpData(data.mid(base), 4);
+		qfDebug() << SIMessageData::dumpData(data.mid(base), 4);
 		if(block_number == 0) {
 			int station_number = (int)SIPunch::getUnsigned(data, base - 3);
 			int card_number = (int)SIPunch::getUnsigned(data, base + 0x19, 3);
@@ -608,7 +608,7 @@ void SiTaskReadCard8::onSiMessageReceived(const SIMessageData &msg)
 						punches << p;
 					}
 					m_card.setPunches(punches);
-					//qfInfo().noquote() << "\n" << m_card.toString();
+					//qfInfo() << "\n" << m_card.toString();
 					finishAndDestroy(true, m_card);
 				}
 				else {
@@ -624,7 +624,7 @@ void SiTaskReadCard8::onSiMessageReceived(const SIMessageData &msg)
 						punches << SIPunch(data, base + i*4);
 					}
 					m_card.setPunches(punches);
-					//qfInfo().noquote() << "\n" << m_card.toString();
+					//qfInfo() << "\n" << m_card.toString();
 					finishAndDestroy(true, m_card);
 				}
 				else {
@@ -664,9 +664,9 @@ void SiTaskReadCard8::onSiMessageReceived(const SIMessageData &msg)
 					uint8_t mvbat = (uint8_t)data[base + 0x11*4 + 3];
 					uint8_t rbat = (uint8_t)data[base + 0x15*4 + 0];
 					uint8_t lbat = (uint8_t)data[base + 0x15*4 + 1];
-					logCardRead().nospace().noquote() << "MVBAT: " << mvbat << " 0x" << QString::number(mvbat, 16);
-					logCardRead().nospace().noquote() << "RBAT : " << rbat << " 0x" << QString::number(rbat, 16);
-					logCardRead().nospace().noquote() << "LBAT : " << lbat << " 0x" << QString::number(lbat, 16) << " " << (lbat == 0xAA? "OK": "LOW");
+					logCardRead().nospace() << "MVBAT: " << mvbat << " 0x" << QString::number(mvbat, 16);
+					logCardRead().nospace() << "RBAT : " << rbat << " 0x" << QString::number(rbat, 16);
+					logCardRead().nospace() << "LBAT : " << lbat << " 0x" << QString::number(lbat, 16) << " " << (lbat == 0xAA? "OK": "LOW");
 
 					// read battery status
 					sendCommand((int)SIMessageData::Command::GetSICard8, QByteArray(1, (char)(block_number + 1)));

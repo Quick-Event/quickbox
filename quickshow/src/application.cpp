@@ -11,7 +11,6 @@
 #include <QSqlError>
 #include <QSqlRecord>
 #include <QSqlDatabase>
-#include <QDebug>
 
 Application::Application(int &argc, char **argv, AppCliOptions *cli_opts)
 	: Super(argc, argv)
@@ -50,7 +49,7 @@ qf::core::sql::Connection Application::sqlConnetion()
 			if(!cliOptions()->sqlDriver().endsWith(QLatin1String("SQLITE"))) {
 				QString event_name = cliOptions()->eventName();
 				if(event_name.isEmpty()) {
-					qfError("Event name is empty!");
+					qfError() << "Event name is empty!";
 				}
 				else {
 					qfInfo() << "\tSetting current schema to" << cliOptions()->eventName();
@@ -76,7 +75,7 @@ qf::core::sql::Query Application::execSql(const QString &query_str)
 	if(!q.exec(qs)) {
 		QSqlError err = q.lastError();
 		qfError() << "SQL ERROR:" << err.text();
-		//qCritical() << ("QUERY: "%q.lastQuery());
+		//qfError() << ("QUERY: "%q.lastQuery());
 		::exit(-1);
 	}
 	return q;

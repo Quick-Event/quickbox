@@ -24,7 +24,7 @@ namespace siut {
 DeviceDriver::DeviceDriver(QObject *parent)
 	: Super(parent)
 {
-	qf::core::Log::checkLogLevelMetaTypeRegistered();
+	//NecroLog::checkLogLevelMetaTypeRegistered();
 }
 
 DeviceDriver::~DeviceDriver()
@@ -54,7 +54,7 @@ namespace {
 void DeviceDriver::processSIMessageData(const SIMessageData &data)
 {
 	qfLogFuncFrame();
-	qfDebug().noquote() << data.toString();
+	qfDebug() << data.toString();
 	if(m_taskInProcess) {
 		m_taskInProcess->onSiMessageReceived(data);
 		return;
@@ -133,13 +133,13 @@ void DeviceDriver::processData(const QByteArray &data)
 			return;
 		uint8_t etx = (uint8_t)f_rxData[len-1];
 		if(etx == NAK) {
-			emitDriverInfo(qf::core::Log::Level::Error, tr("NAK received"));
+			emitDriverInfo(NecroLog::Level::Error, tr("NAK received"));
 		}
 		else if(etx == ETX) {
 			QByteArray data = f_rxData.mid(0, len);
 			uint8_t cmd = (uint8_t)data[1];
 			if(cmd < 0x80) {
-				emitDriverInfo(qf::core::Log::Level::Error, tr("Legacy protocol is not supported, switch station to extended one."));
+				emitDriverInfo(NecroLog::Level::Error, tr("Legacy protocol is not supported, switch station to extended one."));
 			}
 			else {
 				processSIMessageData(data);
@@ -152,7 +152,7 @@ void DeviceDriver::processData(const QByteArray &data)
 	}
 }
 
-void DeviceDriver::emitDriverInfo ( qf::core::Log::Level level, const QString& msg )
+void DeviceDriver::emitDriverInfo( NecroLog::Level level, const QString& msg )
 {
 	//qfLog(level) << msg;
 	emit driverInfo(level, msg);
@@ -162,7 +162,7 @@ void DeviceDriver::sendCommand(int cmd, const QByteArray& data)
 {
 	qfLogFuncFrame();
 	if(cmd < 0x80) {
-		emitDriverInfo(qf::core::Log::Level::Error, tr("SIDeviceDriver::sendCommand() - ERROR Sending of EXT commands only is supported for sending."));
+		emitDriverInfo(NecroLog::Level::Error, tr("SIDeviceDriver::sendCommand() - ERROR Sending of EXT commands only is supported for sending."));
 	}
 	else {
 		QByteArray ba;
@@ -178,7 +178,7 @@ void DeviceDriver::sendCommand(int cmd, const QByteArray& data)
 		set_byte_at(ba, ba.length(), (crc_sum >> 8) & 0xFF);
 		set_byte_at(ba, ba.length(), crc_sum & 0xFF);
 		set_byte_at(ba, ba.length(), ETX);
-		qfDebug().noquote() << "sending command:" << SIMessageData::dumpData(ba, 16);
+		qfDebug() << "sending command:" << SIMessageData::dumpData(ba, 16);
 		//f_commPort->write(ba);
 		//f_rxTimer->start();
 		emit dataToSend(ba);

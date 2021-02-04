@@ -19,21 +19,34 @@ else {
 }
 message ( QF_PROJECT_TOP_BUILDDIR == '$$QF_PROJECT_TOP_BUILDDIR' )
 
+isEmpty(QF_PROJECT_TOP_SRCDIR) {
+    QF_PROJECT_TOP_SRCDIR = $$PWD/../..
+}
+else {
+    message ( QF_PROJECT_TOP_SRCDIR is not empty and set to $$QF_PROJECT_TOP_SRCDIR )
+	message ( This is obviously done in file $$QF_PROJECT_TOP_SRCDIR/.qmake.conf )
+}
+message ( QF_PROJECT_TOP_SRCDIR == '$$QF_PROJECT_TOP_SRCDIR' )
+
 unix:DESTDIR = $$QF_PROJECT_TOP_BUILDDIR/lib
 win32:DESTDIR = $$QF_PROJECT_TOP_BUILDDIR/bin
 
 message ( DESTDIR: $$DESTDIR )
 
+INCLUDEPATH += $$QF_PROJECT_TOP_SRCDIR/3rdparty/necrolog/include
+
+android: LIBEXT = "_$${QT_ARCH}"
+else: LIBEXT = ""
+
 LIBS +=      \
-	-lqfcore  \
+	-lnecrolog$${LIBEXT}  \
+	-lqfcore$${LIBEXT}
 
 win32: LIBS +=  \
 	-L$$QF_PROJECT_TOP_BUILDDIR/bin  \
 
 unix: LIBS +=  \
 	-L$$QF_PROJECT_TOP_BUILDDIR/lib  \
-
-include ($$PWD/../../crosscompile-support.pri)
 
 include($$PWD/src/src.pri)
 

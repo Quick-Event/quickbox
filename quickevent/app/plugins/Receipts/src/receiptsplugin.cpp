@@ -390,7 +390,7 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 		tt.setValue("timeMs", checked_card.timeMs());
 		tt.setValue("isCardLent", is_card_lent);
 
-		qfDebug().noquote() << "card:\n" << tt.toString();
+		qfDebug() << "card:\n" << tt.toString();
 		ret["card"] = tt.toVariant();
 	}
 	return ret;

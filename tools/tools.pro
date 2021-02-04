@@ -8,6 +8,6 @@ SUBDIRS += \
 
 unix:qfsqldbfs {
 	SUBDIRS += \
-		qfsqldbfs \
+#		qfsqldbfs \
 }
 

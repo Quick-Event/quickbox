@@ -33,7 +33,7 @@ qf::core::sql::Query HtmlFileExporter::execSql(const QString &query_str)
 	if(!q.exec(qs)) {
 		QSqlError err = q.lastError();
 		qfError() << "SQL ERROR:" << err.text();
-		//qCritical() << ("QUERY: "%q.lastQuery());
+		//qfError() << ("QUERY: "%q.lastQuery());
 		//::exit(-1);
 	}
 	return q;
@@ -55,7 +55,7 @@ void HtmlFileExporter::generateHtml()
 		}
 	}
 	QVariantMap event_info = eventInfo();
-	qfDebug() << event_info;
+	//qfDebug() << event_info;
 	//QString event_name = event_info.value("name").toString();
 	//ui->lblHeadRight->setText(event_info.value("date").toString());
 	//int stage_cnt = event_info.value("stageCount").toInt();

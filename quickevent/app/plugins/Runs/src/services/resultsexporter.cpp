@@ -95,11 +95,11 @@ bool ResultsExporter::exportResults()
 			QProcess *proc = new QProcess();
 			connect(proc, &QProcess::readyReadStandardOutput, [proc]() {
 				QByteArray ba = proc->readAllStandardOutput();
-				qfInfo().noquote() << "PROC stdout:" << ba;
+				qfInfo() << "PROC stdout:" << ba;
 			});
 			connect(proc, &QProcess::readyReadStandardError, [proc]() {
 				QByteArray ba = proc->readAllStandardError();
-				qfWarning().noquote() << "PROC stderr:" << ba;
+				qfWarning() << "PROC stderr:" << ba;
 			});
 			connect(proc, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished), [proc](int exit_code, QProcess::ExitStatus exit_status) {
 				if(exit_status == QProcess::ExitStatus::CrashExit)

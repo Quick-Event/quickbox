@@ -18,6 +18,7 @@
 #include <QFile>
 #include <QSettings>
 #include <QStandardPaths>
+#include <QTextStream>
 #include <QTimer>
 
 namespace qfc = qf::core;

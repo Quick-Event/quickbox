@@ -11,20 +11,25 @@ TARGET = qsqlmon
 #message (QF_PROJECT_TOP_BUILDDIR: $$QF_PROJECT_TOP_BUILDDIR)
 
 isEmpty(QF_PROJECT_TOP_BUILDDIR) {
-	QF_PROJECT_TOP_BUILDDIR = $$OUT_PWD/../..
-}
-else {
-	message ( QF_PROJECT_TOP_BUILDDIR is not empty and set to $$QF_PROJECT_TOP_BUILDDIR )
-	message ( This is obviously done in file $$QF_PROJECT_TOP_SRCDIR/.qmake.conf )
+    QF_PROJECT_TOP_BUILDDIR = $$OUT_PWD/../..
 }
 message ( QF_PROJECT_TOP_BUILDDIR == '$$QF_PROJECT_TOP_BUILDDIR' )
+
+isEmpty(QF_PROJECT_TOP_SRCDIR) {
+    QF_PROJECT_TOP_SRCDIR = $$PWD/../..
+}
+message ( QF_PROJECT_TOP_SRCDIR == '$$QF_PROJECT_TOP_SRCDIR' )
 
 DESTDIR = $$QF_PROJECT_TOP_BUILDDIR/bin
 message ( DESTDIR: $$DESTDIR )
 
+android: LIBEXT = "_$${QT_ARCH}"
+else: LIBEXT = ""
+
 LIBS +=      \
-	-lqfcore  \
-	-lqfqmlwidgets  \
+	-lnecrolog$${LIBEXT}  \
+	-lqfcore$${LIBEXT}  \
+	-lqfqmlwidgets$${LIBEXT}
 
 win32: LIBS +=  \
 	-L$$QF_PROJECT_TOP_BUILDDIR/bin  \
@@ -36,8 +41,7 @@ unix: LIBS +=  \
 # exception backtrace support
 CONFIG(debug, debug|release): unix: QMAKE_LFLAGS += -rdynamic
 
-include ($$PWD/../../crosscompile-support.pri)
-
+INCLUDEPATH += $$QF_PROJECT_TOP_SRCDIR/3rdparty/necrolog/include
 INCLUDEPATH += $$PWD/../../libqf/libqfcore/include
 INCLUDEPATH += $$PWD/../../libqf/libqfqmlwidgets/include
 INCLUDEPATH += $$PWD/src

@@ -8,6 +8,7 @@
 #include <qf/core/log.h>
 
 #include <QLineEdit>
+#include <QSet>
 
 using namespace qf::qmlwidgets;
 

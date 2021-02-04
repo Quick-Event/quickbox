@@ -183,7 +183,7 @@ void ReportOptionsDialog::setStartListPrintVacantsVisible(bool b)
 
 void ReportOptionsDialog::setOptions(const ReportOptionsDialog::Options &options)
 {
-	qfLogFuncFrame() << options;
+	//qfLogFuncFrame() << options;
 	ui->edStagesCount->setValue(options.stagesCount());
 	ui->edLegsCount->setValue(options.legsCount());
 	//qfInfo() << "options.stagesCount()" << options.stagesCount() << ui->edStagesCount->value();
@@ -279,7 +279,7 @@ void ReportOptionsDialog::loadPersistentSettings(const ReportOptionsDialog::Opti
 		if(!opts.contains(it.key()))
 			opts[it.key()] = it.value();
 	}
-	qfDebug() << opts;
+	//qfDebug() << opts;
 	setOptions(opts);
 }
 
@@ -295,7 +295,7 @@ void ReportOptionsDialog::savePersistentSettings()
 		return;
 
 	Options opts = options();
-	qfInfo() << persistentSettingsPath() << opts;
+	qfInfo() << persistentSettingsPath();// << opts;
 	QSettings settings;
 	settings.setValue(persistentSettingsPath(), opts);
 }

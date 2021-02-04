@@ -1,8 +1,8 @@
 #include "exception.h"
 #include "stacktrace.h"
+#include "log.h"
 
 #include <QStringList>
-#include <QDebug>
 
 #include <stdarg.h>
 #include <stdio.h>
@@ -12,7 +12,7 @@ using namespace qf::core;
 #if (QT_VERSION < QT_VERSION_CHECK(5, 4, 0))
 	#define logWarning() qWarning()
 #else
-	#define logWarning() qWarning().noquote()
+	#define logWarning() qfWarning()
 #endif
 
 //============================================================
@@ -57,17 +57,20 @@ const char* Exception::what() const throw()
 {
 	return m_what.constData();
 }
-/*
-void Exception::setGlobalFlags(int argc, char *argv[])
+
+void Exception::setAbortOnException(bool on)
 {
-	//setLogStackTrace(false);
-	//setExceptionAbortsApplication(false);
-	//setAssertThrowsException(false);
-	for(int i=1; i<argc; i++) {
-		QString s = argv[i];
-		if(s == "--exception-aborts") setExceptionAbortsApplication(true);
-		else if(s == "--assert-throws") setAssertThrowsException(true);
-		else if(s == "--log-stacktrace") setLogStackTrace(true);
-	}
+	s_abortOnException = on;
 }
-*/
+
+bool Exception::isAbortOnException()
+{
+	return s_abortOnException;
+}
+
+void Exception::fatalMessage(const QString &msg)
+{
+	qfError() << "EXCEPTION!:" << msg;
+	abort();
+}
+

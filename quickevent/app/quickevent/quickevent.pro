@@ -19,7 +19,8 @@ win32: LIB_DIR_NAME = bin
 else:  LIB_DIR_NAME = lib
 
 INCLUDEPATH += \
-    $$QF_PROJECT_TOP_SRCDIR/libqf/libqfcore/include \
+    $$QF_PROJECT_TOP_SRCDIR/3rdparty/necrolog/include \
+	$$QF_PROJECT_TOP_SRCDIR/libqf/libqfcore/include \
     $$QF_PROJECT_TOP_SRCDIR/libqf/libqfqmlwidgets/include \
     $$QF_PROJECT_TOP_SRCDIR/libquickevent/libquickeventcore/include \
     $$QF_PROJECT_TOP_SRCDIR/libquickevent/libquickeventgui/include \
@@ -31,8 +32,9 @@ LIBS += \
 	-L$$QF_PROJECT_TOP_BUILDDIR/$$LIB_DIR_NAME \
 
 LIBS +=      \
-    -lqfcore  \
-    -lqfqmlwidgets  \
+    -lnecrolog  \
+	-lqfcore  \
+	-lqfqmlwidgets  \
     -lsiut \
     -lquickeventcore \
     -lquickeventgui \
@@ -59,7 +61,6 @@ RESOURCES += \
 
 RC_FILE = $$PWD/app.rc
 
-include ($$QF_PROJECT_TOP_SRCDIR/crosscompile-support.pri)
 include ($$QF_PROJECT_TOP_SRCDIR/appdatafiles.pri)
 
 include($$PWD/src/src.pri)

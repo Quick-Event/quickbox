@@ -38,7 +38,7 @@ SIMessageData::Command SIMessageData::command(const QByteArray &si_data)
 	}
 	else {
 		qfError() << "invalid message";
-		//qfInfo() << qf::core::Log::stackTrace();
+		//qfInfo() << NecroLog::stackTrace();
 	}
 	return ret;
 }
@@ -248,7 +248,7 @@ QString SIMessageData::toString(int bytes_in_the_row) const
 QString DriverInfo::dump() const
 {
     QString ret = "level: %1\nmessage: %2";
-	ret = ret.arg(qf::core::Log::levelName((qf::core::Log::Level)level())).arg(message());
+	ret = ret.arg(NecroLog::levelName((NecroLog::Level)level())).arg(message());
 	return ret;
 }
 #endif

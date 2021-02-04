@@ -1,7 +1,6 @@
 #include "mainwindow.h"
 #include "application.h"
 #include "loggerwidget.h"
-#include "tablemodellogdevice.h"
 
 #include <Core/coreplugin.h>
 #include <Event/eventplugin.h>

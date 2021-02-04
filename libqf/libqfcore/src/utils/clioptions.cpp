@@ -1,6 +1,6 @@
 #include "clioptions.h"
 #include "../core/log.h"
-#include "../core/logdevice.h"
+//#include "../core/logdevice.h"
 #include "../core/assert.h"
 #include "../core/utils.h"
 
@@ -239,6 +239,9 @@ void CLIOptions::parse(const QStringList& cmd_line_args)
 			m_isAppBreak = true;
 			return;
 		}
+		if(arg == "--abort-on-exception") {
+			qf::core::Exception::setAbortOnException(true);
+		}
 		else {
 			bool found = false;
 			QMutableMapIterator<QString, Option> it(m_options);
@@ -277,7 +280,8 @@ void CLIOptions::parse(const QStringList& cmd_line_args)
 			}
 		}
 	}
-	qf::core::Exception::setAbortOnException(isAbortOnException());
+	if(isAbortOnException())
+		qf::core::Exception::setAbortOnException(true);
 }
 
 QPair<QString, QString> CLIOptions::applicationDirAndName() const
@@ -348,8 +352,10 @@ void CLIOptions::printHelp(std::ostream& os) const
 		if(!oc.isEmpty())
 			os << "\t" << opt.comment().toStdString() << std::endl;
 	}
-	os << qf::core::LogDevice::logModulesCLIHelp().toStdString() << std::endl;
-	os << qf::core::LogDevice::logCategoriesCLIHelp().toStdString() << std::endl;
+	os << NecroLog::cliHelp() << std::endl;
+	std::string topics = NecroLog::registeredTopicsInfo();
+	if(!topics.empty())
+		std::cout << topics << std::endl;
 }
 
 void CLIOptions::printHelp() const
@@ -457,27 +463,26 @@ void ConfigCLIOptions::mergeConfig_helper(const QString &key_prefix, const QVari
 			key = key_prefix + '.' + key;
 		}
 		QVariant v = it.value();
-		if(v.type() == QVariant::Map) {
+		if(options().contains(key)) {
+			Option &opt = optionRef(key);
+			if(!opt.isSet()) {
+				//qfInfo() << key << "-->" << v;
+				opt.setValue(v);
+			}
+		}
+		else if(v.type() == QVariant::Map) {
 			QVariantMap m = v.toMap();
 			mergeConfig_helper(key, m);
 		}
 		else {
 			try {
-				bool opt_exists = !option(key, !qf::core::Exception::Throw).isNull();
-				if(opt_exists) {
-					Option &opt = optionRef(key);
-					if(!opt.isSet()) {
-						//qfInfo() << key << "-->" << v;
-						opt.setValue(v);
-					}
-				}
-				else if(key == QLatin1String("debug")) {
+				if(key == QLatin1String("debug")) {
 					// allways understand --debug parameter even if it is not defined explicitly in CLI options
-					qf::core::LogDevice::setModulesTresholds(v.toString());
+					NecroLog::setFileLogTresholds(v.toString().toStdString());
 				}
 				else if(key == QLatin1String("verbose")) {
 					// allways understand --verbose parameter even if it is not defined explicitly in CLI options
-					qf::core::LogDevice::setCategoriesTresholds(v.toString());
+					NecroLog::setTopicsLogTresholds(v.toString().toStdString());
 				}
 				else {
 					qfWarning() << "Cannot merge nonexisting option key:" << key;

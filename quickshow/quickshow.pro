@@ -18,9 +18,12 @@ message ( QF_PROJECT_TOP_BUILDDIR == '$$QF_PROJECT_TOP_BUILDDIR' )
 DESTDIR = $$QF_PROJECT_TOP_BUILDDIR/bin
 message ( DESTDIR: $$DESTDIR )
 
-INCLUDEPATH += $$PWD/../libqf/libqfcore/include
+INCLUDEPATH += \
+$$PWD/../3rdparty/necrolog/include \
+$$PWD/../libqf/libqfcore/include \
 
 LIBS +=      \
+    -lnecrolog  \
 	-lqfcore  \
 	-lqfqmlwidgets  \
 

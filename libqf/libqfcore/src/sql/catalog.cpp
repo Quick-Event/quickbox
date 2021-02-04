@@ -9,6 +9,7 @@
 
 #include <QSqlQuery>
 #include <QSqlDriver>
+#include <QTextStream>
 
 #define QFCATALOG_MYSQL_VERSION_MAJOR 5
 
@@ -161,7 +162,7 @@ void FieldInfoList::load(const QSqlDatabase &connection, const QString table_id)
 				fi.setAutoIncrement(true);
 				qfDebug() << "\t\t name:" << fi.name() << "seq name:" << fi.seqName();
 			}
-			//qfInfo().noquote() << fi.toString();
+			//qfInfo() << fi.toString();
 			/*
 			QSqlQuery q1(connection);
 			q1.setForwardOnly(true);

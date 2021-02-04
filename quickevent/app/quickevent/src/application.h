@@ -6,6 +6,8 @@
 class AppCliOptions;
 class TableModelLogDevice;
 
+namespace qf { namespace core { class LogEntryMap; }}
+
 class Application : public qf::qmlwidgets::framework::Application
 {
 	Q_OBJECT
@@ -23,6 +25,9 @@ public:
 
 	Q_INVOKABLE QString versionString() const;
 	Q_INVOKABLE QString dbVersionString() const;
+
+	Q_SIGNAL void newLogEntry(const qf::core::LogEntryMap &le);
+	void emitNewLogEntry(const qf::core::LogEntryMap &le) { emit newLogEntry(le); }
 private:
 	AppCliOptions *m_cliOptions;
 };

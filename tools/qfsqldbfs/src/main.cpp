@@ -7,7 +7,7 @@
 #include <qf/core/sql/dbfsattrs.h>
 #include <qf/core/utils/table.h>
 #include <qf/core/log.h>
-#include <qf/core/logdevice.h>
+#include <necrolog.h>
 
 #include <QSqlDatabase>
 #include <QSqlError>

@@ -541,7 +541,7 @@ void RelaysWidget::print_results_nlegs()
 		return;
 	QVariantMap props = dlg.reportProperties();
 	quickevent::gui::ReportOptionsDialog::Options opts = dlg.options();
-	qfDebug() << opts;
+	//qfDebug() << opts;
 	qfDebug() << "opts.resultNumPlaces:" << opts.resultNumPlaces();
 	auto td = thisPlugin()->nLegsResultsTable(dlg.sqlWhereExpression(), opts.legsCount(), opts.resultNumPlaces(), opts.isResultExcludeDisq());
 	qf::qmlwidgets::reports::ReportViewWidget::showReport(this,
@@ -565,7 +565,7 @@ void RelaysWidget::print_results_overal()
 		return;
 	QVariantMap props = dlg.reportProperties();
 	quickevent::gui::ReportOptionsDialog::Options opts = dlg.options();
-	qfDebug() << opts;
+	//qfDebug() << opts;
 	qfDebug() << "opts.resultNumPlaces:" << opts.resultNumPlaces();
 	auto td = thisPlugin()->nLegsResultsTable(dlg.sqlWhereExpression(), 999, opts.resultNumPlaces(), opts.isResultExcludeDisq());
 	qf::qmlwidgets::reports::ReportViewWidget::showReport(this,
@@ -589,7 +589,7 @@ void RelaysWidget::print_results_overal_condensed()
 		return;
 	QVariantMap props = dlg.reportProperties();
 	quickevent::gui::ReportOptionsDialog::Options opts = dlg.options();
-	qfDebug() << opts;
+	//qfDebug() << opts;
 	qfDebug() << "opts.resultNumPlaces:" << opts.resultNumPlaces();
 	auto td = thisPlugin()->nLegsResultsTable(dlg.sqlWhereExpression(), 999, opts.resultNumPlaces(), opts.isResultExcludeDisq());
 	qf::qmlwidgets::reports::ReportViewWidget::showReport(this,

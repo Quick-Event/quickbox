@@ -58,7 +58,7 @@ ReportItemMetaPaint* ReportItemMetaPaint::child(int ix) const
 	ReportItemMetaPaint *ret = dynamic_cast<ReportItemMetaPaint*>(Super::child(ix));
 	if(!ret) {
 		qfWarning() << "Child at index" << ix << "is not a kind of ReportItemMetaPaint.";
-		qfInfo() << qf::core::Log::stackTrace();
+		//qfInfo() << NecroLog::stackTrace();
 	}
 	return ret;
 }

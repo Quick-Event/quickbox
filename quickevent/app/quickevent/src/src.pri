@@ -3,16 +3,14 @@ SOURCES += \
 	$$PWD/mainwindow.cpp \
     $$PWD/application.cpp \
     $$PWD/appclioptions.cpp \
-    $$PWD/loggerwidget.cpp \
-    $$PWD/tablemodellogdevice.cpp
+    $$PWD/loggerwidget.cpp
 
 HEADERS  += \
     $$PWD/appversion.h \
 	$$PWD/mainwindow.h \
     $$PWD/application.h \
     $$PWD/appclioptions.h \
-    $$PWD/loggerwidget.h \
-    $$PWD/tablemodellogdevice.h
+    $$PWD/loggerwidget.h
 
 FORMS +=
 

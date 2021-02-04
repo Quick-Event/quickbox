@@ -2,7 +2,7 @@
 #include "appclioptions.h"
 
 #include <qf/core/log.h>
-#include <qf/core/logdevice.h>
+#include <necrolog.h>
 
 #include <QSettings>
 
@@ -13,8 +13,11 @@ int main(int argc, char *argv[])
 	QCoreApplication::setOrganizationName("quickbox");
 	QCoreApplication::setApplicationName("quickhttpd");
 
-	QStringList args = qf::core::LogDevice::setGlobalTresholds(argc, argv);
-	QScopedPointer<qf::core::LogDevice> log_device(qf::core::FileLogDevice::install());
+	std::vector<std::string> shv_args = NecroLog::setCLIOptions(argc, argv);
+	QStringList args;
+	for(const auto &s : shv_args)
+		args << QString::fromStdString(s);
+
 	AppCliOptions cli_opts;
 
 	cli_opts.parse(args);
@@ -29,7 +32,7 @@ int main(int argc, char *argv[])
 		return 0;
 	}
 	foreach(QString s, cli_opts.unusedArguments()) {
-		qDebug() << "Undefined argument:" << s;
+		qfInfo() << "Undefined argument:" << s;
 	}
 
 	// Uncaught exception is intentional here

@@ -651,7 +651,7 @@ qf::core::utils::TreeTable RunsPlugin::stageResultsTable(int stage_id, const QSt
 			prev_time_ms = time_ms;
 			tt2.setRow(j, tt2_row);
 		}
-		//qfDebug().noquote() << tt2.toString();
+		//qfDebug() << tt2.toString();
 		if(add_laps) {
 			int course_id = tt_row.value("courses.id").toInt();
 			QString class_name = tt_row.value("classes.name").toString();
@@ -1152,7 +1152,7 @@ qf::core::utils::TreeTable RunsPlugin::startListClassesTable(const QString &wher
 		addTimeTextToClass(tt2,zero_time_msec, start_time_format);
 		tt.appendTable(i, tt2);
 	}
-	//qfInfo().noquote() << tt.toString();
+	//qfInfo() << tt.toString();
 	return tt;
 
 }

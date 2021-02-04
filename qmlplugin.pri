@@ -10,7 +10,6 @@ else:  LIB_DIR_NAME = lib
 DESTDIR = $$QF_PROJECT_TOP_BUILDDIR/$$LIB_DIR_NAME/qml/$$PLUGIN_NAMESPACE_PATH
 TARGET  = $${PLUGIN_NAME}plugin
 
-include ($$QF_PROJECT_TOP_SRCDIR/crosscompile-support.pri)
 include ($$PWD/qmlplugindatafiles.pri)
 
 OTHER_FILES += \
