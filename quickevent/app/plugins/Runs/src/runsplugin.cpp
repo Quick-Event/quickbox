@@ -1056,7 +1056,7 @@ qf::core::utils::TreeTable RunsPlugin::startListClassesTable(const QString &wher
 {
 	auto *event_plugin = eventPlugin();
 	int stage_id = selectedStageId();
-	int zero_time_msec = event_plugin->stageStartDateTime(stage_id).time().msecsSinceStartOfDay();
+	auto start00_epoch_sec = event_plugin->stageStartDateTime(stage_id).toSecsSinceEpoch();
 
 	qfs::QueryBuilder qb;
 	qb.select2("classes", "id, name")
@@ -1149,7 +1149,7 @@ qf::core::utils::TreeTable RunsPlugin::startListClassesTable(const QString &wher
 				start_time_0 += start_interval;
 			}
 		}
-		addTimeTextToClass(tt2,zero_time_msec, start_time_format);
+		addTimeTextToClass(tt2,start00_epoch_sec, start_time_format);
 		tt.appendTable(i, tt2);
 	}
 	//qfInfo() << tt.toString();
@@ -1161,7 +1161,7 @@ qf::core::utils::TreeTable RunsPlugin::startListClubsTable(const quickevent::gui
 {
 	auto *event_plugin = eventPlugin();
 	int stage_id = selectedStageId();
-	int zero_time_msec = event_plugin->stageStartDateTime(stage_id).time().msecsSinceStartOfDay();
+	auto start00_epoch_sec = event_plugin->stageStartDateTime(stage_id).toSecsSinceEpoch();
 
 	QString qs1 = "SELECT COALESCE(substr(registration, 1, 3), '') AS clubAbbr FROM competitors GROUP BY clubAbbr ORDER BY clubAbbr";
 	QString qs = "SELECT t2.clubAbbr, clubs.name FROM ( " + qs1 + " ) AS t2"
@@ -1207,7 +1207,7 @@ qf::core::utils::TreeTable RunsPlugin::startListClubsTable(const quickevent::gui
 		m2.reload();
 		//console.info(reportModel.effectiveQuery());
 		auto tt2 = m2.toTreeTable();
-		addTimeTextToClass(tt2,zero_time_msec, start_time_format);
+		addTimeTextToClass(tt2,start00_epoch_sec, start_time_format);
 		tt.appendTable(i, tt2);
 	}
 	return tt;
@@ -1261,9 +1261,9 @@ qf::core::utils::TreeTable RunsPlugin::startListClassesNStagesTable(const int st
 	tt.setValue("stageId", sel_stage_id);
 	tt.setValue("event", event_plugin->eventConfig()->value("event"));
 	tt.setValue("stageStart", event_plugin->stageStartDateTime(sel_stage_id));
-	QVector<int> zero_time_msec;
+	QVector<qint64> start00_epoch_sec;
 	for(int stage_id = 1; stage_id <= stages_count; stage_id++) {
-		zero_time_msec.push_back(event_plugin->stageStartDateTime(stage_id).time().msecsSinceStartOfDay());
+		start00_epoch_sec.push_back(event_plugin->stageStartDateTime(stage_id).toSecsSinceEpoch());
 	}
 	for(int i=0; i<tt.rowCount(); i++) {
 		qf::core::utils::TreeTableRow tt_row = tt.row(i);
@@ -1288,7 +1288,7 @@ qf::core::utils::TreeTable RunsPlugin::startListClassesNStagesTable(const int st
 		//qfInfo() << m2.effectiveQuery();
 		m2.reload();
 		auto tt2 = m2.toTreeTable();
-		addTimeTextToClass(tt2,stages_count,zero_time_msec, start_time_format);
+		addTimeTextToClass(tt2,stages_count,start00_epoch_sec, start_time_format);
 		tt.appendTable(i, tt2);
 	}
 	return tt;
@@ -1316,9 +1316,9 @@ qf::core::utils::TreeTable RunsPlugin::startListClubsNStagesTable(const int stag
 		tt.setColumn(0, c);
 	}
 	//console.info(tt.toString());
-	QVector<int> zero_time_msec;
+	QVector<qint64> start00_epoch_sec;
 	for(int stage_id = 1; stage_id <= stages_count; stage_id++) {
-		zero_time_msec.push_back(event_plugin->stageStartDateTime(stage_id).time().msecsSinceStartOfDay());
+		start00_epoch_sec.push_back(event_plugin->stageStartDateTime(stage_id).toSecsSinceEpoch());
 	}
 	for(int i=0; i<tt.rowCount(); i++) {
 		qf::core::utils::TreeTableRow tt_row = tt.row(i);
@@ -1345,7 +1345,7 @@ qf::core::utils::TreeTable RunsPlugin::startListClubsNStagesTable(const int stag
 		//qfInfo() << m2.effectiveQuery();
 		m2.reload();
 		auto tt2 = m2.toTreeTable();
-		addTimeTextToClass(tt2,stages_count,zero_time_msec, start_time_format);
+		addTimeTextToClass(tt2,stages_count,start00_epoch_sec, start_time_format);
 		tt.appendTable(i, tt2);
 	}
 	return tt;
@@ -2177,15 +2177,14 @@ bool RunsPlugin::exportStartListStageIofXml30(int stage_id, const QString &file_
 	return false;
 }
 
-void RunsPlugin::addTimeTextToClass(qf::core::utils::TreeTable &tt2, const int zero_time_msec, const quickevent::gui::ReportOptionsDialog::StartTimeFormat start_time_format)
+void RunsPlugin::addTimeTextToClass(qf::core::utils::TreeTable &tt2, const qint64 start00_epoch_sec, const quickevent::gui::ReportOptionsDialog::StartTimeFormat start_time_format)
 {
 	for(int j=0; j<tt2.rowCount(); j++) {
 		qf::core::utils::TreeTableRow tt2_row = tt2.row(j);
 		int start_time = tt2_row.value(QStringLiteral("startTimeMs")).toInt();
 		if (start_time_format == quickevent::gui::ReportOptionsDialog::StartTimeFormat::DayTime) {
-			start_time += zero_time_msec;
-			QTime t = QTime::fromMSecsSinceStartOfDay(start_time);
-			tt2_row.setValue(QStringLiteral("startTimeText"), t.toString("h:mm:ss"));
+			QDateTime stime_datetime = QDateTime::fromMSecsSinceEpoch(start00_epoch_sec * 1000 + start_time);
+			tt2_row.setValue(QStringLiteral("startTimeText"), stime_datetime.toString("h:mm:ss"));
 		}
 		else
 			tt2_row.setValue(QStringLiteral("startTimeText"), quickevent::core::og::TimeMs(start_time).toString());
@@ -2193,7 +2192,7 @@ void RunsPlugin::addTimeTextToClass(qf::core::utils::TreeTable &tt2, const int z
 	}
 }
 
-void RunsPlugin::addTimeTextToClass(qf::core::utils::TreeTable &tt2, const int stages_count, const QVector<int> &zero_time_msec, const quickevent::gui::ReportOptionsDialog::StartTimeFormat start_time_format)
+void RunsPlugin::addTimeTextToClass(qf::core::utils::TreeTable &tt2, const int stages_count, const QVector<qint64> &start00_epoch_sec, const quickevent::gui::ReportOptionsDialog::StartTimeFormat start_time_format)
 {
 	for(int j=0; j<tt2.rowCount(); j++) {
 		qf::core::utils::TreeTableRow tt2_row = tt2.row(j);
@@ -2202,9 +2201,8 @@ void RunsPlugin::addTimeTextToClass(qf::core::utils::TreeTable &tt2, const int s
 			if (tt2_row.value(runs+QStringLiteral("isRunning")).toBool()) {
 				int start_time = tt2_row.value(runs+QStringLiteral("startTimeMs")).toInt();
 				if (start_time_format == quickevent::gui::ReportOptionsDialog::StartTimeFormat::DayTime) {
-					start_time += zero_time_msec[stage_id-1];
-					QTime t = QTime::fromMSecsSinceStartOfDay(start_time);
-					tt2_row.setValue(runs+QStringLiteral("startTimeText"), t.toString("h:mm:ss"));
+					QDateTime stime_datetime = QDateTime::fromMSecsSinceEpoch(start00_epoch_sec[stage_id-1] * 1000 + start_time);
+					tt2_row.setValue(runs+QStringLiteral("startTimeText"), stime_datetime.toString("h:mm:ss"));
 				}
 				else
 					tt2_row.setValue(runs+QStringLiteral("startTimeText"), quickevent::core::og::TimeMs(start_time).toString());
