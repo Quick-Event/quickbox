@@ -120,8 +120,8 @@ private:
 
 	void writeCSOSHeader(QTextStream &ts);
 
-	void addTimeTextToClass(qf::core::utils::TreeTable &tt2, const qint64 start00_epoch_sec, const quickevent::gui::ReportOptionsDialog::StartTimeFormat start_time_format);
-	void addTimeTextToClass(qf::core::utils::TreeTable &tt2, const int stages_count, const QVector<qint64> &start00_epoch_sec, const quickevent::gui::ReportOptionsDialog::StartTimeFormat start_time_format);
+	void addStartTimeTextToClass(qf::core::utils::TreeTable &tt2, const qint64 start00_epoch_sec, const quickevent::gui::ReportOptionsDialog::StartTimeFormat start_time_format);
+	void addStartTimeTextToClass(qf::core::utils::TreeTable &tt2, const int stages_count, const QVector<qint64> &start00_epoch_sec, const quickevent::gui::ReportOptionsDialog::StartTimeFormat start_time_format);
 private:
 	qf::qmlwidgets::framework::PartWidget *m_partWidget = nullptr;
 	qf::core::utils::Table m_runnersTableCache;

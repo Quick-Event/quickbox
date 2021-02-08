@@ -1149,7 +1149,7 @@ qf::core::utils::TreeTable RunsPlugin::startListClassesTable(const QString &wher
 				start_time_0 += start_interval;
 			}
 		}
-		addTimeTextToClass(tt2,start00_epoch_sec, start_time_format);
+		addStartTimeTextToClass(tt2,start00_epoch_sec, start_time_format);
 		tt.appendTable(i, tt2);
 	}
 	//qfInfo() << tt.toString();
@@ -1207,7 +1207,7 @@ qf::core::utils::TreeTable RunsPlugin::startListClubsTable(const quickevent::gui
 		m2.reload();
 		//console.info(reportModel.effectiveQuery());
 		auto tt2 = m2.toTreeTable();
-		addTimeTextToClass(tt2,start00_epoch_sec, start_time_format);
+		addStartTimeTextToClass(tt2,start00_epoch_sec, start_time_format);
 		tt.appendTable(i, tt2);
 	}
 	return tt;
@@ -1288,7 +1288,7 @@ qf::core::utils::TreeTable RunsPlugin::startListClassesNStagesTable(const int st
 		//qfInfo() << m2.effectiveQuery();
 		m2.reload();
 		auto tt2 = m2.toTreeTable();
-		addTimeTextToClass(tt2,stages_count,start00_epoch_sec, start_time_format);
+		addStartTimeTextToClass(tt2,stages_count,start00_epoch_sec, start_time_format);
 		tt.appendTable(i, tt2);
 	}
 	return tt;
@@ -1345,7 +1345,7 @@ qf::core::utils::TreeTable RunsPlugin::startListClubsNStagesTable(const int stag
 		//qfInfo() << m2.effectiveQuery();
 		m2.reload();
 		auto tt2 = m2.toTreeTable();
-		addTimeTextToClass(tt2,stages_count,start00_epoch_sec, start_time_format);
+		addStartTimeTextToClass(tt2,stages_count,start00_epoch_sec, start_time_format);
 		tt.appendTable(i, tt2);
 	}
 	return tt;
@@ -2177,7 +2177,7 @@ bool RunsPlugin::exportStartListStageIofXml30(int stage_id, const QString &file_
 	return false;
 }
 
-void RunsPlugin::addTimeTextToClass(qf::core::utils::TreeTable &tt2, const qint64 start00_epoch_sec, const quickevent::gui::ReportOptionsDialog::StartTimeFormat start_time_format)
+void RunsPlugin::addStartTimeTextToClass(qf::core::utils::TreeTable &tt2, const qint64 start00_epoch_sec, const quickevent::gui::ReportOptionsDialog::StartTimeFormat start_time_format)
 {
 	for(int j=0; j<tt2.rowCount(); j++) {
 		qf::core::utils::TreeTableRow tt2_row = tt2.row(j);
@@ -2192,7 +2192,7 @@ void RunsPlugin::addTimeTextToClass(qf::core::utils::TreeTable &tt2, const qint6
 	}
 }
 
-void RunsPlugin::addTimeTextToClass(qf::core::utils::TreeTable &tt2, const int stages_count, const QVector<qint64> &start00_epoch_sec, const quickevent::gui::ReportOptionsDialog::StartTimeFormat start_time_format)
+void RunsPlugin::addStartTimeTextToClass(qf::core::utils::TreeTable &tt2, const int stages_count, const QVector<qint64> &start00_epoch_sec, const quickevent::gui::ReportOptionsDialog::StartTimeFormat start_time_format)
 {
 	for(int j=0; j<tt2.rowCount(); j++) {
 		qf::core::utils::TreeTableRow tt2_row = tt2.row(j);
