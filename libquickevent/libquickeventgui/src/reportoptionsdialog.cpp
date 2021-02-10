@@ -34,6 +34,7 @@ ReportOptionsDialog::ReportOptionsDialog(QWidget *parent)
 	ui->grpStages->setVisible(false);
 	ui->grpLegs->setVisible(false);
 	ui->grpResultOptions->setVisible(false);
+	ui->grpStartTimes->setVisible(false);
 	ui->btRegExp->setEnabled(QSqlDatabase::database().driverName().endsWith(QLatin1String("PSQL"), Qt::CaseInsensitive));
 
 	connect(ui->btSaveAsDefault, &QPushButton::clicked, [this]() {
@@ -52,6 +53,7 @@ ReportOptionsDialog::ReportOptionsDialog(QWidget *parent)
 	connect(this, &ReportOptionsDialog::pageLayoutVisibleChanged, ui->grpPageLayout, &QGroupBox::setVisible);
 	connect(this, &ReportOptionsDialog::columnCountEnableChanged, ui->edColumnCount, &QGroupBox::setEnabled);
 	connect(this, &ReportOptionsDialog::resultOptionsVisibleChanged, ui->grpResultOptions, &QGroupBox::setVisible);
+	connect(this, &ReportOptionsDialog::startTimeFormatVisibleChanged, ui->grpStartTimes, &QGroupBox::setVisible);
 
 	//connect(ui->edStagesCount, &QSpinBox::valueChanged, [this](int n) {
 	//	qfInfo() << "stage cnt value changed:" << n;
@@ -204,6 +206,9 @@ void ReportOptionsDialog::setOptions(const ReportOptionsDialog::Options &options
 	ui->edStartersOptionsLineSpacing->setValue(options.startersOptionsLineSpacing());
 	ui->edNumPlaces->setValue(options.resultNumPlaces());
 	ui->chkExcludeDisq->setChecked(options.isResultExcludeDisq());
+	StartTimeFormat start_time_format = (StartTimeFormat)options.startTimeFormat();
+	ui->btStartTimes1->setChecked(start_time_format == StartTimeFormat::RelativeToClassStart);
+	ui->btStartTimes2->setChecked(start_time_format == StartTimeFormat::DayTime);
 }
 
 ReportOptionsDialog::Options ReportOptionsDialog::options() const
@@ -234,6 +239,8 @@ ReportOptionsDialog::Options ReportOptionsDialog::options() const
 	opts[QStringLiteral("isColumnBreak")] = isColumnBreak();
 	opts.setResultNumPlaces(ui->edNumPlaces->value());
 	opts.setResultExcludeDisq(ui->chkExcludeDisq->isChecked());
+	StartTimeFormat start_time_format =  ui->btStartTimes1->isChecked()? StartTimeFormat::RelativeToClassStart: StartTimeFormat::DayTime;
+	opts.setStartTimeFormat((int)start_time_format);
 	return opts;
 }
 
@@ -297,5 +304,11 @@ int ReportOptionsDialog::resultNumPlaces() const
 {
 	return ui->edNumPlaces->value();
 }
+
+ReportOptionsDialog::StartTimeFormat ReportOptionsDialog::startTimeFormat() const
+{
+	return ui->btStartTimes1->isChecked()? StartTimeFormat::RelativeToClassStart: StartTimeFormat::DayTime;
+}
+
 
 }}

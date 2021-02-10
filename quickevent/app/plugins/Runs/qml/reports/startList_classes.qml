@@ -1,6 +1,5 @@
 import qf.qmlreports 1.0
 import shared.QuickEvent.reports 1.0
-import "qrc:/quickevent/core/js/ogtime.js" as OGTime
 
 Report {
 	id: root
@@ -100,9 +99,9 @@ Report {
 							layout: Frame.LayoutHorizontal
 							function dataFn(field_name) {return function() {return rowData(field_name);}}
 							Cell {
-								width: 15
+								width: 18
 								halign: Frame.AlignRight
-								textFn: function() { return OGTime.msecToString_mmss(runnersDetail.rowData("startTimeMs"));}
+								textFn: runnersDetail.dataFn("startTimeText");
 							}
 							Para {
 								visible: root.isPrintStartNumbers
