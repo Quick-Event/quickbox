@@ -236,22 +236,22 @@
     <message>
         <location filename="src/nstagesreportoptionsdialog.ui" line="22"/>
         <source>&amp;Number of stages</source>
-        <translation type="unfinished"></translation>
+        <translation>Кількість забігів</translation>
     </message>
     <message>
         <location filename="src/nstagesreportoptionsdialog.ui" line="39"/>
         <source>&amp;Max places count</source>
-        <translation type="unfinished"></translation>
+        <translation>Макс. кількість учасників</translation>
     </message>
     <message>
         <location filename="src/nstagesreportoptionsdialog.ui" line="49"/>
         <source>Maximal number of places in each class</source>
-        <translation type="unfinished"></translation>
+        <translation>Макс. кулькусть учасників в кожній групі</translation>
     </message>
     <message>
         <location filename="src/nstagesreportoptionsdialog.ui" line="65"/>
         <source>E&amp;xclude disqualified</source>
-        <translation type="unfinished"></translation>
+        <translation>Викл. дискваліфікованих</translation>
     </message>
 </context>
 <context>
@@ -259,7 +259,7 @@
     <message>
         <location filename="src/runsplugin.cpp" line="143"/>
         <source>Event statistics</source>
-        <translation type="unfinished"></translation>
+        <translation>Статистика змагань</translation>
     </message>
     <message>
         <location filename="src/runsplugin.cpp" line="932"/>
@@ -271,34 +271,34 @@
         <location filename="src/runsplugin.cpp" line="1355"/>
         <location filename="src/runsplugin.cpp" line="1713"/>
         <source>Start list by classes</source>
-        <translation type="unfinished"></translation>
+        <translation>Стартовий протокол по групах</translation>
     </message>
     <message>
         <location filename="src/runsplugin.cpp" line="1381"/>
         <location filename="src/runsplugin.cpp" line="1802"/>
         <source>Start list by clubs</source>
-        <translation type="unfinished"></translation>
+        <translation>Стартовий протокол по клубах</translation>
     </message>
     <message>
         <location filename="src/runsplugin.cpp" line="1406"/>
         <source>Start list for starters</source>
-        <translation type="unfinished"></translation>
+        <translation>Стартовий протокол для суддів старту</translation>
     </message>
     <message numerus="yes">
         <location filename="src/runsplugin.cpp" line="1439"/>
         <source>Start list by classes for %n stage(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Стартовий протокол по групах для забігу %n</numerusform>
+            <numerusform>Стартовий протокол по групах для забігів %n</numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location filename="src/runsplugin.cpp" line="1473"/>
         <source>Start list by clubs for %n stage(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Стартовий протокол по клубах для забігу %n</numerusform>
+            <numerusform>Стартовий протокол по клубах для забігів %n</numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -306,52 +306,52 @@
         <location filename="src/runsplugin.cpp" line="1497"/>
         <location filename="src/runsplugin.cpp" line="1523"/>
         <source>Results by classes</source>
-        <translation type="unfinished"></translation>
+        <translation>Протокол результатів по групах</translation>
     </message>
     <message>
         <location filename="src/runsplugin.cpp" line="1547"/>
         <source>Stage awards</source>
-        <translation type="unfinished"></translation>
+        <translation>Переможці забігу</translation>
     </message>
     <message numerus="yes">
         <location filename="src/runsplugin.cpp" line="1575"/>
         <location filename="src/runsplugin.cpp" line="1602"/>
         <source>Results after %n stage(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Результати після забігу %n</numerusform>
+            <numerusform>Результати після забігів %n</numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
     <message>
         <location filename="src/runsplugin.cpp" line="1625"/>
         <source>Awards after %1 stages</source>
-        <translation type="unfinished"></translation>
+        <translation>Переможці після %1 забігу</translation>
     </message>
     <message>
         <location filename="src/runsplugin.cpp" line="1676"/>
         <location filename="src/runsplugin.cpp" line="1861"/>
         <source>length:</source>
-        <translation type="unfinished"></translation>
+        <translation>довжина:</translation>
     </message>
     <message>
         <location filename="src/runsplugin.cpp" line="1678"/>
         <location filename="src/runsplugin.cpp" line="1863"/>
         <source>climb:</source>
-        <translation type="unfinished"></translation>
+        <translation>набір:</translation>
     </message>
     <message>
         <location filename="src/runsplugin.cpp" line="1681"/>
         <location filename="src/runsplugin.cpp" line="1768"/>
         <location filename="src/runsplugin.cpp" line="1867"/>
         <source>Top</source>
-        <translation type="unfinished"></translation>
+        <translation>Вгору</translation>
     </message>
     <message>
         <location filename="src/runsplugin.cpp" line="1688"/>
         <location filename="src/runsplugin.cpp" line="1775"/>
         <source>Start</source>
-        <translation type="unfinished"></translation>
+        <translation>Старт</translation>
     </message>
     <message>
         <location filename="src/runsplugin.cpp" line="1689"/>
@@ -359,7 +359,7 @@
         <location filename="src/runsplugin.cpp" line="1875"/>
         <location filename="src/runsplugin.cpp" line="1963"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Назва</translation>
     </message>
     <message>
         <location filename="src/runsplugin.cpp" line="1690"/>
@@ -367,23 +367,23 @@
         <location filename="src/runsplugin.cpp" line="1876"/>
         <location filename="src/runsplugin.cpp" line="1978"/>
         <source>Registration</source>
-        <translation type="unfinished"></translation>
+        <translation>Реєстрація</translation>
     </message>
     <message>
         <location filename="src/runsplugin.cpp" line="1691"/>
         <location filename="src/runsplugin.cpp" line="1779"/>
         <source>SI</source>
-        <translation type="unfinished"></translation>
+        <translation>ЧІП</translation>
     </message>
     <message>
         <location filename="src/runsplugin.cpp" line="1776"/>
         <source>Class</source>
-        <translation type="unfinished"></translation>
+        <translation>Група</translation>
     </message>
     <message>
         <location filename="src/runsplugin.cpp" line="1817"/>
         <source>Preparing data</source>
-        <translation type="unfinished"></translation>
+        <translation>Підготування данних</translation>
     </message>
     <message>
         <location filename="src/runsplugin.cpp" line="1847"/>
@@ -404,13 +404,13 @@
     <message>
         <location filename="src/runsplugin.cpp" line="1877"/>
         <source>Club</source>
-        <translation type="unfinished"></translation>
+        <translation>Набір</translation>
     </message>
     <message>
         <location filename="src/runsplugin.cpp" line="1878"/>
         <location filename="src/runsplugin.cpp" line="1964"/>
         <source>Time</source>
-        <translation type="unfinished"></translation>
+        <translation>Час</translation>
     </message>
     <message>
         <location filename="src/runsplugin.cpp" line="1879"/>
@@ -429,33 +429,33 @@
         <location filename="src/runsplugin.cpp" line="1898"/>
         <location filename="src/runsplugin.cpp" line="2036"/>
         <source>DISQ</source>
-        <translation type="unfinished"></translation>
+        <translation>ДИСКВ</translation>
     </message>
     <message>
         <location filename="src/runsplugin.cpp" line="1918"/>
         <location filename="src/runsplugin.cpp" line="2057"/>
         <source>Stage results</source>
-        <translation type="unfinished"></translation>
+        <translation>Результат забігу</translation>
     </message>
     <message>
         <location filename="src/runsplugin.cpp" line="1937"/>
         <source>Warning</source>
-        <translation type="unfinished"></translation>
+        <translation>Попередження</translation>
     </message>
     <message>
         <location filename="src/runsplugin.cpp" line="1937"/>
         <source>Export error</source>
-        <translation type="unfinished"></translation>
+        <translation>Помилка експорту</translation>
     </message>
     <message>
         <location filename="src/runsplugin.cpp" line="1939"/>
         <source>Information</source>
-        <translation type="unfinished"></translation>
+        <translation>Інформація</translation>
     </message>
     <message>
         <location filename="src/runsplugin.cpp" line="1939"/>
         <source>Results exported to %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Результати експортовано в %1</translation>
     </message>
     <message>
         <location filename="src/runsplugin.cpp" line="1971"/>
@@ -483,32 +483,32 @@
     <message>
         <location filename="src/services/resultsexporterwidget.ui" line="50"/>
         <source> sec</source>
-        <translation type="unfinished"></translation>
+        <translation> сек</translation>
     </message>
     <message>
         <location filename="src/services/resultsexporterwidget.ui" line="100"/>
         <source>Export results</source>
-        <translation type="unfinished"></translation>
+        <translation>Експортувати результатри</translation>
     </message>
     <message>
         <location filename="src/services/resultsexporterwidget.ui" line="110"/>
         <source>Export dir</source>
-        <translation type="unfinished"></translation>
+        <translation>Каталог експорту</translation>
     </message>
     <message>
         <location filename="src/services/resultsexporterwidget.ui" line="122"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="src/services/resultsexporterwidget.ui" line="134"/>
         <source>Output format</source>
-        <translation type="unfinished"></translation>
+        <translation>Формати виводу</translation>
     </message>
     <message>
         <location filename="src/services/resultsexporterwidget.cpp" line="22"/>
         <source>HTML multi page</source>
-        <translation type="unfinished"></translation>
+        <translation>HTML багатосторінковий</translation>
     </message>
     <message>
         <location filename="src/services/resultsexporterwidget.cpp" line="23"/>
@@ -528,12 +528,12 @@
     <message>
         <location filename="src/services/resultsexporterwidget.cpp" line="52"/>
         <source>Open Directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Відкрити каталог</translation>
     </message>
     <message>
         <location filename="src/services/resultsexporterwidget.cpp" line="91"/>
         <source>Cannot create directory &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Неможу створити каталог &apos;%1&apos;.</translation>
     </message>
 </context>
 <context>
@@ -541,12 +541,12 @@
     <message>
         <location filename="src/runstabledialogwidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Форма</translation>
     </message>
     <message>
         <location filename="src/runstabledialogwidget.cpp" line="41"/>
         <source>Stage %1 Class %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Забіг %1 Група %2</translation>
     </message>
 </context>
 <context>
@@ -580,28 +580,28 @@
         <location filename="src/runstablemodel.cpp" line="31"/>
         <source>SN</source>
         <comment>start number</comment>
-        <translation type="unfinished"></translation>
+        <translation>№</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="31"/>
         <source>Start number</source>
-        <translation type="unfinished"></translation>
+        <translation>Стартовий номер №</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="32"/>
         <location filename="src/runstablemodel.cpp" line="37"/>
         <source>SI</source>
-        <translation type="unfinished"></translation>
+        <translation>ЧІП</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="32"/>
         <source>Registered SI</source>
-        <translation type="unfinished"></translation>
+        <translation>Зареєстровані чіпи</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="33"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Назва</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="34"/>
@@ -616,47 +616,47 @@
     <message>
         <location filename="src/runstablemodel.cpp" line="35"/>
         <source>License</source>
-        <translation type="unfinished"></translation>
+        <translation>Ліцензія</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="36"/>
         <source>Rank</source>
-        <translation type="unfinished"></translation>
+        <translation>Розряд</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="36"/>
         <source>Ranking</source>
-        <translation type="unfinished"></translation>
+        <translation>Ранг</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="37"/>
         <source>Actual SI</source>
-        <translation type="unfinished"></translation>
+        <translation>Реальний ЧІП</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="38"/>
         <source>Check</source>
-        <translation type="unfinished"></translation>
+        <translation>Перевірка</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="39"/>
         <source>Start</source>
-        <translation type="unfinished"></translation>
+        <translation>Старт</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="40"/>
         <source>Time</source>
-        <translation type="unfinished"></translation>
+        <translation>Час</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="41"/>
         <source>Finish</source>
-        <translation type="unfinished"></translation>
+        <translation>Фініш</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="42"/>
         <source>Penalty</source>
-        <translation type="unfinished"></translation>
+        <translation>Штраф</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="43"/>
@@ -666,7 +666,7 @@
     <message>
         <location filename="src/runstablemodel.cpp" line="43"/>
         <source>Not competing</source>
-        <translation type="unfinished"></translation>
+        <translation>Не завершено</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="44"/>
@@ -676,7 +676,7 @@
     <message>
         <location filename="src/runstablemodel.cpp" line="44"/>
         <source>Card rent requested</source>
-        <translation type="unfinished"></translation>
+        <translation>Запрошено оренду ЧІПа</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="45"/>
@@ -697,37 +697,37 @@
     <message>
         <location filename="src/runstablemodel.cpp" line="46"/>
         <source>Card returned</source>
-        <translation type="unfinished"></translation>
+        <translation>Повернуті ЧІПи</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="47"/>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Помилка</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="47"/>
         <source>Disqualification reason</source>
-        <translation type="unfinished"></translation>
+        <translation>Причина дискваліфікації</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="48"/>
         <source>DISQ</source>
-        <translation type="unfinished"></translation>
+        <translation>ДИСКВ</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="48"/>
         <source>Disqualified</source>
-        <translation type="unfinished"></translation>
+        <translation>Дискваліфікован</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="49"/>
         <source>Note</source>
-        <translation type="unfinished"></translation>
+        <translation>Нотатка</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="80"/>
         <source>MisPunch</source>
-        <translation type="unfinished"></translation>
+        <translation>Нема відмітки</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="82"/>
@@ -771,7 +771,7 @@
     <message>
         <location filename="src/runstablewidget.ui" line="88"/>
         <source>interval</source>
-        <translation type="unfinished"></translation>
+        <translation>інтервал</translation>
     </message>
     <message>
         <location filename="src/runstablewidget.cpp" line="250"/>
@@ -786,7 +786,7 @@
     <message>
         <location filename="src/runstablewidget.cpp" line="252"/>
         <source>Print receipt</source>
-        <translation type="unfinished"></translation>
+        <translation>Друкувати ЧЕК</translation>
     </message>
     <message>
         <location filename="src/runstablewidget.cpp" line="254"/>
