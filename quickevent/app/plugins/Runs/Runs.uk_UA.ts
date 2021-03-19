@@ -265,7 +265,7 @@
         <location filename="src/runsplugin.cpp" line="932"/>
         <location filename="src/runsplugin.cpp" line="2136"/>
         <source>E%1 IOF XML stage results</source>
-        <translation type="unfinished"></translation>
+        <translation>E%1 IOF XML результати забігу</translation>
     </message>
     <message>
         <location filename="src/runsplugin.cpp" line="1355"/>
@@ -388,7 +388,7 @@
     <message>
         <location filename="src/runsplugin.cpp" line="1847"/>
         <source>Procesing class %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Обробляється група %1</translation>
     </message>
     <message>
         <location filename="src/runsplugin.cpp" line="1866"/>
@@ -399,7 +399,7 @@
         <location filename="src/runsplugin.cpp" line="1874"/>
         <location filename="src/runsplugin.cpp" line="1962"/>
         <source>Place</source>
-        <translation type="unfinished"></translation>
+        <translation>Місце</translation>
     </message>
     <message>
         <location filename="src/runsplugin.cpp" line="1877"/>
@@ -416,7 +416,7 @@
         <location filename="src/runsplugin.cpp" line="1879"/>
         <location filename="src/runsplugin.cpp" line="1965"/>
         <source>Loss</source>
-        <translation type="unfinished"></translation>
+        <translation>Втарти</translation>
     </message>
     <message>
         <location filename="src/runsplugin.cpp" line="1895"/>
@@ -460,7 +460,7 @@
     <message>
         <location filename="src/runsplugin.cpp" line="1971"/>
         <source>FIN</source>
-        <translation type="unfinished"></translation>
+        <translation>Фін</translation>
     </message>
 </context>
 <context>
@@ -468,17 +468,17 @@
     <message>
         <location filename="src/services/resultsexporterwidget.ui" line="14"/>
         <source>Results Exporter</source>
-        <translation type="unfinished"></translation>
+        <translation>Переглядач результатів</translation>
     </message>
     <message>
         <location filename="src/services/resultsexporterwidget.ui" line="33"/>
         <source>Export interval</source>
-        <translation type="unfinished"></translation>
+        <translation>Експортувати інтервали</translation>
     </message>
     <message>
         <location filename="src/services/resultsexporterwidget.ui" line="40"/>
         <source>When finished, run cmd</source>
-        <translation type="unfinished"></translation>
+        <translation>Коли фінішують, виконати команду</translation>
     </message>
     <message>
         <location filename="src/services/resultsexporterwidget.ui" line="50"/>
@@ -513,17 +513,17 @@
     <message>
         <location filename="src/services/resultsexporterwidget.cpp" line="23"/>
         <source>CSOS fixed column sizes</source>
-        <translation type="unfinished"></translation>
+        <translation>CSOS фіксована ширина стовбців</translation>
     </message>
     <message>
         <location filename="src/services/resultsexporterwidget.cpp" line="24"/>
         <source>CSV</source>
-        <translation type="unfinished"></translation>
+        <translation>CSV</translation>
     </message>
     <message>
         <location filename="src/services/resultsexporterwidget.cpp" line="25"/>
         <source>IOF-XML 3.0</source>
-        <translation type="unfinished"></translation>
+        <translation>IOF-XML 3.0</translation>
     </message>
     <message>
         <location filename="src/services/resultsexporterwidget.cpp" line="52"/>
@@ -554,7 +554,7 @@
     <message>
         <location filename="src/runstablemodel.cpp" line="26"/>
         <source>Running</source>
-        <translation type="unfinished"></translation>
+        <translation>Біг</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="27"/>
@@ -564,17 +564,17 @@
     <message>
         <location filename="src/runstablemodel.cpp" line="28"/>
         <source>Relay</source>
-        <translation type="unfinished"></translation>
+        <translation>Естафета</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="29"/>
         <source>Leg</source>
-        <translation type="unfinished"></translation>
+        <translation>Перегон</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="30"/>
         <source>Class</source>
-        <translation type="unfinished"></translation>
+        <translation>Група</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="31"/>
@@ -687,7 +687,7 @@
     <message>
         <location filename="src/runstablemodel.cpp" line="45"/>
         <source>Card in rent table</source>
-        <translation type="unfinished"></translation>
+        <translation>Чіп в таблиці орендованих</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="46"/>
@@ -732,22 +732,22 @@
     <message>
         <location filename="src/runstablemodel.cpp" line="82"/>
         <source>BadCheck</source>
-        <translation type="unfinished"></translation>
+        <translation>Відмітка!</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="103"/>
         <source>Cannot set not running flag for competitor with valid finish time.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не можу встановити ознаку &quot;не біг&quot; для учасника з коректним часом фінішу.</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="285"/>
         <source>Mid-air collision switching start times, reload table and try it again.</source>
-        <translation type="unfinished"></translation>
+        <translation>Колізія, змініть стартовий час, перезавантажте таблицю і спробуйте знов.</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="329"/>
         <source>Mid-air collision setting start time, reload table and try it again.</source>
-        <translation type="unfinished"></translation>
+        <translation>Колізія встановлення стартового часу, перезавантажте таблицю і почніть знов.</translation>
     </message>
 </context>
 <context>
@@ -760,13 +760,13 @@
     <message>
         <location filename="src/runstablewidget.ui" line="68"/>
         <source>Class start:</source>
-        <translation type="unfinished"></translation>
+        <translation>Старт групи:</translation>
     </message>
     <message>
         <location filename="src/runstablewidget.ui" line="78"/>
         <location filename="src/runstablewidget.ui" line="98"/>
         <source>---</source>
-        <translation type="unfinished"></translation>
+        <translation>---</translation>
     </message>
     <message>
         <location filename="src/runstablewidget.ui" line="88"/>
@@ -776,12 +776,12 @@
     <message>
         <location filename="src/runstablewidget.cpp" line="250"/>
         <source>Show receipt</source>
-        <translation type="unfinished"></translation>
+        <translation>Показати чек</translation>
     </message>
     <message>
         <location filename="src/runstablewidget.cpp" line="251"/>
         <source>Load times from card in selected rows</source>
-        <translation type="unfinished"></translation>
+        <translation>Завантажити час з чіпів для обраних рядків</translation>
     </message>
     <message>
         <location filename="src/runstablewidget.cpp" line="252"/>
@@ -791,32 +791,32 @@
     <message>
         <location filename="src/runstablewidget.cpp" line="254"/>
         <source>Shift start times in selected rows</source>
-        <translation type="unfinished"></translation>
+        <translation>Зсунути час старту для обраних рядків</translation>
     </message>
     <message>
         <location filename="src/runstablewidget.cpp" line="255"/>
         <source>Clear start times in selected rows</source>
-        <translation type="unfinished"></translation>
+        <translation>Очистити час старту для вибраних рядків</translation>
     </message>
     <message>
         <location filename="src/runstablewidget.cpp" line="275"/>
         <source>Reloading times for %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Перезавантажити час для %1</translation>
     </message>
     <message>
         <location filename="src/runstablewidget.cpp" line="325"/>
         <source>Get number</source>
-        <translation type="unfinished"></translation>
+        <translation>Отримати номер</translation>
     </message>
     <message>
         <location filename="src/runstablewidget.cpp" line="325"/>
         <source>Start times offset [min]:</source>
-        <translation type="unfinished"></translation>
+        <translation>Встановити зсув часу (мін):</translation>
     </message>
     <message>
         <location filename="src/runstablewidget.cpp" line="376"/>
         <source>Duplicate SI inserted.</source>
-        <translation type="unfinished"></translation>
+        <translation>Дублікат ЧІПу вставлено.</translation>
     </message>
 </context>
 <context>
@@ -829,111 +829,111 @@
     <message>
         <location filename="src/runswidget.ui" line="62"/>
         <source>Method</source>
-        <translation type="unfinished"></translation>
+        <translation>Метод</translation>
     </message>
     <message>
         <location filename="src/runswidget.ui" line="85"/>
         <source>Remove all start times and unlock drawing for this class.</source>
-        <translation type="unfinished"></translation>
+        <translation>Очистити стартовий час та розблокувати розташування для цієї групи.</translation>
     </message>
     <message>
         <location filename="src/runswidget.ui" line="88"/>
         <source>Remove drawing</source>
-        <translation type="unfinished"></translation>
+        <translation>Видалити козташування</translation>
     </message>
     <message>
         <location filename="src/runswidget.ui" line="95"/>
         <source>Draw selected class or all classes when all the classes are selected.</source>
-        <translation type="unfinished"></translation>
+        <translation>Розташувати вибрану групу або всі групи якщо всі групи вибрані.</translation>
     </message>
     <message>
         <location filename="src/runswidget.ui" line="98"/>
         <source>Draw class</source>
-        <translation type="unfinished"></translation>
+        <translation>Розташувати групу</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="80"/>
         <source>Relays first leg</source>
-        <translation type="unfinished"></translation>
+        <translation>Естафета перший етап</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="83"/>
         <source>Randomized equidistant clubs</source>
-        <translation type="unfinished"></translation>
+        <translation>Випадкова рівновіддалені клуби</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="84"/>
         <source>Random number</source>
-        <translation type="unfinished"></translation>
+        <translation>Випадковий номер</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="85"/>
         <source>Equidistant clubs</source>
-        <translation type="unfinished"></translation>
+        <translation>Рівновіддалені клуби</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="86"/>
         <source>Stage 1 reverse order</source>
-        <translation type="unfinished"></translation>
+        <translation>Забіг 1 зворотній порядок</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="87"/>
         <source>Handicap</source>
-        <translation type="unfinished"></translation>
+        <translation>Гандікап</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="88"/>
         <source>Keep runners order</source>
-        <translation type="unfinished"></translation>
+        <translation>Зберегти порядок учасників</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="89"/>
         <source>Grouped: C, B+A (PSOB DH12-14)</source>
-        <translation type="unfinished"></translation>
+        <translation>Згруповано: C, B+A (PSOB DH12-14)</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="90"/>
         <source>Grouped: C, B, A+E+R (PSOB DH16-20)</source>
-        <translation type="unfinished"></translation>
+        <translation>Згруповано: C, B, A+E+R (PSOB DH16-20)</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="91"/>
         <source>Grouped by ranking (PSOB DH21L)</source>
-        <translation type="unfinished"></translation>
+        <translation>Групувати по розрядах (PSOB DH21L)</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="117"/>
         <source>E%1</source>
-        <translation type="unfinished"></translation>
+        <translation>E%1</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="131"/>
         <location filename="src/runswidget.cpp" line="337"/>
         <source>--- all ---</source>
-        <translation type="unfinished"></translation>
+        <translation>--- всі ---</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="160"/>
         <source>&amp;Print</source>
-        <translation type="unfinished"></translation>
+        <translation>Друк</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="162"/>
         <location filename="src/runswidget.cpp" line="258"/>
         <source>&amp;Start list</source>
-        <translation type="unfinished"></translation>
+        <translation>Стартовий протокол</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="165"/>
         <location filename="src/runswidget.cpp" line="262"/>
         <source>&amp;Classes</source>
-        <translation type="unfinished"></translation>
+        <translation>Групи</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="170"/>
         <location filename="src/runswidget.cpp" line="267"/>
         <source>C&amp;lubs</source>
-        <translation type="unfinished"></translation>
+        <translation>Клуби</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="175"/>
@@ -953,12 +953,12 @@
     <message>
         <location filename="src/runswidget.cpp" line="193"/>
         <source>&amp;Results</source>
-        <translation type="unfinished"></translation>
+        <translation>Результати</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="196"/>
         <source>&amp;Current stage</source>
-        <translation type="unfinished"></translation>
+        <translation>Поточний забіг</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="202"/>
@@ -968,12 +968,12 @@
     <message>
         <location filename="src/runswidget.cpp" line="208"/>
         <source>Current stage awards</source>
-        <translation type="unfinished"></translation>
+        <translation>Переможці поточного забігу</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="214"/>
         <source>&amp;After n stages</source>
-        <translation type="unfinished"></translation>
+        <translation>Після n забігів</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="219"/>
@@ -988,22 +988,22 @@
     <message>
         <location filename="src/runswidget.cpp" line="232"/>
         <source>&amp;Competitors with rented cards</source>
-        <translation type="unfinished"></translation>
+        <translation>Учасники з орендованими чіпами</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="240"/>
         <source>Competitors with rented cards</source>
-        <translation type="unfinished"></translation>
+        <translation>Учасники з орендованими чіпами</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="249"/>
         <source>&amp;Import</source>
-        <translation type="unfinished"></translation>
+        <translation>Завантажити</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="251"/>
         <source>Start times</source>
-        <translation type="unfinished"></translation>
+        <translation>Стартовий час</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="252"/>
@@ -1034,7 +1034,7 @@
     <message>
         <location filename="src/runswidget.cpp" line="281"/>
         <source>Results</source>
-        <translation type="unfinished"></translation>
+        <translation>Результати</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="285"/>
@@ -1054,7 +1054,7 @@
     <message>
         <location filename="src/runswidget.cpp" line="298"/>
         <source>Current stage</source>
-        <translation type="unfinished"></translation>
+        <translation>Поточний забіг</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="302"/>
@@ -1064,7 +1064,7 @@
     <message>
         <location filename="src/runswidget.cpp" line="310"/>
         <source>Stage </source>
-        <translation type="unfinished"></translation>
+        <translation>Забіг </translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="320"/>
@@ -1220,7 +1220,7 @@
     <message>
         <location filename="qml/reports/results_nstagesSpeaker.qml" line="166"/>
         <source>DISQ</source>
-        <translation type="unfinished"></translation>
+        <translation>ДИСК</translation>
     </message>
 </context>
 <context>
@@ -1228,22 +1228,22 @@
     <message>
         <location filename="qml/reports/results_stage.qml" line="16"/>
         <source>Results by classes</source>
-        <translation type="unfinished"></translation>
+        <translation>Результати по групах</translation>
     </message>
     <message>
         <location filename="qml/reports/results_stage.qml" line="86"/>
         <source>length: </source>
-        <translation type="unfinished"></translation>
+        <translation>довжина: </translation>
     </message>
     <message>
         <location filename="qml/reports/results_stage.qml" line="89"/>
         <source>climb: </source>
-        <translation type="unfinished"></translation>
+        <translation>набір: </translation>
     </message>
     <message>
         <location filename="qml/reports/results_stage.qml" line="129"/>
         <source>DISQ</source>
-        <translation type="unfinished"></translation>
+        <translation>ДИСК</translation>
     </message>
     <message>
         <location filename="qml/reports/results_stage.qml" line="131"/>
@@ -1256,22 +1256,22 @@
     <message>
         <location filename="qml/reports/results_stageSpeaker.qml" line="12"/>
         <source>Results by classes</source>
-        <translation type="unfinished"></translation>
+        <translation>Результати по групах</translation>
     </message>
     <message>
         <location filename="qml/reports/results_stageSpeaker.qml" line="80"/>
         <source>length: </source>
-        <translation type="unfinished"></translation>
+        <translation>довжина: </translation>
     </message>
     <message>
         <location filename="qml/reports/results_stageSpeaker.qml" line="83"/>
         <source>climb: </source>
-        <translation type="unfinished"></translation>
+        <translation>набір: </translation>
     </message>
     <message>
         <location filename="qml/reports/results_stageSpeaker.qml" line="127"/>
         <source>DISQ</source>
-        <translation type="unfinished"></translation>
+        <translation>ДИСК</translation>
     </message>
     <message>
         <location filename="qml/reports/results_stageSpeaker.qml" line="129"/>
@@ -1284,17 +1284,17 @@
     <message>
         <location filename="qml/reports/startList_classes.qml" line="9"/>
         <source>Start list by classes</source>
-        <translation type="unfinished"></translation>
+        <translation>Стартовий протокол по групах</translation>
     </message>
     <message>
         <location filename="qml/reports/startList_classes.qml" line="83"/>
         <source>length: </source>
-        <translation type="unfinished"></translation>
+        <translation>довжина: </translation>
     </message>
     <message>
         <location filename="qml/reports/startList_classes.qml" line="86"/>
         <source>climb: </source>
-        <translation type="unfinished"></translation>
+        <translation>набір: </translation>
     </message>
 </context>
 <context>
@@ -1302,9 +1302,9 @@
     <message numerus="yes">
         <location filename="qml/reports/startList_classes_nstages.qml" line="15"/>
         <source>Start list by classes for %n stage(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Стартовий протокол по групах для забігу %n</numerusform>
+            <numerusform>Стартовий протокол по групах для забігів %n</numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -1321,12 +1321,12 @@
     <message>
         <location filename="qml/reports/startList_classes_nstages.qml" line="126"/>
         <source>SI</source>
-        <translation type="unfinished"></translation>
+        <translation>ЧІП</translation>
     </message>
     <message>
         <location filename="qml/reports/startList_classes_nstages.qml" line="132"/>
         <source>Stage</source>
-        <translation type="unfinished"></translation>
+        <translation>Забір</translation>
     </message>
 </context>
 <context>
@@ -1334,7 +1334,7 @@
     <message>
         <location filename="qml/reports/startList_clubs.qml" line="9"/>
         <source>Start list by clubs</source>
-        <translation type="unfinished"></translation>
+        <translation>Стартовий протокол по клубах</translation>
     </message>
     <message>
         <location filename="qml/reports/startList_clubs.qml" line="137"/>
@@ -1347,9 +1347,9 @@
     <message numerus="yes">
         <location filename="qml/reports/startList_clubs_nstages.qml" line="15"/>
         <source>Start list by clubs for %n stage(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Стартовий протокол по клубах для забігу %n</numerusform>
+            <numerusform>Стартовий протокол по клубах для забігів %n</numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -1366,12 +1366,12 @@
     <message>
         <location filename="qml/reports/startList_clubs_nstages.qml" line="132"/>
         <source>SI</source>
-        <translation type="unfinished"></translation>
+        <translation>ЧІП</translation>
     </message>
     <message>
         <location filename="qml/reports/startList_clubs_nstages.qml" line="139"/>
         <source>Stage</source>
-        <translation type="unfinished"></translation>
+        <translation>Забіг</translation>
     </message>
 </context>
 <context>
@@ -1379,7 +1379,7 @@
     <message>
         <location filename="qml/reports/startList_starters.qml" line="9"/>
         <source>Start list for starters</source>
-        <translation type="unfinished"></translation>
+        <translation>Стартовий протокол по учасниках</translation>
     </message>
 </context>
 </TS>
