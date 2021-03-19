@@ -6,7 +6,7 @@
     <message>
         <location filename="src/cardcheckerclassiccpp.cpp" line="15"/>
         <source>Classic race</source>
-        <translation type="unfinished"></translation>
+        <translation>Класична гонка</translation>
     </message>
 </context>
 <context>
@@ -14,7 +14,7 @@
     <message>
         <location filename="src/cardcheckerfreeordercpp.cpp" line="15"/>
         <source>Free order race</source>
-        <translation type="unfinished"></translation>
+        <translation>Гонка по вибору</translation>
     </message>
 </context>
 <context>
