@@ -16,7 +16,6 @@ class QFCORE_DECL_EXPORT String : public QString
 public:
 	String() : QString() {}
 	String(const QString &str) : QString(str) {}
-	String(const String &str) : QString(str) {}
 public:
 	static const bool TrimParts = true;
 public:

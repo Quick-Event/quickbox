@@ -16,7 +16,7 @@
     <message>
         <location filename="qml/reports/receipts/Classic.qml" line="242"/>
         <source>DISQ</source>
-        <translation type="unfinished"></translation>
+        <translation>ДИСК</translation>
     </message>
     <message>
         <location filename="qml/reports/receipts/Classic.qml" line="256"/>
@@ -27,17 +27,17 @@
     <message>
         <location filename="qml/reports/receipts/Classic.qml" line="324"/>
         <source>!!! RENTED CARD !!!</source>
-        <translation type="unfinished"></translation>
+        <translation>!!! ОРЕНДА ЧІПУ !!!</translation>
     </message>
     <message>
         <location filename="qml/reports/receipts/Classic.qml" line="339"/>
         <source>extra: </source>
-        <translation type="unfinished"></translation>
+        <translation>додатк: </translation>
     </message>
     <message>
         <location filename="qml/reports/receipts/Classic.qml" line="351"/>
         <source>BAD CHECK !!!</source>
-        <translation type="unfinished"></translation>
+        <translation>НЕ КОРРЕКТНА ВІДМІТКА !!!</translation>
     </message>
     <message>
         <location filename="qml/reports/receipts/Classic.qml" line="371"/>
@@ -55,12 +55,12 @@
     <message>
         <location filename="src/receiptsplugin.cpp" line="405"/>
         <source>Card</source>
-        <translation type="unfinished"></translation>
+        <translation>ЧІП</translation>
     </message>
     <message>
         <location filename="src/receiptsplugin.cpp" line="471"/>
         <source>Receipt</source>
-        <translation type="unfinished"></translation>
+        <translation>Чек</translation>
     </message>
 </context>
 <context>
@@ -68,7 +68,7 @@
     <message>
         <location filename="src/receiptspartwidget.cpp" line="11"/>
         <source>Receipts</source>
-        <translation type="unfinished"></translation>
+        <translation>Чеки</translation>
     </message>
 </context>
 <context>
@@ -76,12 +76,12 @@
     <message>
         <location filename="src/receiptsprinteroptions.cpp" line="17"/>
         <source>Graphics</source>
-        <translation type="unfinished"></translation>
+        <translation>Графічні</translation>
     </message>
     <message>
         <location filename="src/receiptsprinteroptions.cpp" line="20"/>
         <source>Character</source>
-        <translation type="unfinished"></translation>
+        <translation>Алфавітні</translation>
     </message>
 </context>
 <context>
@@ -94,17 +94,17 @@
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="25"/>
         <source>Graphics printer</source>
-        <translation type="unfinished"></translation>
+        <translation>Графічний принтер</translation>
     </message>
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="39"/>
         <source>Character printer</source>
-        <translation type="unfinished"></translation>
+        <translation>Алфавітний принтер</translation>
     </message>
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="75"/>
         <source>Text encoding</source>
-        <translation type="unfinished"></translation>
+        <translation>Кодування тексту</translation>
     </message>
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="83"/>
@@ -134,12 +134,12 @@
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="119"/>
         <source>Network address</source>
-        <translation type="unfinished"></translation>
+        <translation>Адреса в мережі</translation>
     </message>
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="126"/>
         <source>Generate printer control codes (escape sequences)</source>
-        <translation type="unfinished"></translation>
+        <translation>Генерувати коди принтера (escape sequences)</translation>
     </message>
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="133"/>
@@ -184,22 +184,22 @@
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="182"/>
         <source>Directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Каталог</translation>
     </message>
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="195"/>
         <source>Line length</source>
-        <translation type="unfinished"></translation>
+        <translation>Довжина рядка</translation>
     </message>
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="202"/>
         <source> characters</source>
-        <translation type="unfinished"></translation>
+        <translation> символи</translation>
     </message>
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="221"/>
         <source>Printer</source>
-        <translation type="unfinished"></translation>
+        <translation>Принтер</translation>
     </message>
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="235"/>
@@ -217,62 +217,62 @@
     <message>
         <location filename="src/receiptswidget.ui" line="40"/>
         <source>Print new</source>
-        <translation type="unfinished"></translation>
+        <translation>Друк нового</translation>
     </message>
     <message>
         <location filename="src/receiptswidget.ui" line="47"/>
         <source>Automatically print receipt when the card is read.</source>
-        <translation type="unfinished"></translation>
+        <translation>Автоматично друкувати чек як чіп прочитано.</translation>
     </message>
     <message>
         <location filename="src/receiptswidget.ui" line="50"/>
         <source>Auto print</source>
-        <translation type="unfinished"></translation>
+        <translation>Автоматичний друк</translation>
     </message>
     <message>
         <location filename="src/receiptswidget.ui" line="57"/>
         <source>Print only cards read on this application card reader.</source>
-        <translation type="unfinished"></translation>
+        <translation>Друкувати тільки якщо чіп прочитано на зчитувачі цього комп&apos;ютера.</translation>
     </message>
     <message>
         <location filename="src/receiptswidget.ui" line="60"/>
         <source>This reader only</source>
-        <translation type="unfinished"></translation>
+        <translation>Тільки цей зчитувач</translation>
     </message>
     <message>
         <location filename="src/receiptswidget.ui" line="80"/>
         <source>Print when runner not found</source>
-        <translation type="unfinished"></translation>
+        <translation>Друкувати якщо учасника не знайдено</translation>
     </message>
     <message>
         <location filename="src/receiptswidget.ui" line="90"/>
         <source>Receipt</source>
-        <translation type="unfinished"></translation>
+        <translation>Чек</translation>
     </message>
     <message>
         <location filename="src/receiptswidget.ui" line="100"/>
         <source>Printer</source>
-        <translation type="unfinished"></translation>
+        <translation>Принтер</translation>
     </message>
     <message>
         <location filename="src/receiptswidget.ui" line="107"/>
         <source>Printer options</source>
-        <translation type="unfinished"></translation>
+        <translation>Опції принтера</translation>
     </message>
     <message>
         <location filename="src/receiptswidget.cpp" line="72"/>
         <source>SI</source>
-        <translation type="unfinished"></translation>
+        <translation>ЧІП</translation>
     </message>
     <message>
         <location filename="src/receiptswidget.cpp" line="73"/>
         <source>Class</source>
-        <translation type="unfinished"></translation>
+        <translation>Група</translation>
     </message>
     <message>
         <location filename="src/receiptswidget.cpp" line="74"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Назва</translation>
     </message>
     <message>
         <location filename="src/receiptswidget.cpp" line="75"/>
@@ -282,37 +282,37 @@
     <message>
         <location filename="src/receiptswidget.cpp" line="76"/>
         <source>Start</source>
-        <translation type="unfinished"></translation>
+        <translation>Старт</translation>
     </message>
     <message>
         <location filename="src/receiptswidget.cpp" line="77"/>
         <source>Time</source>
-        <translation type="unfinished"></translation>
+        <translation>Час</translation>
     </message>
     <message>
         <location filename="src/receiptswidget.cpp" line="84"/>
         <source>printer</source>
-        <translation type="unfinished"></translation>
+        <translation>принтер</translation>
     </message>
     <message>
         <location filename="src/receiptswidget.cpp" line="90"/>
         <source>Error info</source>
-        <translation type="unfinished"></translation>
+        <translation>Про помилку</translation>
     </message>
     <message>
         <location filename="src/receiptswidget.cpp" line="91"/>
         <source>Receipt without name</source>
-        <translation type="unfinished"></translation>
+        <translation>Чек без ім&apos;я</translation>
     </message>
     <message>
         <location filename="src/receiptswidget.cpp" line="255"/>
         <source>Print receipts for selected rows</source>
-        <translation type="unfinished"></translation>
+        <translation>Друкувати чеки для вибраних рядків</translation>
     </message>
     <message>
         <location filename="src/receiptswidget.cpp" line="256"/>
         <source>Show receipt</source>
-        <translation type="unfinished"></translation>
+        <translation>Показати чек</translation>
     </message>
 </context>
 <context>
@@ -320,7 +320,7 @@
     <message>
         <location filename="qml/reports/error.qml" line="48"/>
         <source>!!! Error !!!</source>
-        <translation type="unfinished"></translation>
+        <translation>!!! Помилка !!!</translation>
     </message>
 </context>
 <context>
@@ -333,12 +333,12 @@
     <message>
         <location filename="qml/reports/sicard.qml" line="83"/>
         <source>Unassigned card !!!</source>
-        <translation type="unfinished"></translation>
+        <translation>Чіп не призначено !!!</translation>
     </message>
     <message>
         <location filename="qml/reports/sicard.qml" line="92"/>
         <source>It will not be included in the results.</source>
-        <translation type="unfinished"></translation>
+        <translation>це не буде включено в результати.</translation>
     </message>
     <message>
         <location filename="qml/reports/sicard.qml" line="185"/>
