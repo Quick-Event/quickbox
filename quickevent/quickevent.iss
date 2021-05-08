@@ -52,6 +52,7 @@ Source: {#BUILD_DIR}\bin\quickeventcore.dll; DestDir: {app}; Flags: ignoreversio
 Source: {#BUILD_DIR}\bin\quickeventgui.dll; DestDir: {app}; Flags: ignoreversion
 Source: {#BUILD_DIR}\bin\*QEPlugin.dll; DestDir: {app}; Flags: ignoreversion
 Source: {#BUILD_DIR}\bin\siut.dll; DestDir: {app}; Flags: ignoreversion
+Source: {#BUILD_DIR}\bin\necrolog.dll; DestDir: {app}; Flags: ignoreversion
 
 Source: {#BUILD_DIR}\bin\qml\*; DestDir: {app}\qml; Flags: ignoreversion recursesubdirs createallsubdirs; Excludes: "*.debug"
 Source: {#SRC_DIR}\quickevent\app\quickevent\datafiles\*; DestDir: {app}\quickevent-data; Flags: ignoreversion recursesubdirs createallsubdirs
