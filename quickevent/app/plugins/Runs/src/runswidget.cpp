@@ -322,6 +322,11 @@ void RunsWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 	}
 	{
 		m_cbxClasses = new qfw::ForeignKeyComboBox();
+#if QT_VERSION >= QT_VERSION_CHECK(5, 11, 0)
+		m_cbxClasses->setMinimumWidth(fontMetrics().horizontalAdvance('X') * 10);
+#else
+		m_cbxClasses->setMinimumWidth(fontMetrics().width('X') * 10);
+#endif
 		m_cbxClasses->setMaxVisibleItems(100);
 		m_cbxClasses->setReferencedTable("classes");
 		m_cbxClasses->setReferencedField("id");
