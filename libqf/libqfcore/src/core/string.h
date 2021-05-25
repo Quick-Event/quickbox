@@ -14,11 +14,12 @@ namespace core {
 class QFCORE_DECL_EXPORT String : public QString
 {
 public:
+	enum SplitBehavior {KeepEmptyParts, SkipEmptyParts};
+	static constexpr bool TrimParts = true;
+public:
 	String() : QString() {}
 	String(const QString &str) : QString(str) {}
 	String(const String &str) : QString(str) {}
-public:
-	static const bool TrimParts = true;
 public:
 	/**
 	* python's like slice
@@ -35,7 +36,7 @@ public:
 	/// if fs contain n \a sep chars FStringList will contain n+1 strings.
 	/// Empty string produce empty string list
 	/// @param trim_parts trim strings and remove quotes in  list after parsing
-	QStringList splitAndTrim(QChar sep = '\t', QChar quote = 0, bool trim_parts = TrimParts, SplitBehavior keep_empty_parts = QString::SkipEmptyParts) const;
+	QStringList splitAndTrim(QChar sep = '\t', QChar quote = 0, bool trim_parts = TrimParts, SplitBehavior keep_empty_parts = SplitBehavior::SkipEmptyParts) const;
 
 	//! finds matching bracket, if string don't start with opening bracket, the outermost closing bracket in the string is found..
 	/// @return -1 if the opening or matching bracket is not found. String length if no brackets are found.
@@ -47,10 +48,10 @@ public:
 	//! The outermost brackets (if any) are allways ignored.
 	QStringList splitBracketed(char sep = ',', char opening_bracket = '(', char closing_bracket = ')', char quote = '\0',
 							   bool trim_parts = TrimParts,
-							   SplitBehavior keep_empty_parts = QString::SkipEmptyParts) const;
+	                           SplitBehavior keep_empty_parts = SplitBehavior::SkipEmptyParts) const;
 
 	//! The same like splitBracketed(',', '{', '}', '\'').
-	QStringList splitVector() const {return splitBracketed(',', '{', '}', '\'', TrimParts, QString::KeepEmptyParts);}
+	QStringList splitVector() const {return splitBracketed(',', '{', '}', '\'', TrimParts, SplitBehavior::KeepEmptyParts);}
 
 	bool toBool() const;
 

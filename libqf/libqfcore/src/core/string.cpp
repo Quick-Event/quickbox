@@ -42,7 +42,7 @@ QChar String::value(int ix) const
 	return QString::at(ix);
 }
 
-QStringList String::splitAndTrim(QChar sep, QChar quote, bool trim_parts, QString::SplitBehavior keep_empty_parts) const
+QStringList String::splitAndTrim(QChar sep, QChar quote, bool trim_parts, SplitBehavior keep_empty_parts) const
 {
 	QStringList ret;
 	String fs = *this, fs2;
@@ -106,7 +106,7 @@ int String::indexOfMatchingBracket(char opening_bracket, char closing_bracket, c
 	return i;
 }
 
-QStringList String::splitBracketed(char sep, char opening_bracket, char closing_bracket, char quote, bool trim_parts, QString::SplitBehavior keep_empty_parts) const
+QStringList String::splitBracketed(char sep, char opening_bracket, char closing_bracket, char quote, bool trim_parts, SplitBehavior keep_empty_parts) const
 {
 	QStringList ret;
 	String fs = this->trimmed();
