@@ -164,7 +164,7 @@ bool FileUtils::ensurePath(const QString & _path)
 {
 	QDir dir(_path);
 	qf::core::String path = QDir::fromNativeSeparators(dir.absolutePath());
-	QStringList sl = path.splitAndTrim('/', '"', true, QString::SkipEmptyParts);
+	QStringList sl = path.splitAndTrim('/', '"', true, String::SkipEmptyParts);
 	if(path.value(1) == ':') {
 		/// windows
 		dir = QDir(sl[0]);

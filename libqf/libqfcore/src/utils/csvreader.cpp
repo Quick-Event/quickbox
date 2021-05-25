@@ -63,7 +63,7 @@ QString CSVReader::readCSVLine1()
 QStringList CSVReader::readCSVLineSplitted()
 {
 	String s = readCSVLine();
-	QStringList sl = s.splitAndTrim(m_separator, m_quote, String::TrimParts, QString::KeepEmptyParts);
+	QStringList sl = s.splitAndTrim(m_separator, m_quote, String::TrimParts, String::KeepEmptyParts);
 	QStringList ret;
 	foreach(s, sl)
 		ret << unquoteCSVField(s);
