@@ -139,7 +139,7 @@ QString FileUtils::joinPath(const QString &path1, const QString &path2)
 	/// QDir::cleanPath(ret); cannot clean whole path in one iteration, a/b/../../c is changed to a/../c
 	ret = FileUtils::cleanPath(ret);
 	qfDebug() << "\t return:" << ret;
-	return ret;
+	return QString(ret);
 }
 
 QString FileUtils::joinPath(const QStringList & paths)
@@ -156,7 +156,8 @@ QString FileUtils::cleanPath(const QString& path)
 
 	/// QDir::cleanPath(fs); nedokaze odstranit v jenom pruchodu neco jako a/b/../../c, vyrobi a/../c
 	QString ret = QDir::cleanPath(path);
-	while(ret.contains("/../")) ret = QDir::cleanPath(ret);
+	while(ret.contains("/../"))
+		ret = QDir::cleanPath(ret);
 	return ret;
 }
 
