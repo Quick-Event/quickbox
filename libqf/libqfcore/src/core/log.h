@@ -31,6 +31,7 @@
 #define qfCWarning(category) nCWarning(category)
 #define qfCError(category) nCError(category)
 
+#define qfLogScope(name) nLogScope(name)
 #define qfLogFuncFrame() nLogFuncFrame()
 
 #define qfDebug() qfCDebug("")
