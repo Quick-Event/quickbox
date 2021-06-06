@@ -22,6 +22,7 @@ AppPublisherURL=http://www.{#APP_NAME_LOWER}.cz
 AppSupportURL=http://www.{#APP_NAME_LOWER}.cz
 AppUpdatesURL=http://www.{#APP_NAME_LOWER}.cz
 DefaultDirName=C:\{#APP_NAME}
+DisableDirPage=no
 DefaultGroupName={#APP_NAME}
 OutputDir={#BUILD_DIR}\_inno\{#APP_NAME_LOWER}
 #ifdef INCLUDE_QT
