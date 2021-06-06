@@ -119,6 +119,7 @@ Report {
 					bottomBorder: Pen { basedOn: "black1" }
 					Cell {
 						id: cellClassName
+						width: 20
 						text: qsTr("Class name")
 					}
 					Component.onCompleted: {

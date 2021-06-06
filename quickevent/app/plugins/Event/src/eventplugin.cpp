@@ -47,6 +47,8 @@
 #include <QJsonParseError>
 #include <QJsonDocument>
 
+#include <regex>
+
 namespace qfw = qf::qmlwidgets;
 namespace qff = qf::qmlwidgets::framework;
 namespace qfd = qf::qmlwidgets::dialogs;
@@ -1145,12 +1147,6 @@ void EventPlugin::importEvent_qbe()
 {
 	qfLogFuncFrame();
 	qff::MainWindow *fwk = qff::MainWindow::frameWork();
-	/*
-	if(connectionType() != ConnectionType::SqlServer) {
-		qfd::MessageBox::showError(fwk, tr("Data file can be imported to SQL server only!"));
-		return;
-	}
-	*/
 	QString ext = ".qbe";
 	QString fn = qf::qmlwidgets::dialogs::FileDialog::getOpenFileName (fwk, tr("Import as Quick Event"), QString(), tr("Quick Event files *%1 (*%1)").arg(ext));
 	if(fn.isEmpty())
@@ -1159,6 +1155,11 @@ void EventPlugin::importEvent_qbe()
 	event_name = QInputDialog::getText(fwk, tr("Query"), tr("Event will be imported as ID:"), QLineEdit::Normal, event_name).trimmed();
 	if(event_name.isEmpty())
 		return;
+	const std::regex psqlschema_regex("[A-Za-z][A-Za-z0-9_]*");
+	if(!std::regex_match(event_name.toStdString(), psqlschema_regex)) {
+		qfd::MessageBox::showError(fwk, tr("PostgreSql schema must start with letter and it may contain letters, digits and underscores only."));
+		return;
+	}
 	QStringList existing_events = (connectionType() == ConnectionType::SingleFile)? existingFileEventNames(): existingSqlEventNames();
 	if(existing_events.contains(event_name)) {
 		qfd::MessageBox::showError(fwk, tr("Event ID '%1' exists already!").arg(event_name));
