@@ -1015,7 +1015,7 @@
     <message>
         <location filename="src/reports/widgets/reportviewwidget.cpp" line="664"/>
         <source>Zoom to fit height</source>
-        <translation>Вписать содержимое по  высоте</translation>
+        <translation>Вписать содержимое по высоте</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/reportviewwidget.cpp" line="671"/>
