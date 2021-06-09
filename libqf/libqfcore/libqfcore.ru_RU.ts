@@ -67,13 +67,15 @@
         <location filename="src/model/sqltablemodel.cpp" line="230"/>
         <source>numRowsAffected() = %1, should be 1
 %2</source>
-        <translation>numRowsActed () =% 1, должно быть 1_x000D_ % 2</translation>
+        <translation>numRowsAffected() = %1, должно быть 1
+%2</translation>
     </message>
     <message>
         <location filename="src/model/sqltablemodel.cpp" line="256"/>
         <source>Error executing query: %1
  %2</source>
-        <translation>Ошибка выполнения запроса:% 1_x000D_&#xa0; % 2</translation>
+        <translation>Ошибка выполнения запроса: %1
+ %2</translation>
     </message>
 </context>
 <context>
