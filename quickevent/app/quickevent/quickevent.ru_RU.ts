@@ -13,7 +13,7 @@
     </message>
     <message>
         <source>Application font scale</source>
-        <translation type="unfinished"></translation>
+        <translation>Размер шрифта приложения</translation>
     </message>
 </context>
 <context>
