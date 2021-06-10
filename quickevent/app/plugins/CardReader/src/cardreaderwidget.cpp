@@ -825,10 +825,10 @@ void CardReaderWidget::assignRunnerToSelectedCard()
 			bool is_running = q.value("isRunning").toBool();
 			if (!is_running) {
 				int ret = QMessageBox::warning(this, tr("Competitor off-race"),
-											   tr("Runner to which you are assinging SI card\n"
-												  "is currently flagged \"not running\" for this stage (race).\n"
-												  "If you continue, this flag will be removed"),
-											   QMessageBox::Ok | QMessageBox::Cancel);
+								tr("Runner to which you are assinging SI card\n"
+								   "is currently flagged \"not running\" for this stage (race).\n"
+								   "If you continue, this flag will be removed"),
+								QMessageBox::Ok | QMessageBox::Cancel);
 				if (ret == QMessageBox::Cancel)
 					return;
 				QString qs = "UPDATE runs SET isRunning=1 WHERE competitorId=" QF_IARG(competitor_id) " AND stageId=" QF_IARG(stage_id);
