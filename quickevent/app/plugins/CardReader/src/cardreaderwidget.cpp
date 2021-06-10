@@ -809,30 +809,46 @@ void CardReaderWidget::assignRunnerToSelectedCard()
 		//qfDebug() << values;
 		int run_id = values.value("runid").toInt();
 		int si_id = thisPlugin()->cardIdToSiId(card_id);
-		if(run_id > 0 && si_id > 0) {
-			thisPlugin()->assignCardToRun(card_id, run_id);
-			qf::core::sql::QueryBuilder qb;
-			qb.select("stageId").from("runs").where("id=" QF_IARG(run_id) );
-			qfDebug() << qb.toString();
-			qf::core::sql::Query q;
-			q.execThrow(qb.toString());
-			if(q.next()) {
-				int competitor_id = values.value("competitorid").toInt();
-				int stage_id = q.value("stageId").toInt();
-				QString qs = "UPDATE runs SET siId=" QF_IARG(si_id) " WHERE competitorId=" QF_IARG(competitor_id) " AND stageId=" QF_IARG(stage_id);
-				if(values.value(Runs::FindRunnerWidget::UseSIInNextStages).toBool()) {
-					QString qs = "UPDATE runs SET siId=" QF_IARG(si_id) " WHERE competitorId=" QF_IARG(competitor_id) " AND stageId>=" QF_IARG(stage_id);
-				}
-				qfDebug() << qs;
+		if(run_id <= 0 || si_id <= 0) {
+			return;
+		}
+		qf::core::sql::QueryBuilder qb;
+		qb.select("stageId").select("isRunning").from("runs").where("id=" QF_IARG(run_id) );
+		qf::core::sql::Query q;
+		q.execThrow(qb.toString());
+		if (!q.next()) {
+			return;
+		}
+		int stage_id = q.value("stageId").toInt();
+		int competitor_id = values.value("competitorid").toInt();
+		{
+			bool is_running = q.value("isRunning").toBool();
+			if (!is_running) {
+				int ret = QMessageBox::warning(this, tr("Competitor off-race"),
+											   tr("Runner to which you are assinging SI card\n"
+												  "is currently flagged \"not running\" for this stage (race).\n"
+												  "If you continue, this flag will be removed"),
+											   QMessageBox::Ok | QMessageBox::Cancel);
+				if (ret == QMessageBox::Cancel)
+					return;
+				QString qs = "UPDATE runs SET isRunning=1 WHERE competitorId=" QF_IARG(competitor_id) " AND stageId=" QF_IARG(stage_id);
 				q.execThrow(qs);
 			}
-			this->ui->tblCards->reloadRow();
-
-			auto receipts_plugin = receiptsPlugin();
-			if(receipts_plugin)
-				QMetaObject::invokeMethod(receipts_plugin, "printOnAutoPrintEnabled", Q_ARG(int, card_id));
-
 		}
+		{
+			thisPlugin()->assignCardToRun(card_id, run_id);
+			QString qs = "UPDATE runs SET siId=" QF_IARG(si_id) " WHERE competitorId=" QF_IARG(competitor_id) " AND stageId=" QF_IARG(stage_id);
+			if(values.value(Runs::FindRunnerWidget::UseSIInNextStages).toBool()) {
+				qs = "UPDATE runs SET siId=" QF_IARG(si_id) " WHERE competitorId=" QF_IARG(competitor_id) " AND stageId>=" QF_IARG(stage_id);
+			}
+			q.execThrow(qs);
+		}
+
+		this->ui->tblCards->reloadRow();
+
+		auto receipts_plugin = receiptsPlugin();
+		if(receipts_plugin)
+			QMetaObject::invokeMethod(receipts_plugin, "printOnAutoPrintEnabled", Q_ARG(int, card_id));
 	}
 }
 
