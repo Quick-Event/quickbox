@@ -4,18 +4,10 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="src/sql/catalog.cpp" line="32"/>
-        <location filename="src/sql/catalog.cpp" line="60"/>
+        <location filename="src/sql/catalog.cpp" line="33"/>
+        <location filename="src/sql/catalog.cpp" line="61"/>
         <source>Error getting the sequence nextval(&apos;%1&apos;)</source>
         <translation>Ошибка при получении последовательности nextval (&apos;% 1&apos;)</translation>
-    </message>
-</context>
-<context>
-    <name>qf::core::LogDevice</name>
-    <message>
-        <location filename="src/core/logdevice.cpp" line="142"/>
-        <source>Cannot find log device by object name &apos;%1&apos;</source>
-        <translation>Не удается найти устройство журналирования по имени объекта &quot;% 1&apos;</translation>
     </message>
 </context>
 <context>
@@ -64,13 +56,13 @@
 <context>
     <name>qf::core::model::SqlTableModel</name>
     <message>
-        <location filename="src/model/sqltablemodel.cpp" line="230"/>
+        <location filename="src/model/sqltablemodel.cpp" line="231"/>
         <source>numRowsAffected() = %1, should be 1
 %2</source>
         <translation>numRowsActed () =% 1, должно быть 1_x000D_ % 2</translation>
     </message>
     <message>
-        <location filename="src/model/sqltablemodel.cpp" line="256"/>
+        <location filename="src/model/sqltablemodel.cpp" line="257"/>
         <source>Error executing query: %1
  %2</source>
         <translation>Ошибка выполнения запроса:% 1_x000D_&#xa0; % 2</translation>
@@ -153,8 +145,8 @@
 <context>
     <name>qf::core::sql::FieldInfoList</name>
     <message>
-        <location filename="src/sql/catalog.cpp" line="300"/>
-        <location filename="src/sql/catalog.cpp" line="318"/>
+        <location filename="src/sql/catalog.cpp" line="301"/>
+        <location filename="src/sql/catalog.cpp" line="319"/>
         <source>Found info for nonexisting field &apos;%1&apos;</source>
         <translation>Найдена информация для несуществующего поля &apos;% 1&apos;</translation>
     </message>

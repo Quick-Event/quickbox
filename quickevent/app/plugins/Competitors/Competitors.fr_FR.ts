@@ -185,83 +185,83 @@
         <translation>Classe </translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="127"/>
+        <location filename="src/competitorswidget.cpp" line="128"/>
         <source>Edit on punch</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="128"/>
+        <location filename="src/competitorswidget.cpp" line="129"/>
         <source>Show Edit/Insert competitor dialog box when card is inserted into the reader station (reader mode &quot;Entries&quot; required)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="133"/>
+        <location filename="src/competitorswidget.cpp" line="134"/>
         <source>&amp;Print</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="135"/>
-        <location filename="src/competitorswidget.cpp" line="410"/>
+        <location filename="src/competitorswidget.cpp" line="136"/>
+        <location filename="src/competitorswidget.cpp" line="411"/>
         <source>Competitors statistics</source>
         <translation>Statistiques des compétiteurs</translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="142"/>
+        <location filename="src/competitorswidget.cpp" line="143"/>
         <source>&amp;Cards</source>
         <translation>Cartes</translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="144"/>
+        <location filename="src/competitorswidget.cpp" line="145"/>
         <source>Cards to rent</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="155"/>
+        <location filename="src/competitorswidget.cpp" line="156"/>
         <source>&amp;Stations</source>
         <translation>Stations</translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="157"/>
+        <location filename="src/competitorswidget.cpp" line="158"/>
         <source>Backup memory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="181"/>
+        <location filename="src/competitorswidget.cpp" line="182"/>
         <source>--- all ---</source>
         <translation>--- tout ---</translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="221"/>
+        <location filename="src/competitorswidget.cpp" line="222"/>
         <source>Edit Competitor</source>
         <translation>Modifier le compétiteur</translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="226"/>
+        <location filename="src/competitorswidget.cpp" line="227"/>
         <source>Save and &amp;next</source>
         <translation>Enregistrer et passer au suivant</translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="265"/>
+        <location filename="src/competitorswidget.cpp" line="266"/>
         <source>Really delete all the selected competitors? This action cannot be reverted.</source>
         <translation>Voulez-vous vraiment supprimer les compétiteurs sélectionnés ? Cette action ne peut pas être annulée.</translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="278"/>
+        <location filename="src/competitorswidget.cpp" line="279"/>
         <source>Confirm deletion of %1 competitors.</source>
         <translation>Confirmer la suppression de %1 compétiteurs.</translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="321"/>
+        <location filename="src/competitorswidget.cpp" line="322"/>
         <source>Set class in selected rows</source>
         <translation>Définir la classe dans les lignes sélectionnées</translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="333"/>
+        <location filename="src/competitorswidget.cpp" line="334"/>
         <source>Dialog</source>
         <translation>Boîte de dialogue</translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="334"/>
+        <location filename="src/competitorswidget.cpp" line="335"/>
         <source>Select class</source>
         <translation>Sélectionner la classe</translation>
     </message>
@@ -463,22 +463,22 @@
         <translation>Statistiques des compétiteurs</translation>
     </message>
     <message>
-        <location filename="qml/reports/competitorsStatistics.qml" line="122"/>
+        <location filename="qml/reports/competitorsStatistics.qml" line="123"/>
         <source>Class name</source>
         <translation>Nom de la classe</translation>
     </message>
     <message>
-        <location filename="qml/reports/competitorsStatistics.qml" line="129"/>
+        <location filename="qml/reports/competitorsStatistics.qml" line="130"/>
         <source>maps</source>
         <translation>cartes</translation>
     </message>
     <message>
-        <location filename="qml/reports/competitorsStatistics.qml" line="131"/>
+        <location filename="qml/reports/competitorsStatistics.qml" line="132"/>
         <source>res</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/reports/competitorsStatistics.qml" line="167"/>
+        <location filename="qml/reports/competitorsStatistics.qml" line="168"/>
         <source>Sum</source>
         <translation>Somme</translation>
     </message>

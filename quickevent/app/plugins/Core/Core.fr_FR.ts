@@ -104,7 +104,7 @@
     <message>
         <location filename="src/coreplugin.cpp" line="97"/>
         <source>Language change to &apos;%1&apos; will be applied after application restart.</source>
-        <translation>Le changement de langue vers « %1 » sera appliqué après le redémarrage de l&apos;application.</translation>
+        <translation>Le changement de langue vers «&#xa0;%1&#xa0;» sera appliqué après le redémarrage de l&apos;application.</translation>
     </message>
     <message>
         <location filename="src/coreplugin.cpp" line="105"/>

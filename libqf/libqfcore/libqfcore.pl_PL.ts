@@ -4,18 +4,10 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="src/sql/catalog.cpp" line="32"/>
-        <location filename="src/sql/catalog.cpp" line="60"/>
+        <location filename="src/sql/catalog.cpp" line="33"/>
+        <location filename="src/sql/catalog.cpp" line="61"/>
         <source>Error getting the sequence nextval(&apos;%1&apos;)</source>
         <translation>Błąd podczas pobierania sekwencji nextval(&apos;%1&apos;)</translation>
-    </message>
-</context>
-<context>
-    <name>qf::core::LogDevice</name>
-    <message>
-        <location filename="src/core/logdevice.cpp" line="142"/>
-        <source>Cannot find log device by object name &apos;%1&apos;</source>
-        <translation>Nie można odnaleźć urządzenia zalogowanego pod nazwą &apos;%1&apos;</translation>
     </message>
 </context>
 <context>
@@ -64,13 +56,13 @@
 <context>
     <name>qf::core::model::SqlTableModel</name>
     <message>
-        <location filename="src/model/sqltablemodel.cpp" line="230"/>
+        <location filename="src/model/sqltablemodel.cpp" line="231"/>
         <source>numRowsAffected() = %1, should be 1
 %2</source>
         <translation>liczba wierszy niewłaściwa() = %1, powinno być 1 %2</translation>
     </message>
     <message>
-        <location filename="src/model/sqltablemodel.cpp" line="256"/>
+        <location filename="src/model/sqltablemodel.cpp" line="257"/>
         <source>Error executing query: %1
  %2</source>
         <translation>Błąd podczas wykonywania zapytania: %1 %2</translation>
@@ -153,8 +145,8 @@
 <context>
     <name>qf::core::sql::FieldInfoList</name>
     <message>
-        <location filename="src/sql/catalog.cpp" line="300"/>
-        <location filename="src/sql/catalog.cpp" line="318"/>
+        <location filename="src/sql/catalog.cpp" line="301"/>
+        <location filename="src/sql/catalog.cpp" line="319"/>
         <source>Found info for nonexisting field &apos;%1&apos;</source>
         <translation>Znaleziono informację dla nieistniejacego pola &apos;%1&apos;</translation>
     </message>
