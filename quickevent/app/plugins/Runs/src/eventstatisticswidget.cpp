@@ -171,30 +171,31 @@ QVariant EventStatisticsModel::value(int row_ix, int column_ix) const
 	if(column_ix == col_timeToCloseMs) {
 		int stage_start_msec = eventPlugin()->stageStartMsec(eventPlugin()->currentStageId());
 		int curr_time_msec = QTime::currentTime().msecsSinceStartOfDay();
-		//int runners_count = value(row_ix, col_runnersCount).toInt();
+		int runners_count = value(row_ix, col_runnersCount).toInt();
 		int runners_finished = value(row_ix, col_runnersFinished).toInt();
-		if(runners_finished == 0) {
+		if(runners_count == runners_finished) {
+			return 0;
+		}
+		if(runners_finished < 3) {
 			return QVariant();
 		}
-		else {
-			int start_last_msec = value(row_ix, col_startLastMs).toInt();
-			int time3_msec = value(row_ix, col_time3Ms).toInt();
-			int time_to_close_msec = stage_start_msec + start_last_msec + time3_msec - curr_time_msec;
-			if(time_to_close_msec < 0)
-				time_to_close_msec = 0;
-			return time_to_close_msec;
-		}
+		int start_last_msec = value(row_ix, col_startLastMs).toInt();
+		int time3_msec = value(row_ix, col_time3Ms).toInt();
+		int time_to_close_msec = stage_start_msec + start_last_msec + time3_msec - curr_time_msec;
+		if(time_to_close_msec < 0)
+			time_to_close_msec = 0;
+		return time_to_close_msec;
 	}
-	else if(column_ix == col_runnersNotFinished) {
+	if(column_ix == col_runnersNotFinished) {
 		int cnt = value(row_ix, col_runnersCount).toInt() - value(row_ix, col_runnersFinished).toInt();
 		return cnt;
 	}
-	else if(column_ix == col_resultsNotPrinted) {
+	if(column_ix == col_resultsNotPrinted) {
 		int results_count = tableRow(row_ix).value(QStringLiteral("resultsCount")).toInt();
 		int cnt = value(row_ix, col_runnersFinished).toInt() - results_count;
 		return cnt;
 	}
-	else if(column_ix == col_resultsNotPrintedSec) {
+	if(column_ix == col_resultsNotPrintedSec) {
 		QDateTime dt1 = tableRow(row_ix).value(QStringLiteral("resultsPrintTS")).toDateTime();
 		QDateTime dt2 = QDateTime::currentDateTime();
 		if(!dt1.isValid())
