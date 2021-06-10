@@ -439,7 +439,7 @@ static QList<QByteArray> interpretControlCodes(const QList<PrintLine> &lines, co
 	int line_length = printer_options.characterPrinterLineLength();
 	bool include_escapes = printer_options.isCharacterPrinterGenerateControlCodes();
 	const int cmd_length = sizeof(epson_commands) / sizeof(char*);
-	for(const PrintLine line : lines) {
+	for(const PrintLine& line : lines) {
 		QByteArray ba;
 		int line_text_len = 0;
 		for(const PrintData &pd : line) {
