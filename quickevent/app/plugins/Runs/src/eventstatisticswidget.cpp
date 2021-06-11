@@ -200,8 +200,8 @@ QVariant EventStatisticsModel::value(int row_ix, int column_ix) const
 		QDateTime dt2 = QDateTime::currentDateTime();
 		if(!dt1.isValid())
 			return QVariant{QVariant::Int};
-		int cnt = dt1.msecsTo(dt2);
-		return cnt;
+		int time_since_last_printed_msec = dt1.msecsTo(dt2);
+		return time_since_last_printed_msec;
 	}
 	return Super::value(row_ix, column_ix);
 }
