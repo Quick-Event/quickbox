@@ -51,7 +51,7 @@ QVariant SqlTableModel::data(const QModelIndex &index, int role) const
 			}
 		}
 	}
-	else if(role == Qt::BackgroundColorRole) {
+	else if(role == Qt::BackgroundRole) {
 		ColumnDefinition cd = columnDefinition(index.column());
 		int cast_type = cd.castType();
 		if(cast_type == qMetaTypeId<qf::core::sql::DbEnum>()) {
@@ -71,7 +71,7 @@ QVariant SqlTableModel::data(const QModelIndex &index, int role) const
 			return QVariant();
 		}
 	}
-	else if(role == Qt::TextColorRole) {
+	else if(role == Qt::ForegroundRole) {
 		ColumnDefinition cd = columnDefinition(index.column());
 		int cast_type = cd.castType();
 		if(cast_type == qMetaTypeId<qf::core::sql::DbEnum>()) {
