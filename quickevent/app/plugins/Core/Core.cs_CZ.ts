@@ -74,7 +74,7 @@
     <message>
         <location filename="src/coreplugin.cpp" line="74"/>
         <source>French</source>
-        <translation type="unfinished"></translation>
+        <translation>Francouzština</translation>
     </message>
     <message>
         <location filename="src/coreplugin.cpp" line="75"/>
