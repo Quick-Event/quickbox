@@ -251,7 +251,7 @@
         <location filename="src/receiptswidget.ui" line="80"/>
         <source>When runner is not found, print</source>
         <oldsource>Print when runner not found</oldsource>
-        <translation type="unfinished">Pokud není závodník nalezen vytisknout</translation>
+        <translation>Pokud není závodník nalezen vytisknout</translation>
     </message>
     <message>
         <location filename="src/receiptswidget.ui" line="90"/>
