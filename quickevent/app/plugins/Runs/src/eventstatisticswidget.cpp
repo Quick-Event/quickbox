@@ -134,7 +134,7 @@ EventStatisticsModel::EventStatisticsModel(QObject *parent)
 				.orderBy("runs.timeMs")
 				.limit(3)
 				.as("results3");
-			qb_third_time.select("MAX(timeMs)")//.select("COUNT(timeMs) AS count3")
+			qb_third_time.select("CASE WHEN COUNT(timeMs) == 3 THEN MAX(timeMs) ELSE NULL END")
 					.from(qb.toString());
 		}
 
@@ -176,11 +176,11 @@ QVariant EventStatisticsModel::value(int row_ix, int column_ix) const
 		if(runners_count == runners_finished) {
 			return 0;
 		}
-		if(runners_finished < 3) {
+		int time3_msec = value(row_ix, col_time3Ms).toInt();
+		if(time3_msec == 0) {
 			return QVariant();
 		}
 		int start_last_msec = value(row_ix, col_startLastMs).toInt();
-		int time3_msec = value(row_ix, col_time3Ms).toInt();
 		int time_to_close_msec = stage_start_msec + start_last_msec + time3_msec - curr_time_msec;
 		if(time_to_close_msec < 0)
 			time_to_close_msec = 0;
