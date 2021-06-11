@@ -6,27 +6,27 @@
     <message>
         <location filename="src/sicard.cpp" line="42"/>
         <source>stationNumber: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>číslo kontroly: %1</translation>
     </message>
     <message>
         <location filename="src/sicard.cpp" line="43"/>
         <source>cardNumber: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>číslo čipu: %1</translation>
     </message>
     <message>
         <location filename="src/sicard.cpp" line="47"/>
         <source>check: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>kontrola čipu: %1</translation>
     </message>
     <message>
         <location filename="src/sicard.cpp" line="48"/>
         <source>start: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>start: %1</translation>
     </message>
     <message>
         <location filename="src/sicard.cpp" line="49"/>
         <source>finish: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>cíl: %1</translation>
     </message>
 </context>
 <context>
@@ -34,12 +34,12 @@
     <message>
         <location filename="src/device/commport.cpp" line="42"/>
         <source>Available ports: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Dostupné porty: %1</translation>
     </message>
     <message>
         <location filename="src/device/commport.cpp" line="50"/>
         <source>Connecting to %1 - baudrate: %2, data bits: %3, parity: %4, stop bits: %5</source>
-        <translation type="unfinished"></translation>
+        <translation>Připojování k %1 - baudrate: %2, datové bity: %3, parita: %4, stop bity: %5</translation>
     </message>
     <message>
         <location filename="src/device/commport.cpp" line="60"/>
