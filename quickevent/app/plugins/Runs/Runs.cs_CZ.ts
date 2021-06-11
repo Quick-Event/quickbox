@@ -367,7 +367,7 @@
         <location filename="src/runsplugin.cpp" line="1707"/>
         <location filename="src/runsplugin.cpp" line="1801"/>
         <source>St. Num</source>
-        <translation type="unfinished"></translation>
+        <translation>St. čís.</translation>
     </message>
     <message>
         <location filename="src/runsplugin.cpp" line="1709"/>
