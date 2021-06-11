@@ -4,92 +4,92 @@
 <context>
     <name>EventStatisticsModel</name>
     <message>
-        <location filename="src/eventstatisticswidget.cpp" line="80"/>
+        <location filename="src/eventstatisticswidget.cpp" line="82"/>
         <source>Class</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/eventstatisticswidget.cpp" line="81"/>
+        <location filename="src/eventstatisticswidget.cpp" line="83"/>
         <source>Maps</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/eventstatisticswidget.cpp" line="82"/>
+        <location filename="src/eventstatisticswidget.cpp" line="84"/>
         <source>Free maps</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/eventstatisticswidget.cpp" line="83"/>
+        <location filename="src/eventstatisticswidget.cpp" line="85"/>
         <source>Runners</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/eventstatisticswidget.cpp" line="84"/>
+        <location filename="src/eventstatisticswidget.cpp" line="86"/>
         <source>Start first</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/eventstatisticswidget.cpp" line="85"/>
+        <location filename="src/eventstatisticswidget.cpp" line="87"/>
         <source>Start last</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/eventstatisticswidget.cpp" line="86"/>
+        <location filename="src/eventstatisticswidget.cpp" line="88"/>
         <source>1st time</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/eventstatisticswidget.cpp" line="87"/>
+        <location filename="src/eventstatisticswidget.cpp" line="89"/>
         <source>3rd time</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/eventstatisticswidget.cpp" line="86"/>
+        <location filename="src/eventstatisticswidget.cpp" line="88"/>
         <source>Finish time of first runner in current class.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/eventstatisticswidget.cpp" line="87"/>
+        <location filename="src/eventstatisticswidget.cpp" line="89"/>
         <source>Finish time of third runner in current class.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/eventstatisticswidget.cpp" line="88"/>
+        <location filename="src/eventstatisticswidget.cpp" line="90"/>
         <source>Time to close</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/eventstatisticswidget.cpp" line="89"/>
+        <location filename="src/eventstatisticswidget.cpp" line="91"/>
         <source>Time until new finished competitors should not affect standings on first three places.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/eventstatisticswidget.cpp" line="91"/>
+        <location filename="src/eventstatisticswidget.cpp" line="93"/>
         <source>Finished</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/eventstatisticswidget.cpp" line="92"/>
+        <location filename="src/eventstatisticswidget.cpp" line="94"/>
         <source>Not finished</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/eventstatisticswidget.cpp" line="93"/>
+        <location filename="src/eventstatisticswidget.cpp" line="95"/>
         <source>New results</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/eventstatisticswidget.cpp" line="93"/>
+        <location filename="src/eventstatisticswidget.cpp" line="95"/>
         <source>Number of finished competitors not printed in results.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/eventstatisticswidget.cpp" line="94"/>
+        <location filename="src/eventstatisticswidget.cpp" line="96"/>
         <source>Not printed time</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/eventstatisticswidget.cpp" line="95"/>
+        <location filename="src/eventstatisticswidget.cpp" line="97"/>
         <source>Time since recent results printout.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -180,7 +180,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/eventstatisticswidget.cpp" line="585"/>
+        <location filename="src/eventstatisticswidget.cpp" line="587"/>
         <source>Results by classes</source>
         <translation type="unfinished"></translation>
     </message>
@@ -257,35 +257,35 @@
 <context>
     <name>Runs::RunsPlugin</name>
     <message>
-        <location filename="src/runsplugin.cpp" line="143"/>
+        <location filename="src/runsplugin.cpp" line="142"/>
         <source>Event statistics</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runsplugin.cpp" line="932"/>
-        <location filename="src/runsplugin.cpp" line="2136"/>
+        <location filename="src/runsplugin.cpp" line="931"/>
+        <location filename="src/runsplugin.cpp" line="2169"/>
         <source>E%1 IOF XML stage results</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runsplugin.cpp" line="1355"/>
-        <location filename="src/runsplugin.cpp" line="1713"/>
+        <location filename="src/runsplugin.cpp" line="1371"/>
+        <location filename="src/runsplugin.cpp" line="1739"/>
         <source>Start list by classes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runsplugin.cpp" line="1381"/>
-        <location filename="src/runsplugin.cpp" line="1802"/>
+        <location filename="src/runsplugin.cpp" line="1398"/>
+        <location filename="src/runsplugin.cpp" line="1835"/>
         <source>Start list by clubs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runsplugin.cpp" line="1406"/>
+        <location filename="src/runsplugin.cpp" line="1423"/>
         <source>Start list for starters</source>
         <translation type="unfinished"></translation>
     </message>
     <message numerus="yes">
-        <location filename="src/runsplugin.cpp" line="1439"/>
+        <location filename="src/runsplugin.cpp" line="1457"/>
         <source>Start list by classes for %n stage(s)</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -294,7 +294,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="src/runsplugin.cpp" line="1473"/>
+        <location filename="src/runsplugin.cpp" line="1492"/>
         <source>Start list by clubs for %n stage(s)</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -303,19 +303,19 @@
         </translation>
     </message>
     <message>
-        <location filename="src/runsplugin.cpp" line="1497"/>
-        <location filename="src/runsplugin.cpp" line="1523"/>
+        <location filename="src/runsplugin.cpp" line="1516"/>
+        <location filename="src/runsplugin.cpp" line="1542"/>
         <source>Results by classes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runsplugin.cpp" line="1547"/>
+        <location filename="src/runsplugin.cpp" line="1566"/>
         <source>Stage awards</source>
         <translation type="unfinished"></translation>
     </message>
     <message numerus="yes">
-        <location filename="src/runsplugin.cpp" line="1575"/>
-        <location filename="src/runsplugin.cpp" line="1602"/>
+        <location filename="src/runsplugin.cpp" line="1594"/>
+        <location filename="src/runsplugin.cpp" line="1621"/>
         <source>Results after %n stage(s)</source>
         <oldsource>Results after %1 stages</oldsource>
         <translation type="unfinished">
@@ -325,141 +325,147 @@
         </translation>
     </message>
     <message>
-        <location filename="src/runsplugin.cpp" line="1625"/>
+        <location filename="src/runsplugin.cpp" line="1644"/>
         <source>Awards after %1 stages</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runsplugin.cpp" line="1676"/>
-        <location filename="src/runsplugin.cpp" line="1861"/>
+        <location filename="src/runsplugin.cpp" line="1695"/>
+        <location filename="src/runsplugin.cpp" line="1894"/>
         <source>length:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runsplugin.cpp" line="1678"/>
-        <location filename="src/runsplugin.cpp" line="1863"/>
+        <location filename="src/runsplugin.cpp" line="1697"/>
+        <location filename="src/runsplugin.cpp" line="1896"/>
         <source>climb:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runsplugin.cpp" line="1681"/>
-        <location filename="src/runsplugin.cpp" line="1768"/>
-        <location filename="src/runsplugin.cpp" line="1867"/>
+        <location filename="src/runsplugin.cpp" line="1700"/>
+        <location filename="src/runsplugin.cpp" line="1794"/>
+        <location filename="src/runsplugin.cpp" line="1900"/>
         <source>Top</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runsplugin.cpp" line="1688"/>
-        <location filename="src/runsplugin.cpp" line="1775"/>
+        <location filename="src/runsplugin.cpp" line="1711"/>
+        <location filename="src/runsplugin.cpp" line="1806"/>
         <source>Start</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runsplugin.cpp" line="1689"/>
-        <location filename="src/runsplugin.cpp" line="1777"/>
-        <location filename="src/runsplugin.cpp" line="1875"/>
-        <location filename="src/runsplugin.cpp" line="1963"/>
+        <location filename="src/runsplugin.cpp" line="1708"/>
+        <location filename="src/runsplugin.cpp" line="1803"/>
+        <location filename="src/runsplugin.cpp" line="1908"/>
+        <location filename="src/runsplugin.cpp" line="1996"/>
         <source>Name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runsplugin.cpp" line="1690"/>
-        <location filename="src/runsplugin.cpp" line="1778"/>
-        <location filename="src/runsplugin.cpp" line="1876"/>
-        <location filename="src/runsplugin.cpp" line="1978"/>
+        <location filename="src/runsplugin.cpp" line="1707"/>
+        <location filename="src/runsplugin.cpp" line="1801"/>
+        <source>St. Num</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/runsplugin.cpp" line="1709"/>
+        <location filename="src/runsplugin.cpp" line="1804"/>
+        <location filename="src/runsplugin.cpp" line="1909"/>
+        <location filename="src/runsplugin.cpp" line="2011"/>
         <source>Registration</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runsplugin.cpp" line="1691"/>
-        <location filename="src/runsplugin.cpp" line="1779"/>
+        <location filename="src/runsplugin.cpp" line="1710"/>
+        <location filename="src/runsplugin.cpp" line="1805"/>
         <source>SI</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runsplugin.cpp" line="1776"/>
+        <location filename="src/runsplugin.cpp" line="1802"/>
         <source>Class</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runsplugin.cpp" line="1817"/>
+        <location filename="src/runsplugin.cpp" line="1850"/>
         <source>Preparing data</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runsplugin.cpp" line="1847"/>
+        <location filename="src/runsplugin.cpp" line="1880"/>
         <source>Procesing class %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runsplugin.cpp" line="1866"/>
+        <location filename="src/runsplugin.cpp" line="1899"/>
         <source>Laps</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runsplugin.cpp" line="1874"/>
-        <location filename="src/runsplugin.cpp" line="1962"/>
+        <location filename="src/runsplugin.cpp" line="1907"/>
+        <location filename="src/runsplugin.cpp" line="1995"/>
         <source>Place</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runsplugin.cpp" line="1877"/>
+        <location filename="src/runsplugin.cpp" line="1910"/>
         <source>Club</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runsplugin.cpp" line="1878"/>
-        <location filename="src/runsplugin.cpp" line="1964"/>
+        <location filename="src/runsplugin.cpp" line="1911"/>
+        <location filename="src/runsplugin.cpp" line="1997"/>
         <source>Time</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runsplugin.cpp" line="1879"/>
-        <location filename="src/runsplugin.cpp" line="1965"/>
+        <location filename="src/runsplugin.cpp" line="1912"/>
+        <location filename="src/runsplugin.cpp" line="1998"/>
         <source>Loss</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runsplugin.cpp" line="1895"/>
-        <location filename="src/runsplugin.cpp" line="2033"/>
+        <location filename="src/runsplugin.cpp" line="1928"/>
+        <location filename="src/runsplugin.cpp" line="2066"/>
         <source>NC</source>
         <comment>Not Competing</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runsplugin.cpp" line="1898"/>
-        <location filename="src/runsplugin.cpp" line="2036"/>
+        <location filename="src/runsplugin.cpp" line="1931"/>
+        <location filename="src/runsplugin.cpp" line="2069"/>
         <source>DISQ</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runsplugin.cpp" line="1918"/>
-        <location filename="src/runsplugin.cpp" line="2057"/>
+        <location filename="src/runsplugin.cpp" line="1951"/>
+        <location filename="src/runsplugin.cpp" line="2090"/>
         <source>Stage results</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runsplugin.cpp" line="1937"/>
+        <location filename="src/runsplugin.cpp" line="1970"/>
         <source>Warning</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runsplugin.cpp" line="1937"/>
+        <location filename="src/runsplugin.cpp" line="1970"/>
         <source>Export error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runsplugin.cpp" line="1939"/>
+        <location filename="src/runsplugin.cpp" line="1972"/>
         <source>Information</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runsplugin.cpp" line="1939"/>
+        <location filename="src/runsplugin.cpp" line="1972"/>
         <source>Results exported to %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runsplugin.cpp" line="1971"/>
+        <location filename="src/runsplugin.cpp" line="2004"/>
         <source>FIN</source>
         <translation type="unfinished"></translation>
     </message>
@@ -553,200 +559,200 @@
 <context>
     <name>RunsTableModel</name>
     <message>
-        <location filename="src/runstablemodel.cpp" line="26"/>
+        <location filename="src/runstablemodel.cpp" line="28"/>
         <source>Running</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runstablemodel.cpp" line="27"/>
+        <location filename="src/runstablemodel.cpp" line="29"/>
         <source>id</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runstablemodel.cpp" line="28"/>
+        <location filename="src/runstablemodel.cpp" line="30"/>
         <source>Relay</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runstablemodel.cpp" line="29"/>
+        <location filename="src/runstablemodel.cpp" line="31"/>
         <source>Leg</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runstablemodel.cpp" line="30"/>
+        <location filename="src/runstablemodel.cpp" line="32"/>
         <source>Class</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runstablemodel.cpp" line="31"/>
+        <location filename="src/runstablemodel.cpp" line="33"/>
         <source>SN</source>
         <comment>start number</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runstablemodel.cpp" line="31"/>
+        <location filename="src/runstablemodel.cpp" line="33"/>
         <source>Start number</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runstablemodel.cpp" line="32"/>
-        <location filename="src/runstablemodel.cpp" line="37"/>
+        <location filename="src/runstablemodel.cpp" line="34"/>
+        <location filename="src/runstablemodel.cpp" line="39"/>
         <source>SI</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runstablemodel.cpp" line="32"/>
+        <location filename="src/runstablemodel.cpp" line="34"/>
         <source>Registered SI</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runstablemodel.cpp" line="33"/>
+        <location filename="src/runstablemodel.cpp" line="35"/>
         <source>Name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runstablemodel.cpp" line="34"/>
+        <location filename="src/runstablemodel.cpp" line="36"/>
         <source>Reg</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runstablemodel.cpp" line="35"/>
+        <location filename="src/runstablemodel.cpp" line="37"/>
         <source>Lic</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runstablemodel.cpp" line="35"/>
+        <location filename="src/runstablemodel.cpp" line="37"/>
         <source>License</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runstablemodel.cpp" line="36"/>
+        <location filename="src/runstablemodel.cpp" line="38"/>
         <source>Rank</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runstablemodel.cpp" line="36"/>
+        <location filename="src/runstablemodel.cpp" line="38"/>
         <source>Ranking</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runstablemodel.cpp" line="37"/>
+        <location filename="src/runstablemodel.cpp" line="39"/>
         <source>Actual SI</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runstablemodel.cpp" line="38"/>
+        <location filename="src/runstablemodel.cpp" line="40"/>
         <source>Check</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runstablemodel.cpp" line="39"/>
+        <location filename="src/runstablemodel.cpp" line="41"/>
         <source>Start</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runstablemodel.cpp" line="40"/>
+        <location filename="src/runstablemodel.cpp" line="42"/>
         <source>Time</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runstablemodel.cpp" line="41"/>
+        <location filename="src/runstablemodel.cpp" line="43"/>
         <source>Finish</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runstablemodel.cpp" line="42"/>
+        <location filename="src/runstablemodel.cpp" line="44"/>
         <source>Penalty</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runstablemodel.cpp" line="43"/>
+        <location filename="src/runstablemodel.cpp" line="45"/>
         <source>NC</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runstablemodel.cpp" line="43"/>
+        <location filename="src/runstablemodel.cpp" line="45"/>
         <source>Not competing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runstablemodel.cpp" line="44"/>
+        <location filename="src/runstablemodel.cpp" line="46"/>
         <source>RR</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runstablemodel.cpp" line="44"/>
+        <location filename="src/runstablemodel.cpp" line="46"/>
         <source>Card rent requested</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runstablemodel.cpp" line="45"/>
+        <location filename="src/runstablemodel.cpp" line="47"/>
         <source>RT</source>
         <comment>cardInLentTable</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runstablemodel.cpp" line="45"/>
+        <location filename="src/runstablemodel.cpp" line="47"/>
         <source>Card in rent table</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runstablemodel.cpp" line="46"/>
+        <location filename="src/runstablemodel.cpp" line="48"/>
         <source>R</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runstablemodel.cpp" line="46"/>
+        <location filename="src/runstablemodel.cpp" line="48"/>
         <source>Card returned</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runstablemodel.cpp" line="47"/>
+        <location filename="src/runstablemodel.cpp" line="49"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runstablemodel.cpp" line="47"/>
+        <location filename="src/runstablemodel.cpp" line="49"/>
         <source>Disqualification reason</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runstablemodel.cpp" line="48"/>
+        <location filename="src/runstablemodel.cpp" line="50"/>
         <source>DISQ</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runstablemodel.cpp" line="48"/>
+        <location filename="src/runstablemodel.cpp" line="50"/>
         <source>Disqualified</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runstablemodel.cpp" line="49"/>
+        <location filename="src/runstablemodel.cpp" line="51"/>
         <source>Note</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runstablemodel.cpp" line="80"/>
+        <location filename="src/runstablemodel.cpp" line="82"/>
         <source>MisPunch</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runstablemodel.cpp" line="82"/>
+        <location filename="src/runstablemodel.cpp" line="84"/>
         <source>BadCheck</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runstablemodel.cpp" line="103"/>
+        <location filename="src/runstablemodel.cpp" line="105"/>
         <source>Cannot set not running flag for competitor with valid finish time.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runstablemodel.cpp" line="285"/>
+        <location filename="src/runstablemodel.cpp" line="287"/>
         <source>Mid-air collision switching start times, reload table and try it again.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runstablemodel.cpp" line="329"/>
+        <location filename="src/runstablemodel.cpp" line="331"/>
         <source>Mid-air collision setting start time, reload table and try it again.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -909,7 +915,7 @@
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="131"/>
-        <location filename="src/runswidget.cpp" line="337"/>
+        <location filename="src/runswidget.cpp" line="343"/>
         <source>--- all ---</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1073,52 +1079,52 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runswidget.cpp" line="333"/>
+        <location filename="src/runswidget.cpp" line="339"/>
         <source>&amp;Leg </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runswidget.cpp" line="357"/>
+        <location filename="src/runswidget.cpp" line="363"/>
         <source>Show o&amp;ff-race</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runswidget.cpp" line="358"/>
+        <location filename="src/runswidget.cpp" line="364"/>
         <source>Include competitors who are not running in this stage</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runswidget.cpp" line="363"/>
+        <location filename="src/runswidget.cpp" line="369"/>
         <source>&amp;Draw options</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runswidget.cpp" line="463"/>
+        <location filename="src/runswidget.cpp" line="469"/>
         <source>Import</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runswidget.cpp" line="552"/>
+        <location filename="src/runswidget.cpp" line="558"/>
         <source>Save as %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runswidget.cpp" line="633"/>
+        <location filename="src/runswidget.cpp" line="639"/>
         <source>Draw all classes without draw lock?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runswidget.cpp" line="649"/>
+        <location filename="src/runswidget.cpp" line="655"/>
         <source>Class is locked for drawing.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runswidget.cpp" line="830"/>
+        <location filename="src/runswidget.cpp" line="836"/>
         <source>Start interval is zero, proceed anyway?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runswidget.cpp" line="910"/>
+        <location filename="src/runswidget.cpp" line="916"/>
         <source>Reset all start times and unlock drawing for this class?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1285,17 +1291,17 @@
 <context>
     <name>startList_classes</name>
     <message>
-        <location filename="qml/reports/startList_classes.qml" line="9"/>
+        <location filename="qml/reports/startList_classes.qml" line="8"/>
         <source>Start list by classes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/reports/startList_classes.qml" line="83"/>
+        <location filename="qml/reports/startList_classes.qml" line="82"/>
         <source>length: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/reports/startList_classes.qml" line="86"/>
+        <location filename="qml/reports/startList_classes.qml" line="85"/>
         <source>climb: </source>
         <translation type="unfinished"></translation>
     </message>
@@ -1303,7 +1309,7 @@
 <context>
     <name>startList_classes_nstages</name>
     <message numerus="yes">
-        <location filename="qml/reports/startList_classes_nstages.qml" line="15"/>
+        <location filename="qml/reports/startList_classes_nstages.qml" line="14"/>
         <source>Start list by classes for %n stage(s)</source>
         <oldsource>Start list by classes</oldsource>
         <translation type="unfinished">
@@ -1313,22 +1319,22 @@
         </translation>
     </message>
     <message>
-        <location filename="qml/reports/startList_classes_nstages.qml" line="113"/>
+        <location filename="qml/reports/startList_classes_nstages.qml" line="112"/>
         <source>Bib</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/reports/startList_classes_nstages.qml" line="119"/>
+        <location filename="qml/reports/startList_classes_nstages.qml" line="118"/>
         <source>Registration</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/reports/startList_classes_nstages.qml" line="126"/>
+        <location filename="qml/reports/startList_classes_nstages.qml" line="125"/>
         <source>SI</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/reports/startList_classes_nstages.qml" line="132"/>
+        <location filename="qml/reports/startList_classes_nstages.qml" line="131"/>
         <source>Stage</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1336,12 +1342,12 @@
 <context>
     <name>startList_clubs</name>
     <message>
-        <location filename="qml/reports/startList_clubs.qml" line="9"/>
+        <location filename="qml/reports/startList_clubs.qml" line="8"/>
         <source>Start list by clubs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/reports/startList_clubs.qml" line="137"/>
+        <location filename="qml/reports/startList_clubs.qml" line="136"/>
         <source>R </source>
         <translation type="unfinished"></translation>
     </message>
@@ -1349,7 +1355,7 @@
 <context>
     <name>startList_clubs_nstages</name>
     <message numerus="yes">
-        <location filename="qml/reports/startList_clubs_nstages.qml" line="15"/>
+        <location filename="qml/reports/startList_clubs_nstages.qml" line="14"/>
         <source>Start list by clubs for %n stage(s)</source>
         <oldsource>Start list by clubs</oldsource>
         <translation type="unfinished">
@@ -1359,22 +1365,22 @@
         </translation>
     </message>
     <message>
-        <location filename="qml/reports/startList_clubs_nstages.qml" line="119"/>
+        <location filename="qml/reports/startList_clubs_nstages.qml" line="118"/>
         <source>Bib</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/reports/startList_clubs_nstages.qml" line="125"/>
+        <location filename="qml/reports/startList_clubs_nstages.qml" line="124"/>
         <source>Registration</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/reports/startList_clubs_nstages.qml" line="132"/>
+        <location filename="qml/reports/startList_clubs_nstages.qml" line="131"/>
         <source>SI</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/reports/startList_clubs_nstages.qml" line="139"/>
+        <location filename="qml/reports/startList_clubs_nstages.qml" line="138"/>
         <source>Stage</source>
         <translation type="unfinished"></translation>
     </message>

@@ -4,18 +4,10 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="src/sql/catalog.cpp" line="32"/>
-        <location filename="src/sql/catalog.cpp" line="60"/>
+        <location filename="src/sql/catalog.cpp" line="33"/>
+        <location filename="src/sql/catalog.cpp" line="61"/>
         <source>Error getting the sequence nextval(&apos;%1&apos;)</source>
         <translation>Erreur lors de la récupération de la séquence nextval(&apos;%1&apos;)</translation>
-    </message>
-</context>
-<context>
-    <name>qf::core::LogDevice</name>
-    <message>
-        <location filename="src/core/logdevice.cpp" line="142"/>
-        <source>Cannot find log device by object name &apos;%1&apos;</source>
-        <translation>Impossible de trouver le périphérique de journal par non d&apos;objet « %1 »</translation>
     </message>
 </context>
 <context>
@@ -64,14 +56,14 @@
 <context>
     <name>qf::core::model::SqlTableModel</name>
     <message>
-        <location filename="src/model/sqltablemodel.cpp" line="230"/>
+        <location filename="src/model/sqltablemodel.cpp" line="231"/>
         <source>numRowsAffected() = %1, should be 1
 %2</source>
         <translation>numRowsAffected() = %1, devrait être 1
 %2</translation>
     </message>
     <message>
-        <location filename="src/model/sqltablemodel.cpp" line="256"/>
+        <location filename="src/model/sqltablemodel.cpp" line="257"/>
         <source>Error executing query: %1
  %2</source>
         <translation>Erreur lors de l&apos;exécution de la requête : %1
@@ -109,7 +101,7 @@
         <location filename="src/model/tablemodel.cpp" line="551"/>
         <location filename="src/model/tablemodel.cpp" line="577"/>
         <source>Cannot find column index for name: &apos;%1&apos;</source>
-        <translation>Impossible de trouver l&apos;indice de colonne pour le nom : « %1 »</translation>
+        <translation>Impossible de trouver l&apos;indice de colonne pour le nom : «&#xa0;%1&#xa0;»</translation>
     </message>
     <message>
         <location filename="src/model/tablemodel.cpp" line="478"/>
@@ -136,7 +128,7 @@
     <message>
         <location filename="src/model/tablemodel.cpp" line="672"/>
         <source>Column named &apos;%1&apos; not found in column list. Existing columns: [%2]</source>
-        <translation>La colonne « %1 » n&apos;a pas été trouvée dans la liste des colonnes. Colonnes existantes : [%2]</translation>
+        <translation>La colonne «&#xa0;%1&#xa0;» n&apos;a pas été trouvée dans la liste des colonnes. Colonnes existantes : [%2]</translation>
     </message>
     <message>
         <location filename="src/model/tablemodel.cpp" line="702"/>
@@ -149,16 +141,16 @@
     <message>
         <location filename="src/sql/dbfsdriver.cpp" line="109"/>
         <source>Connection &apos;%1&apos; is not open!</source>
-        <translation>La connexion « %1 » n&apos;est pas ouverte !</translation>
+        <translation>La connexion «&#xa0;%1&#xa0;» n&apos;est pas ouverte !</translation>
     </message>
 </context>
 <context>
     <name>qf::core::sql::FieldInfoList</name>
     <message>
-        <location filename="src/sql/catalog.cpp" line="300"/>
-        <location filename="src/sql/catalog.cpp" line="318"/>
+        <location filename="src/sql/catalog.cpp" line="301"/>
+        <location filename="src/sql/catalog.cpp" line="319"/>
         <source>Found info for nonexisting field &apos;%1&apos;</source>
-        <translation>Informations trouvées pour le champ « %1 » inexistant</translation>
+        <translation>Informations trouvées pour le champ « %1&#xa0;» inexistant</translation>
     </message>
 </context>
 <context>

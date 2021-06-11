@@ -22,7 +22,7 @@
 <context>
     <name>LoggerWidget</name>
     <message>
-        <location filename="src/loggerwidget.cpp" line="13"/>
+        <location filename="src/loggerwidget.cpp" line="11"/>
         <source>&lt;empty&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -30,12 +30,12 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="src/mainwindow.cpp" line="28"/>
+        <location filename="src/mainwindow.cpp" line="27"/>
         <source>Quick Event ver. %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="62"/>
+        <location filename="src/mainwindow.cpp" line="61"/>
         <source>Application log</source>
         <translation type="unfinished"></translation>
     </message>

@@ -65,7 +65,7 @@ public:
 		col_runnersFinished,
 		col_runnersNotFinished,
 		col_resultsNotPrinted,
-		col_resultsNotPrintedSec,
+		col_resultsNotPrintedMs,
 		col_COUNT
 	};
 public:
@@ -93,7 +93,7 @@ EventStatisticsModel::EventStatisticsModel(QObject *parent)
 	setColumn(col_runnersFinished, ColumnDefinition("runnersFinished", tr("Finished")));
 	setColumn(col_runnersNotFinished, ColumnDefinition("runnersNotFinished", tr("Not finished")));
 	setColumn(col_resultsNotPrinted, ColumnDefinition("resultsNotPrinted", tr("New results")).setToolTip(tr("Number of finished competitors not printed in results.")));
-	setColumn(col_resultsNotPrintedSec, ColumnDefinition("resultsNotPrintedSec", tr("Not printed time"))
+	setColumn(col_resultsNotPrintedMs, ColumnDefinition("resultsNotPrintedMs", tr("Not printed time"))
 			  .setToolTip(tr("Time since recent results printout."))
 			  .setCastType(qMetaTypeId<quickevent::core::og::TimeMs>())
 			  );
@@ -151,7 +151,7 @@ EventStatisticsModel::EventStatisticsModel(QObject *parent)
 				.select("0 AS freeMapCount")
 				.select("0 AS runnersNotFinished")
 				.select("0 AS resultsNotPrinted")
-				.select("0 AS resultsNotPrintedSec")
+				.select("0 AS resultsNotPrintedMs")
 				.from("classes")
 				.joinRestricted("classes.id", "classdefs.classId", "classdefs.stageId={{stage_id}}")
 				//.join("classes.id", "competitors.classId")
@@ -195,12 +195,12 @@ QVariant EventStatisticsModel::value(int row_ix, int column_ix) const
 		int cnt = value(row_ix, col_runnersFinished).toInt() - results_count;
 		return cnt;
 	}
-	if(column_ix == col_resultsNotPrintedSec) {
+	if(column_ix == col_resultsNotPrintedMs) {
 		QDateTime dt1 = tableRow(row_ix).value(QStringLiteral("resultsPrintTS")).toDateTime();
 		QDateTime dt2 = QDateTime::currentDateTime();
 		if(!dt1.isValid())
 			return QVariant{QVariant::Int};
-		int cnt = dt1.secsTo(dt2);
+		int cnt = dt1.msecsTo(dt2);
 		return cnt;
 	}
 	return Super::value(row_ix, column_ix);
@@ -654,15 +654,15 @@ void EventStatisticsWidget::on_btPrintResultsNew_clicked()
 	int print_new_results_sec = opts.autoPrintNewMin() * 60;
 	for (int i = 0; i < m_tableModel->rowCount(); ++i) {
 		int not_printed_cnt = m_tableModel->value(i, EventStatisticsModel::col_resultsNotPrinted).toInt();
-		QVariant not_printed_sec_v = m_tableModel->value(i, EventStatisticsModel::col_resultsNotPrintedSec);
-		int not_printed_sec = not_printed_sec_v.toInt();
+		QVariant not_printed_ms_v = m_tableModel->value(i, EventStatisticsModel::col_resultsNotPrintedMs);
+		int not_printed_sec = not_printed_ms_v.toInt() / 1000;
 		int not_finished = m_tableModel->value(i, EventStatisticsModel::col_runnersNotFinished).toInt();
 		qfDebug() << i
 				  << m_tableModel->value(i, EventStatisticsModel::col_className).toString()
 				  << "not printed cnt:" << not_printed_cnt
-				  << "not printed sec:" << not_printed_sec << not_printed_sec_v
+				  << "not printed sec:" << not_printed_sec << not_printed_ms_v
 				  << "not_finished:" << not_finished;
-		if((not_printed_sec_v.isNull() && not_printed_cnt > 0)
+		if((not_printed_ms_v.isNull() && not_printed_cnt > 0)
 		   || (not_printed_sec > 0 && not_printed_sec >= print_new_results_sec && not_printed_cnt > 0)
 		   || (not_printed_cnt >= print_new_results_cnt)
 		   || (not_printed_cnt > 0 && not_finished == 0) // last competitor in class

@@ -49,29 +49,31 @@ void CodeDef::setCode(int c)
 
 int CodeDef::codeFromString(const QString &code_str)
 {
-	const static QRegularExpression rx_start(R"RX(S[A-Za-z]*([1-9][0-9]*))RX");
-	const static QRegularExpression rx_finish(R"RX(F[A-Za-z]*([1-9][0-9]*))RX");
+	const static QRegularExpression rx_start(R"RX(S[A-Za-z]*([1-9][0-9]*)?)RX");
+	const static QRegularExpression rx_finish(R"RX(F[A-Za-z]*([1-9][0-9]*)?)RX");
 	auto get_code = [](const QRegularExpression &rx, const QString &s) {
 		QRegularExpressionMatch match = rx.match(s, 0, QRegularExpression::NormalMatch, QRegularExpression::AnchoredMatchOption);
 		if(match.hasMatch()) {
 			QString ns = match.captured(1);
+			if(ns.isNull())
+				return 0;
 			bool ok;
 			int code = ns.toInt(&ok);
-			if(!ok || code < 1)
+			if(!ok)
 				QF_EXCEPTION(QString("Invalid special code '%1'").arg(ns));
 			return code;
 		}
-		return 0;
+		return -1;
 	};
 	{
 		int code = get_code(rx_start, code_str);
-		if(code > 0)
-			return (START_PUNCH_CODE + code - 1);
+		if(code >= 0)
+			return (START_PUNCH_CODE + code);
 	}
 	{
 		int code = get_code(rx_finish, code_str);
-		if(code > 0)
-			return (FINISH_PUNCH_CODE + code - 1);
+		if(code >= 0)
+			return (FINISH_PUNCH_CODE + code);
 	}
 	bool ok;
 	int code = code_str.toInt(&ok);
@@ -83,9 +85,9 @@ int CodeDef::codeFromString(const QString &code_str)
 QString CodeDef::codeToString(int code)
 {
 	if(code >= START_PUNCH_CODE && code < PUNCH_CODE_MIN)
-		return 'S' + QString::number(code - START_PUNCH_CODE + 1);
+		return 'S' + QString::number(code - START_PUNCH_CODE);
 	if(code >= FINISH_PUNCH_CODE)
-		return 'F' + QString::number(code - FINISH_PUNCH_CODE + 1);
+		return 'F' + QString::number(code - FINISH_PUNCH_CODE);
 	return QString::number(code);
 }
 

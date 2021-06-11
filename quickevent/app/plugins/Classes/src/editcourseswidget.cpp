@@ -55,11 +55,11 @@ EditCoursesWidget::EditCoursesWidget(QWidget *parent)
 						" FROM coursecodes INNER JOIN codes ON codes.id = coursecodes.codeId WHERE (coursecodes.courseId = courses.id)"
 						" AND code >= " QF_IARG(quickevent::core::CodeDef::PUNCH_CODE_MIN)
 						" AND code <= " QF_IARG(quickevent::core::CodeDef::PUNCH_CODE_MAX);
-		QString start_code_query = "SELECT 'S' || (code - " QF_IARG(quickevent::core::CodeDef::START_PUNCH_CODE) " + 1) AS code, position"
+		QString start_code_query = "SELECT 'S' || (code - " QF_IARG(quickevent::core::CodeDef::START_PUNCH_CODE) ") AS code, position"
 						" FROM coursecodes INNER JOIN codes ON codes.id = coursecodes.codeId WHERE (coursecodes.courseId = courses.id)"
 						" AND code >= " QF_IARG(quickevent::core::CodeDef::START_PUNCH_CODE)
 						" AND code < " QF_IARG(quickevent::core::CodeDef::PUNCH_CODE_MIN);
-		QString finnish_code_query = "SELECT 'F' || (code - " QF_IARG(quickevent::core::CodeDef::FINISH_PUNCH_CODE) " + 1) AS code, position "
+		QString finnish_code_query = "SELECT 'F' || (code - " QF_IARG(quickevent::core::CodeDef::FINISH_PUNCH_CODE) ") AS code, position "
 						" FROM coursecodes INNER JOIN codes ON codes.id = coursecodes.codeId WHERE (coursecodes.courseId = courses.id)"
 						" AND code >= " QF_IARG(quickevent::core::CodeDef::FINISH_PUNCH_CODE);
 
