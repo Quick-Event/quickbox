@@ -406,7 +406,7 @@
     <message>
         <location filename="src/relayswidget.cpp" line="503"/>
         <source>Start list by classes</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Démarrer la liste par les classes</translation>
     </message>
     <message>
         <location filename="src/relayswidget.cpp" line="522"/>

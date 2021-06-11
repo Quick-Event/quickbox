@@ -406,12 +406,12 @@
     <message>
         <location filename="src/relayswidget.cpp" line="503"/>
         <source>Start list by classes</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Стартовий протокол по групах</translation>
     </message>
     <message>
         <location filename="src/relayswidget.cpp" line="522"/>
         <source>Start list by clubs</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Стартовий протокол по клубах</translation>
     </message>
     <message>
         <location filename="src/relayswidget.cpp" line="550"/>

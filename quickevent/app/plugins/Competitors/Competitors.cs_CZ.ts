@@ -185,85 +185,85 @@
         <translation>&amp;Kategorie </translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="127"/>
+        <location filename="src/competitorswidget.cpp" line="128"/>
         <source>Edit on punch</source>
         <translation>Upravit po oražení</translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="133"/>
+        <location filename="src/competitorswidget.cpp" line="134"/>
         <source>&amp;Print</source>
         <translation>&amp;Tisk</translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="135"/>
-        <location filename="src/competitorswidget.cpp" line="410"/>
+        <location filename="src/competitorswidget.cpp" line="136"/>
+        <location filename="src/competitorswidget.cpp" line="411"/>
         <source>Competitors statistics</source>
         <translation>Statistiky závodníků</translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="142"/>
+        <location filename="src/competitorswidget.cpp" line="143"/>
         <source>&amp;Cards</source>
         <translation>Či&amp;py</translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="144"/>
+        <location filename="src/competitorswidget.cpp" line="145"/>
         <source>Cards to rent</source>
         <oldsource>Lent cards</oldsource>
         <translation>Čipy k zapůjčení</translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="155"/>
+        <location filename="src/competitorswidget.cpp" line="156"/>
         <source>&amp;Stations</source>
         <translation>&amp;Krabičky</translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="157"/>
+        <location filename="src/competitorswidget.cpp" line="158"/>
         <source>Backup memory</source>
         <translation>Záložní paměť</translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="226"/>
+        <location filename="src/competitorswidget.cpp" line="227"/>
         <source>Save and &amp;next</source>
         <translation>Uložit a &amp;další</translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="265"/>
+        <location filename="src/competitorswidget.cpp" line="266"/>
         <source>Really delete all the selected competitors? This action cannot be reverted.</source>
         <oldsource>Realy delete all the selected competitors? This action cannot be reverted.</oldsource>
         <translation>Opravdu odstranit všechny vybrané závodníky? Tato akce nemůže být vrácena.</translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="278"/>
+        <location filename="src/competitorswidget.cpp" line="279"/>
         <source>Confirm deletion of %1 competitors.</source>
         <translation>Potvrďte odstranění %1 závodníků.</translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="321"/>
+        <location filename="src/competitorswidget.cpp" line="322"/>
         <source>Set class in selected rows</source>
         <translation>Změnit kategorii ve vybraných řádcích</translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="333"/>
+        <location filename="src/competitorswidget.cpp" line="334"/>
         <source>Dialog</source>
         <translation>Dialog</translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="334"/>
+        <location filename="src/competitorswidget.cpp" line="335"/>
         <source>Select class</source>
         <translation>Vybrat kategorii</translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="181"/>
+        <location filename="src/competitorswidget.cpp" line="182"/>
         <source>--- all ---</source>
         <translation>-- všechny --</translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="128"/>
+        <location filename="src/competitorswidget.cpp" line="129"/>
         <source>Show Edit/Insert competitor dialog box when card is inserted into the reader station (reader mode &quot;Entries&quot; required)</source>
         <translation>Zobrazit formulář pro upravení nebo vložení závodníka po vložení čipu do vyčítací jednotky (mód vyčítací jednotky musí být nastaven na &quot;Přihlášky&quot;)</translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="221"/>
+        <location filename="src/competitorswidget.cpp" line="222"/>
         <source>Edit Competitor</source>
         <translation>Upravit závodníka</translation>
     </message>
@@ -469,22 +469,22 @@
         <translation>Statistiky závodníků</translation>
     </message>
     <message>
-        <location filename="qml/reports/competitorsStatistics.qml" line="122"/>
+        <location filename="qml/reports/competitorsStatistics.qml" line="123"/>
         <source>Class name</source>
         <translation>Jméno kategorie</translation>
     </message>
     <message>
-        <location filename="qml/reports/competitorsStatistics.qml" line="129"/>
+        <location filename="qml/reports/competitorsStatistics.qml" line="130"/>
         <source>maps</source>
         <translation>Map</translation>
     </message>
     <message>
-        <location filename="qml/reports/competitorsStatistics.qml" line="131"/>
+        <location filename="qml/reports/competitorsStatistics.qml" line="132"/>
         <source>res</source>
         <translation>Rozdíl</translation>
     </message>
     <message>
-        <location filename="qml/reports/competitorsStatistics.qml" line="167"/>
+        <location filename="qml/reports/competitorsStatistics.qml" line="168"/>
         <source>Sum</source>
         <translation>Součet</translation>
     </message>
