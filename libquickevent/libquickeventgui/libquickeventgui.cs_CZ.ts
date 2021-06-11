@@ -116,17 +116,17 @@
     <message>
         <location filename="src/reportoptionsdialog.ui" line="258"/>
         <source>Start time format</source>
-        <translation type="unfinished"></translation>
+        <translation>Formát startovního času</translation>
     </message>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="264"/>
         <source>start at 0 (mmm.ss)  </source>
-        <translation type="unfinished"></translation>
+        <translation>čas od 0 (mmm:ss)  </translation>
     </message>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="274"/>
         <source>daytime (hh:mm:ss)</source>
-        <translation type="unfinished"></translation>
+        <translation>denní čas (hh:mm:ss)</translation>
     </message>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="284"/>
