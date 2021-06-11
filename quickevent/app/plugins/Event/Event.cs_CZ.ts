@@ -295,7 +295,7 @@ Použij: Soubor --&gt; Importovat --&gt; Závod (*.qbe) pro konverzi dat do aktu
     <message>
         <location filename="src/eventplugin.cpp" line="1160"/>
         <source>PostgreSql schema must start with letter and it may contain letters, digits and underscores only.</source>
-        <translation type="unfinished"></translation>
+        <translation>Jméno PostgreSQL schématu musí začínat písmenem a může obsahovat pouze písmena, číslice a podtržítka.</translation>
     </message>
     <message>
         <location filename="src/eventplugin.cpp" line="1165"/>
