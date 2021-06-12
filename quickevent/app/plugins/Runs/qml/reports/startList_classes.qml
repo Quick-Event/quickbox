@@ -123,7 +123,10 @@ Report {
 							Cell {
 								width: 17
 								halign: Frame.AlignRight
-								textFn: runnersDetail.dataFn("runs.siId");
+								textFn: function() {
+									var si = runnersDetail.dataFn("runs.siId")();
+									return si > 0 ? si : "";
+								}
 							}
 						}
 					}
