@@ -112,20 +112,20 @@ Report {
 						Cell {
 							visible: root.isPrintStartNumbers
 							id: hdrStartNumber
-							width: 16
+							width: 12
 							textStyle: myStyle.textStyleBold
 							halign: Frame.AlignRight
 							text: qsTr("Bib");
 						}
 						Cell {
 							id: hdrRegistration
-							width: 25
+							width: 23
 							textStyle: myStyle.textStyleBold
 							text: qsTr("Registration");
 						}
 						Cell {
 							id: hdrSI
-							width: 18
+							width: 19
 							textStyle: myStyle.textStyleBold
 							halign: Frame.AlignRight
 							text: qsTr("SI");
@@ -135,7 +135,7 @@ Report {
 							for(var i=0; i<root.stagesCount; i++) {
 								//console.warn("=============", i, qsTr("Stage") + (i+1))
 								//var runs_table = "runs" + (i+1);
-								var c = cHeaderCell.createObject(null, {"halign": Frame.AlignRight, "width": 18, "text": qsTr("Stage") + (i+1)});
+								var c = cHeaderCell.createObject(null, {"halign": Frame.AlignRight, "width": 17, "text": qsTr("Stage") + (i+1)});
 								classHeader.addItem(c);
 							}
 						}
@@ -154,7 +154,7 @@ Report {
 							layout: Frame.LayoutHorizontal
 							function dataFn(field_name) {return function() {return rowData(field_name);}}
 							Cell {
-								width: 15
+								width: 12
 								textFn: runnersDetail.dataFn("classes.name");
 							}
 							Cell {
@@ -183,7 +183,7 @@ Report {
 								//console.warn("=============", root.stageCount)
 								for(var i=0; i<root.stagesCount; i++) {
 									var runs_table = "runs" + (i+1);
-									var c = cStartTimeCell.createObject(null, {"width": 18, "halign": Frame.AlignRight, "fieldName": runs_table + ".startTimeText", "isRunning": runs_table + ".isRunning" });
+									var c = cStartTimeCell.createObject(null, {"width": 17, "halign": Frame.AlignRight, "fieldName": runs_table + ".startTimeText", "isRunning": runs_table + ".isRunning" });
 									runnersDetail.addItem(c);
 								}
 							}

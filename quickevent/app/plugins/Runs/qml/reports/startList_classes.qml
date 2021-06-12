@@ -99,13 +99,13 @@ Report {
 							layout: Frame.LayoutHorizontal
 							function dataFn(field_name) {return function() {return rowData(field_name);}}
 							Cell {
-								width: 18
+								width: 16
 								halign: Frame.AlignRight
 								textFn: runnersDetail.dataFn("startTimeText");
 							}
 							Para {
 								visible: root.isPrintStartNumbers
-								width: 9
+								width: 8
 								halign: Frame.AlignRight
 								textFn: function() {
 									var sn = runnersDetail.dataFn("startNumber")();
@@ -117,11 +117,11 @@ Report {
 								textFn: runnersDetail.dataFn("competitorName");
 							}
 							Para {
-								width: 18
+								width: 16
 								textFn: runnersDetail.dataFn("registration");
 							}
 							Cell {
-								width: 18
+								width: 17
 								halign: Frame.AlignRight
 								textFn: runnersDetail.dataFn("runs.siId");
 							}

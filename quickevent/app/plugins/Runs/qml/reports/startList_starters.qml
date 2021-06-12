@@ -97,12 +97,12 @@ Report {
 						layout: Frame.LayoutHorizontal
 						Para {
 							objectName: "minuteCellClassName"
-							width: 12
+							width: 9
 							text: detail.data(detail.currentIndex, "classes.name");
 						}
 						Para {
 							visible: root.isPrintStartNumbers
-							width: 9
+							width: 8
 							halign: Frame.AlignRight
 							text: {
 								var sn = detail.data(detail.currentIndex,"competitors.startNumber");
