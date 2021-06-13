@@ -87,6 +87,7 @@ QString HtmlUtils::fromHtmlList(const QVariantList &body_list, const HtmlUtils::
 		"<html xmlns=\"http://www.w3.org/1999/xhtml\">\n"
 		"	<head>\n"
 		"		<meta http-equiv=\"content-type\" content=\"text/html; charset={{encoding}}\" />\n"
+		"		<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n"
 		"		<title>{{documentTitle}}</title>\n"
 		"		{{style}}\n"
 		"	</head>\n";
