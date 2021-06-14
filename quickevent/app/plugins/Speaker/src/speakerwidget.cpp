@@ -142,11 +142,8 @@ void SpeakerWidget::onDbEventNotify(const QString &domain, int connection_id, co
 	qfLogFuncFrame() << "domain:" << domain << "payload:" << data;
 	if(domain == QLatin1String(Event::EventPlugin::DBEVENT_PUNCH_RECEIVED)) {
 		quickevent::core::si::PunchRecord punch(data.toMap());
-		int siid = punch.siid();
-		if(siid > 0 && punch.marking() == quickevent::core::si::PunchRecord::MARKING_RACE) {
-			updateTableView(punch.id());
-			emit punchReceived(punch);
-		}
+		updateTableView(punch.id());
+		emit punchReceived(punch);
 	}
 }
 

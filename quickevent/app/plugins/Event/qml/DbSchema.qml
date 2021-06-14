@@ -404,15 +404,10 @@ Schema {
 				},
 				Field { name: 'runTimeMs'; type: Int {}
 					comment: 'in miliseconds since runner event start'
-				},
-				Field { name: 'marking'; type: String {}
-					notNull: true
-					defaultValue: 'race';
-					comment: 'possible values: race | entries'
-				}
+                }
 			]
 			indexes: [
-				Index {fields: ['marking', 'stageId', 'code']; unique: false },
+				Index {fields: ['stageId', 'code']; unique: false },
 				Index {fields: ['runId']; unique: false }
 			]
 		},
@@ -441,16 +436,6 @@ Schema {
 		}
 	]
 	inserts: [
-		/*
-		Insert {
-			table: enumz
-			fields: ['groupName', 'groupId', 'pos', 'caption']
-			rows: [
-				['cardReader.punchMarking', 'race', 1, qsTr('Race')],
-				['cardReader.punchMarking', 'entries', 2, qsTr('Entries')]
-			]
-		},
-		*/
 		Insert {
 			table: config
 			rows: [

@@ -86,7 +86,7 @@ CompetitorsWidget::CompetitorsWidget(QWidget *parent) :
 	ui->tblCompetitors->setContextMenuPolicy(Qt::CustomContextMenu);
 	connect(ui->tblCompetitors, &qfw::TableView::customContextMenuRequested, this, &CompetitorsWidget::onCustomContextMenuRequest);
 
-	connect(competitorsPlugin(), &Competitors::CompetitorsPlugin::dbEventNotify, this, &CompetitorsWidget::onDbEventNotify);
+	connect(competitorsPlugin(), &Competitors::CompetitorsPlugin::editCompetitorOnPunch, this, &CompetitorsWidget::editCompetitorOnPunch);
 
 	QMetaObject::invokeMethod(this, "lazyInit", Qt::QueuedConnection);
 }
@@ -122,12 +122,6 @@ void CompetitorsWidget::settleDownInPartWidget(Competitors::ThisPartWidget *part
 			main_tb->addWidget(m_cbxClasses);
 		}
 		lbl->setBuddy(m_cbxClasses);
-	}
-	main_tb->addSeparator();
-	{
-		m_cbxEditCompetitorOnPunch = new QCheckBox(tr("Edit on punch"));
-		m_cbxEditCompetitorOnPunch->setToolTip(tr("Show Edit/Insert competitor dialog box when card is inserted into the reader station (reader mode \"Entries\" required)"));
-		main_tb->addWidget(m_cbxEditCompetitorOnPunch);
 	}
 
 	qf::qmlwidgets::Action *act_print = part_widget->menuBar()->actionForPath("print");
@@ -217,7 +211,7 @@ void CompetitorsWidget::editCompetitor_helper(const QVariant &id, int mode, int 
 {
 	qfLogFuncFrame() << "id:" << id << "mode:" << mode;
 	//qf::core::sql::Transaction transaction;
-	m_cbxEditCompetitorOnPunch->setEnabled(false);
+	editCompetitorLock = true;
 	auto *w = new CompetitorWidget();
 	w->setWindowTitle(tr("Edit Competitor"));
 	qfd::Dialog dlg(QDialogButtonBox::Save | QDialogButtonBox::Cancel, this);
@@ -249,7 +243,7 @@ void CompetitorsWidget::editCompetitor_helper(const QVariant &id, int mode, int 
 	//	transaction.commit();
 	//else
 	//	transaction.rollback();
-	m_cbxEditCompetitorOnPunch->setEnabled(true);
+	editCompetitorLock = false;
 	if(ok && save_and_next) {
 		QTimer::singleShot(0, [this]() {
 			this->editCompetitor(QVariant(), qf::core::model::DataDocument::ModeInsert);
@@ -288,21 +282,10 @@ void CompetitorsWidget::editCompetitors(int mode)
 	}
 }
 
-void CompetitorsWidget::onDbEventNotify(const QString &domain, int connection_id, const QVariant &data)
-{
-	Q_UNUSED(connection_id)
-	qfLogFuncFrame() << "domain:" << domain << "payload:" << data;
-	if(m_cbxEditCompetitorOnPunch->isEnabled() && m_cbxEditCompetitorOnPunch->isChecked() && domain == QLatin1String(Event::EventPlugin::DBEVENT_PUNCH_RECEIVED)) {
-		quickevent::core::si::PunchRecord punch(data.toMap());
-		int siid = punch.siid();
-		if(siid > 0 && punch.marking() == quickevent::core::si::PunchRecord::MARKING_ENTRIES) {
-			editCompetitorOnPunch(siid);
-		}
-	}
-}
-
 void CompetitorsWidget::editCompetitorOnPunch(int siid)
 {
+	if (editCompetitorLock)
+		return;
 	qfs::Query q;
 	q.exec("SELECT id FROM competitors WHERE siId=" + QString::number(siid), qfc::Exception::Throw);
 	if(q.next()) {
