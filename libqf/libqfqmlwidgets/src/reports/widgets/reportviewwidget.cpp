@@ -38,6 +38,7 @@
 #include <QDomDocument>
 #include <QDir>
 #include <QApplication>
+#include <QTextStream>
 //#include <QStyle>
 
 #include <typeinfo>
