@@ -211,43 +211,49 @@ void CompetitorsWidget::editCompetitor_helper(const QVariant &id, int mode, int 
 {
 	qfLogFuncFrame() << "id:" << id << "mode:" << mode;
 	//qf::core::sql::Transaction transaction;
-	editCompetitorLock = true;
-	auto *w = new CompetitorWidget();
-	w->setWindowTitle(tr("Edit Competitor"));
-	qfd::Dialog dlg(QDialogButtonBox::Save | QDialogButtonBox::Cancel, this);
-	dlg.setDefaultButton(QDialogButtonBox::Save);
-	bool save_and_next = false;
-	if(mode == qf::core::model::DataDocument::ModeInsert || mode == qf::core::model::DataDocument::ModeEdit) {
-		QPushButton *bt_save_and_next = dlg.buttonBox()->addButton(tr("Save and &next"), QDialogButtonBox::AcceptRole);
-		connect(dlg.buttonBox(), &qf::qmlwidgets::DialogButtonBox::clicked, [&save_and_next, bt_save_and_next](QAbstractButton *button) {
-			save_and_next = (button == bt_save_and_next);
-		});
-	}
-	dlg.setCentralWidget(w);
-	w->load(id, mode);
-	auto *doc = qobject_cast<Competitors::CompetitorDocument*>(w->dataController()->document());
-	QF_ASSERT(doc != nullptr, "Document is null!", return);
-	if(mode == qfm::DataDocument::ModeInsert) {
-		if(siid == 0) {
-			int class_id = m_cbxClasses->currentData().toInt();
-			doc->setValue("competitors.classId", class_id);
+	if(auto lock = std::unique_lock<std::mutex>{m_editCompetitorMutex, std::try_to_lock})
+	{
+		auto *w = new CompetitorWidget();
+		w->setWindowTitle(tr("Edit Competitor"));
+		qfd::Dialog dlg(QDialogButtonBox::Save | QDialogButtonBox::Cancel, this);
+		dlg.setDefaultButton(QDialogButtonBox::Save);
+		bool save_and_next = false;
+		if(mode == qf::core::model::DataDocument::ModeInsert || mode == qf::core::model::DataDocument::ModeEdit) {
+			QPushButton *bt_save_and_next = dlg.buttonBox()->addButton(tr("Save and &next"), QDialogButtonBox::AcceptRole);
+			connect(dlg.buttonBox(), &qf::qmlwidgets::DialogButtonBox::clicked, [&save_and_next, bt_save_and_next](QAbstractButton *button) {
+				save_and_next = (button == bt_save_and_next);
+			});
 		}
-		else {
-			w->loadFromRegistrations(siid);
+		dlg.setCentralWidget(w);
+		w->load(id, mode);
+		auto *doc = qobject_cast<Competitors::CompetitorDocument*>(w->dataController()->document());
+		QF_ASSERT(doc != nullptr, "Document is null!", return);
+		if(mode == qfm::DataDocument::ModeInsert) {
+			if(siid == 0) {
+				int class_id = m_cbxClasses->currentData().toInt();
+				doc->setValue("competitors.classId", class_id);
+			}
+			else {
+				w->loadFromRegistrations(siid);
+			}
+		}
+		connect(doc, &Competitors::CompetitorDocument::saved, ui->tblCompetitors, &qf::qmlwidgets::TableView::rowExternallySaved, Qt::QueuedConnection);
+		connect(doc, &Competitors::CompetitorDocument::saved, competitorsPlugin(), &Competitors::CompetitorsPlugin::competitorEdited, Qt::QueuedConnection);
+		bool ok = dlg.exec();
+		//if(ok)
+		//	transaction.commit();
+		//else
+		//	transaction.rollback();
+		lock.unlock();
+		if(ok && save_and_next) {
+			QTimer::singleShot(0, [this]() {
+				this->editCompetitor(QVariant(), qf::core::model::DataDocument::ModeInsert);
+			});
 		}
 	}
-	connect(doc, &Competitors::CompetitorDocument::saved, ui->tblCompetitors, &qf::qmlwidgets::TableView::rowExternallySaved, Qt::QueuedConnection);
-	connect(doc, &Competitors::CompetitorDocument::saved, competitorsPlugin(), &Competitors::CompetitorsPlugin::competitorEdited, Qt::QueuedConnection);
-	bool ok = dlg.exec();
-	//if(ok)
-	//	transaction.commit();
-	//else
-	//	transaction.rollback();
-	editCompetitorLock = false;
-	if(ok && save_and_next) {
-		QTimer::singleShot(0, [this]() {
-			this->editCompetitor(QVariant(), qf::core::model::DataDocument::ModeInsert);
-		});
+	else
+	{
+		qfDebug() << "Another competitor dialog is opened, ignoring..";
 	}
 }
 
@@ -284,8 +290,6 @@ void CompetitorsWidget::editCompetitors(int mode)
 
 void CompetitorsWidget::editCompetitorOnPunch(int siid)
 {
-	if (editCompetitorLock)
-		return;
 	qfs::Query q;
 	q.exec("SELECT id FROM competitors WHERE siId=" + QString::number(siid), qfc::Exception::Throw);
 	if(q.next()) {
