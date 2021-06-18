@@ -182,8 +182,6 @@ QVariant EventStatisticsModel::value(int row_ix, int column_ix) const
 		}
 		int start_last_msec = value(row_ix, col_startLastMs).toInt();
 		int time_to_close_msec = stage_start_msec + start_last_msec + time3_msec - curr_time_msec;
-		if(time_to_close_msec < 0)
-			time_to_close_msec = 0;
 		return time_to_close_msec;
 	}
 	if(column_ix == col_runnersNotFinished) {
