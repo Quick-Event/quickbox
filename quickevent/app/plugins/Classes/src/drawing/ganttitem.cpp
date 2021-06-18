@@ -16,6 +16,8 @@
 #include <QJsonDocument>
 
 namespace qfs = qf::core::sql;
+using qf::qmlwidgets::framework::getPlugin;
+using Event::EventPlugin;
 
 using namespace drawing;
 
@@ -59,18 +61,10 @@ StartSlotItem *GanttItem::addStartSlotItem()
 	return it;
 }
 
-Event::EventPlugin *GanttItem::eventPlugin()
-{
-	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	auto plugin = qobject_cast<Event::EventPlugin *>(fwk->plugin("Event"));
-	QF_ASSERT(plugin != nullptr, "Bad plugin", return nullptr);
-	return plugin;
-}
-
 void GanttItem::load(int stage_id)
 {
 	qfLogFuncFrame();
-	Event::StageData stage_data = eventPlugin()->stageData(stage_id);
+	Event::StageData stage_data = getPlugin<EventPlugin>()->stageData(stage_id);
 	DrawingConfig dc(stage_data.drawingConfig());
 	QVariantList stsllst = dc.startSlots();
 
@@ -132,7 +126,7 @@ void GanttItem::save(int stage_id)
 {
 	qfLogFuncFrame();
 	{
-		Event::StageData stage = eventPlugin()->stageData(stage_id);
+		Event::StageData stage = getPlugin<EventPlugin>()->stageData(stage_id);
 		DrawingConfig dc(stage.drawingConfig());
 		QVariantList start_slots;
 		for (int i = 0; i < startSlotItemCount(); ++i) {
@@ -150,7 +144,7 @@ void GanttItem::save(int stage_id)
 		q.bindValue(":drawingConfig", dc_str);
 		q.bindValue(":id", stage_id);
 		q.exec(qf::core::Exception::Throw);
-		eventPlugin()->clearStageDataCache();
+		getPlugin<EventPlugin>()->clearStageDataCache();
 	}
 	{
 		QString qs = "UPDATE classdefs SET"

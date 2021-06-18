@@ -20,24 +20,12 @@
 #include <QStandardPaths>
 #include <QTimer>
 
+using qf::qmlwidgets::framework::getPlugin;
+using Event::EventPlugin;
+using Runs::RunsPlugin;
+
 namespace Runs {
 namespace services {
-
-static Runs::RunsPlugin *runsPlugin()
-{
-	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	auto *plugin = qobject_cast<Runs::RunsPlugin *>(fwk->plugin("Runs"));
-	QF_ASSERT_EX(plugin != nullptr, "Bad plugin");
-	return plugin;
-}
-
-Event::EventPlugin *eventPlugin()
-{
-	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	auto plugin = qobject_cast<Event::EventPlugin *>(fwk->plugin("Event"));
-	QF_ASSERT_EX(plugin != nullptr, "Bad plugin");
-	return plugin;
-}
 
 ResultsExporter::ResultsExporter(QObject *parent)
 	: Super(ResultsExporter::serviceName(), parent)
@@ -73,15 +61,15 @@ bool ResultsExporter::exportResults()
 	}
 	qfInfo() << "ResultsExporter export dir:" << ss.exportDir();
 	if(ss.outputFormat() == static_cast<int>(ResultsExporterSettings::OutputFormat::CSOS)) {
-		int current_stage = eventPlugin()->currentStageId();
+		int current_stage = getPlugin<EventPlugin>()->currentStageId();
 		QString fn = ss.exportDir() + "/results-csos.txt";
-		runsPlugin()->exportResultsCsosStage(current_stage, fn);
+		getPlugin<RunsPlugin>()->exportResultsCsosStage(current_stage, fn);
 		return true;
 	}
 	if(ss.outputFormat() == static_cast<int>(ResultsExporterSettings::OutputFormat::IofXml3)) {
-		int current_stage = eventPlugin()->currentStageId();
+		int current_stage = getPlugin<EventPlugin>()->currentStageId();
 		QString fn = ss.exportDir() + "/results-csos.txt";
-		runsPlugin()->exportResultsIofXml30Stage(current_stage, fn);
+		getPlugin<RunsPlugin>()->exportResultsIofXml30Stage(current_stage, fn);
 		return true;
 	}
 	else if(ss.outputFormat() == static_cast<int>(ResultsExporterSettings::OutputFormat::HtmlMulti)) {

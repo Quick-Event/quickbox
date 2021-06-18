@@ -12,15 +12,7 @@
 #include <qf/core/assert.h>
 
 #include <QMimeData>
-/*
-static Runs::RunsPlugin *runsPlugin()
-{
-	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	auto *plugin = qobject_cast<Runs::RunsPlugin *>(fwk->plugin("Runs"));
-	QF_ASSERT(plugin != nullptr, "Runs plugin not installed!", return nullptr);
-	return plugin;
-}
-*/
+
 RunsTableModel::RunsTableModel(QObject *parent)
 	: Super(parent)
 {
@@ -321,7 +313,7 @@ bool RunsTableModel::postRow(int row_no, bool throw_exc)
 			/*
 			QVariant v = value(row_no, col_runs_finishTimeMs);
 			if(!v.isNull()) {
-				runsPlugin()->reloadTimesFromCard(run_id);
+				getPlugin<RunsPlugin>()->reloadTimesFromCard(run_id);
 				reloadRow(row_no);
 			}
 			*/

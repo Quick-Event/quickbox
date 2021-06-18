@@ -54,8 +54,6 @@ private:
 	void onCustomContextMenuRequest(const QPoint &pos);
 	void printSelectedCards();
 
-	Receipts::ReceiptsPlugin* receiptsPlugin();
-	Event::EventPlugin* eventPlugin();
 	void onCardRead();
 	void printNewCards();
 	void loadNewCards();

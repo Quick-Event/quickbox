@@ -36,28 +36,8 @@
 #include <QUrl>
 #include <QInputDialog>
 
-static Event::EventPlugin* eventPlugin()
-{
-	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	return fwk->plugin<Event::EventPlugin*>();
-}
-/*
-static Event::EventPlugin* classesPlugin()
-{
-	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	auto *plugin = qobject_cast<Event::EventPlugin*>(fwk->plugin("Event"));
-	QF_ASSERT_EX(plugin != nullptr, "Bad event plugin!");
-	return plugin;
-}
-
-static Competitors::CompetitorsPlugin* competitorsPlugin()
-{
-	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	auto *plugin = qobject_cast<Competitors::CompetitorsPlugin*>(fwk->plugin("Competitors"));
-	QF_ASSERT_EX(plugin != nullptr, "Bad Competitors plugin!");
-	return plugin;
-}
-*/
+using qf::qmlwidgets::framework::getPlugin;
+using Event::EventPlugin;
 
 void OrisImporter::saveJsonBackup(const QString &fn, const QJsonDocument &jsd)
 {
@@ -149,7 +129,7 @@ void OrisImporter::syncCurrentEventEntries()
 {
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 	//if(!qf::qmlwidgets::dialogs::MessageBox::askYesNo(fwk, tr("All runners entries imported from Oris will be synchronized, manual changes will be lost!")))
-	int oris_id = eventPlugin()->eventConfig()->importId();
+	int oris_id = getPlugin<EventPlugin>()->eventConfig()->importId();
 	if(oris_id == 0) {
 		qf::qmlwidgets::dialogs::MessageBox::showError(fwk, tr("Cannot find Oris import ID."));
 		return;
@@ -161,11 +141,11 @@ void OrisImporter::syncRelaysEntries(int oris_id)
 {
 	/*
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	if(!eventPlugin()->eventConfig()->isRelays()) {
+	if(!getPlugin<EventPlugin>()->eventConfig()->isRelays()) {
 		qf::qmlwidgets::dialogs::MessageBox::showError(fwk, tr("Not relays event."));
 		return;
 	}
-	int oris_id = eventPlugin()->eventConfig()->importId();
+	int oris_id = getPlugin<EventPlugin>()->eventConfig()->importId();
 	if(oris_id == 0) {
 		qf::qmlwidgets::dialogs::MessageBox::showError(fwk, tr("Cannot find Oris import ID."));
 		return;
@@ -372,10 +352,10 @@ void OrisImporter::importEvent(int event_id)
 			ecfg["disciplineId"] = discipline_id;
 			ecfg["importId"] = event_id;
 			ecfg["time"] = QTime::fromString(data.value(QStringLiteral("StartTime")).toString(), QStringLiteral("hh:mm"));
-			if(!eventPlugin()->createEvent(QString(), ecfg))
+			if(!getPlugin<EventPlugin>()->createEvent(QString(), ecfg))
 				return;
 
-			//QString event_name = eventPlugin()->eventName();
+			//QString event_name = getPlugin<EventPlugin>()->eventName();
 			qf::core::sql::Transaction transaction;
 
 			int items_processed = 0;
@@ -466,7 +446,7 @@ const char KEY_ORIG_RUNS[] = "origRuns";
 
 void OrisImporter::importEventOrisEntries(int event_id)
 {
-	if(eventPlugin()->eventConfig()->isRelays()) {
+	if(getPlugin<EventPlugin>()->eventConfig()->isRelays()) {
 		syncRelaysEntries(event_id);
 		return;
 	}
@@ -476,7 +456,7 @@ void OrisImporter::importEventOrisEntries(int event_id)
 		saveJsonBackup(json_fn, jsd);
 		qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 		try {
-			int stage_cnt = eventPlugin()->stageCount();
+			int stage_cnt = getPlugin<EventPlugin>()->stageCount();
 			qf::core::sql::Query q;
 			QMap<int, QString> classes_map; // classes.id->classes.name
 			q.exec("SELECT id, name FROM classes", qf::core::Exception::Throw);
@@ -737,7 +717,7 @@ void OrisImporter::importEventOrisEntries(int event_id)
 				transaction.commit();
 			}
 			qDeleteAll(doc_lst);
-			emit eventPlugin()->reloadDataRequest();
+			emit getPlugin<EventPlugin>()->reloadDataRequest();
 		}
 		catch (qf::core::Exception &e) {
 			qf::qmlwidgets::dialogs::MessageBox::showException(fwk, e);
@@ -747,7 +727,7 @@ void OrisImporter::importEventOrisEntries(int event_id)
 
 void OrisImporter::importRegistrations()
 {
-	int sport_id = eventPlugin()->eventConfig()->sportId();
+	int sport_id = getPlugin<EventPlugin>()->eventConfig()->sportId();
 	int year = QDate::currentDate().addMonths(-2).year();
 
 	bool ok;
@@ -801,7 +781,7 @@ void OrisImporter::importRegistrations()
 			}
 			transaction.commit();
 			fwk->hideProgress();
-			QMetaObject::invokeMethod(fwk->plugin("Event"), "emitDbEvent", Qt::QueuedConnection
+			QMetaObject::invokeMethod(getPlugin<EventPlugin>(), "emitDbEvent", Qt::QueuedConnection
 									  , Q_ARG(QString, Event::EventPlugin::DBEVENT_REGISTRATIONS_IMPORTED)
 									  , Q_ARG(QVariant, QVariant())
 									  , Q_ARG(bool, true)

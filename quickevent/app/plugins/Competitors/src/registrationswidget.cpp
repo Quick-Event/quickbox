@@ -13,23 +13,9 @@
 
 namespace qfm = qf::core::model;
 namespace qfs = qf::core::sql;
+using qf::qmlwidgets::framework::getPlugin;
+using Competitors::CompetitorsPlugin;
 
-static Competitors::CompetitorsPlugin* thisPlugin()
-{
-	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	auto plugin = qobject_cast<Competitors::CompetitorsPlugin *>(fwk->plugin("Competitors"));
-	QF_ASSERT_EX(plugin != nullptr, "Bad plugin");
-	return plugin;
-}
-/*
-static Event::EventPlugin* eventPlugin()
-{
-	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	auto *plugin = qobject_cast<Event::EventPlugin*>(fwk->plugin("Event"));
-	QF_ASSERT_EX(plugin != nullptr, "Bad Event plugin!");
-	return plugin;
-}
-*/
 RegistrationsWidget::RegistrationsWidget(QWidget *parent) :
 	QWidget(parent),
 	ui(new Ui::RegistrationsWidget)
@@ -55,7 +41,7 @@ void RegistrationsWidget::checkModel()
 		return;
 
 	if(!ui->tblRegistrations->tableModel()) {
-		qf::core::model::SqlTableModel *reg_model = thisPlugin()->registrationsModel();
+		qf::core::model::SqlTableModel *reg_model = getPlugin<CompetitorsPlugin>()->registrationsModel();
 		ui->tblRegistrations->setTableModel(reg_model);
 		connect(reg_model, &qf::core::model::SqlTableModel::reloaded, [this]() {
 			ui->tblRegistrations->horizontalHeader()->resizeSections(QHeaderView::ResizeToContents);

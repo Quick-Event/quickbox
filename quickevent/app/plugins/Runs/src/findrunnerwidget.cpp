@@ -10,16 +10,10 @@
 
 namespace qfm = qf::core::model;
 namespace qfs = qf::core::sql;
+using qf::qmlwidgets::framework::getPlugin;
+using Runs::RunsPlugin;
 
 namespace Runs {
-
-static RunsPlugin *runsPlugin()
-{
-	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	auto *plugin = qobject_cast<Runs::RunsPlugin *>(fwk->plugin("Runs"));
-	QF_ASSERT_EX(plugin != nullptr, "Bad plugin");
-	return plugin;
-}
 
 const QString FindRunnerWidget::UseSIInNextStages = QStringLiteral("useSIInNextStages");
 
@@ -30,7 +24,7 @@ FindRunnerWidget::FindRunnerWidget(int stage_id, QWidget *parent)
 {
 	ui->setupUi(this);
 	ui->edFindRunner->setFocus();
-	ui->edFindRunner->setTable(runsPlugin()->runnersTable(stage_id));
+	ui->edFindRunner->setTable(getPlugin<RunsPlugin>()->runnersTable(stage_id));
 	//connect(ui->edFindRunner, &FindRunnerEdit::runnerSelected, this, &FindRunnerWidget::onRunnerSelected);
 }
 

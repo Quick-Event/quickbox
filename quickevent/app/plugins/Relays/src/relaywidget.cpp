@@ -87,22 +87,6 @@ bool LegsModel::setValue(int row_ix, int column_ix, const QVariant &val)
 }
 
 }
-/*
-static Relays::RelaysPlugin* competitorsPlugin()
-{
-	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	qf::qmlwidgets::framework::Plugin *plugin = fwk->plugin("Relays");
-	return qobject_cast<Relays::RelaysPlugin *>(plugin);
-}
-
-static Event::EventPlugin* eventPlugin()
-{
-	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	auto *plugin = qobject_cast<Event::EventPlugin*>(fwk->plugin("Event"));
-	QF_ASSERT_EX(plugin != nullptr, "Bad event plugin!");
-	return plugin;
-}
-*/
 
 RelayWidget:: RelayWidget(QWidget *parent) :
 	Super(parent),

@@ -25,14 +25,8 @@ namespace qfw = qf::qmlwidgets;
 namespace qff = qf::qmlwidgets::framework;
 namespace qfd = qf::qmlwidgets::dialogs;
 namespace qfm = qf::core::model;
-
-static Event::EventPlugin* eventPlugin()
-{
-	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	auto *plugin = qobject_cast<Event::EventPlugin*>(fwk->plugin("Event"));
-	QF_ASSERT_EX(plugin != nullptr, "Bad Event plugin!");
-	return plugin;
-}
+using qf::qmlwidgets::framework::getPlugin;
+using Event::EventPlugin;
 
 CodeClassResultsWidget::CodeClassResultsWidget(QWidget *parent)
 	: QWidget(parent)
@@ -73,9 +67,9 @@ void CodeClassResultsWidget::reloadDeferred()
 
 void CodeClassResultsWidget::reload()
 {
-	if(!eventPlugin()->isEventOpen())
+	if(!getPlugin<EventPlugin>()->isEventOpen())
 		return;
-	int stage_id = eventPlugin()->currentStageId();
+	int stage_id = getPlugin<EventPlugin>()->currentStageId();
 	int class_id = this->ui->lstClass->currentData().toInt();
 	int code = (m_pinnedToCode == ALL_CODES)? ui->lstCode->currentData().toInt(): m_pinnedToCode;
 	if(class_id == 0 || code == 0) {
@@ -139,7 +133,7 @@ void CodeClassResultsWidget::reset(int class_id, int code, int pin_to_code)
 		ui->lblCode->show();
 		ui->lstCode->show();
 		connect(ui->lstClass, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), [this](int ) {
-			int stage_id = eventPlugin()->currentStageId();
+			int stage_id = getPlugin<EventPlugin>()->currentStageId();
 			int class_id = this->ui->lstClass->currentData().toInt();
 			ui->lstCode->blockSignals(true);
 			ui->lstCode->clear();

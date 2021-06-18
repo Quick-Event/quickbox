@@ -8,6 +8,9 @@
 #include <qf/core/sql/querybuilder.h>
 #include <qf/core/assert.h>
 
+using qf::qmlwidgets::framework::getPlugin;
+using Event::EventPlugin;
+
 namespace Classes {
 
 ClassDocument::ClassDocument(QObject *parent)
@@ -18,13 +21,6 @@ ClassDocument::ClassDocument(QObject *parent)
 			.from("classes")
 			.where("classes.id={{ID}}");
 	setQueryBuilder(qb);
-}
-
-static Event::EventPlugin* eventPlugin()
-{
-	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	qf::qmlwidgets::framework::Plugin *plugin = fwk->plugin("Event");
-	return qobject_cast<Event::EventPlugin *>(plugin);
 }
 
 bool ClassDocument::saveData()
@@ -38,10 +34,7 @@ bool ClassDocument::saveData()
 			int class_id = dataId().toInt();
 			//int si_id = value("competitors.siId").toInt();
 
-			auto *event_plugin = eventPlugin();
-			QF_ASSERT(event_plugin != nullptr, "invalid Event plugin type", return false);
-
-			int stage_count = event_plugin->stageCount();
+			int stage_count = getPlugin<EventPlugin>()->stageCount();
 			qf::core::sql::Query q(model()->connectionName());
 			q.prepare("INSERT INTO classdefs (classId, stageId) VALUES (:classId, :stageId)");
 			for(int i=0; i<stage_count; i++) {

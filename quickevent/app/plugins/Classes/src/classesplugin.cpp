@@ -26,16 +26,10 @@ namespace qfw = qf::qmlwidgets;
 namespace qff = qf::qmlwidgets::framework;
 //namespace qfd = qf::qmlwidgets::dialogs;
 namespace qfs = qf::core::sql;
+using qf::qmlwidgets::framework::getPlugin;
+using Event::EventPlugin;
 
 namespace Classes {
-
-static Event::EventPlugin* eventPlugin()
-{
-	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	auto *plugin = qobject_cast<Event::EventPlugin*>(fwk->plugin("Event"));
-	QF_ASSERT_EX(plugin != nullptr, "Bad event plugin!");
-	return plugin;
-}
 
 ClassesPlugin::ClassesPlugin(QObject *parent)
 	: Super("Classes", parent)
@@ -85,7 +79,7 @@ void ClassesPlugin::createCourses(int stage_id, const QList<ImportCourseDef> &co
 {
 	qfLogFuncFrame();
 	try {
-		bool is_relays = eventPlugin()->eventConfig()->isRelays();
+		bool is_relays = getPlugin<EventPlugin>()->eventConfig()->isRelays();
 		qf::core::sql::Transaction transaction(qf::core::sql::Connection::forName());
 		qf::core::sql::Query q;
 		deleteCourses(stage_id);

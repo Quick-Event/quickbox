@@ -7,6 +7,7 @@
 #include "cardchecker.h"
 
 #include <Event/eventplugin.h>
+#include <Receipts/receiptsplugin.h>
 #include <Runs/findrunnerwidget.h>
 
 #include <quickevent/gui/og/itemdelegate.h>
@@ -67,30 +68,10 @@ namespace qfs = qf::core::sql;
 namespace qff = qf::qmlwidgets::framework;
 namespace qfw = qf::qmlwidgets;
 namespace qfd = qf::qmlwidgets::dialogs;
-
-static CardReader::CardReaderPlugin* thisPlugin()
-{
-	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	auto *plugin = qobject_cast<CardReader::CardReaderPlugin*>(fwk->plugin("CardReader"));
-	QF_ASSERT_EX(plugin != nullptr, "Bad CardReader plugin!");
-	return plugin;
-}
-
-static Event::EventPlugin* eventPlugin()
-{
-	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	auto *plugin = qobject_cast<Event::EventPlugin*>(fwk->plugin("Event"));
-	QF_ASSERT_EX(plugin != nullptr, "Bad Event plugin!");
-	return plugin;
-}
-
-static qf::qmlwidgets::framework::Plugin *receiptsPlugin()
-{
-	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	auto plugin = qobject_cast<qf::qmlwidgets::framework::Plugin*>(fwk->plugin("Receipts"));
-	QF_ASSERT(plugin != nullptr, "Bad Receipts plugin", return nullptr);
-	return plugin;
-}
+using qf::qmlwidgets::framework::getPlugin;
+using Event::EventPlugin;
+using CardReader::CardReaderPlugin;
+using Receipts::ReceiptsPlugin;
 
 namespace {
 class Model : public quickevent::core::og::SqlTableModel
@@ -194,7 +175,7 @@ CardReaderWidget::CardReaderWidget(QWidget *parent)
 
 	createActions();
 
-	connect(thisPlugin(), &CardReader::CardReaderPlugin::siTaskFinished, this, &CardReaderWidget::onSiTaskFinished);
+	connect(getPlugin<CardReaderPlugin>(), &CardReader::CardReaderPlugin::siTaskFinished, this, &CardReaderWidget::onSiTaskFinished);
 	{
 		ui->tblCardsTB->setTableView(ui->tblCards);
 
@@ -244,31 +225,18 @@ void CardReaderWidget::onCustomContextMenuRequest(const QPoint & pos)
 		showSelectedCard();
 	}
 	else if(a == &a_print_receipt) {
-		qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-		auto *plugin = fwk->plugin("Receipts");
-		if(!plugin) {
-			qfError() << "Cannot find Receipts plugin!";
-			return;
-		}
 		int card_id = ui->tblCards->tableRow().value("cards.id").toInt();
-		QMetaObject::invokeMethod(plugin, "printReceipt", Q_ARG(int, card_id));
+		QMetaObject::invokeMethod(getPlugin<ReceiptsPlugin>(), "printReceipt", Q_ARG(int, card_id));
 	}
 	else if(a == &a_print_card) {
-		qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-		auto *plugin = fwk->plugin("Receipts");
-		if(!plugin) {
-			qfError() << "Cannot find Receipts plugin!";
-			return;
-		}
 		int card_id = ui->tblCards->tableRow().value("cards.id").toInt();
-		QMetaObject::invokeMethod(plugin, "printCard", Q_ARG(int, card_id));
+		QMetaObject::invokeMethod(getPlugin<ReceiptsPlugin>(), "printCard", Q_ARG(int, card_id));
 	}
 	else if(a == &a_assign_runner) {
 		assignRunnerToSelectedCard();
 	}
 	else if(a == &a_recalculate_times) {
 		qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-		auto *this_plugin = thisPlugin();
 		int curr_ix = 0;
 		QList<int> sel_ixs = ui->tblCards->selectedRowsIndexes();
 		for(int ix : sel_ixs) {
@@ -278,7 +246,7 @@ void CardReaderWidget::onCustomContextMenuRequest(const QPoint & pos)
 			fwk->showProgress(tr("Recalculating times for %1").arg(row.value(QStringLiteral("competitorName")).toString()), ++curr_ix, sel_ixs.count());
 			try {
 				qf::core::sql::Transaction transaction;
-				this_plugin->reloadTimesFromCard(card_id, run_id, false);
+				getPlugin<CardReaderPlugin>()->reloadTimesFromCard(card_id, run_id, false);
 				ui->tblCards->reloadRow(ix);
 				transaction.commit();
 			}
@@ -387,9 +355,8 @@ void CardReaderWidget::settleDownInPartWidget(CardReaderPartWidget *part_widget)
 	{
 		QLabel *lbl = new QLabel(tr(" Check type "));
 		main_tb->addWidget(lbl);
-		auto *card_reader_plugin = qobject_cast<CardReader::CardReaderPlugin*>(part_widget->plugin(qf::core::Exception::Throw));
 		m_cbxCardCheckers = new QComboBox();
-		for(auto checker : card_reader_plugin->cardCheckers()) {
+		for(auto checker : getPlugin<CardReaderPlugin>()->cardCheckers()) {
 			m_cbxCardCheckers->addItem(checker->caption());
 		}
 		main_tb->addWidget(m_cbxCardCheckers);
@@ -410,12 +377,12 @@ void CardReaderWidget::settleDownInPartWidget(CardReaderPartWidget *part_widget)
 		m_lblCommInfo = new QLabel();
 		main_tb->addWidget(m_lblCommInfo);
 	}
-	connect(eventPlugin(), &Event::EventPlugin::dbEventNotify, this, &CardReaderWidget::onDbEventNotify, Qt::QueuedConnection);
+	connect(getPlugin<EventPlugin>(), &Event::EventPlugin::dbEventNotify, this, &CardReaderWidget::onDbEventNotify, Qt::QueuedConnection);
 }
 
 void CardReaderWidget::reset()
 {
-	if(!eventPlugin()->isEventOpen()) {
+	if(!getPlugin<EventPlugin>()->isEventOpen()) {
 		m_cardsModel->clearRows();
 		return;
 	}
@@ -424,9 +391,9 @@ void CardReaderWidget::reset()
 
 void CardReaderWidget::reload()
 {
-	bool is_relays = eventPlugin()->eventConfig()->isRelays();
+	bool is_relays = getPlugin<EventPlugin>()->eventConfig()->isRelays();
 	//QString driver_name = m_cardsModel->sqlConnection().driverName();
-	int current_stage = thisPlugin()->currentStageId();
+	int current_stage = getPlugin<CardReaderPlugin>()->currentStageId();
 	qfs::QueryBuilder qb;
 	qb.select2("cards", "id, siId, runId, checkTime, startTime, finishTime, runIdAssignError")
 			.select2("runs", "id, startTimeMs, timeMs, finishTimeMs, misPunch, disqualified, cardReturned")
@@ -679,23 +646,23 @@ void CardReaderWidget::processSICard(const siut::SICard &card)
 		quickevent::core::si::PunchRecord punch;
 		punch.setsiid(card.cardNumber());
 		punch.setmarking(punch_marking);
-		int punch_id = thisPlugin()->savePunchRecordToSql(punch);
+		int punch_id = getPlugin<CardReaderPlugin>()->savePunchRecordToSql(punch);
 		if(punch_id > 0) {
 			punch.setid(punch_id);
-			eventPlugin()->emitDbEvent(Event::EventPlugin::DBEVENT_PUNCH_RECEIVED, punch, true);
+			getPlugin<EventPlugin>()->emitDbEvent(Event::EventPlugin::DBEVENT_PUNCH_RECEIVED, punch, true);
 		}
 		return;
 	}
 
 	QString err_msg;
-	int run_id = thisPlugin()->findRunId(card.cardNumber(), card.finishTime(), &err_msg);
+	int run_id = getPlugin<CardReaderPlugin>()->findRunId(card.cardNumber(), card.finishTime(), &err_msg);
 
 	if(run_id == 0) {
 		operatorAudioWakeUp();
 		appendLog(NecroLog::Level::Error, err_msg);
 	}
 	else {
-		bool card_lent = thisPlugin()->isCardLent(card.cardNumber(), card.finishTime(), run_id);
+		bool card_lent = getPlugin<CardReaderPlugin>()->isCardLent(card.cardNumber(), card.finishTime(), run_id);
 		if(card_lent)
 			operatorAudioNotify();
 	}
@@ -721,14 +688,14 @@ bool CardReaderWidget::processReadCardInTransaction(const quickevent::core::si::
 
 void CardReaderWidget::processReadCard(const quickevent::core::si::ReadCard &read_card)
 {
-	int card_id = thisPlugin()->saveCardToSql(read_card);
+	int card_id = getPlugin<CardReaderPlugin>()->saveCardToSql(read_card);
 	if(card_id && read_card.runId()) {
-		thisPlugin()->assignCardToRun(card_id, read_card.runId());
+		getPlugin<CardReaderPlugin>()->assignCardToRun(card_id, read_card.runId());
 	}
 	if(card_id) {
 		/// receipts printer needs this
 		/// emitDbEvent is using queued invocation
-		eventPlugin()->emitDbEvent(Event::EventPlugin::DBEVENT_CARD_READ, card_id, true);
+		getPlugin<EventPlugin>()->emitDbEvent(Event::EventPlugin::DBEVENT_CARD_READ, card_id, true);
 	}
 }
 
@@ -739,16 +706,16 @@ void CardReaderWidget::processSIPunch(const siut::SIPunch &rec)
 	QString punch_marking = m_cbxPunchMarking->currentData().toString();
 	punch.setmarking(punch_marking);
 	if(punch_marking == quickevent::core::si::PunchRecord::MARKING_RACE) {
-		int run_id = thisPlugin()->findRunId(rec.cardNumber(), 0xEEEE);
+		int run_id = getPlugin<CardReaderPlugin>()->findRunId(rec.cardNumber(), 0xEEEE);
 		if(run_id == 0)
 			appendLog(NecroLog::Level::Error, tr("Cannot find run for punch record SI: %1").arg(rec.cardNumber()));
 		else
 			punch.setrunid(run_id);
 	}
-	int punch_id = thisPlugin()->savePunchRecordToSql(punch);
+	int punch_id = getPlugin<CardReaderPlugin>()->savePunchRecordToSql(punch);
 	if(punch_id > 0) {
 		punch.setid(punch_id);
-		eventPlugin()->emitDbEvent(Event::EventPlugin::DBEVENT_PUNCH_RECEIVED, punch, true);
+		getPlugin<EventPlugin>()->emitDbEvent(Event::EventPlugin::DBEVENT_PUNCH_RECEIVED, punch, true);
 	}
 }
 
@@ -768,27 +735,21 @@ void CardReaderWidget::updateTableView(int card_id)
 
 void CardReaderWidget::onCbxCardCheckersActivated(int ix)
 {
-	thisPlugin()->setCurrentCardCheckerIndex(ix);
+	getPlugin<CardReaderPlugin>()->setCurrentCardCheckerIndex(ix);
 }
 
 void CardReaderWidget::showSelectedReceipt()
 {
 	qfLogFuncFrame();
-	auto receipts_plugin = receiptsPlugin();
-	if(!receipts_plugin)
-		return;
 	int card_id = ui->tblCards->selectedRow().value("cards.id").toInt();
-	QMetaObject::invokeMethod(receipts_plugin, "previewReceipt", Q_ARG(int, card_id));
+	QMetaObject::invokeMethod(getPlugin<CardReaderPlugin>(), "previewReceipt", Q_ARG(int, card_id));
 }
 
 void CardReaderWidget::showSelectedCard()
 {
 	qfLogFuncFrame();
-	auto receipts_plugin = receiptsPlugin();
-	if(!receipts_plugin)
-		return;
 	int card_id = ui->tblCards->selectedRow().value("cards.id").toInt();
-	QMetaObject::invokeMethod(receipts_plugin, "previewCard", Q_ARG(int, card_id));
+	QMetaObject::invokeMethod(getPlugin<CardReaderPlugin>(), "previewCard", Q_ARG(int, card_id));
 }
 
 void CardReaderWidget::assignRunnerToSelectedCard()
@@ -796,7 +757,7 @@ void CardReaderWidget::assignRunnerToSelectedCard()
 	qfLogFuncFrame();
 	int card_id = ui->tblCards->tableRow().value("cards.id").toInt();
 	QF_ASSERT(card_id > 0, "Bad card id!", return);
-	auto *w = new Runs::FindRunnerWidget(eventPlugin()->currentStageId());
+	auto *w = new Runs::FindRunnerWidget(getPlugin<EventPlugin>()->currentStageId());
 	w->setWindowTitle(tr("Find runner"));
 	qfd::Dialog dlg(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this);
 	dlg.setPersistentSettingsId("dlgAssignRunnerToSelectedCard");
@@ -808,7 +769,7 @@ void CardReaderWidget::assignRunnerToSelectedCard()
 		QVariantMap values = w->selectedRunner();
 		//qfDebug() << values;
 		int run_id = values.value("runid").toInt();
-		int si_id = thisPlugin()->cardIdToSiId(card_id);
+		int si_id = getPlugin<CardReaderPlugin>()->cardIdToSiId(card_id);
 		if(run_id <= 0 || si_id <= 0) {
 			return;
 		}
@@ -836,7 +797,7 @@ void CardReaderWidget::assignRunnerToSelectedCard()
 			}
 		}
 		{
-			thisPlugin()->assignCardToRun(card_id, run_id);
+			getPlugin<CardReaderPlugin>()->assignCardToRun(card_id, run_id);
 			QString qs = "UPDATE runs SET siId=" QF_IARG(si_id) " WHERE competitorId=" QF_IARG(competitor_id) " AND stageId=" QF_IARG(stage_id);
 			if(values.value(Runs::FindRunnerWidget::UseSIInNextStages).toBool()) {
 				qs = "UPDATE runs SET siId=" QF_IARG(si_id) " WHERE competitorId=" QF_IARG(competitor_id) " AND stageId>=" QF_IARG(stage_id);
@@ -846,9 +807,7 @@ void CardReaderWidget::assignRunnerToSelectedCard()
 
 		this->ui->tblCards->reloadRow();
 
-		auto receipts_plugin = receiptsPlugin();
-		if(receipts_plugin)
-			QMetaObject::invokeMethod(receipts_plugin, "printOnAutoPrintEnabled", Q_ARG(int, card_id));
+		QMetaObject::invokeMethod(getPlugin<ReceiptsPlugin>(), "printOnAutoPrintEnabled", Q_ARG(int, card_id));
 	}
 }
 
@@ -960,9 +919,9 @@ void CardReaderWidget::importCards_lapsOnlyCsv()
 			csv_ix = 0;
 			int si_id = sl.value(csv_ix++).toInt();
 			QF_ASSERT_EX(si_id > 0, "Bad SI!");
-			int stage_id = eventPlugin()->currentStageId();
+			int stage_id = getPlugin<EventPlugin>()->currentStageId();
 			QF_ASSERT_EX(stage_id > 0, tr("Bad stage!"));
-			int start00 = eventPlugin()->stageStartMsec(stage_id);
+			int start00 = getPlugin<EventPlugin>()->stageStartMsec(stage_id);
 			int run_id = 0;
 			int start_time = 0;
 			QString class_name;
@@ -1131,9 +1090,9 @@ void CardReaderWidget::importCards_SIReaderBackupMemoryCsv()
 		qf::qmlwidgets::dialogs::MessageBox::showError(this, tr("Cannot open file '%1' for reading.").arg(f.fileName()));
 		return;
 	}
-	int stage_id = eventPlugin()->currentStageId();
+	int stage_id = getPlugin<EventPlugin>()->currentStageId();
 	QF_ASSERT_EX(stage_id > 0, tr("Bad stage!"));
-	int start00 = eventPlugin()->stageStartMsec(stage_id);
+	int start00 = getPlugin<EventPlugin>()->stageStartMsec(stage_id);
 
 	QTextStream ts(&f);
 	qf::core::utils::CSVReader reader(&ts);
@@ -1271,12 +1230,12 @@ void CardReaderWidget::readStationBackupMemory()
 				// save checks
 				try {
 					qfs::Transaction transaction;
-					int stage_id = eventPlugin()->currentStageId();
+					int stage_id = getPlugin<EventPlugin>()->currentStageId();
 					qfs::Query q1;
 					q1.prepare("INSERT INTO stationsbackup (stageId, stationNumber, siId, punchDateTime, cardErr) VALUES"
 							  " (:stageId, :stationNumber, :siId, :punchDateTime, :cardErr)"
 							  , qfc::Exception::Throw);
-					QDateTime stage_start_dt = eventPlugin()->stageStartDateTime(stage_id);
+					QDateTime stage_start_dt = getPlugin<EventPlugin>()->stageStartDateTime(stage_id);
 					qfs::Query q2;
 					q2.prepare("UPDATE runs SET checkTimeMs=:checkTimeMs"
 							  " WHERE siId=:siId AND checkTimeMs IS NULL AND stageId=" QF_IARG(stage_id)

@@ -26,22 +26,9 @@
 
 namespace qfs = qf::core::sql;
 namespace qfu = qf::core::utils;
-
-static Event::EventPlugin* eventPlugin()
-{
-	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	auto *plugin = qobject_cast<Event::EventPlugin*>(fwk->plugin("Event"));
-	QF_ASSERT_EX(plugin != nullptr, "Bad Event plugin!");
-	return plugin;
-}
-
-static Runs::RunsPlugin* runsPlugin()
-{
-	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	auto *plugin = qobject_cast<Runs::RunsPlugin *>(fwk->plugin("Runs"));
-	QF_ASSERT_EX(plugin != nullptr, "Bad Runs plugin!");
-	return plugin;
-}
+using qf::qmlwidgets::framework::getPlugin;
+using Event::EventPlugin;
+using Runs::RunsPlugin;
 
 //============================================================
 //                EventStatisticsModel
@@ -169,7 +156,7 @@ QVariant EventStatisticsModel::value(int row_ix, int column_ix) const
 		return cnt;
 	}
 	if(column_ix == col_timeToCloseMs) {
-		int stage_start_msec = eventPlugin()->stageStartMsec(eventPlugin()->currentStageId());
+		int stage_start_msec = getPlugin<EventPlugin>()->stageStartMsec(getPlugin<EventPlugin>()->currentStageId());
 		int curr_time_msec = QTime::currentTime().msecsSinceStartOfDay();
 		int runners_count = value(row_ix, col_runnersCount).toInt();
 		int runners_finished = value(row_ix, col_runnersFinished).toInt();
@@ -208,7 +195,7 @@ QVariant EventStatisticsModel::value(int row_ix, int column_ix) const
 
 QVariant EventStatisticsModel::data(const QModelIndex &index, int role) const
 {
-	if(!eventPlugin()->isEventOpen())
+	if(!getPlugin<EventPlugin>()->isEventOpen())
 		return QVariant();
 	int col = index.column();
 	if(role == Qt::BackgroundRole) {
@@ -420,8 +407,8 @@ EventStatisticsWidget::EventStatisticsWidget(QWidget *parent)
 	m_tableFooterView->setMinimumHeight(20);
 	ui->tableLayout->addWidget(m_tableFooterView);
 
-	connect(eventPlugin(), &Event::EventPlugin::dbEventNotify, this, &EventStatisticsWidget::onDbEventNotify, Qt::QueuedConnection);
-	connect(eventPlugin(), &Event::EventPlugin::currentStageIdChanged, this, &EventStatisticsWidget::reloadDeferred);
+	connect(getPlugin<EventPlugin>(), &Event::EventPlugin::dbEventNotify, this, &EventStatisticsWidget::onDbEventNotify, Qt::QueuedConnection);
+	connect(getPlugin<EventPlugin>(), &Event::EventPlugin::currentStageIdChanged, this, &EventStatisticsWidget::reloadDeferred);
 
 	initAutoRefreshTimer();
 }
@@ -469,7 +456,7 @@ void EventStatisticsWidget::reload()
 		ui->tableView->loadPersistentSettings();
 	}
 
-	if(!eventPlugin()->isEventOpen()) {
+	if(!getPlugin<EventPlugin>()->isEventOpen()) {
 		m_tableModel->clearRows();
 		m_tableFooterModel->reload();
 		return;
@@ -513,7 +500,7 @@ void EventStatisticsWidget::savePersistentSettings()
 
 int EventStatisticsWidget::currentStageId()
 {
-	int ret = eventPlugin()->currentStageId();
+	int ret = getPlugin<EventPlugin>()->currentStageId();
 	return ret;
 }
 
@@ -577,13 +564,13 @@ void EventStatisticsWidget::printResultsForRows(const QList<int> &rows)
 		opts.setClassFilterType((int)quickevent::gui::ReportOptionsDialog::FilterType::ClassName);
 		opts.setClassFilter(class_names.join(','));
 	}
-	QVariant td = runsPlugin()->currentStageResultsTableData(quickevent::gui::ReportOptionsDialog::sqlWhereExpression(opts));
+	QVariant td = getPlugin<RunsPlugin>()->currentStageResultsTableData(quickevent::gui::ReportOptionsDialog::sqlWhereExpression(opts));
 	QVariantMap props;
 	props["isBreakAfterEachClass"] = (opts.breakType() != (int)quickevent::gui::ReportOptionsDialog::BreakType::None);
 	props["isColumnBreak"] = (opts.breakType() == (int)quickevent::gui::ReportOptionsDialog::BreakType::Column);
 	props["options"] = opts;
 	report_printed = qf::qmlwidgets::reports::ReportViewWidget::showReport(this
-								, runsPlugin()->manifest()->homeDir() + "/reports/results_stage.qml"
+								, getPlugin<RunsPlugin>()->manifest()->homeDir() + "/reports/results_stage.qml"
 								, td
 								, tr("Results by classes")
 								, "printCurrentStage"

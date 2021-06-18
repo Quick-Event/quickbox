@@ -75,7 +75,6 @@ protected:
 	}
 
 	virtual qf::qmlwidgets::framework::DialogWidget *createDetailWidget();
-	static Event::EventPlugin *eventPlugin();
 protected:
 	QVariantMap m_settings;
 private:

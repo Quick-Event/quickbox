@@ -35,17 +35,11 @@ namespace qfd = qf::qmlwidgets::dialogs;
 namespace qff = qf::qmlwidgets::framework;
 //namespace qfm = qf::core::model;
 namespace qfs = qf::core::sql;
+using qf::qmlwidgets::framework::getPlugin;
+using CardReader::CardReaderPlugin;
 
 namespace CardReader {
 namespace services {
-
-static CardReader::CardReaderPlugin *cardReaderPlugin()
-{
-	qff::MainWindow *fwk = qff::MainWindow::frameWork();
-	auto ret = qobject_cast<CardReader::CardReaderPlugin *>(fwk->plugin("CardReader"));
-	//QF_ASSERT(ret != nullptr, "Bad plugin", return 0);
-	return ret;
-}
 
 void MqttPunches::run()
 {
@@ -94,14 +88,11 @@ void MqttPunches::onRawSIDataUdpSocketReadyRead()
 			break;
 	data = data.mid(i-1);
 	qfInfo() << "stripped data:" << data.toHex();
-	CardReader::CardReaderPlugin *plugin = cardReaderPlugin();
-	if(plugin) {
-		if(!m_siDriver) {
-			m_siDriver = new siut::DeviceDriver(this);
-			connect(m_siDriver, &siut::DeviceDriver::siTaskFinished, plugin, &CardReader::CardReaderPlugin::emitSiTaskFinished);
-		}
-		m_siDriver->processData(data);
+	if(!m_siDriver) {
+		m_siDriver = new siut::DeviceDriver(this);
+		connect(m_siDriver, &siut::DeviceDriver::siTaskFinished, getPlugin<CardReaderPlugin>(), &CardReader::CardReaderPlugin::emitSiTaskFinished);
 	}
+	m_siDriver->processData(data);
 #else
 	qfWarning() << "Racom client is not supported with Qt < 5.8";
 #endif

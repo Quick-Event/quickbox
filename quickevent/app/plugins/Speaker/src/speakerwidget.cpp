@@ -34,14 +34,8 @@ namespace qfw = qf::qmlwidgets;
 namespace qff = qf::qmlwidgets::framework;
 namespace qfd = qf::qmlwidgets::dialogs;
 namespace qfm = qf::core::model;
-
-static Event::EventPlugin* eventPlugin()
-{
-	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	auto *plugin = qobject_cast<Event::EventPlugin*>(fwk->plugin("Event"));
-	QF_ASSERT_EX(plugin != nullptr, "Bad Event plugin!");
-	return plugin;
-}
+using qf::qmlwidgets::framework::getPlugin;
+using Event::EventPlugin;
 
 SpeakerWidget::SpeakerWidget(QWidget *parent) :
 	Super(parent),
@@ -106,7 +100,7 @@ void SpeakerWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 	connect(part_widget, SIGNAL(resetPartRequest()), this, SLOT(reset()));
 	connect(part_widget, SIGNAL(reloadPartRequest()), this, SLOT(reload()));
 
-	connect(eventPlugin(), &Event::EventPlugin::dbEventNotify, this, &SpeakerWidget::onDbEventNotify, Qt::QueuedConnection);
+	connect(getPlugin<EventPlugin>(), &Event::EventPlugin::dbEventNotify, this, &SpeakerWidget::onDbEventNotify, Qt::QueuedConnection);
 
 	/*
 	qfw::Action *a = part_widget->menuBar()->actionForPath("station", true);
@@ -153,7 +147,7 @@ void SpeakerWidget::onDbEventNotify(const QString &domain, int connection_id, co
 void SpeakerWidget::reset()
 {
 	qfInfo() << Q_FUNC_INFO;
-	if(!eventPlugin()->isEventOpen()) {
+	if(!getPlugin<EventPlugin>()->isEventOpen()) {
 		m_punchesModel->clearRows();
 		return;
 	}
@@ -175,7 +169,7 @@ void SpeakerWidget::reload()
 		reset();
 		return;
 	}
-	int stage_id = eventPlugin()->currentStageId();
+	int stage_id = getPlugin<EventPlugin>()->currentStageId();
 	qfs::QueryBuilder qb;
 	qb.select2("punches", "*")
 			.select2("classes", "id, name")
@@ -223,7 +217,7 @@ void SpeakerWidget::onCodeClassActivated(int class_id, int code)
 {
 	CodeClassResultsWidget *w = new CodeClassResultsWidget(this);
 	w->reset(class_id, code);
-	//if(eventPlugin()->isEventOpen())
+	//if(getPlugin<EventPlugin>()->isEventOpen())
 	//	w->loadSetup(QJsonObject());
 	connect(this, &SpeakerWidget::punchReceived, w, &CodeClassResultsWidget::onPunchReceived);
 

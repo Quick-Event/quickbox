@@ -21,6 +21,8 @@
 
 namespace qfu = qf::core::utils;
 namespace qff = qf::qmlwidgets::framework;
+using qf::qmlwidgets::framework::getPlugin;
+using Receipts::ReceiptsPlugin;
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
 static const auto SkipEmptyParts = QString::SkipEmptyParts;
@@ -33,15 +35,7 @@ ReceiptsPrinter::ReceiptsPrinter(const ReceiptsPrinterOptions &opts, QObject *pa
 	, m_printerOptions(opts)
 {
 }
-/*
-static Receipts::ReceiptsPlugin *receiptsPlugin()
-{
-	qff::MainWindow *fwk = qff::MainWindow::frameWork();
-	auto *ret = qobject_cast<Receipts::ReceiptsPlugin *>(fwk->plugin("Receipts"));
-	QF_ASSERT(ret != nullptr, "Bad plugin", return 0);
-	return ret;
-}
-*/
+
 void ReceiptsPrinter::printReceipt(const QString &report_file_name, const QVariantMap &report_data)
 {
 	qfLogFuncFrame();

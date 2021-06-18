@@ -51,8 +51,6 @@ public:
 	bool isAutoPrintEnabled();
 private:
 	void onInstalled();
-	CardReader::CardReaderPlugin* cardReaderPlugin();
-	Event::EventPlugin* eventPlugin();
 
 	ReceiptsPrinterOptions receiptsPrinterOptions();
 

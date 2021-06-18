@@ -12,6 +12,8 @@
 
 namespace qff = qf::qmlwidgets::framework;
 namespace qfw = qf::qmlwidgets;
+using qf::qmlwidgets::framework::getPlugin;
+using Event::EventPlugin;
 
 namespace Oris {
 
@@ -30,7 +32,6 @@ void OrisPlugin::onInstalled()
 	qfLogFuncFrame();
 
 	qff::MainWindow *fwk = qff::MainWindow::frameWork();
-	auto *event_plugin = fwk->plugin<Event::EventPlugin*>();
 	//console.warn("Oris installed");
 	qfw::Action *act_import = fwk->menuBar()->actionForPath("file/import");
 	qf::qmlwidgets::Action *act_import_oris = act_import->addMenuInto("oris", tr("&ORIS"));
@@ -42,7 +43,7 @@ void OrisPlugin::onInstalled()
 		qfw::Action *a = act_import_oris->addActionInto("syncEntries", tr("&Sync current event entries"));
 		connect(a, &qfw::Action::triggered, m_orisImporter, &OrisImporter::syncCurrentEventEntries);
 		a->setEnabled(false);
-		connect(event_plugin, &Event::EventPlugin::eventOpenChanged, [a](bool is_event_open) {
+		connect(getPlugin<EventPlugin>(), &Event::EventPlugin::eventOpenChanged, [a](bool is_event_open) {
 			a->setEnabled(is_event_open);
 		});
 	}
@@ -55,7 +56,7 @@ void OrisPlugin::onInstalled()
 		connect(event_plugin, &Event::EventPlugin::eventOpenChanged, [a](bool is_db_open) {
 			bool is_relays = false;
 			if(is_db_open) {
-				is_relays = eventPlugin()->eventConfig()->isRelays();
+				is_relays = getPlugin<EventPlugin>()->eventConfig()->isRelays();
 			}
 			a->setVisible(is_relays);
 		});
@@ -67,13 +68,13 @@ void OrisPlugin::onInstalled()
 		connect(a, &qfw::Action::triggered, m_orisImporter, &OrisImporter::importClubs);
 		connect(a, &qfw::Action::triggered, m_orisImporter, &OrisImporter::importRegistrations);
 		a->setEnabled(false);
-		connect(event_plugin, &Event::EventPlugin::eventOpenChanged, [a](bool is_event_open) {
+		connect(getPlugin<EventPlugin>(), &Event::EventPlugin::eventOpenChanged, [a](bool is_event_open) {
 			a->setEnabled(is_event_open);
 		});
 	}
 	qf::qmlwidgets::Action *act_import_txt = act_import->addMenuInto("text", tr("&Text file"));
 	act_import_txt->setEnabled(false);
-	connect(event_plugin, &Event::EventPlugin::eventOpenChanged, [act_import_txt](bool is_event_open) {
+	connect(getPlugin<EventPlugin>(), &Event::EventPlugin::eventOpenChanged, [act_import_txt](bool is_event_open) {
 		act_import_txt->setEnabled(is_event_open);
 	});
 	{

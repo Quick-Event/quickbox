@@ -18,12 +18,8 @@
 #include <QPainter>
 
 namespace qfs = qf::core::sql;
-
-static Event::EventPlugin* eventPlugin()
-{
-	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	return fwk->plugin<Event::EventPlugin*>();
-}
+using qf::qmlwidgets::framework::getPlugin;
+using Event::EventPlugin;
 
 RunsTableItemDelegate::RunsTableItemDelegate(qf::qmlwidgets::TableView * parent)
 	: Super(parent)
@@ -44,7 +40,7 @@ void RunsTableItemDelegate::reloadHighlightedClassId()
 	qb.select2("classdefs", "startTimeMin, lastStartTimeMin, startIntervalMin, vacantsBefore, vacantEvery, vacantsAfter")
 			.from("classdefs")
 			.where("classId=" QF_IARG(m_highlightedClassId));
-	bool is_relays = eventPlugin()->eventConfig()->isRelays();
+	bool is_relays = getPlugin<EventPlugin>()->eventConfig()->isRelays();
 	if(!is_relays)
 		qb.where("stageId=" QF_IARG(m_stageId));
 	qfs::Query q(qfs::Connection::forName());
@@ -74,7 +70,7 @@ void RunsTableItemDelegate::paintBackground(QPainter *painter, const QStyleOptio
 	auto *tm = qobject_cast<RunsTableModel*>(v->tableModel());
 	if(!(m && tm))
 		return;
-	bool is_relays = eventPlugin()->eventConfig()->isRelays();
+	bool is_relays = getPlugin<EventPlugin>()->eventConfig()->isRelays();
 	if(m_highlightedClassId > 0) {
 		if(is_relays) {
 			// check that start time in classes is the same

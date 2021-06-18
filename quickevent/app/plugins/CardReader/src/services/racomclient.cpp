@@ -35,17 +35,12 @@ namespace qfd = qf::qmlwidgets::dialogs;
 namespace qff = qf::qmlwidgets::framework;
 //namespace qfm = qf::core::model;
 namespace qfs = qf::core::sql;
+using qf::qmlwidgets::framework::getPlugin;
+using Event::EventPlugin;
+using CardReader::CardReaderPlugin;
 
 namespace CardReader {
 namespace services {
-
-static CardReader::CardReaderPlugin *cardReaderPlugin()
-{
-	qff::MainWindow *fwk = qff::MainWindow::frameWork();
-	auto ret = qobject_cast<CardReader::CardReaderPlugin *>(fwk->plugin("CardReader"));
-	//QF_ASSERT(ret != nullptr, "Bad plugin", return 0);
-	return ret;
-}
 
 RacomClientSirxdConnection::RacomClientSirxdConnection(QTcpSocket *socket, QObject *parent)
 	: Super(parent)
@@ -114,8 +109,7 @@ void RacomClientSirxdConnection::onReadyRead()
 				punches << punch;
 			}
 			card.setPunches(punches);
-			CardReader::CardReaderPlugin *plugin = cardReaderPlugin();
-			plugin->emitSiTaskFinished((int)siut::SiTask::Type::CardRead, card);
+			getPlugin<CardReaderPlugin>()->emitSiTaskFinished((int)siut::SiTask::Type::CardRead, card);
 		}
 		else if(rec.startsWith(SPLIT)) {
 			enum {
@@ -131,8 +125,7 @@ void RacomClientSirxdConnection::onReadyRead()
 			parse_time(splits.value(ColTime), secs, msecs);
 			punch.setTime(secs);
 			punch.setMsec(msecs);
-			CardReader::CardReaderPlugin *plugin = cardReaderPlugin();
-			plugin->emitSiTaskFinished((int)siut::SiTask::Type::Punch, punch);
+			getPlugin<CardReaderPlugin>()->emitSiTaskFinished((int)siut::SiTask::Type::Punch, punch);
 		}
 		else {
 			qfWarning() << "Throwing away unrecognised sirxd message:" << QString::fromUtf8(rec);
@@ -143,7 +136,7 @@ void RacomClientSirxdConnection::onReadyRead()
 RacomClient::RacomClient(QObject *parent)
 	: Super(RacomClient::serviceName(), parent)
 {
-	connect(eventPlugin(), &Event::EventPlugin::dbEventNotify, this, &RacomClient::onDbEventNotify, Qt::QueuedConnection);
+	connect(getPlugin<EventPlugin>(), &Event::EventPlugin::dbEventNotify, this, &RacomClient::onDbEventNotify, Qt::QueuedConnection);
 	connect(this, &RacomClient::settingsChanged, this, &RacomClient::init, Qt::QueuedConnection);
 }
 
@@ -194,14 +187,11 @@ void RacomClient::onRawSIDataUdpSocketReadyRead()
 			break;
 	data = data.mid(i-1);
 	qfInfo() << "stripped data:" << data.toHex();
-	CardReader::CardReaderPlugin *plugin = cardReaderPlugin();
-	if(plugin) {
-		if(!m_siDriver) {
-			m_siDriver = new siut::DeviceDriver(this);
-			connect(m_siDriver, &siut::DeviceDriver::siTaskFinished, plugin, &CardReader::CardReaderPlugin::emitSiTaskFinished);
-		}
-		m_siDriver->processData(data);
+	if(!m_siDriver) {
+		m_siDriver = new siut::DeviceDriver(this);
+		connect(m_siDriver, &siut::DeviceDriver::siTaskFinished, getPlugin<CardReaderPlugin>(), &CardReader::CardReaderPlugin::emitSiTaskFinished);
 	}
+	m_siDriver->processData(data);
 #else
 	qfWarning() << "Racom client is not supported with Qt < 5.8";
 #endif

@@ -12,15 +12,6 @@
 #include <QCompleter>
 #include <QAbstractTableModel>
 #include <QAbstractProxyModel>
-/*
-static Competitors::CompetitorsPlugin* competitorsPlugin()
-{
-	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	auto *plugin = qobject_cast<Competitors::CompetitorsPlugin*>(fwk->plugin("Competitors"));
-	QF_ASSERT_EX(plugin != nullptr, "Bad Competitors plugin!");
-	return plugin;
-}
-*/
 
 class FindRunnersModel : public QAbstractTableModel
 {

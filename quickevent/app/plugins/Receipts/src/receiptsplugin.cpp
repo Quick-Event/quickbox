@@ -32,6 +32,10 @@
 
 namespace qfu = qf::core::utils;
 namespace qff = qf::qmlwidgets::framework;
+using qf::qmlwidgets::framework::getPlugin;
+using Event::EventPlugin;
+using Receipts::ReceiptsPlugin;
+using CardReader::CardReaderPlugin;
 
 namespace Receipts {
 
@@ -48,22 +52,6 @@ void ReceiptsPlugin::onInstalled()
 	qff::MainWindow *framework = qff::MainWindow::frameWork();
 	ReceiptsPartWidget *pw = new ReceiptsPartWidget(manifest()->featureId());
 	framework->addPartWidget(pw);
-}
-
-CardReader::CardReaderPlugin *ReceiptsPlugin::cardReaderPlugin()
-{
-	qff::MainWindow *fwk = qff::MainWindow::frameWork();
-	auto ret = qobject_cast<CardReader::CardReaderPlugin *>(fwk->plugin("CardReader"));
-	QF_ASSERT(ret != nullptr, "Bad plugin", return nullptr);
-	return ret;
-}
-
-Event::EventPlugin *ReceiptsPlugin::eventPlugin()
-{
-	qff::MainWindow *fwk = qff::MainWindow::frameWork();
-	auto ret = qobject_cast<Event::EventPlugin *>(fwk->plugin("Event"));
-	QF_ASSERT(ret != nullptr, "Bad plugin", return nullptr);
-	return ret;
 }
 
 QString ReceiptsPlugin::currentReceiptPath()
@@ -117,7 +105,7 @@ QVariantMap ReceiptsPlugin::readCardTablesData(int card_id)
 {
 	qfLogFuncFrame() << card_id;
 	QVariantMap ret;
-	quickevent::core::si::ReadCard read_card = cardReaderPlugin()->readCard(card_id);
+	quickevent::core::si::ReadCard read_card = getPlugin<CardReaderPlugin>()->readCard(card_id);
 	{
 		qfu::TreeTable tt;
 		tt.appendColumn("position", QVariant::Int);
@@ -178,8 +166,8 @@ QVariantMap ReceiptsPlugin::readCardTablesData(int card_id)
 				tt.setValue(q.value("ckey").toString(), v);
 			}
 		}
-		tt.setValue("stageCount", eventPlugin()->stageCount());
-		tt.setValue("currentStageId", eventPlugin()->currentStageId());
+		tt.setValue("stageCount", getPlugin<EventPlugin>()->stageCount());
+		tt.setValue("currentStageId", getPlugin<EventPlugin>()->currentStageId());
 		qfDebug() << "card:\n" << tt.toString();
 		ret["card"] = tt.toVariant();
 	}
@@ -190,13 +178,13 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 {
 	qfLogFuncFrame() << card_id;
 	QF_TIME_SCOPE("receiptTablesData()");
-	bool is_relays = eventPlugin()->eventConfig()->isRelays();
+	bool is_relays = getPlugin<EventPlugin>()->eventConfig()->isRelays();
 	QVariantMap ret;
-	quickevent::core::si::ReadCard read_card = cardReaderPlugin()->readCard(card_id);
-	quickevent::core::si::CheckedCard checked_card = cardReaderPlugin()->checkCard(read_card);
+	quickevent::core::si::ReadCard read_card = getPlugin<CardReaderPlugin>()->readCard(card_id);
+	quickevent::core::si::CheckedCard checked_card = getPlugin<CardReaderPlugin>()->checkCard(read_card);
 	int run_id = checked_card.runId();
-	bool is_card_lent = cardReaderPlugin()->isCardLent(card_id, read_card.finishTime(), run_id);
-	int current_stage_id = eventPlugin()->stageIdForRun(run_id);
+	bool is_card_lent = getPlugin<CardReaderPlugin>()->isCardLent(card_id, read_card.finishTime(), run_id);
+	int current_stage_id = getPlugin<EventPlugin>()->stageIdForRun(run_id);
 	int course_id = checked_card.courseId();
 	int current_standings = 0;
 	int competitors_finished = 0;
@@ -331,8 +319,8 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 				tt.setValue(q.value("ckey").toString(), v);
 			}
 		}
-		tt.setValue("stageCount", eventPlugin()->stageCount());
-		tt.setValue("currentStageId", eventPlugin()->currentStageId());
+		tt.setValue("stageCount", getPlugin<EventPlugin>()->stageCount());
+		tt.setValue("currentStageId", getPlugin<EventPlugin>()->currentStageId());
 		qfDebug() << "competitor:\n" << tt.toString();
 		ret["competitor"] = tt.toVariant();
 	}

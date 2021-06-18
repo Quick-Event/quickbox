@@ -44,6 +44,9 @@ namespace qfw = qf::qmlwidgets;
 namespace qfd = qf::qmlwidgets::dialogs;
 namespace qfm = qf::core::model;
 namespace qfs = qf::core::sql;
+using qf::qmlwidgets::framework::getPlugin;
+using Event::EventPlugin;
+using Classes::ClassesPlugin;
 
 class CourseItemDelegate : public QStyledItemDelegate
 {
@@ -154,14 +157,6 @@ public:
 	}
 };
 
-static Event::EventPlugin* eventPlugin()
-{
-	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	auto *plugin = qobject_cast<Event::EventPlugin*>(fwk->plugin("Event"));
-	QF_ASSERT_EX(plugin != nullptr, "Bad Event plugin!");
-	return plugin;
-}
-
 ClassesWidget::ClassesWidget(QWidget *parent) :
 	Super(parent),
 	ui(new Ui::ClassesWidget)
@@ -215,7 +210,7 @@ ClassesWidget::ClassesWidget(QWidget *parent) :
 	}
 	connect(ui->tblClasses, SIGNAL(currentRowChanged(int)), this, SLOT(reloadCourseCodes()));
 	connect(ui->chkUseAllMaps, &QCheckBox::toggled, [this](bool checked) {
-		eventPlugin()->setStageData(selectedStageId(), QStringLiteral("useAllMaps"), checked);
+		getPlugin<EventPlugin>()->setStageData(selectedStageId(), QStringLiteral("useAllMaps"), checked);
 	});
 }
 
@@ -322,7 +317,7 @@ void ClassesWidget::reset()
 	{
 		m_cbxStage->blockSignals(true);
 		m_cbxStage->clear();
-		for(int i=0; i<eventPlugin()->stageCount(); i++)
+		for(int i=0; i < getPlugin<EventPlugin>()->stageCount(); i++)
 			m_cbxStage->addItem(tr("E%1").arg(i+1), i+1);
 		m_cbxStage->blockSignals(false);
 		connect(m_cbxStage, SIGNAL(currentIndexChanged(int)), this, SLOT(reload()), Qt::UniqueConnection);
@@ -332,7 +327,7 @@ void ClassesWidget::reset()
 
 void ClassesWidget::reload()
 {
-	if(!eventPlugin()->isEventOpen()) {
+	if(!getPlugin<EventPlugin>()->isEventOpen()) {
 		m_classesModel->clearRows();
 		m_courseCodesModel->clearRows();
 		return;
@@ -385,7 +380,7 @@ void ClassesWidget::reload()
 		}
 		m_courseItemDelegate->setCourses(courses);
 	}
-	ui->chkUseAllMaps->setChecked(eventPlugin()->stageData(stage_id).isUseAllMaps());
+	ui->chkUseAllMaps->setChecked(getPlugin<EventPlugin>()->stageData(stage_id).isUseAllMaps());
 	reloadCourseCodes();
 }
 
@@ -418,22 +413,18 @@ void ClassesWidget::reloadCourseCodes()
 void ClassesWidget::importCourses(const QList<ImportCourseDef> &course_defs, const QList<quickevent::core::CodeDef> &code_defs)
 {
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	auto *event_plugin = qobject_cast<Event::EventPlugin *>(fwk->plugin("Event"));
-	auto *classes_plugin = qobject_cast<Classes::ClassesPlugin *>(fwk->plugin("Classes"));
-	if(event_plugin && classes_plugin) {
-		QString msg = tr("Delete all courses definitions for stage %1?").arg(selectedStageId());
-		if(qfd::MessageBox::askYesNo(fwk, msg, false)) {
-			/*
-			QVariantList courses;
-			for(const auto &cd : course_defs)
-				courses << cd;
-			QVariantList codes;
-			for(const auto &cd : code_defs)
-				codes << cd;
-			*/
-			classes_plugin->createCourses(selectedStageId(), course_defs, code_defs);
-			reload();
-		}
+	QString msg = tr("Delete all courses definitions for stage %1?").arg(selectedStageId());
+	if(qfd::MessageBox::askYesNo(fwk, msg, false)) {
+		/*
+		QVariantList courses;
+		for(const auto &cd : course_defs)
+			courses << cd;
+		QVariantList codes;
+		for(const auto &cd : code_defs)
+			codes << cd;
+		*/
+		getPlugin<ClassesPlugin>()->createCourses(selectedStageId(), course_defs, code_defs);
+		reload();
 	}
 }
 
@@ -533,7 +524,7 @@ void ClassesWidget::import_ocad_v8()
 			lines << QString::fromUtf8(ba).trimmed();
 		}
 		try {
-			bool is_relays = eventPlugin()->eventConfig()->isRelays();
+			bool is_relays = getPlugin<EventPlugin>()->eventConfig()->isRelays();
 			QMap<QString, ImportCourseDef> defined_courses_map;
 			for(QString line : lines) {
 				// [classname];coursename;[relay.leg];lenght_km;climb;S1;dist_1;code_1[;dist_n;code_n];dist_finish;F1

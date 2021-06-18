@@ -11,6 +11,8 @@
 #include <qf/core/assert.h>
 
 using namespace Relays;
+using qf::qmlwidgets::framework::getPlugin;
+using Event::EventPlugin;
 
  RelayDocument:: RelayDocument(QObject *parent)
 	: Super(parent)
@@ -22,13 +24,6 @@ using namespace Relays;
 			.join("relays.classId", "classes.id")
 			.where("relays.id={{ID}}");
 	setQueryBuilder(qb);
-}
-
-static Event::EventPlugin* eventPlugin()
-{
-	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	qf::qmlwidgets::framework::Plugin *plugin = fwk->plugin("Event");
-	return qobject_cast<Event::EventPlugin *>(plugin);
 }
 
 bool  RelayDocument::saveData()
@@ -52,7 +47,7 @@ bool  RelayDocument::dropData()
 	}
 	if(ret) {
 		ret = Super::dropData();
-		eventPlugin()->emitDbEvent(Event::EventPlugin::DBEVENT_COMPETITOR_COUNTS_CHANGED);
+		getPlugin<EventPlugin>()->emitDbEvent(Event::EventPlugin::DBEVENT_COMPETITOR_COUNTS_CHANGED);
 	}
 	return ret;
 }

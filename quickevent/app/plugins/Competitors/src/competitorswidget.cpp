@@ -42,6 +42,8 @@ namespace qfd = qf::qmlwidgets::dialogs;
 namespace qfc = qf::core;
 namespace qfm = qf::core::model;
 namespace qfu = qf::core::utils;
+
+
 using qf::qmlwidgets::framework::getPlugin;
 using Event::EventPlugin;
 using Competitors::CompetitorsPlugin;
@@ -350,8 +352,7 @@ void CompetitorsWidget::onCustomContextMenuRequest(const QPoint &pos)
 void CompetitorsWidget::report_competitorsStatistics()
 {
 	qfLogFuncFrame();
-	Event::EventPlugin *event_plugin = getPlugin<EventPlugin>();
-	int stage_cnt = event_plugin->stageCount();
+	int stage_cnt = getPlugin<EventPlugin>()->stageCount();
 
 	qfs::QueryBuilder qb;
 	qb.select2("classes", "id, name").from("classes").orderBy("classes.name");
@@ -359,7 +360,7 @@ void CompetitorsWidget::report_competitorsStatistics()
 	m.setQueryBuilder(qb);
 	m.reload();
 	qfu::TreeTable tt = m.toTreeTable();
-	tt.setValue("event", event_plugin->eventConfig()->value("event"));
+	tt.setValue("event", getPlugin<EventPlugin>()->eventConfig()->value("event"));
 	for (int stage_id = 1; stage_id <= stage_cnt; ++stage_id) {
 		QString prefix = "e" + QString::number(stage_id) + "_";
 		QString col_runs_count = prefix + "runCount";

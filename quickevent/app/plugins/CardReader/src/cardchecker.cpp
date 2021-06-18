@@ -22,20 +22,11 @@
 #include <QTime>
 
 namespace qfs = qf::core::sql;
+using qf::qmlwidgets::framework::getPlugin;
+using Event::EventPlugin;
+using Runs::RunsPlugin;
 
 namespace CardReader {
-
-static Event::EventPlugin* eventPlugin()
-{
-	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	return fwk->plugin<Event::EventPlugin*>();
-}
-
-static Runs::RunsPlugin* runsPlugin()
-{
-	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	return fwk->plugin<Runs::RunsPlugin*>();
-}
 
 CardChecker::CardChecker(QObject *parent)
 	: QObject(parent)
@@ -66,14 +57,12 @@ int CardChecker::toAM(int time_sec)
 
 int CardChecker::stageIdForRun(int run_id)
 {
-	return eventPlugin()->stageIdForRun(run_id);
+	return getPlugin<EventPlugin>()->stageIdForRun(run_id);
 }
 
 int CardChecker::stageStartSec(int stage_id)
 {
-	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	auto event_plugin = qobject_cast<Event::EventPlugin *>(fwk->plugin("Event"));
-	QF_ASSERT(event_plugin != nullptr, "Bad plugin", return 0);
+	auto event_plugin = getPlugin<EventPlugin>();
 	if(stage_id == 0)
 		stage_id = event_plugin->currentStageId();
 	int ret = event_plugin->stageStartMsec(stage_id);
@@ -98,12 +87,12 @@ int CardChecker::startTimeSec(int run_id)
 
 int CardChecker::cardCheckCheckTimeSec()
 {
-	return eventPlugin()->eventConfig()->cardCheckCheckTimeSec();
+	return getPlugin<EventPlugin>()->eventConfig()->cardCheckCheckTimeSec();
 }
 
 quickevent::core::CourseDef CardChecker::courseCodesForRunId(int run_id)
 {
-	return runsPlugin()->courseCodesForRunId(run_id);
+	return getPlugin<RunsPlugin>()->courseCodesForRunId(run_id);
 }
 
 }

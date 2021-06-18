@@ -50,30 +50,16 @@ namespace qff = qf::qmlwidgets::framework;
 namespace qfd = qf::qmlwidgets::dialogs;
 namespace qfc = qf::core;
 namespace qfm = qf::core::model;
+using qf::qmlwidgets::framework::getPlugin;
+using Event::EventPlugin;
+using Runs::RunsPlugin;
+using Relays::RelaysPlugin;
 
 namespace {
 
 static QString datetime_to_string(const QDateTime &dt)
 {
 	return quickevent::core::Utils::dateTimeToIsoStringWithUtcOffset(dt);
-}
-
-Event::EventPlugin* eventPlugin()
-{
-	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	return fwk->plugin<Event::EventPlugin*>();
-}
-
-Runs::RunsPlugin* runsPlugin()
-{
-	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	return fwk->plugin<Runs::RunsPlugin*>();
-}
-
-Relays::RelaysPlugin* thisPlugin()
-{
-	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	return fwk->plugin<Relays::RelaysPlugin*>();
 }
 
 enum Columns {
@@ -115,7 +101,7 @@ RelaysWidget::RelaysWidget(QWidget *parent) :
 	connect(ui->tblRelays, &qfw::TableView::editRowInExternalEditor, this, &RelaysWidget::editRelay, Qt::QueuedConnection);
 	connect(ui->tblRelays, &qfw::TableView::editSelectedRowsInExternalEditor, this, &RelaysWidget::editRelays, Qt::QueuedConnection);
 
-	//connect(eventPlugin(), &Relays::RelaysPlugin::dbEventNotify, this, &RelaysWidget::onDbEventNotify);
+	//connect(getPlugin<EventPlugin>(), &Relays::RelaysPlugin::dbEventNotify, this, &RelaysWidget::onDbEventNotify);
 
 	QMetaObject::invokeMethod(this, "lazyInit", Qt::QueuedConnection);
 }
@@ -211,7 +197,7 @@ void RelaysWidget::lazyInit()
 
 void RelaysWidget::reset()
 {
-	if(!eventPlugin()->isEventOpen()) {
+	if(!getPlugin<EventPlugin>()->isEventOpen()) {
 		m_tblModel->clearRows();
 		return;
 	}
@@ -367,8 +353,8 @@ QVariant RelaysWidget::startListByClassesTableData(const QString &class_filter)
 	//console.info("currentStageTable query:", reportModel.effectiveQuery());
 	model.reload();
 	qf::core::utils::TreeTable tt = model.toTreeTable();
-	tt.setValue("event", eventPlugin()->eventConfig()->value("event"));
-	tt.setValue("stageStart", eventPlugin()->stageStartDateTime(1));
+	tt.setValue("event", getPlugin<EventPlugin>()->eventConfig()->value("event"));
+	tt.setValue("stageStart", getPlugin<EventPlugin>()->stageStartDateTime(1));
 	{
 		qf::core::sql::QueryBuilder qb;
 		qb.select2("relays", "id, name, number")
@@ -439,8 +425,8 @@ QVariant RelaysWidget::startListByClubsTableData()
 	//console.info("currentStageTable query:", reportModel.effectiveQuery());
 	model.reload();
 	qf::core::utils::TreeTable tt = model.toTreeTable();
-	tt.setValue("event", eventPlugin()->eventConfig()->value("event"));
-	tt.setValue("stageStart", eventPlugin()->stageStartDateTime(1));
+	tt.setValue("event", getPlugin<EventPlugin>()->eventConfig()->value("event"));
+	tt.setValue("stageStart", getPlugin<EventPlugin>()->stageStartDateTime(1));
 	{
 		qf::core::sql::QueryBuilder qb;
 		qb.select2("relays", "id, name, number")
@@ -498,7 +484,7 @@ void RelaysWidget::print_start_list_classes()
 	QVariantMap props = dlg.reportProperties();
 	QVariant td = startListByClassesTableData(dlg.sqlWhereExpression());
 	qf::qmlwidgets::reports::ReportViewWidget::showReport(this,
-														  thisPlugin()->manifest()->homeDir() + "/reports/startList_classes.qml"
+														  getPlugin<RelaysPlugin>()->manifest()->homeDir() + "/reports/startList_classes.qml"
 														  , td
 														  , tr("Start list by classes")
 														  , "printStartList"
@@ -517,7 +503,7 @@ void RelaysWidget::print_start_list_clubs()
 	QVariantMap props = dlg.reportProperties();
 	QVariant td = startListByClubsTableData();
 	qf::qmlwidgets::reports::ReportViewWidget::showReport(this,
-														  thisPlugin()->manifest()->homeDir() + "/reports/startList_clubs.qml"
+														  getPlugin<RelaysPlugin>()->manifest()->homeDir() + "/reports/startList_clubs.qml"
 														  , td
 														  , tr("Start list by clubs")
 														  , "printStartList"
@@ -543,9 +529,9 @@ void RelaysWidget::print_results_nlegs()
 	quickevent::gui::ReportOptionsDialog::Options opts = dlg.options();
 	//qfDebug() << opts;
 	qfDebug() << "opts.resultNumPlaces:" << opts.resultNumPlaces();
-	auto td = thisPlugin()->nLegsResultsTable(dlg.sqlWhereExpression(), opts.legsCount(), opts.resultNumPlaces(), opts.isResultExcludeDisq());
+	auto td = getPlugin<RelaysPlugin>()->nLegsResultsTable(dlg.sqlWhereExpression(), opts.legsCount(), opts.resultNumPlaces(), opts.isResultExcludeDisq());
 	qf::qmlwidgets::reports::ReportViewWidget::showReport(this,
-														  thisPlugin()->manifest()->homeDir() + "/reports/results.qml"
+														  getPlugin<RelaysPlugin>()->manifest()->homeDir() + "/reports/results.qml"
 														  , td.toVariant()
 														  , tr("Results")
 														  , "relaysResults"
@@ -567,9 +553,9 @@ void RelaysWidget::print_results_overal()
 	quickevent::gui::ReportOptionsDialog::Options opts = dlg.options();
 	//qfDebug() << opts;
 	qfDebug() << "opts.resultNumPlaces:" << opts.resultNumPlaces();
-	auto td = thisPlugin()->nLegsResultsTable(dlg.sqlWhereExpression(), 999, opts.resultNumPlaces(), opts.isResultExcludeDisq());
+	auto td = getPlugin<RelaysPlugin>()->nLegsResultsTable(dlg.sqlWhereExpression(), 999, opts.resultNumPlaces(), opts.isResultExcludeDisq());
 	qf::qmlwidgets::reports::ReportViewWidget::showReport(this,
-														  thisPlugin()->manifest()->homeDir() + "/reports/results.qml"
+														  getPlugin<RelaysPlugin>()->manifest()->homeDir() + "/reports/results.qml"
 														  , td.toVariant()
 														  , tr("Results")
 														  , "relaysResults"
@@ -591,9 +577,9 @@ void RelaysWidget::print_results_overal_condensed()
 	quickevent::gui::ReportOptionsDialog::Options opts = dlg.options();
 	//qfDebug() << opts;
 	qfDebug() << "opts.resultNumPlaces:" << opts.resultNumPlaces();
-	auto td = thisPlugin()->nLegsResultsTable(dlg.sqlWhereExpression(), 999, opts.resultNumPlaces(), opts.isResultExcludeDisq());
+	auto td = getPlugin<RelaysPlugin>()->nLegsResultsTable(dlg.sqlWhereExpression(), 999, opts.resultNumPlaces(), opts.isResultExcludeDisq());
 	qf::qmlwidgets::reports::ReportViewWidget::showReport(this,
-														  thisPlugin()->manifest()->homeDir() + "/reports/results_condensed.qml"
+														  getPlugin<RelaysPlugin>()->manifest()->homeDir() + "/reports/results_condensed.qml"
 														  , td.toVariant()
 														  , tr("Results")
 														  , "relaysResults"
@@ -635,10 +621,10 @@ void RelaysWidget::export_results_iofxml3()
 	QProgressDialog progress(tr("Exporting result file..."), tr("Abort"), 0, progress_count + 1, this);
 	progress.setWindowModality(Qt::WindowModal);
 
-	QDateTime start00 = eventPlugin()->stageStartDateTime(1);
+	QDateTime start00 = getPlugin<EventPlugin>()->stageStartDateTime(1);
 	qfDebug() << "creating table";
-	//auto tt_classes = thisPlugin()->nLegsResultsTable("classes.name='D105'", 999, 999999, false);
-	auto tt_classes = thisPlugin()->nLegsResultsTable(QString(), 999, 999999, false);
+	//auto tt_classes = getPlugin<RelaysPlugin>()->nLegsResultsTable("classes.name='D105'", 999, 999999, false);
+	auto tt_classes = getPlugin<RelaysPlugin>()->nLegsResultsTable(QString(), 999, 999999, false);
 	progress.setValue(++progress_val);
 	QVariantList result_list{
 		"ResultList",
@@ -753,7 +739,7 @@ void RelaysWidget::export_results_iofxml3()
 					// MISSING TimeBehind
 				}
 				append_list(person_result, overall_result);
-				int course_id = runsPlugin()->courseForRelay(relay_number, leg);
+				int course_id = getPlugin<RunsPlugin>()->courseForRelay(relay_number, leg);
 				{
 					QF_TIME_SCOPE("exporting course: " + QString::number(course_id));
 					QVariantList course{"Course"};
@@ -785,7 +771,7 @@ void RelaysWidget::export_results_iofxml3()
 							.orderBy("position") ;
 					//qfInfo() << qb.toString();
 					auto q = qf::core::sql::Query::fromExec(qb.toString());
-					quickevent::core::CourseDef csd = runsPlugin()->courseForCourseId(course_id);
+					quickevent::core::CourseDef csd = getPlugin<RunsPlugin>()->courseForCourseId(course_id);
 					QVariantList codes = csd.codes();
 					int sql_pos = -1;
 					for (int ix = 0; ix < codes.count(); ++ix) {

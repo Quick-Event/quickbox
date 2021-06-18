@@ -17,6 +17,8 @@
 #include <qf/core/sql/transaction.h>
 #include <qf/core/log.h>
 #include <qf/core/assert.h>
+#include <CardReader/cardreaderplugin.h>
+#include <Receipts/receiptsplugin.h>
 
 #include <QSortFilterProxyModel>
 #include <QMenu>
@@ -28,24 +30,12 @@ namespace qfw = qf::qmlwidgets;
 namespace qff = qf::qmlwidgets::framework;
 namespace qfd = qf::qmlwidgets::dialogs;
 namespace qfm = qf::core::model;
-
-static Event::EventPlugin* eventPlugin()
-{
-	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	return fwk->plugin<Event::EventPlugin*>();
-}
-
-static Runs::RunsPlugin *runsPlugin()
-{
-	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	return fwk->plugin<Runs::RunsPlugin *>();
-}
-
-static Competitors::CompetitorsPlugin *competitorsPlugin()
-{
-	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	return fwk->plugin<Competitors::CompetitorsPlugin *>();
-}
+using qf::qmlwidgets::framework::getPlugin;
+using Event::EventPlugin;
+using Competitors::CompetitorsPlugin;
+using Runs::RunsPlugin;
+using CardReader::CardReaderPlugin;
+using Receipts::ReceiptsPlugin;
 
 RunsTableWidget::RunsTableWidget(QWidget *parent) :
 	Super(parent),
@@ -76,7 +66,7 @@ RunsTableWidget::RunsTableWidget(QWidget *parent) :
 
 	m_runsModel = new RunsTableModel(this);
 	connect(m_runsModel, &RunsTableModel::badDataInput, this, &RunsTableWidget::onBadTableDataInput, Qt::QueuedConnection);
-	connect(m_runsModel, &RunsTableModel::runnerSiIdEdited, runsPlugin(), &Runs::RunsPlugin::clearRunnersTableCache);
+	connect(m_runsModel, &RunsTableModel::runnerSiIdEdited, getPlugin<RunsPlugin>(), &Runs::RunsPlugin::clearRunnersTableCache);
 	ui->tblRuns->setTableModel(m_runsModel);
 
 	// this ensures that table is sorted every time when start time is edited
@@ -119,7 +109,7 @@ void RunsTableWidget::clear()
 void RunsTableWidget::reload(int stage_id, int class_id, bool show_offrace, const QString &sort_column, int select_competitor_id)
 {
 	qfLogFuncFrame() << "class id:" << class_id;
-	bool is_relays = eventPlugin()->eventConfig()->isRelays();
+	bool is_relays = getPlugin<EventPlugin>()->eventConfig()->isRelays();
 	{
 		int class_start_time_min = 0;
 		int class_start_interval_min = 0;
@@ -231,10 +221,9 @@ void RunsTableWidget::reload()
 void RunsTableWidget::editCompetitor(const QVariant &id, int mode)
 {
 	Q_UNUSED(id)
-	Competitors::CompetitorsPlugin *competitors_plugin = competitorsPlugin();
 	int result;
 	int competitor_id = ui->tblRuns->tableRow().value("competitorId").toInt();
-	QMetaObject::invokeMethod(competitors_plugin, "editCompetitor", Qt::DirectConnection
+	QMetaObject::invokeMethod(getPlugin<CompetitorsPlugin>(), "editCompetitor", Qt::DirectConnection
 							  , Q_RETURN_ARG(int, result)
 							  , Q_ARG(int, competitor_id)
 							  , Q_ARG(int, mode)
@@ -262,57 +251,30 @@ void RunsTableWidget::onCustomContextMenuRequest(const QPoint &pos)
 	if(a == &a_load_card) {
 		//qf::qmlwidgets::dialogs::MessageBox::showError(this, "Not implemented yet.");
 		qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-		qf::qmlwidgets::framework::Plugin *cardreader_plugin = fwk->plugin("CardReader");
-		if(!cardreader_plugin) {
-			qfError() << "CardReader plugin not installed!";
-			return;
-		}
 		int curr_ix = 0;
 		QList<int> sel_ixs = ui->tblRuns->selectedRowsIndexes();
 		for(int ix : sel_ixs) {
 			qf::core::utils::TableRow row = ui->tblRuns->tableRow(ix);
 			int run_id = row.value(QStringLiteral("runs.id")).toInt();
 			fwk->showProgress(tr("Reloading times for %1").arg(row.value(QStringLiteral("competitorName")).toString()), ++curr_ix, sel_ixs.count());
-			Runs::RunsPlugin *runs_plugin = runsPlugin();
-			if(runs_plugin) {
-				bool ok = runs_plugin->reloadTimesFromCard(run_id);
-				if(ok)
-					ui->tblRuns->reloadRow(ix);
-			}
+			bool ok = getPlugin<RunsPlugin>()->reloadTimesFromCard(run_id);
+			if(ok)
+				ui->tblRuns->reloadRow(ix);
 		}
 		fwk->hideProgress();
 	}
 	else if(a == &a_show_receipt) {
 		int run_id = ui->tblRuns->tableRow().value(QStringLiteral("runs.id")).toInt();
-		Runs::RunsPlugin *runs_plugin = runsPlugin();
-		if(!runs_plugin)
-			return;
-		//runs_plugin->courseCodesForRunId(run_id);
-		int card_id = runs_plugin->cardForRun(run_id);
+		int card_id = getPlugin<RunsPlugin>()->cardForRun(run_id);
 		if(card_id > 0) {
-			qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-			qf::qmlwidgets::framework::Plugin *receipts_plugin = fwk->plugin("Receipts");
-			if(!receipts_plugin) {
-				qfError() << "Receipts plugin not installed!";
-				return;
-			}
-			QMetaObject::invokeMethod(receipts_plugin, "previewReceipt", Qt::DirectConnection, Q_ARG(int, card_id));
+			QMetaObject::invokeMethod(getPlugin<ReceiptsPlugin>(), "previewReceipt", Qt::DirectConnection, Q_ARG(int, card_id));
 		}
 	}
 	else if(a == &a_print_card) {
 		int run_id = ui->tblRuns->tableRow().value(QStringLiteral("runs.id")).toInt();
-		Runs::RunsPlugin *runs_plugin = runsPlugin();
-		if(!runs_plugin)
-			return;
-		int card_id = runs_plugin->cardForRun(run_id);
+		int card_id = getPlugin<RunsPlugin>()->cardForRun(run_id);
 		if(card_id > 0) {
-			qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-			qf::qmlwidgets::framework::Plugin *receipts_plugin = fwk->plugin("Receipts");
-			if(!receipts_plugin) {
-				qfError() << "Receipts plugin not installed!";
-				return;
-			}
-			QMetaObject::invokeMethod(receipts_plugin, "printReceipt", Qt::DirectConnection, Q_ARG(int, card_id));
+			QMetaObject::invokeMethod(getPlugin<ReceiptsPlugin>(), "printReceipt", Qt::DirectConnection, Q_ARG(int, card_id));
 		}
 	}
 	else if(a == &a_shift_start_times) {

@@ -14,13 +14,8 @@
 
 #include <QTimer>
 
-static Competitors::CompetitorsPlugin* competitorsPlugin()
-{
-	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	auto *plugin = qobject_cast<Competitors::CompetitorsPlugin*>(fwk->plugin("Competitors"));
-	QF_ASSERT_EX(plugin != nullptr, "Bad Competitors plugin!");
-	return plugin;
-}
+using qf::qmlwidgets::framework::getPlugin;
+using Competitors::CompetitorsPlugin;
 
 AddLegDialogWidget::AddLegDialogWidget(QWidget *parent)
 	: Super(parent)
@@ -59,7 +54,7 @@ AddLegDialogWidget::AddLegDialogWidget(QWidget *parent)
 	ui->tblCompetitors->setReadOnly(true);
 	competitors_model->reload();
 
-	qf::core::model::SqlTableModel *reg_model = competitorsPlugin()->registrationsModel();
+	auto *reg_model = getPlugin<CompetitorsPlugin>()->registrationsModel();
 	ui->tblRegistrations->setTableModel(reg_model);
 	ui->tblRegistrations->setReadOnly(true);
 	connect(reg_model, &qf::core::model::SqlTableModel::reloaded, [this]() {

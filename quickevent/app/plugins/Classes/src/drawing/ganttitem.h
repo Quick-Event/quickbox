@@ -50,8 +50,6 @@ public:
 	void insertStartSlotItem(int ix, StartSlotItem *it);
 	StartSlotItem* addStartSlotItem();
 private:
-	Event::EventPlugin* eventPlugin();
-private:
 	QList<StartSlotItem*> m_startSlotItems;
 	DrawingConfig m_drawingConfig;
 	GanttRuler *m_ganttRuler;

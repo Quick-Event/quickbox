@@ -30,21 +30,11 @@ namespace qfd = qf::qmlwidgets::dialogs;
 namespace qfm = qf::core::model;
 namespace qfs = qf::core::sql;
 namespace qog = quickevent::core::og;
+using qf::qmlwidgets::framework::getPlugin;
+using Event::EventPlugin;
 
 namespace Relays {
 
-static Event::EventPlugin* eventPlugin()
-{
-	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	return fwk->plugin<Event::EventPlugin*>();
-}
-/*
-static Runs::RunsPlugin* runsPlugin()
-{
-	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	return fwk->plugin<Runs::RunsPlugin*>();
-}
-*/
 RelaysPlugin::RelaysPlugin(QObject *parent)
 	: Super("Relays", parent)
 {
@@ -85,7 +75,7 @@ void RelaysPlugin::onInstalled()
 	m_partWidget = new ThisPartWidget();
 	fwk->addPartWidget(m_partWidget, manifest()->featureId());
 
-	connect(eventPlugin(), &Event::EventPlugin::dbEventNotify, this, &RelaysPlugin::onDbEventNotify);
+	connect(getPlugin<EventPlugin>(), &Event::EventPlugin::dbEventNotify, this, &RelaysPlugin::onDbEventNotify);
 
 	emit nativeInstalled();
 }
@@ -215,8 +205,8 @@ qf::core::utils::TreeTable RelaysPlugin::nLegsResultsTable(const QString &where_
 {
 	qfLogFuncFrame() << "leg cnt:" << leg_count;
 	qf::core::utils::TreeTable tt;
-	tt.setValue("event", eventPlugin()->eventConfig()->value("event"));
-	tt.setValue("stageStart", eventPlugin()->stageStartDateTime(1));
+	tt.setValue("event", getPlugin<EventPlugin>()->eventConfig()->value("event"));
+	tt.setValue("stageStart", getPlugin<EventPlugin>()->stageStartDateTime(1));
 	tt.appendColumn("className", QVariant::String);
 	qfs::QueryBuilder qb;
 	qb.select2("classes", "id, name")
@@ -316,7 +306,7 @@ qf::core::utils::TreeTable RelaysPlugin::nLegsClassResultsTable(int class_id, in
 					leg.lastName = q.value("lastName").toString();
 					leg.runId = q.value("runs.id").toInt();
 					leg.reg = q.value("competitors.registration").toString();
-					//leg.courseId = runsPlugin()->courseForRun(leg.runId);
+					//leg.courseId = getPlugin<RunsPlugin>()->courseForRun(leg.runId);
 					break;
 				}
 			}

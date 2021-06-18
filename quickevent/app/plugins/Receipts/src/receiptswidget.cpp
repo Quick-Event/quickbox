@@ -45,6 +45,9 @@ namespace qfm = qf::core::model;
 namespace qfs = qf::core::sql;
 namespace qff = qf::qmlwidgets::framework;
 namespace qfw = qf::qmlwidgets;
+using qf::qmlwidgets::framework::getPlugin;
+using Event::EventPlugin;
+using Receipts::ReceiptsPlugin;
 
 const char *ReceiptsWidget::SETTINGS_PREFIX = "plugins/Receipts";
 
@@ -95,7 +98,7 @@ ReceiptsWidget::ReceiptsWidget(QWidget *parent) :
 	connect(ui->tblCards, &qfw::TableView::customContextMenuRequested, this, &ReceiptsWidget::onCustomContextMenuRequest);
 
 	connect(ui->lstReceipt, static_cast<void (QComboBox::*)(int)>(&QComboBox::activated), [this](int ix) {
-		receiptsPlugin()->setCurrentReceiptPath(ui->lstReceipt->itemData(ix).toString());
+		getPlugin<ReceiptsPlugin>()->setCurrentReceiptPath(ui->lstReceipt->itemData(ix).toString());
 	});
 
 	QTimer::singleShot(0, this, &ReceiptsWidget::lazyInit);
@@ -117,12 +120,12 @@ void ReceiptsWidget::settleDownInPartWidget(ReceiptsPartWidget *part_widget)
 	connect(part_widget, SIGNAL(resetPartRequest()), this, SLOT(reset()));
 	connect(part_widget, SIGNAL(reloadPartRequest()), this, SLOT(reload()));
 
-	connect(eventPlugin(), &Event::EventPlugin::dbEventNotify, this, &ReceiptsWidget::onDbEventNotify, Qt::QueuedConnection);
+	connect(getPlugin<EventPlugin>(), &Event::EventPlugin::dbEventNotify, this, &ReceiptsWidget::onDbEventNotify, Qt::QueuedConnection);
 }
 
 void ReceiptsWidget::reset()
 {
-	if(!eventPlugin()->isEventOpen()) {
+	if(!getPlugin<EventPlugin>()->isEventOpen()) {
 		m_cardsModel->clearRows();
 		return;
 	}
@@ -131,7 +134,7 @@ void ReceiptsWidget::reset()
 
 void ReceiptsWidget::reload()
 {
-	bool is_relays = eventPlugin()->eventConfig()->isRelays();
+	bool is_relays = getPlugin<EventPlugin>()->eventConfig()->isRelays();
 	int current_stage = currentStageId();
 	qfs::QueryBuilder qb;
 	qb.select2("cards", "id, siId, printerConnectionId")
@@ -153,22 +156,6 @@ void ReceiptsWidget::reload()
 	}
 	m_cardsModel->setQueryBuilder(qb, false);
 	m_cardsModel->reload();
-}
-
-Receipts::ReceiptsPlugin *ReceiptsWidget::receiptsPlugin()
-{
-	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	auto plugin = qobject_cast<Receipts::ReceiptsPlugin *>(fwk->plugin("Receipts"));
-	QF_ASSERT(plugin != nullptr, "Bad plugin", return nullptr);
-	return plugin;
-}
-
-Event::EventPlugin *ReceiptsWidget::eventPlugin()
-{
-	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	auto plugin = qobject_cast<Event::EventPlugin *>(fwk->plugin("Event"));
-	QF_ASSERT(plugin != nullptr, "Bad plugin", return nullptr);
-	return plugin;
 }
 
 void ReceiptsWidget::onDbEventNotify(const QString &domain, int connection_id, const QVariant &data)
@@ -196,10 +183,7 @@ void ReceiptsWidget::createActions()
 
 int ReceiptsWidget::currentStageId()
 {
-	auto event_plugin = eventPlugin();
-	QF_ASSERT(event_plugin != nullptr, "Bad plugin", return 0);
-	int ret = event_plugin->currentStageId();
-	return ret;
+	return getPlugin<EventPlugin>()->currentStageId();
 }
 
 void ReceiptsWidget::onCardRead()
@@ -263,7 +247,7 @@ void ReceiptsWidget::onCustomContextMenuRequest(const QPoint &pos)
 	}
 	else if(a == &a_show_receipt) {
 		int card_id = ui->tblCards->selectedRow().value("cards.id").toInt();
-		receiptsPlugin()->previewReceipt(card_id);
+		getPlugin<ReceiptsPlugin>()->previewReceipt(card_id);
 	}
 }
 
@@ -283,13 +267,13 @@ bool ReceiptsWidget::printReceipt(int card_id)
 		if(q.next()) {
 			int run_id = q.value(0).toInt();
 			if(run_id > 0)
-				return receiptsPlugin()->printReceipt(card_id);
+				return getPlugin<ReceiptsPlugin>()->printReceipt(card_id);
 			else
 			{
 				if (ui->lstNotFound->currentIndex() == 0)
-					return receiptsPlugin()->printError(card_id);
+					return getPlugin<ReceiptsPlugin>()->printError(card_id);
 				else
-					return receiptsPlugin()->printCard(card_id);
+					return getPlugin<ReceiptsPlugin>()->printCard(card_id);
 			}
 		}
 	}
@@ -299,7 +283,7 @@ bool ReceiptsWidget::printReceipt(int card_id)
 void ReceiptsWidget::loadReceptList()
 {
 	ui->lstReceipt->clear();
-	QString receipts_dir = receiptsPlugin()->manifest()->homeDir() + "/reports/receipts";
+	QString receipts_dir = getPlugin<ReceiptsPlugin>()->manifest()->homeDir() + "/reports/receipts";
 	QDirIterator it(receipts_dir, QStringList{"*.qml"}, QDir::Files | QDir::Readable, QDirIterator::Subdirectories);
 	while (it.hasNext()) {
 		it.next();
@@ -313,7 +297,7 @@ void ReceiptsWidget::loadReceptList()
 		ui->lstReceipt->addItem(name, path);
 	}
 	ui->lstReceipt->setCurrentIndex(-1);
-	QString curr_path = receiptsPlugin()->currentReceiptPath();
+	QString curr_path = getPlugin<ReceiptsPlugin>()->currentReceiptPath();
 	qfInfo() << "current receipt path:" << curr_path;
 	for (int i = 0; i < ui->lstReceipt->count(); ++i) {
 		if(ui->lstReceipt->itemData(i).toString() == curr_path) {
@@ -323,13 +307,13 @@ void ReceiptsWidget::loadReceptList()
 	}
 	if(ui->lstReceipt->currentIndex() < 0) {
 		ui->lstReceipt->setCurrentIndex(0);
-		receiptsPlugin()->setCurrentReceiptPath(ui->lstReceipt->itemData(0).toString());
+		getPlugin<ReceiptsPlugin>()->setCurrentReceiptPath(ui->lstReceipt->itemData(0).toString());
 	}
 }
 
 void ReceiptsWidget::updateReceiptsPrinterLabel()
 {
-	const auto &opts = receiptsPlugin()->receiptsPrinter()->printerOptions();
+	const auto &opts = getPlugin<ReceiptsPlugin>()->receiptsPrinter()->printerOptions();
 	ui->btPrinterOptions->setText(opts.printerCaption());
 	if(opts.printerType() == (int)ReceiptsPrinterOptions::PrinterType::GraphicPrinter)
 		ui->btPrinterOptions->setIcon(QIcon(":/quickevent/Receipts/images/graphic-printer.svg"));
@@ -340,9 +324,9 @@ void ReceiptsWidget::updateReceiptsPrinterLabel()
 void ReceiptsWidget::on_btPrinterOptions_clicked()
 {
 	ReceiptsPrinterOptionsDialog dlg(this);
-	dlg.setPrinterOptions(receiptsPlugin()->receiptsPrinter()->printerOptions());
+	dlg.setPrinterOptions(getPlugin<ReceiptsPlugin>()->receiptsPrinter()->printerOptions());
 	if(dlg.exec()) {
-		receiptsPlugin()->setReceiptsPrinterOptions(dlg.printerOptions());
+		getPlugin<ReceiptsPlugin>()->setReceiptsPrinterOptions(dlg.printerOptions());
 		updateReceiptsPrinterLabel();
 	}
 }

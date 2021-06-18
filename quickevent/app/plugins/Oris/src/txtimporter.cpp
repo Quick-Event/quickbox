@@ -20,14 +20,8 @@ namespace qfw = qf::qmlwidgets;
 namespace qfd = qf::qmlwidgets::dialogs;
 namespace qfm = qf::core::model;
 namespace qfs = qf::core::sql;
-
-static Event::EventPlugin* eventPlugin()
-{
-	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	auto *plugin = qobject_cast<Event::EventPlugin*>(fwk->plugin("Event"));
-	QF_ASSERT_EX(plugin != nullptr, "Bad event plugin!");
-	return plugin;
-}
+using qf::qmlwidgets::framework::getPlugin;
+using Event::EventPlugin;
 
 TxtImporter::TxtImporter(QObject *parent)
 	: QObject(parent)
@@ -87,7 +81,7 @@ void TxtImporter::importCompetitorsCSOS()
 		qf::core::sql::Transaction transaction;
 		importParsedCsv(csv_rows);
 		transaction.commit();
-		emit eventPlugin()->reloadDataRequest();
+		emit getPlugin<EventPlugin>()->reloadDataRequest();
 	}
 	catch (qf::core::Exception &e) {
 		qf::qmlwidgets::dialogs::MessageBox::showException(fwk, e);
@@ -144,7 +138,7 @@ void TxtImporter::importCompetitorsCSV()
 		qf::core::sql::Transaction transaction;
 		importParsedCsv(csv_rows);
 		transaction.commit();
-		emit eventPlugin()->reloadDataRequest();
+		emit getPlugin<EventPlugin>()->reloadDataRequest();
 	}
 	catch (qf::core::Exception &e) {
 		qf::qmlwidgets::dialogs::MessageBox::showException(fwk, e);

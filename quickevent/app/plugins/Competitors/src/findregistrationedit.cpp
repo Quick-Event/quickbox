@@ -13,13 +13,8 @@
 #include <QAbstractProxyModel>
 #include <QKeyEvent>
 
-static Competitors::CompetitorsPlugin* competitorsPlugin()
-{
-	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	auto *plugin = qobject_cast<Competitors::CompetitorsPlugin*>(fwk->plugin("Competitors"));
-	QF_ASSERT_EX(plugin != nullptr, "Bad Competitors plugin!");
-	return plugin;
-}
+using qf::qmlwidgets::framework::getPlugin;
+using Competitors::CompetitorsPlugin;
 
 class FindRegistrationsModel : public QAbstractTableModel
 {
@@ -39,7 +34,7 @@ private:
 FindRegistrationsModel::FindRegistrationsModel(QObject *parent)
 	: Super(parent)
 {
-	m_registrationsTable = competitorsPlugin()->registrationsTable();
+	m_registrationsTable = getPlugin<CompetitorsPlugin>()->registrationsTable();
 }
 
 const qf::core::utils::Table &FindRegistrationsModel::registrationsTable() const

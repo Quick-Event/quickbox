@@ -12,6 +12,8 @@
 
 namespace qff = qf::qmlwidgets::framework;
 namespace qfd = qf::qmlwidgets::dialogs;
+using qf::qmlwidgets::framework::getPlugin;
+using Event::EventPlugin;
 
 namespace Event {
 namespace services {
@@ -26,7 +28,7 @@ Service::Service(const QString &name, QObject *parent)
 	//qfDebug() << name;
 	setObjectName(name);
 	setStatus(Status::Stopped);
-	connect(eventPlugin(), &Event::EventPlugin::eventOpenChanged, this, &Service::onEventOpen, Qt::QueuedConnection);
+	connect(getPlugin<EventPlugin>(), &Event::EventPlugin::eventOpenChanged, this, &Service::onEventOpen, Qt::QueuedConnection);
 }
 
 Service::~Service()
@@ -38,12 +40,6 @@ Service::~Service()
 	saveSettings();
 }
 
-Event::EventPlugin *Service::eventPlugin()
-{
-	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	return fwk->plugin<Event::EventPlugin *>();
-}
-
 QString Service::settingsGroup() const
 {
 	QString s = QStringLiteral("services/") + name();
@@ -52,7 +48,7 @@ QString Service::settingsGroup() const
 
 void Service::onEventOpen()
 {
-	if(!eventPlugin()->isEventOpen())
+	if(!getPlugin<EventPlugin>()->isEventOpen())
 		return;
 	loadSettings();
 	ServiceSettings ss = settings();

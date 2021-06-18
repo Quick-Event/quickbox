@@ -49,17 +49,9 @@ namespace qff = qf::qmlwidgets::framework;
 namespace qfd = qf::qmlwidgets::dialogs;
 namespace qfm = qf::core::model;
 
-static Event::EventPlugin *eventPlugin()
-{
-	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	return fwk->plugin<Event::EventPlugin *>();
-}
-
-static Runs::RunsPlugin *runsPlugin()
-{
-	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	return fwk->plugin<Runs::RunsPlugin *>();
-}
+using qf::qmlwidgets::framework::getPlugin;
+using Event::EventPlugin;
+using Runs::RunsPlugin;
 
 RunsWidget::RunsWidget(QWidget *parent) :
 	Super(parent),
@@ -67,15 +59,15 @@ RunsWidget::RunsWidget(QWidget *parent) :
 {
 	ui->setupUi(this);
 
-	//bool is_relays = eventPlugin()->eventConfig()->isRelays();
+	//bool is_relays = getPlugin<EventPlugin>()->eventConfig()->isRelays();
 
 	ui->frmDrawing->setVisible(false);
 
-	connect(eventPlugin(), &Event::EventPlugin::eventOpenChanged, [this]() {
+	connect(getPlugin<EventPlugin>(), &Event::EventPlugin::eventOpenChanged, [this]() {
 		ui->cbxDrawMethod->clear();
-		if(!eventPlugin()->isEventOpen())
+		if(!getPlugin<EventPlugin>()->isEventOpen())
 			return;
-		bool is_relays = eventPlugin()->eventConfig()->isRelays();
+		bool is_relays = getPlugin<EventPlugin>()->eventConfig()->isRelays();
 		if(is_relays) {
 			ui->cbxDrawMethod->addItem(tr("Relays first leg"), static_cast<int>(DrawMethod::RelaysFirstLeg));
 		}
@@ -106,14 +98,14 @@ void RunsWidget::lazyInit()
 void RunsWidget::reset(int class_id)
 {
 	qfLogFuncFrame();
-	if(!eventPlugin()->isEventOpen()) {
+	if(!getPlugin<EventPlugin>()->isEventOpen()) {
 		ui->wRunsTableWidget->clear();
 		return;
 	}
 	{
 		m_cbxStage->blockSignals(true);
 		m_cbxStage->clear();
-		for(int i=0; i<eventPlugin()->stageCount(); i++)
+		for(int i=0; i<getPlugin<EventPlugin>()->stageCount(); i++)
 			m_cbxStage->addItem(tr("E%1").arg(i+1), i+1);
 		connect(m_cbxStage, SIGNAL(currentIndexChanged(int)), this, SLOT(reload()), Qt::UniqueConnection);
 		connect(m_cbxStage, SIGNAL(currentIndexChanged(int)), this, SLOT(emitSelectedStageIdChanged(int)), Qt::UniqueConnection);
@@ -121,7 +113,7 @@ void RunsWidget::reset(int class_id)
 	}
 	/// Note: You should use QAction::setVisible() to change the visibility of the widget.
 	/// Using QWidget::setVisible(), QWidget::show() and QWidget::hide() does not work.
-	bool is_relays = eventPlugin()->eventConfig()->isRelays();
+	bool is_relays = getPlugin<EventPlugin>()->eventConfig()->isRelays();
 	m_toolbarActionLabelLeg->setVisible(is_relays);
 	m_toolbarActionComboLeg->setVisible(is_relays);
 	//qfWarning() << "is relays:" << is_relays << "legs visible:" << m_cbxLeg->isVisible();
@@ -142,7 +134,7 @@ void RunsWidget::reset(int class_id)
 void RunsWidget::reload()
 {
 	qfLogFuncFrame();
-	bool is_relays = eventPlugin()->eventConfig()->isRelays();
+	bool is_relays = getPlugin<EventPlugin>()->eventConfig()->isRelays();
 	int stage_id = is_relays? m_cbxLeg->currentData().toInt(): selectedStageId();
 	int class_id = m_cbxClasses->currentData().toInt();
 	ui->wRunsTableWidget->reload(stage_id, class_id, m_chkShowOffRace->isChecked());
@@ -154,8 +146,6 @@ void RunsWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 	connect(part_widget, SIGNAL(resetPartRequest()), this, SLOT(reset()));
 	connect(part_widget, SIGNAL(reloadPartRequest()), this, SLOT(reload()));
 
-	Runs::RunsPlugin *runs_plugin = runsPlugin();
-
 	auto *a_print = part_widget->menuBar()->actionForPath("print", true);
 	a_print->setText(tr("&Print"));
 	{
@@ -163,28 +153,28 @@ void RunsWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 		{
 			{
 				auto *a = new qfw::Action(tr("&Classes"));
-				connect(a, &qfw::Action::triggered, runs_plugin, &Runs::RunsPlugin::report_startListClasses);
+				connect(a, &qfw::Action::triggered, getPlugin<RunsPlugin>(), &Runs::RunsPlugin::report_startListClasses);
 				m->addActionInto(a);
 			}
 			{
 				auto *a = new qfw::Action(tr("C&lubs"));
-				connect(a, &qfw::Action::triggered, runs_plugin, &Runs::RunsPlugin::report_startListClubs);
+				connect(a, &qfw::Action::triggered, getPlugin<RunsPlugin>(), &Runs::RunsPlugin::report_startListClubs);
 				m->addActionInto(a);
 			}
 			{
 				auto *a = new qfw::Action(tr("&Starters"));
-				connect(a, &qfw::Action::triggered, runs_plugin, &Runs::RunsPlugin::report_startListStarters);
+				connect(a, &qfw::Action::triggered, getPlugin<RunsPlugin>(), &Runs::RunsPlugin::report_startListStarters);
 				m->addActionInto(a);
 			}
 			m->addSeparatorInto();
 			{
 				auto *a = new qfw::Action(tr("Classes n stages"));
-				connect(a, &qfw::Action::triggered, runs_plugin, &Runs::RunsPlugin::report_startListClassesNStages);
+				connect(a, &qfw::Action::triggered, getPlugin<RunsPlugin>(), &Runs::RunsPlugin::report_startListClassesNStages);
 				m->addActionInto(a);
 			}
 			{
 				auto *a = new qfw::Action(tr("Clubs n stages"));
-				connect(a, &qfw::Action::triggered, runs_plugin, &Runs::RunsPlugin::report_startListClubsNStages);
+				connect(a, &qfw::Action::triggered, getPlugin<RunsPlugin>(), &Runs::RunsPlugin::report_startListClubsNStages);
 				m->addActionInto(a);
 			}
 		}
@@ -195,34 +185,34 @@ void RunsWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 			{
 				auto *a = new qfw::Action(tr("&Current stage"));
 				a->setShortcut("Ctrl+P");
-				connect(a, &qfw::Action::triggered, runs_plugin, &Runs::RunsPlugin::report_resultsClasses);
+				connect(a, &qfw::Action::triggered, getPlugin<RunsPlugin>(), &Runs::RunsPlugin::report_resultsClasses);
 				m->addActionInto(a);
 			}
 			{
 				auto *a = new qfw::Action(tr("Current stage for speaker"));
-				connect(a, &qfw::Action::triggered, runs_plugin, &Runs::RunsPlugin::report_resultsForSpeaker);
+				connect(a, &qfw::Action::triggered, getPlugin<RunsPlugin>(), &Runs::RunsPlugin::report_resultsForSpeaker);
 				m->addActionInto(a);
 			}
 			m->addSeparatorInto();
 			{
 				auto *a = new qfw::Action(tr("Current stage awards"));
-				connect(a, &qfw::Action::triggered, runs_plugin, &Runs::RunsPlugin::report_resultsAwards);
+				connect(a, &qfw::Action::triggered, getPlugin<RunsPlugin>(), &Runs::RunsPlugin::report_resultsAwards);
 				m->addActionInto(a);
 			}
 			m->addSeparatorInto();
 			{
 				auto *a = new qfw::Action(tr("&After n stages"));
-				connect(a, &qfw::Action::triggered, runs_plugin, &Runs::RunsPlugin::report_resultsNStages);
+				connect(a, &qfw::Action::triggered, getPlugin<RunsPlugin>(), &Runs::RunsPlugin::report_resultsNStages);
 				m->addActionInto(a);
 			}
 			{
 				auto *a = new qfw::Action(tr("&After n stages for speaker"));
-				connect(a, &qfw::Action::triggered, runs_plugin, &Runs::RunsPlugin::report_resultsNStagesSpeaker);
+				connect(a, &qfw::Action::triggered, getPlugin<RunsPlugin>(), &Runs::RunsPlugin::report_resultsNStagesSpeaker);
 				m->addActionInto(a);
 			}
 			{
 				auto *a = new qfw::Action(tr("N stages awards"));
-				connect(a, &qfw::Action::triggered, runs_plugin, &Runs::RunsPlugin::report_nStagesAwards);
+				connect(a, &qfw::Action::triggered, getPlugin<RunsPlugin>(), &Runs::RunsPlugin::report_nStagesAwards);
 				m->addActionInto(a);
 			}
 		}
@@ -235,7 +225,7 @@ void RunsWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 			QVariantMap props;
 			props["stageId"] = selectedStageId();
 			qf::qmlwidgets::reports::ReportViewWidget::showReport(fwk
-										, runsPlugin()->manifest()->homeDir() + "/reports/competitorsWithCardRent.qml"
+										, getPlugin<RunsPlugin>()->manifest()->homeDir() + "/reports/competitorsWithCardRent.qml"
 										, QVariant()
 										, tr("Competitors with rented cards")
 										, "printReport"
@@ -260,12 +250,12 @@ void RunsWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 	{
 		{
 			auto *a = new qfw::Action(tr("&Classes"));
-			connect(a, &qfw::Action::triggered, runs_plugin, &Runs::RunsPlugin::export_startListClassesHtml);
+			connect(a, &qfw::Action::triggered, getPlugin<RunsPlugin>(), &Runs::RunsPlugin::export_startListClassesHtml);
 			m_export_stlist_html->addActionInto(a);
 		}
 		{
 			auto *a = new qfw::Action(tr("C&lubs"));
-			connect(a, &qfw::Action::triggered, runs_plugin, &Runs::RunsPlugin::export_startListClubsHtml);
+			connect(a, &qfw::Action::triggered, getPlugin<RunsPlugin>(), &Runs::RunsPlugin::export_startListClubsHtml);
 			m_export_stlist_html->addActionInto(a);
 		}
 	}
@@ -287,11 +277,11 @@ void RunsWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 		}
 		{
 			qfw::Action *a = a_export_results->addActionInto("html", tr("&HTML"));
-			connect(a, &qfw::Action::triggered, runs_plugin, &Runs::RunsPlugin::export_resultsHtmlStage);
+			connect(a, &qfw::Action::triggered, getPlugin<RunsPlugin>(), &Runs::RunsPlugin::export_resultsHtmlStage);
 		}
 		{
 			qfw::Action *a = a_export_results->addActionInto("htmlWithLaps", tr("HTML with &laps"));
-			connect(a, &qfw::Action::triggered, runs_plugin, &Runs::RunsPlugin::export_resultsHtmlStageWithLaps);
+			connect(a, &qfw::Action::triggered, getPlugin<RunsPlugin>(), &Runs::RunsPlugin::export_resultsHtmlStageWithLaps);
 		}
 		qfw::Action *a_export_results_csos = a_export_results->addMenuInto("csos", tr("CSOS"));
 		{
@@ -439,7 +429,7 @@ QList<int> RunsWidget::runsForClass(int stage_id, int class_id, const QString &e
 QMap<int, int> RunsWidget::competitorsForClass(int stage_id, int class_id, const QString &extra_where_condition, const QString &order_by)
 {
 	qfLogFuncFrame() << "stage:" << stage_id << "class:" << class_id;
-	bool is_relays = eventPlugin()->eventConfig()->isRelays();
+	bool is_relays = getPlugin<EventPlugin>()->eventConfig()->isRelays();
 	QMap<int, int> ret;
 	qf::core::sql::QueryBuilder qb;
 	qb.select2("runs", "id, competitorId")
@@ -551,8 +541,7 @@ QString RunsWidget::getSaveFileName(const QString &file_name, int stage_id)
 	int ix = fn.lastIndexOf('.');
 	if(ix > 0)
 		ext = fn.mid(ix);
-	Event::EventPlugin *evp = eventPlugin();
-	if(evp->stageCount() > 1 && stage_id > 0)
+	if(getPlugin<EventPlugin>()->stageCount() > 1 && stage_id > 0)
 		fn = QStringLiteral("e%1-").arg(stage_id) + fn;
 
 	fn = qfd::FileDialog::getSaveFileName(this, tr("Save as %1").arg(ext.mid(1).toUpper()), fn, '*' + ext);
@@ -570,7 +559,7 @@ void RunsWidget::export_results_iofxml30_stage()
 	if(fn.isEmpty())
 		return;
 
-	runsPlugin()->exportResultsIofXml30Stage(stage_id, fn);
+	getPlugin<RunsPlugin>()->exportResultsIofXml30Stage(stage_id, fn);
 }
 
 void RunsWidget::export_results_csos_stage()
@@ -580,7 +569,7 @@ void RunsWidget::export_results_csos_stage()
 	if(fn.isEmpty())
 		return;
 
-	runsPlugin()->exportResultsCsosStage(stage_id, fn);
+	getPlugin<RunsPlugin>()->exportResultsCsosStage(stage_id, fn);
 }
 
 void RunsWidget::export_results_csos_overall()
@@ -588,11 +577,8 @@ void RunsWidget::export_results_csos_overall()
 	QString fn = getSaveFileName("overall-results-csos.txt", 0);
 	if(fn.isEmpty())
 		return;
-
-	Event::EventPlugin *evp = eventPlugin();
-	int stage_count = evp->stageCount();
-
-	runsPlugin()->exportResultsCsosOverall(stage_count, fn);
+	int stage_count = getPlugin<EventPlugin>()->stageCount();
+	getPlugin<RunsPlugin>()->exportResultsCsosOverall(stage_count, fn);
 }
 
 bool RunsWidget::isLockedForDrawing(int class_id, int stage_id)
@@ -627,10 +613,10 @@ void RunsWidget::saveLockedForDrawing(int class_id, int stage_id, bool is_locked
 void RunsWidget::on_btDraw_clicked()
 {
 	qfLogFuncFrame();
-	bool is_relays = eventPlugin()->eventConfig()->isRelays();
+	bool is_relays = getPlugin<EventPlugin>()->eventConfig()->isRelays();
 	int stage_id = selectedStageId();
 	DrawMethod draw_method = DrawMethod(ui->cbxDrawMethod->currentData().toInt());
-	Event::StageData stage_data = eventPlugin()->stageData(stage_id);
+	Event::StageData stage_data = getPlugin<EventPlugin>()->stageData(stage_id);
 	bool use_all_maps = stage_data.isUseAllMaps();
 	qfDebug() << "DrawMethod:" << (int)draw_method << "use_all_maps:" << use_all_maps;
 	QList<int> class_ids;
@@ -661,7 +647,7 @@ void RunsWidget::on_btDraw_clicked()
 	try {
 		qf::core::sql::Transaction transaction;
 		for(int class_id : class_ids) {
-			int handicap_length_ms = eventPlugin()->eventConfig()->handicapLength() * 60 * 1000;
+			int handicap_length_ms = getPlugin<EventPlugin>()->eventConfig()->handicapLength() * 60 * 1000;
 			QVector<int> handicap_times;
 			qf::core::sql::QueryBuilder qb;
 			qb.select2("classdefs", "startTimeMin, startIntervalMin, vacantsBefore, vacantEvery, vacantsAfter, mapCount")
@@ -709,8 +695,8 @@ void RunsWidget::on_btDraw_clicked()
 				runners_draw_ids = group1 + group2 + group3;
 			}
 			else if(draw_method == DrawMethod::Handicap) {
-				int stage_count = eventPlugin()->eventConfig()->stageCount();
-				qf::core::utils::Table results = runsPlugin()->nstagesClassResultsTable(stage_count - 1, class_id);
+				int stage_count = getPlugin<EventPlugin>()->eventConfig()->stageCount();
+				qf::core::utils::Table results = getPlugin<RunsPlugin>()->nstagesClassResultsTable(stage_count - 1, class_id);
 				QMap<int, int> competitor_to_run = competitorsForClass(stage_count, class_id);
 				//int n = 0;
 				for (int i = 0; i < results.rowCount(); ++i) {
@@ -949,6 +935,6 @@ void RunsWidget::export_startList_iofxml30_stage()
 	QString fn = getSaveFileName("startlist-iof-3.0.xml", stage_id);
 	if(fn.isEmpty())
 		return;
-	runsPlugin()->exportStartListStageIofXml30(stage_id, fn);
+	getPlugin<RunsPlugin>()->exportStartListStageIofXml30(stage_id, fn);
 }
 

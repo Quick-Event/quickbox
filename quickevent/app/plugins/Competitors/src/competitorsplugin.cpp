@@ -24,16 +24,10 @@ namespace qff = qf::qmlwidgets::framework;
 namespace qfd = qf::qmlwidgets::dialogs;
 namespace qfm = qf::core::model;
 namespace qfs = qf::core::sql;
+using qf::qmlwidgets::framework::getPlugin;
+using Event::EventPlugin;
 
 namespace Competitors {
-
-static Event::EventPlugin* eventPlugin()
-{
-	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	auto *plugin = qobject_cast<Event::EventPlugin*>(fwk->plugin("Event"));
-	QF_ASSERT_EX(plugin != nullptr, "Bad Event plugin!");
-	return plugin;
-}
 
 CompetitorsPlugin::CompetitorsPlugin(QObject *parent)
 	: Super("Competitors", parent)
@@ -88,8 +82,8 @@ void CompetitorsPlugin::onInstalled()
 		fwk->menuBar()->actionForPath("view")->addActionInto(a);
 	}
 
-	connect(eventPlugin(), &Event::EventPlugin::eventOpenChanged, this, &CompetitorsPlugin::reloadRegistrationsModel);
-	connect(eventPlugin(), &Event::EventPlugin::dbEventNotify, this, &CompetitorsPlugin::onDbEventNotify);
+	connect(getPlugin<EventPlugin>(), &Event::EventPlugin::eventOpenChanged, this, &CompetitorsPlugin::reloadRegistrationsModel);
+	connect(getPlugin<EventPlugin>(), &Event::EventPlugin::dbEventNotify, this, &CompetitorsPlugin::onDbEventNotify);
 
 	emit nativeInstalled();
 }
@@ -114,8 +108,8 @@ void CompetitorsPlugin::onDbEventNotify(const QString &domain, int connection_id
 
 void CompetitorsPlugin::reloadRegistrationsModel()
 {
-	qfLogFuncFrame() << "isEventOpen():" << eventPlugin()->isEventOpen();
-	if(eventPlugin()->isEventOpen())
+	qfLogFuncFrame() << "isEventOpen():" << getPlugin<EventPlugin>()->isEventOpen();
+	if(getPlugin<EventPlugin>()->isEventOpen())
 		registrationsModel()->reload();
 	else
 		registrationsModel()->clearRows();

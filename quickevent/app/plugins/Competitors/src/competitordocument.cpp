@@ -11,6 +11,8 @@
 #include <qf/core/assert.h>
 
 using namespace Competitors;
+using qf::qmlwidgets::framework::getPlugin;
+using Event::EventPlugin;
 
 CompetitorDocument::CompetitorDocument(QObject *parent)
 	: Super(parent)
@@ -23,13 +25,6 @@ CompetitorDocument::CompetitorDocument(QObject *parent)
 			//.join("competitors.classId", "classes.id")
 			.where("competitors.id={{ID}}");
 	setQueryBuilder(qb);
-}
-
-static Event::EventPlugin* eventPlugin()
-{
-	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	qf::qmlwidgets::framework::Plugin *plugin = fwk->plugin("Event");
-	return qobject_cast<Event::EventPlugin *>(plugin);
 }
 
 bool CompetitorDocument::saveData()
@@ -52,10 +47,7 @@ bool CompetitorDocument::saveData()
 			// insert runs
 			qfDebug() << "inserting runs";
 			int competitor_id = dataId().toInt();
-			auto *event_plugin = eventPlugin();
-			QF_ASSERT(event_plugin != nullptr, "invalid Event plugin type", return false);
-
-			int stage_count = event_plugin->stageCount();
+			int stage_count = getPlugin<EventPlugin>()->stageCount();
 			qf::core::sql::Query q(model()->connectionName());
 			q.prepare("INSERT INTO runs (competitorId, stageId, siId) VALUES (:competitorId, :stageId, :siId)");
 			m_lastInsertedRunsIds.clear();
@@ -67,7 +59,7 @@ bool CompetitorDocument::saveData()
 				q.exec(qf::core::Exception::Throw);
 				m_lastInsertedRunsIds << q.lastInsertId().toInt();
 			}
-			eventPlugin()->emitDbEvent(Event::EventPlugin::DBEVENT_COMPETITOR_COUNTS_CHANGED);
+			getPlugin<EventPlugin>()->emitDbEvent(Event::EventPlugin::DBEVENT_COMPETITOR_COUNTS_CHANGED);
 		}
 		else if(old_mode == DataDocument::ModeEdit) {
 			if(siid_dirty) {
@@ -82,7 +74,7 @@ bool CompetitorDocument::saveData()
 				}
 			}
 			if(class_dirty)
-				eventPlugin()->emitDbEvent(Event::EventPlugin::DBEVENT_COMPETITOR_COUNTS_CHANGED);
+				getPlugin<EventPlugin>()->emitDbEvent(Event::EventPlugin::DBEVENT_COMPETITOR_COUNTS_CHANGED);
 		}
 	}
 	return ret;
@@ -102,7 +94,7 @@ bool CompetitorDocument::dropData()
 	}
 	if(ret) {
 		ret = Super::dropData();
-		eventPlugin()->emitDbEvent(Event::EventPlugin::DBEVENT_COMPETITOR_COUNTS_CHANGED);
+		getPlugin<EventPlugin>()->emitDbEvent(Event::EventPlugin::DBEVENT_COMPETITOR_COUNTS_CHANGED);
 	}
 	return ret;
 }

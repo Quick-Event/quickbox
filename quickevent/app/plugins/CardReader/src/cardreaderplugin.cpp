@@ -31,20 +31,11 @@
 
 namespace qff = qf::qmlwidgets::framework;
 namespace qfs = qf::core::sql;
+using qf::qmlwidgets::framework::getPlugin;
+using Event::EventPlugin;
+using Runs::RunsPlugin;
 
 namespace CardReader {
-
-static Event::EventPlugin* eventPlugin()
-{
-	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	return fwk->plugin<Event::EventPlugin*>();
-}
-
-static Runs::RunsPlugin *runsPlugin()
-{
-	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	return fwk->plugin<Runs::RunsPlugin *>();
-}
 
 const QLatin1String CardReaderPlugin::SETTINGS_PREFIX("plugins/CardReader");
 //const int CardReaderPlugin::FINISH_PUNCH_POS = quickevent::core::CodeDef::FINISH_PUNCH_CODE;
@@ -94,11 +85,7 @@ CardChecker *CardReaderPlugin::currentCardChecker()
 
 int CardReaderPlugin::currentStageId()
 {
-	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	auto event_plugin = qobject_cast<Event::EventPlugin *>(fwk->plugin("Event"));
-	QF_ASSERT(event_plugin != nullptr, "Bad plugin", return 0);
-	int ret = event_plugin->currentStageId();
-	return ret;
+	return getPlugin<EventPlugin>()->currentStageId();
 }
 
 int CardReaderPlugin::cardIdToSiId(int card_id)
@@ -114,9 +101,9 @@ int CardReaderPlugin::findRunId(int si_id, int si_finish_time, QString *err_msg)
 	int ret = 0;
 	int row_cnt = 0;
 	int last_id = 0;
-	//int start_time_msec = eventPlugin()->msecToStageStartAM(si_start_time);
-	int finish_time_msec = eventPlugin()->msecToStageStartAM(si_finish_time);
-	bool is_relays = eventPlugin()->eventConfig()->isRelays();
+	//int start_time_msec = getPlugin<EventPlugin>()->msecToStageStartAM(si_start_time);
+	int finish_time_msec = getPlugin<EventPlugin>()->msecToStageStartAM(si_finish_time);
+	bool is_relays = getPlugin<EventPlugin>()->eventConfig()->isRelays();
 	if(is_relays) {
 		qf::core::sql::Query q;
 		q.exec("SELECT id, leg, startTimeMs, finishTimeMs FROM runs WHERE siId=" QF_IARG(si_id)
@@ -283,7 +270,7 @@ int CardReaderPlugin::saveCardToSql(const quickevent::core::si::ReadCard &read_c
 		int punch_id = savePunchRecordToSql(punch);
 		if(punch_id > 0) {
 			punch.setid(punch_id);
-			eventPlugin()->emitDbEvent(Event::EventPlugin::DBEVENT_PUNCH_RECEIVED, punch, true);
+			getPlugin<EventPlugin>()->emitDbEvent(Event::EventPlugin::DBEVENT_PUNCH_RECEIVED, punch, true);
 		}
 	}
 	int ret = 0;
@@ -322,8 +309,7 @@ int CardReaderPlugin::savePunchRecordToSql(const quickevent::core::si::PunchReco
 	quickevent::core::si::PunchRecord punch = punch_record;
 	punch.setstageid(currentStageId());
 
-	Event::EventPlugin *event_plugin = eventPlugin();
-	int time_msec = event_plugin->msecToStageStartAM(punch_record.time(), punch_record.msec());
+	int time_msec = getPlugin<EventPlugin>()->msecToStageStartAM(punch_record.time(), punch_record.msec());
 	punch.settimems(time_msec);
 	qf::core::sql::Query q;
 	int run_id = punch.runid();
@@ -406,7 +392,7 @@ void CardReaderPlugin::updateCheckedCardValuesSql(const quickevent::core::si::Ch
 	if(q.numRowsAffected() != 1)
 		QF_EXCEPTION("Update runs error!");
 	/*
-	bool is_relays = eventPlugin()->eventConfig()->isRelays();
+	bool is_relays = getPlugin<EventPlugin>()->eventConfig()->isRelays();
 	if(is_relays) {
 		/// set start time for next leg
 		q.execThrow("SELECT relayId, leg FROM runs WHERE id=" + QString::number(run_id));
@@ -501,7 +487,7 @@ void CardReaderPlugin::assignCardToRun(int card_id, int run_id)
 bool CardReaderPlugin::processCardToRunAssignment(int card_id, int run_id)
 {
 	qfLogFuncFrame();
-	bool is_relays = eventPlugin()->eventConfig()->isRelays();
+	bool is_relays = getPlugin<EventPlugin>()->eventConfig()->isRelays();
 	if(is_relays) {
 		qf::core::sql::Query q;
 		q.execThrow("SELECT relayId, leg, startTimeMs FROM runs WHERE id=" + QString::number(run_id));
@@ -530,7 +516,7 @@ bool CardReaderPlugin::processCardToRunAssignment(int card_id, int run_id)
 		quickevent::core::si::CheckedCard checked_card = checkCard(card_id, run_id);
 		//qfDebug() << checked_card.toString();
 		updateCheckedCardValuesSql(checked_card);
-		eventPlugin()->emitDbEvent(Event::EventPlugin::DBEVENT_CARD_PROCESSED_AND_ASSIGNED, checked_card, true);
+		getPlugin<EventPlugin>()->emitDbEvent(Event::EventPlugin::DBEVENT_CARD_PROCESSED_AND_ASSIGNED, checked_card, true);
 
 		/// if next leg is finished and has not start time set, proces it too
 		/// This covers cases when next leg is read-out before this one
@@ -542,7 +528,7 @@ bool CardReaderPlugin::processCardToRunAssignment(int card_id, int run_id)
 			int finish_time = q.value(2).toInt();
 			if(finish_time > 0 && start_time.isNull()) {
 				run_id = q.value(0).toInt();
-				card_id = runsPlugin()->cardForRun(run_id);
+				card_id = getPlugin<RunsPlugin>()->cardForRun(run_id);
 				processCardToRunAssignment(card_id, run_id);
 			}
 		}
@@ -550,7 +536,7 @@ bool CardReaderPlugin::processCardToRunAssignment(int card_id, int run_id)
 	else {
 		quickevent::core::si::CheckedCard checked_card = checkCard(card_id, run_id);
 		updateCheckedCardValuesSql(checked_card);
-		eventPlugin()->emitDbEvent(Event::EventPlugin::DBEVENT_CARD_PROCESSED_AND_ASSIGNED, checked_card, true);
+		getPlugin<EventPlugin>()->emitDbEvent(Event::EventPlugin::DBEVENT_CARD_PROCESSED_AND_ASSIGNED, checked_card, true);
 	}
 	return true;
 }

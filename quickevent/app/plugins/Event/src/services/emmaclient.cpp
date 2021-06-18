@@ -13,6 +13,7 @@
 #include <qf/core/sql/querybuilder.h>
 #include <qf/core/sql/query.h>
 #include <qf/core/sql/connection.h>
+#include <Runs/runsplugin.h>
 
 #include <QDir>
 #include <QFile>
@@ -25,6 +26,9 @@ namespace qfc = qf::core;
 namespace qfw = qf::qmlwidgets;
 namespace qfd = qf::qmlwidgets::dialogs;
 namespace qfs = qf::core::sql;
+using qf::qmlwidgets::framework::getPlugin;
+using Event::EventPlugin;
+using Runs::RunsPlugin;
 
 namespace Event {
 namespace services {
@@ -32,7 +36,7 @@ namespace services {
 EmmaClient::EmmaClient(QObject *parent)
 	: Super(EmmaClient::serviceName(), parent)
 {
-	connect(eventPlugin(), &Event::EventPlugin::dbEventNotify, this, &EmmaClient::onDbEventNotify, Qt::QueuedConnection);
+	connect(getPlugin<EventPlugin>(), &Event::EventPlugin::dbEventNotify, this, &EmmaClient::onDbEventNotify, Qt::QueuedConnection);
 
 	m_exportTimer = new QTimer(this);
 	connect(m_exportTimer, &QTimer::timeout, this, &EmmaClient::onExportTimerTimeOut);
@@ -64,7 +68,7 @@ void EmmaClient::exportRadioCodes()
 	if(!createExportDir()) {
 		return;
 	}
-	QString event_name = eventPlugin()->eventName();
+	QString event_name = getPlugin<EventPlugin>()->eventName();
 	QFile f_splitnames(export_dir + '/' + event_name + ".splitnames.txt");
 	if(!f_splitnames.open(QFile::WriteOnly)) {
 		qfError() << "Canot open file:" << f_splitnames.fileName() << "for writing.";
@@ -81,7 +85,7 @@ void EmmaClient::exportRadioCodes()
 	QTextStream ts_names(&f_splitnames);
 	QTextStream ts_codes(&f_splitcodes);
 
-	int current_stage = eventPlugin()->currentStageId();
+	int current_stage = getPlugin<EventPlugin>()->currentStageId();
 	qfs::QueryBuilder qb_classes;
 	qb_classes.select2("classes", "name")
 			.select2("classdefs", "courseId")
@@ -128,14 +132,12 @@ void EmmaClient::exportResultsIofXml3()
 {
 	if(!createExportDir())
 		return;
-	QString event_name = eventPlugin()->eventName();
+	QString event_name = getPlugin<EventPlugin>()->eventName();
 	EmmaClientSettings ss = settings();
 	QString export_dir = ss.exportDir();
 	QString file_name = export_dir + '/' + event_name + ".results.xml";
-	int current_stage = eventPlugin()->currentStageId();
-	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	QObject *plugin = fwk->plugin("Runs");
-	QMetaObject::invokeMethod(plugin, "exportResultsIofXml30Stage",
+	int current_stage = getPlugin<EventPlugin>()->currentStageId();
+	QMetaObject::invokeMethod(getPlugin<RunsPlugin>(), "exportResultsIofXml30Stage",
 							  Q_ARG(int, current_stage),
 							  Q_ARG(QString, file_name) );
 }
@@ -266,7 +268,7 @@ void EmmaClient::exportFinish()
 
 	QTextStream ts(&f);
 
-	int current_stage = eventPlugin()->currentStageId();
+	int current_stage = getPlugin<EventPlugin>()->currentStageId();
 	qfs::QueryBuilder qb;
 	qb.select2("cards", "id, siId")
             .select2("runs", "finishTimeMs, misPunch, badCheck, disqualified, notCompeting")
@@ -274,7 +276,7 @@ void EmmaClient::exportFinish()
 			.join("cards.runId", "runs.id")
 			.where("cards.stageId=" QF_IARG(current_stage))
             .orderBy("cards.id ASC");
-	int start00 = eventPlugin()->stageStartMsec(current_stage);
+	int start00 = getPlugin<EventPlugin>()->stageStartMsec(current_stage);
 
 	qfs::Query q2;
 	q2.execThrow(qb.toString());
@@ -326,8 +328,8 @@ void EmmaClient::exportStartList()
 	QTextStream ts(&f);
 	ts.setGenerateByteOrderMark(true); // BOM
 
-	bool is_relays = eventPlugin()->eventConfig()->isRelays();
-	int current_stage = eventPlugin()->currentStageId();
+	bool is_relays = getPlugin<EventPlugin>()->eventConfig()->isRelays();
+	int current_stage = getPlugin<EventPlugin>()->currentStageId();
 	qfs::QueryBuilder qb;
 	qb.select2("runs", "startTimeMs, siId, competitorId, isrunning, leg")
             .select2("competitors","firstName, lastName, registration")
@@ -348,7 +350,7 @@ void EmmaClient::exportStartList()
 		qb.orderBy("runs.id ASC");
 	}
 
-	int start00 = eventPlugin()->stageStartMsec(current_stage);
+	int start00 = getPlugin<EventPlugin>()->stageStartMsec(current_stage);
 	qfDebug() << qb.toString();
 	qfs::Query q2;
 	q2.execThrow(qb.toString());

@@ -9,13 +9,8 @@
 
 #include <QInputDialog>
 
-static Classes::ClassesPlugin* classesPlugin()
-{
-	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	auto *plugin = qobject_cast<Classes::ClassesPlugin*>(fwk->plugin("Classes"));
-	QF_ASSERT_EX(plugin != nullptr, "Bad Classes plugin!");
-	return plugin;
-}
+using qf::qmlwidgets::framework::getPlugin;
+using Classes::ClassesPlugin;
 
 ClassesTableView::ClassesTableView(QWidget *parent)
 	: Super(parent)
@@ -30,7 +25,7 @@ void ClassesTableView::insertRow()
 		if(class_name.isEmpty())
 			return;
 		qf::core::sql::Transaction transaction;
-		classesPlugin()->createClass(class_name);
+		getPlugin<ClassesPlugin>()->createClass(class_name);
 		transaction.commit();
 		reload();
 	}
@@ -47,7 +42,7 @@ void ClassesTableView::removeSelectedRows()
 		qf::core::sql::Transaction transaction;
 		for(int i : selectedRowsIndexes()) {
 			int class_id = tableRow(i).value(idColumnName()).toInt();
-			classesPlugin()->dropClass(class_id);
+			getPlugin<ClassesPlugin>()->dropClass(class_id);
 		}
 		transaction.commit();
 		reload();

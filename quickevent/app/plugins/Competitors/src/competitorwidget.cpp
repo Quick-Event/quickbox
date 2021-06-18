@@ -20,6 +20,7 @@
 #include <qf/core/sql/dbenum.h>
 #include <qf/core/sql/transaction.h>
 #include <qf/core/assert.h>
+#include <Runs/runsplugin.h>
 
 #include <QMenu>
 #include <QAction>
@@ -31,6 +32,9 @@ namespace qfd = qf::qmlwidgets::dialogs;
 namespace qfw = qf::qmlwidgets;
 namespace qfc = qf::core;
 namespace qfs = qf::core::sql;
+using qf::qmlwidgets::framework::getPlugin;
+using Event::EventPlugin;
+using Runs::RunsPlugin;
 
 namespace {
 /*
@@ -114,30 +118,13 @@ bool RunsModel::setValue(int row_ix, int column_ix, const QVariant &val)
 }
 
 }
-/*
-static Competitors::CompetitorsPlugin* competitorsPlugin()
-{
-	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	qf::qmlwidgets::framework::Plugin *plugin = fwk->plugin("Competitors");
-	return qobject_cast<Competitors::CompetitorsPlugin *>(plugin);
-}
-
-*/
-
-static Event::EventPlugin* eventPlugin()
-{
-	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	auto *plugin = qobject_cast<Event::EventPlugin*>(fwk->plugin("Event"));
-	QF_ASSERT_EX(plugin != nullptr, "Bad event plugin!");
-	return plugin;
-}
 
 CompetitorWidget::CompetitorWidget(QWidget *parent) :
 	Super(parent),
 	ui(new Ui::CompetitorWidget)
 {
 	qfLogFuncFrame();
-	bool is_relays = eventPlugin()->eventConfig()->isRelays();
+	bool is_relays = getPlugin<EventPlugin>()->eventConfig()->isRelays();
 
 	setPersistentSettingsId("CompetitorWidget");
 	ui->setupUi(this);
@@ -174,7 +161,7 @@ CompetitorWidget::CompetitorWidget(QWidget *parent) :
 	//connect(ui->tblRuns, &qfw::TableView::customContextMenuRequested, this, &CompetitorWidget::onRunsTableCustomContextMenuRequest);
 
 	{
-		int stage_cnt = eventPlugin()->stageCount();
+		int stage_cnt = getPlugin<EventPlugin>()->stageCount();
 		auto *ly = new QHBoxLayout(ui->grpStartTimes);
 		for (int i = 1; i <= stage_cnt; ++i) {
 			QPushButton *bt = new QPushButton(tr("E&%1").arg(i));
@@ -188,7 +175,7 @@ CompetitorWidget::CompetitorWidget(QWidget *parent) :
 	// if there is only one run propagate widget SI card change from competitors to runs
 	connect(ui->edSiId, qOverload<int>(&QSpinBox::valueChanged),[=](int new_si_number) // widget SIcard edit box
 	{
-		if(eventPlugin()->stageCount() == 1 && m_runsModel->rowCount() == 1 ) {
+		if(getPlugin<EventPlugin>()->stageCount() == 1 && m_runsModel->rowCount() == 1 ) {
 			m_runsModel->setValue(0, RunsModel::col_runs_siId, new_si_number); // update SI in runs model
 			ui->tblRuns->reset(); // reload ui to see the change
 		}
@@ -202,7 +189,7 @@ CompetitorWidget::~CompetitorWidget()
 
 bool CompetitorWidget::loadRunsTable()
 {
-	//bool is_relays = eventPlugin()->eventConfig()->isRelays();
+	//bool is_relays = getPlugin<EventPlugin>()->eventConfig()->isRelays();
 	qf::core::model::DataDocument *doc = dataController()->document();
 	qf::core::sql::QueryBuilder qb;
 	qb.select2("runs", "*")
@@ -238,7 +225,7 @@ bool CompetitorWidget::saveRunsTable()
 	*/
 	bool ret = m_runsModel->postAll(true);
 	if(ret)
-		eventPlugin()->emitDbEvent(Event::EventPlugin::DBEVENT_COMPETITOR_COUNTS_CHANGED);
+		getPlugin<EventPlugin>()->emitDbEvent(Event::EventPlugin::DBEVENT_COMPETITOR_COUNTS_CHANGED);
 	return ret;
 }
 /*
@@ -325,21 +312,18 @@ void CompetitorWidget::showRunsTable(int stage_id)
 {
 	if(!saveData())
 		return;
-	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	QObject *runs_plugin = fwk->plugin("Runs");
-	if(runs_plugin) {
-		qf::core::model::DataDocument*doc = dataController()->document();
-		int competitor_id = doc->value("competitors.id").toInt();
-		int class_id = ui->cbxClass->currentData().toInt();
-		QString sort_col = QStringLiteral("runs.startTimeMs");
-		QMetaObject::invokeMethod(runs_plugin, "showRunsTable"
-								  , Q_ARG(int, stage_id)
-								  , Q_ARG(int, class_id)
-								  , Q_ARG(bool, false)
-								  , Q_ARG(QString, sort_col)
-								  , Q_ARG(int, competitor_id));
-		loadRunsTable();
-	}
+
+	qf::core::model::DataDocument*doc = dataController()->document();
+	int competitor_id = doc->value("competitors.id").toInt();
+	int class_id = ui->cbxClass->currentData().toInt();
+	QString sort_col = QStringLiteral("runs.startTimeMs");
+	QMetaObject::invokeMethod(getPlugin<RunsPlugin>(), "showRunsTable"
+							  , Q_ARG(int, stage_id)
+							  , Q_ARG(int, class_id)
+							  , Q_ARG(bool, false)
+							  , Q_ARG(QString, sort_col)
+							  , Q_ARG(int, competitor_id));
+	loadRunsTable();
 }
 
 void CompetitorWidget::onRegistrationSelected(const QVariantMap &values)
@@ -380,7 +364,7 @@ void CompetitorWidget::loadFromRegistrations(int siid)
 
 bool CompetitorWidget::saveData()
 {
-	bool is_relays = eventPlugin()->eventConfig()->isRelays();
+	bool is_relays = getPlugin<EventPlugin>()->eventConfig()->isRelays();
 	Competitors::CompetitorDocument*doc = qobject_cast<Competitors::CompetitorDocument*>(dataController()->document());
 	if(!is_relays && doc->value(QStringLiteral("classId")).toInt() == 0) {
 		qf::qmlwidgets::dialogs::MessageBox::showWarning(this, tr("Class should be entered."));
