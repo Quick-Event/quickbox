@@ -42,18 +42,9 @@ namespace qfd = qf::qmlwidgets::dialogs;
 namespace qfc = qf::core;
 namespace qfm = qf::core::model;
 namespace qfu = qf::core::utils;
-
-static Event::EventPlugin* eventPlugin()
-{
-	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	return fwk->plugin<Event::EventPlugin*>();
-}
-
-static Competitors::CompetitorsPlugin* competitorsPlugin()
-{
-	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	return fwk->plugin<Competitors::CompetitorsPlugin*>();
-}
+using qf::qmlwidgets::framework::getPlugin;
+using Event::EventPlugin;
+using Competitors::CompetitorsPlugin;
 
 CompetitorsWidget::CompetitorsWidget(QWidget *parent) :
 	Super(parent),
@@ -86,7 +77,7 @@ CompetitorsWidget::CompetitorsWidget(QWidget *parent) :
 	ui->tblCompetitors->setContextMenuPolicy(Qt::CustomContextMenu);
 	connect(ui->tblCompetitors, &qfw::TableView::customContextMenuRequested, this, &CompetitorsWidget::onCustomContextMenuRequest);
 
-	connect(competitorsPlugin(), &Competitors::CompetitorsPlugin::dbEventNotify, this, &CompetitorsWidget::onDbEventNotify);
+	connect(getPlugin<CompetitorsPlugin>(), &Competitors::CompetitorsPlugin::dbEventNotify, this, &CompetitorsWidget::onDbEventNotify);
 
 	QMetaObject::invokeMethod(this, "lazyInit", Qt::QueuedConnection);
 }
@@ -172,7 +163,7 @@ void CompetitorsWidget::lazyInit()
 
 void CompetitorsWidget::reset()
 {
-	if(!eventPlugin()->isEventOpen()) {
+	if(!getPlugin<EventPlugin>()->isEventOpen()) {
 		m_competitorsModel->clearRows();
 		return;
 	}
@@ -189,7 +180,7 @@ void CompetitorsWidget::reset()
 
 void CompetitorsWidget::reload()
 {
-	bool is_relays = eventPlugin()->eventConfig()->isRelays();
+	bool is_relays = getPlugin<EventPlugin>()->eventConfig()->isRelays();
 	qfs::QueryBuilder qb;
 	qb.select2("competitors", "*")
 			.select2("classes", "name")
@@ -243,7 +234,7 @@ void CompetitorsWidget::editCompetitor_helper(const QVariant &id, int mode, int 
 		}
 	}
 	connect(doc, &Competitors::CompetitorDocument::saved, ui->tblCompetitors, &qf::qmlwidgets::TableView::rowExternallySaved, Qt::QueuedConnection);
-	connect(doc, &Competitors::CompetitorDocument::saved, competitorsPlugin(), &Competitors::CompetitorsPlugin::competitorEdited, Qt::QueuedConnection);
+	connect(doc, &Competitors::CompetitorDocument::saved, getPlugin<CompetitorsPlugin>(), &Competitors::CompetitorsPlugin::competitorEdited, Qt::QueuedConnection);
 	bool ok = dlg.exec();
 	//if(ok)
 	//	transaction.commit();
@@ -359,7 +350,7 @@ void CompetitorsWidget::onCustomContextMenuRequest(const QPoint &pos)
 void CompetitorsWidget::report_competitorsStatistics()
 {
 	qfLogFuncFrame();
-	Event::EventPlugin *event_plugin = eventPlugin();
+	Event::EventPlugin *event_plugin = getPlugin<EventPlugin>();
 	int stage_cnt = event_plugin->stageCount();
 
 	qfs::QueryBuilder qb;
@@ -406,7 +397,7 @@ void CompetitorsWidget::report_competitorsStatistics()
 	//props["isColumnBreak"] = (opts.breakType() == (int)quickevent::gui::ReportOptionsDialog::BreakType::Column);
 	props["stageCount"] = stage_cnt;
 	qf::qmlwidgets::reports::ReportViewWidget::showReport(this
-								, competitorsPlugin()->manifest()->homeDir() + "/reports/competitorsStatistics.qml"
+								, getPlugin<CompetitorsPlugin>()->manifest()->homeDir() + "/reports/competitorsStatistics.qml"
 								, tt.toVariant()
 								, tr("Competitors statistics")
 								, "competitorsStatistics"
