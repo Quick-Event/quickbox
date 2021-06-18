@@ -411,7 +411,7 @@ void CardReaderWidget::settleDownInPartWidget(CardReaderPartWidget *part_widget)
 		m_cbxPunchMode = new QComboBox();
 		m_cbxPunchMode->addItem(tr("Readout"), PunchMode::Readout);
 		m_cbxPunchMode->setItemData(0, tr("Readout mode - default"), Qt::ToolTipRole);
-		m_cbxPunchMode->addItem(tr("Edit on punch"), PunchMode::Edit_on_punch);
+		m_cbxPunchMode->addItem(tr("Edit on punch"), PunchMode::EditOnPunch);
 		m_cbxPunchMode->setItemData(1, tr("Show Edit/Insert competitor dialog when SI Card is inserted into the reader station"), Qt::ToolTipRole);
 		main_tb->addWidget(m_cbxPunchMode);
 	}
@@ -683,7 +683,7 @@ void CardReaderWidget::processSICard(const siut::SICard &card)
 	appendLog(NecroLog::Level::Debug, card.toString());
 	appendLog(NecroLog::Level::Info, tr("card: %1").arg(card.cardNumber()));
 
-	if(currentPunchMode() == PunchMode::Edit_on_punch) {
+	if(currentPunchMode() == PunchMode::EditOnPunch) {
 		QMetaObject::invokeMethod(competitorsPlugin(), "editCompetitorOnPunch", Q_ARG(int, card.cardNumber()));
 		return;
 	}

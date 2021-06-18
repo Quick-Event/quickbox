@@ -52,7 +52,7 @@ class CardReaderWidget : public QFrame
 	Q_OBJECT
 private:
 	typedef QFrame Super;
-	enum PunchMode { Readout, Edit_on_punch };
+	enum PunchMode { Readout, EditOnPunch };
 public:
 	explicit CardReaderWidget(QWidget *parent = 0);
 	~CardReaderWidget() Q_DECL_OVERRIDE;
