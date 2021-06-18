@@ -45,6 +45,7 @@
 #include <QMenuBar>
 #include <QInputDialog>
 #include <QSettings>
+#include <QTextStream>
 
 #include <limits>
 
