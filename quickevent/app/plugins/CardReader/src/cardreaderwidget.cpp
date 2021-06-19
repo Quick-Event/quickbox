@@ -742,14 +742,14 @@ void CardReaderWidget::showSelectedReceipt()
 {
 	qfLogFuncFrame();
 	int card_id = ui->tblCards->selectedRow().value("cards.id").toInt();
-	QMetaObject::invokeMethod(getPlugin<CardReaderPlugin>(), "previewReceipt", Q_ARG(int, card_id));
+	QMetaObject::invokeMethod(getPlugin<ReceiptsPlugin>(), "previewReceipt", Q_ARG(int, card_id));
 }
 
 void CardReaderWidget::showSelectedCard()
 {
 	qfLogFuncFrame();
 	int card_id = ui->tblCards->selectedRow().value("cards.id").toInt();
-	QMetaObject::invokeMethod(getPlugin<CardReaderPlugin>(), "previewCard", Q_ARG(int, card_id));
+	QMetaObject::invokeMethod(getPlugin<ReceiptsPlugin>(), "previewCard", Q_ARG(int, card_id));
 }
 
 void CardReaderWidget::assignRunnerToSelectedCard()
