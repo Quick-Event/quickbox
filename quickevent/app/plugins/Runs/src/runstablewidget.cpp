@@ -254,7 +254,7 @@ void RunsTableWidget::onCustomContextMenuRequest(const QPoint &pos)
 			fwk->showProgress(tr("Reloading times for %1").arg(row.value(QStringLiteral("competitorName")).toString()), ++curr_ix, sel_ixs.count());
 			int card_id = getPlugin<RunsPlugin>()->cardForRun(run_id);
 			bool ok;
-			QMetaObject::invokeMethod(getPlugin<CardReaderPlugin>(), "reloadTimesFromCard", Qt::DirectConnection,
+			QMetaObject::invokeMethod(getPlugin<CardReaderPlugin>(), "reloadTimesFromCard",
 									  Q_RETURN_ARG(bool, ok),
 									  Q_ARG(int, run_id),
 									  Q_ARG(int, card_id));
@@ -267,14 +267,14 @@ void RunsTableWidget::onCustomContextMenuRequest(const QPoint &pos)
 		int run_id = ui->tblRuns->tableRow().value(QStringLiteral("runs.id")).toInt();
 		int card_id = getPlugin<RunsPlugin>()->cardForRun(run_id);
 		if(card_id > 0) {
-			QMetaObject::invokeMethod(getPlugin<ReceiptsPlugin>(), "previewReceipt", Qt::DirectConnection, Q_ARG(int, card_id));
+			QMetaObject::invokeMethod(getPlugin<ReceiptsPlugin>(), "previewReceipt", Q_ARG(int, card_id));
 		}
 	}
 	else if(a == &a_print_card) {
 		int run_id = ui->tblRuns->tableRow().value(QStringLiteral("runs.id")).toInt();
 		int card_id = getPlugin<RunsPlugin>()->cardForRun(run_id);
 		if(card_id > 0) {
-			QMetaObject::invokeMethod(getPlugin<ReceiptsPlugin>(), "printReceipt", Qt::DirectConnection, Q_ARG(int, card_id));
+			QMetaObject::invokeMethod(getPlugin<ReceiptsPlugin>(), "printReceipt", Q_ARG(int, card_id));
 		}
 	}
 	else if(a == &a_shift_start_times) {

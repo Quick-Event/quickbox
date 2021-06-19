@@ -318,7 +318,7 @@ void CompetitorWidget::showRunsTable(int stage_id)
 	int competitor_id = doc->value("competitors.id").toInt();
 	int class_id = ui->cbxClass->currentData().toInt();
 	QString sort_col = QStringLiteral("runs.startTimeMs");
-	QMetaObject::invokeMethod(getPlugin<RunsPlugin>(), "showRunsTable", Qt::DirectConnection,
+	QMetaObject::invokeMethod(getPlugin<RunsPlugin>(), "showRunsTable",
 							  Q_ARG(int, stage_id),
 							  Q_ARG(int, class_id),
 							  Q_ARG(bool, false),

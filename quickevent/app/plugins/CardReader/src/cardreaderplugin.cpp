@@ -243,7 +243,7 @@ quickevent::core::si::CheckedCard CardReaderPlugin::checkCard(const quickevent::
 	}
 	else {
 		QVariant ret_val;
-		QMetaObject::invokeMethod(chk, "checkCard", Qt::DirectConnection,
+		QMetaObject::invokeMethod(chk, "checkCard",
 								  Q_RETURN_ARG(QVariant, ret_val),
 								  Q_ARG(QVariant, read_card));
 		QJSValue jsv = ret_val.value<QJSValue>();

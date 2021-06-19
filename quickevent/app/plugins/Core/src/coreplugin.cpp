@@ -154,11 +154,9 @@ void CorePlugin::aboutQuickEvent()
 {
 	qff::MainWindow *fwk = qff::MainWindow::frameWork();
 	QString version_string;
-	QMetaObject::invokeMethod(fwk, "versionString", Qt::DirectConnection
-							  , Q_RETURN_ARG(QString, version_string));
+	QMetaObject::invokeMethod(fwk, "versionString", Q_RETURN_ARG(QString, version_string));
 	QString db_version_string;
-	QMetaObject::invokeMethod(fwk, "dbVersionString", Qt::DirectConnection
-							  , Q_RETURN_ARG(QString, db_version_string));
+	QMetaObject::invokeMethod(fwk, "dbVersionString", Q_RETURN_ARG(QString, db_version_string));
 	QMessageBox::about(fwk
 					   , tr("About Quick Event")
 					   , tr("The <b>Quick Event</b> is an application which helps you to organize the orienteering events."

@@ -59,7 +59,7 @@ QStringList DbSchema::createDbSqlScript(const DbSchema::CreateDbSqlScriptOptions
 		return QStringList();
 	}
 	QVariant ret_val;
-	QMetaObject::invokeMethod(db_schema, "createSqlScript", Qt::DirectConnection,
+	QMetaObject::invokeMethod(db_schema, "createSqlScript",
 							  Q_RETURN_ARG(QVariant, ret_val),
 							  Q_ARG(QVariant, create_options));
 	QStringList ret = ret_val.toStringList();

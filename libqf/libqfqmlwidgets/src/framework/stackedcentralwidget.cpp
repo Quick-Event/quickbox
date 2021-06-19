@@ -54,9 +54,7 @@ bool StackedCentralWidget::setActivePart(int part_index, bool set_active)
 		QVariant ret_val(true);
 		int ix = pw->metaObject()->indexOfMethod("canActivate(QVariant)");
 		if(ix >= 0) {
-			pw->metaObject()->method(ix).invoke(pw, Qt::DirectConnection,
-												Q_RETURN_ARG(QVariant, ret_val),
-												Q_ARG(QVariant, set_active));
+			pw->metaObject()->method(ix).invoke(pw, Q_RETURN_ARG(QVariant, ret_val), Q_ARG(QVariant, set_active));
 		}
 		ret = ret_val.toBool();
 		if(ret) {

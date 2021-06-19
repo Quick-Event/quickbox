@@ -489,8 +489,7 @@ int EventPlugin::minDbVersion()
 {
 	qff::MainWindow *fwk = qff::MainWindow::frameWork();
 	int db_version;
-	QMetaObject::invokeMethod(fwk, "dbVersion", Qt::DirectConnection
-							  , Q_RETURN_ARG(int, db_version));
+	QMetaObject::invokeMethod(fwk, "dbVersion", Q_RETURN_ARG(int, db_version));
 	return db_version;
 }
 
@@ -798,10 +797,6 @@ bool EventPlugin::createEvent(const QString &event_name, const QVariantMap &even
 		create_options["schemaName"] = event_id;
 		create_options["driverName"] = conn.driverName();
 
-		//QVariant ret_val;
-		//QMetaObject::invokeMethod(this, "createDbSqlScript", Qt::DirectConnection,
-		//						  Q_RETURN_ARG(QVariant, ret_val),
-		//						  Q_ARG(QVariant, create_options));
 		QStringList create_script = dbSchema()->createDbSqlScript(create_options);
 
 		qfInfo().nospace() << create_script.join(";\n") << ';';
