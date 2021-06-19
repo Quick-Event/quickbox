@@ -13,7 +13,6 @@
 #include <qf/core/sql/querybuilder.h>
 #include <qf/core/sql/query.h>
 #include <qf/core/sql/connection.h>
-#include <Runs/runsplugin.h>
 
 #include <QDir>
 #include <QFile>
@@ -28,7 +27,6 @@ namespace qfd = qf::qmlwidgets::dialogs;
 namespace qfs = qf::core::sql;
 using qf::qmlwidgets::framework::getPlugin;
 using Event::EventPlugin;
-using Runs::RunsPlugin;
 
 namespace Event {
 namespace services {
@@ -137,9 +135,7 @@ void EmmaClient::exportResultsIofXml3()
 	QString export_dir = ss.exportDir();
 	QString file_name = export_dir + '/' + event_name + ".results.xml";
 	int current_stage = getPlugin<EventPlugin>()->currentStageId();
-	QMetaObject::invokeMethod(getPlugin<RunsPlugin>(), "exportResultsIofXml30Stage",
-							  Q_ARG(int, current_stage),
-							  Q_ARG(QString, file_name) );
+	emit getPlugin<EventPlugin>()->emmaClientExportResultsIofXml3Stage(current_stage, file_name);
 }
 
 bool EmmaClient::createExportDir()

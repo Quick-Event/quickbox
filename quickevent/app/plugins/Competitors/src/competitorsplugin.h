@@ -44,6 +44,7 @@ public:
 
 	Q_SIGNAL void dbEventNotify(const QString &domain, int connection_id, const QVariant &payload);
 	Q_SIGNAL void competitorEdited(); // used to clear caches with competitors
+	Q_SIGNAL void showRunsTableInCompetitorWidget(int stage_id, int class_id, bool show_offrace, const QString& sort_col, int competitor_id);
 
 	Q_SIGNAL void nativeInstalled();
 

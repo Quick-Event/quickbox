@@ -257,7 +257,8 @@ void RunsTableWidget::onCustomContextMenuRequest(const QPoint &pos)
 			qf::core::utils::TableRow row = ui->tblRuns->tableRow(ix);
 			int run_id = row.value(QStringLiteral("runs.id")).toInt();
 			fwk->showProgress(tr("Reloading times for %1").arg(row.value(QStringLiteral("competitorName")).toString()), ++curr_ix, sel_ixs.count());
-			bool ok = getPlugin<RunsPlugin>()->reloadTimesFromCard(run_id);
+			int card_id = getPlugin<RunsPlugin>()->cardForRun(run_id);
+			bool ok = getPlugin<RunsPlugin>()->reloadTimesFromCard(run_id, card_id);
 			if(ok)
 				ui->tblRuns->reloadRow(ix);
 		}

@@ -69,19 +69,19 @@ public:
 	qf::core::utils::Table nstagesClassResultsTable(int stages_count, int class_id, int places = -1, bool exclude_disq = true);
 	qf::core::utils::TreeTable nstagesResultsTable(const QString &class_filter, int stages_count, int places = -1, bool exclude_disq = true);
 	//Q_INVOKABLE QVariant nstagesResultsTableData(int stages_count, int places = -1, bool exclude_disq = true);
-	Q_INVOKABLE void showRunsTable(int stage_id, int class_id, bool show_offrace, const QString &sort_column = QString(), int select_competitor_id = 0);
+	Q_SLOT void showRunsTable(int stage_id, int class_id, bool show_offrace, const QString &sort_column = QString(), int select_competitor_id = 0);
 
 	Q_INVOKABLE QWidget* createReportOptionsDialog(QWidget *parent = nullptr);
 	Q_INVOKABLE QWidget* createNStagesReportOptionsDialog(QWidget *parent = nullptr);
 
-	Q_INVOKABLE bool reloadTimesFromCard(int run_id);
+	Q_SIGNAL bool reloadTimesFromCard(int card_id, int run_id);
 
 	Q_INVOKABLE QVariantMap printAwardsOptionsWithDialog(const QVariantMap &opts);
 
 	bool exportStartListStageIofXml30(int stage_id, const QString &file_name);
 
 	//bool exportResultsHtmlStage(int stage_id, const QString &file_name);
-	Q_INVOKABLE bool exportResultsIofXml30Stage(int stage_id, const QString &file_name);
+	Q_SLOT bool exportResultsIofXml30Stage(int stage_id, const QString &file_name);
 	Q_INVOKABLE bool exportResultsCsosStage(int stage_id, const QString &file_name);
 	Q_INVOKABLE bool exportResultsCsosOverall(int stage_count, const QString &file_name);
 

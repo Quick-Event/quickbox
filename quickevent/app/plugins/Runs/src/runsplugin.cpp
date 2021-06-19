@@ -30,7 +30,6 @@
 #include <qf/core/utils/treetable.h>
 #include <qf/core/model/sqltablemodel.h>
 #include <Competitors/competitorsplugin.h>
-#include <CardReader/cardreaderplugin.h>
 
 #include <QDesktopServices>
 #include <QFile>
@@ -48,7 +47,6 @@ namespace qfs = qf::core::sql;
 using qf::qmlwidgets::framework::getPlugin;
 using Event::EventPlugin;
 using Competitors::CompetitorsPlugin;
-using CardReader::CardReaderPlugin;
 
 namespace Runs {
 
@@ -123,6 +121,8 @@ void RunsPlugin::onInstalled()
 		this->setSelectedStageId(stage_id);
 	});
 	connect(getPlugin<CompetitorsPlugin>(), SIGNAL(competitorEdited()), this, SLOT(clearRunnersTableCache()));
+	connect(getPlugin<CompetitorsPlugin>(), &CompetitorsPlugin::showRunsTableInCompetitorWidget, this, &RunsPlugin::showRunsTable);
+	connect(getPlugin<EventPlugin>(), &EventPlugin::emmaClientExportResultsIofXml3Stage, this, &RunsPlugin::exportResultsIofXml30Stage);
 
 	fwk->addPartWidget(m_partWidget, manifest()->featureId());
 
@@ -360,18 +360,6 @@ QWidget *RunsPlugin::createNStagesReportOptionsDialog(QWidget *parent)
 		parent = fwk;
 	}
 	return new Runs::NStagesReportOptionsDialog(parent);
-}
-
-bool RunsPlugin::reloadTimesFromCard(int run_id)
-{
-
-	int card_id = cardForRun(run_id);
-	bool ok;
-	QMetaObject::invokeMethod(getPlugin<CardReaderPlugin>(), "reloadTimesFromCard", Qt::DirectConnection,
-							  Q_RETURN_ARG(bool, ok),
-							  Q_ARG(int, card_id),
-							  Q_ARG(int, run_id));
-	return ok;
 }
 
 int RunsPlugin::cardForRun(int run_id)
