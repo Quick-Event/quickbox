@@ -38,14 +38,6 @@ private:
 	PluginManifest *m_manifest = nullptr;
 };
 
-template<typename T>
-static T* getPlugin()
-{
-	static_assert( std::is_base_of<Plugin, T>::value, "given type is not Plugin");
-	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	return fwk->plugin<T*>();
-}
-
 }}}
 
 #endif
