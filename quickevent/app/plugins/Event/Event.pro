@@ -8,9 +8,6 @@ QT += widgets sql
 
 # CONFIG += c++11 hide_symbols
 
-LIBS += \
-    -lRunsQEPlugin \
-
 include (src/src.pri)
 
 RESOURCES += \

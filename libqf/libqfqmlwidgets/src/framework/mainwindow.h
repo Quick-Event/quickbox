@@ -74,7 +74,7 @@ public:
 	{
 		T ret = nullptr;
 		for(auto *p : installedPlugins()) {
-			ret = dynamic_cast<T>(p);
+			ret = qobject_cast<T>(p);
 			if(ret)
 				break;
 		}
