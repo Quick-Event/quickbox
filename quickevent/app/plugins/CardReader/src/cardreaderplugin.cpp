@@ -63,8 +63,6 @@ void CardReaderPlugin::onInstalled()
 
 	services::RacomClient *racom_client = new services::RacomClient(this);
 	Event::services::Service::addService(racom_client);
-	connect(getPlugin<RunsPlugin>(), &RunsPlugin::reloadTimesFromCard,
-			[=](int card_id, int run_id) { this->reloadTimesFromCard(card_id, run_id); });
 }
 
 QQmlListProperty<CardReader::CardChecker> CardReaderPlugin::cardCheckersListProperty()

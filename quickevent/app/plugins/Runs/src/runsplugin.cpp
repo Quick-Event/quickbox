@@ -121,8 +121,6 @@ void RunsPlugin::onInstalled()
 		this->setSelectedStageId(stage_id);
 	});
 	connect(getPlugin<CompetitorsPlugin>(), SIGNAL(competitorEdited()), this, SLOT(clearRunnersTableCache()));
-	connect(getPlugin<CompetitorsPlugin>(), &CompetitorsPlugin::showRunsTableInCompetitorWidget, this, &RunsPlugin::showRunsTable);
-	connect(getPlugin<EventPlugin>(), &EventPlugin::emmaClientExportResultsIofXml3Stage, this, &RunsPlugin::exportResultsIofXml30Stage);
 
 	fwk->addPartWidget(m_partWidget, manifest()->featureId());
 

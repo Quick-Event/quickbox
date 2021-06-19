@@ -221,13 +221,8 @@ void RunsTableWidget::reload()
 void RunsTableWidget::editCompetitor(const QVariant &id, int mode)
 {
 	Q_UNUSED(id)
-	int result;
 	int competitor_id = ui->tblRuns->tableRow().value("competitorId").toInt();
-	QMetaObject::invokeMethod(getPlugin<CompetitorsPlugin>(), "editCompetitor", Qt::DirectConnection
-							  , Q_RETURN_ARG(int, result)
-							  , Q_ARG(int, competitor_id)
-							  , Q_ARG(int, mode)
-							  );
+	int result = getPlugin<CompetitorsPlugin>()->editCompetitor(competitor_id, mode);
 	if(result == QDialog::Accepted) {
 		ui->tblRuns->reload();
 	}
@@ -258,7 +253,11 @@ void RunsTableWidget::onCustomContextMenuRequest(const QPoint &pos)
 			int run_id = row.value(QStringLiteral("runs.id")).toInt();
 			fwk->showProgress(tr("Reloading times for %1").arg(row.value(QStringLiteral("competitorName")).toString()), ++curr_ix, sel_ixs.count());
 			int card_id = getPlugin<RunsPlugin>()->cardForRun(run_id);
-			bool ok = getPlugin<RunsPlugin>()->reloadTimesFromCard(run_id, card_id);
+			bool ok;
+			QMetaObject::invokeMethod(getPlugin<CardReaderPlugin>(), "reloadTimesFromCard", Qt::DirectConnection,
+									  Q_RETURN_ARG(bool, ok),
+									  Q_ARG(int, run_id),
+									  Q_ARG(int, card_id));
 			if(ok)
 				ui->tblRuns->reloadRow(ix);
 		}

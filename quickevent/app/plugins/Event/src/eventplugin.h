@@ -96,7 +96,6 @@ public:
 public:
 	// event wide signals
 	//Q_SIGNAL void editStartListRequest(int stage_id, int class_id, int competitor_id);
-	Q_SIGNAL bool emmaClientExportResultsIofXml3Stage(int current_stage, QString file_name);
 private:
 	void setSqlServerConnected(bool ok);
 

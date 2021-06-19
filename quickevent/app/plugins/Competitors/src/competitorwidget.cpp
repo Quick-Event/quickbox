@@ -20,6 +20,7 @@
 #include <qf/core/sql/dbenum.h>
 #include <qf/core/sql/transaction.h>
 #include <qf/core/assert.h>
+#include <Runs/runsplugin.h>
 
 #include <QMenu>
 #include <QAction>
@@ -34,6 +35,7 @@ namespace qfs = qf::core::sql;
 using qf::qmlwidgets::framework::getPlugin;
 using Event::EventPlugin;
 using Competitors::CompetitorsPlugin;
+using Runs::RunsPlugin;
 
 namespace {
 /*
@@ -316,7 +318,12 @@ void CompetitorWidget::showRunsTable(int stage_id)
 	int competitor_id = doc->value("competitors.id").toInt();
 	int class_id = ui->cbxClass->currentData().toInt();
 	QString sort_col = QStringLiteral("runs.startTimeMs");
-	emit getPlugin<CompetitorsPlugin>()->showRunsTableInCompetitorWidget(stage_id, class_id, false, sort_col, competitor_id);
+	QMetaObject::invokeMethod(getPlugin<RunsPlugin>(), "showRunsTable", Qt::DirectConnection,
+							  Q_ARG(int, stage_id),
+							  Q_ARG(int, class_id),
+							  Q_ARG(bool, false),
+							  Q_ARG(QString, sort_col),
+							  Q_ARG(int, competitor_id));
 	loadRunsTable();
 }
 
