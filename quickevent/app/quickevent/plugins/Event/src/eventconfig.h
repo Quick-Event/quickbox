@@ -1,8 +1,6 @@
 #ifndef EVENTCONFIG_H
 #define EVENTCONFIG_H
 
-#include "eventpluginglobal.h"
-
 #include <QObject>
 #include <QVariantMap>
 #include <QSet>
@@ -10,7 +8,7 @@
 
 namespace Event {
 
-class EVENTPLUGIN_DECL_EXPORT EventConfig : public QObject
+class EventConfig : public QObject
 {
 	Q_OBJECT
 	Q_PROPERTY(int stageCount READ stageCount)

@@ -1,7 +1,6 @@
 #ifndef EVENTPLUGIN_H
 #define EVENTPLUGIN_H
 
-#include "eventpluginglobal.h"
 #include "eventconfig.h"
 #include "stage.h"
 
@@ -20,7 +19,7 @@ class DbSchema;
 
 namespace Event {
 
-class EVENTPLUGIN_DECL_EXPORT EventPlugin : public qf::qmlwidgets::framework::Plugin
+class EventPlugin : public qf::qmlwidgets::framework::Plugin
 {
 	Q_OBJECT
 	Q_PROPERTY(QObject* eventConfig READ eventConfig)

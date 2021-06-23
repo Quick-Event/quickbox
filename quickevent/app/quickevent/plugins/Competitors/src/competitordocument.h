@@ -1,15 +1,13 @@
 #ifndef COMPETITORS_COMPETITORDOCUMENT_H
 #define COMPETITORS_COMPETITORDOCUMENT_H
 
-#include "competitorspluginglobal.h"
-
 #include <qf/core/model/sqldatadocument.h>
 
 #include <QVector>
 
 namespace Competitors {
 
-class COMPETITORSPLUGIN_DECL_EXPORT CompetitorDocument : public qf::core::model::SqlDataDocument
+class CompetitorDocument : public qf::core::model::SqlDataDocument
 {
 	Q_OBJECT
 private:

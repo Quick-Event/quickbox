@@ -1,8 +1,6 @@
 #ifndef RECEIPTS_RECEIPTSPLUGIN_H
 #define RECEIPTS_RECEIPTSPLUGIN_H
 
-#include "receiptspluginglobal.h"
-
 #include <qf/qmlwidgets/framework/plugin.h>
 
 #include <QQmlListProperty>
@@ -22,7 +20,7 @@ class ReceiptsPrinter;
 
 namespace Receipts {
 
-class RECEIPTSPLUGIN_DECL_EXPORT ReceiptsPlugin : public qf::qmlwidgets::framework::Plugin
+class ReceiptsPlugin : public qf::qmlwidgets::framework::Plugin
 {
 	Q_OBJECT
 private:

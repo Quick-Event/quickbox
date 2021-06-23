@@ -1,7 +1,6 @@
 message(including $$PWD)
 
 HEADERS += \
-	$$PWD/eventpluginglobal.h \
     $$PWD/eventplugin.h \
     $$PWD/eventconfig.h \
     $$PWD/stage.h \

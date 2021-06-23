@@ -1,8 +1,6 @@
 #ifndef RUNS_RUNSPLUGIN_H
 #define RUNS_RUNSPLUGIN_H
 
-#include "runspluginglobal.h"
-
 #include <quickevent/core/og/timems.h>
 #include <quickevent/core/coursedef.h>
 #include <quickevent/gui/reportoptionsdialog.h>
@@ -32,7 +30,7 @@ namespace qf {
 
 namespace Runs {
 
-class RUNSPLUGIN_DECL_EXPORT RunsPlugin : public qf::qmlwidgets::framework::Plugin
+class RunsPlugin : public qf::qmlwidgets::framework::Plugin
 {
 	Q_OBJECT
 	Q_PROPERTY(qf::qmlwidgets::framework::PartWidget* partWidget READ partWidget FINAL)

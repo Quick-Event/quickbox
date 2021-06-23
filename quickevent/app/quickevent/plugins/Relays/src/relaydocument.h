@@ -1,13 +1,11 @@
 #ifndef RELAYS_RELAYDOCUMENT_H
 #define RELAYS_RELAYDOCUMENT_H
 
-#include "relayspluginglobal.h"
-
 #include <qf/core/model/sqldatadocument.h>
 
 namespace Relays {
 
-class RELAYSPLUGIN_DECL_EXPORT  RelayDocument : public qf::core::model::SqlDataDocument
+class RelayDocument : public qf::core::model::SqlDataDocument
 {
 	Q_OBJECT
 private:

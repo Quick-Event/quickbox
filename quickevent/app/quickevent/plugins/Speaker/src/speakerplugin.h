@@ -1,8 +1,6 @@
 #ifndef SPEAKER_H
 #define SPEAKER_H
 
-#include "speakerpluginglobal.h"
-
 #include <qf/qmlwidgets/framework/plugin.h>
 #include <qf/qmlwidgets/framework/ipersistentsettings.h>
 
@@ -19,7 +17,7 @@ namespace framework { class PartWidget; class DockWidget; }
 
 namespace Speaker {
 
-class SPEAKERPLUGIN_DECL_EXPORT SpeakerPlugin : public qf::qmlwidgets::framework::Plugin, public qf::qmlwidgets::framework::IPersistentSettings
+class SpeakerPlugin : public qf::qmlwidgets::framework::Plugin, public qf::qmlwidgets::framework::IPersistentSettings
 {
 	Q_OBJECT
 	using Super = qf::qmlwidgets::framework::Plugin;

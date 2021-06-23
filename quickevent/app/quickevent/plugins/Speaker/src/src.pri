@@ -1,7 +1,6 @@
 message(including $$PWD)
 
 HEADERS += \
-    $$PWD/speakerpluginglobal.h \
     $$PWD/speakerplugin.h \
     $$PWD/speakerthispartwidget.h \
 	$$PWD/speakerwidget.h \

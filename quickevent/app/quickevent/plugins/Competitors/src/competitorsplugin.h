@@ -1,8 +1,6 @@
 #ifndef COMPETITORS_COMPETITORSPLUGIN_H
 #define COMPETITORS_COMPETITORSPLUGIN_H
 
-#include "competitorspluginglobal.h"
-
 #include <qf/qmlwidgets/framework/plugin.h>
 
 #include <qf/core/utils.h>
@@ -27,7 +25,7 @@ class DockWidget;
 
 namespace Competitors {
 
-class COMPETITORSPLUGIN_DECL_EXPORT CompetitorsPlugin : public qf::qmlwidgets::framework::Plugin
+class CompetitorsPlugin : public qf::qmlwidgets::framework::Plugin
 {
 	Q_OBJECT
 	Q_PROPERTY(qf::qmlwidgets::framework::PartWidget* partWidget READ partWidget FINAL)
