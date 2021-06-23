@@ -85,6 +85,7 @@ TRANSLATIONS += \
 	$${TARGET}.ru_RU.ts \
 	$${TARGET}.uk_UA.ts \
 
-first.depends = $(first) shared Core Event Classes Competitors Runs Oris CardReader Receipts Relays Speaker
+# register copy commands as build targets
+first.depends = $(first) shared Event Classes Competitors Runs CardReader Receipts Relays Speaker # Core Oris
 export(first.depends)
-QMAKE_EXTRA_TARGETS += first shared Core Event Classes Competitors Runs Oris CardReader Receipts Relays Speaker
+QMAKE_EXTRA_TARGETS += first shared Event Classes Competitors Runs CardReader Receipts Relays Speaker # Core Oris
