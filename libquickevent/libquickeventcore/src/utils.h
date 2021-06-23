@@ -11,7 +11,7 @@ namespace core {
 class QUICKEVENTCORE_DECL_EXPORT Utils
 {
 public:
-	static QString dateTimeToIsoStringWithUtcOffset(const QDateTime &dt);
+	static QString dateTimeToIsoStringWithUtcOffset(QDateTime dt);
 };
 
 } // namespace core
