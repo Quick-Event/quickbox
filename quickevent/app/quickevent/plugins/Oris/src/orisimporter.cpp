@@ -778,11 +778,7 @@ void OrisImporter::importRegistrations()
 			}
 			transaction.commit();
 			fwk->hideProgress();
-			QMetaObject::invokeMethod(getPlugin<EventPlugin>(), "emitDbEvent", Qt::QueuedConnection
-									  , Q_ARG(QString, Event::EventPlugin::DBEVENT_REGISTRATIONS_IMPORTED)
-									  , Q_ARG(QVariant, QVariant())
-									  , Q_ARG(bool, true)
-									  );
+			getPlugin<EventPlugin>()->emitDbEvent(EventPlugin::DBEVENT_REGISTRATIONS_IMPORTED, QVariant(), true);
 		}
 		catch (qf::core::Exception &e) {
 			qf::qmlwidgets::dialogs::MessageBox::showException(fwk, e);

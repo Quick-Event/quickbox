@@ -137,9 +137,7 @@ void EmmaClient::exportResultsIofXml3()
 	QString export_dir = ss.exportDir();
 	QString file_name = export_dir + '/' + event_name + ".results.xml";
 	int current_stage = getPlugin<EventPlugin>()->currentStageId();
-	QMetaObject::invokeMethod(getPlugin<RunsPlugin>(), "exportResultsIofXml30Stage",
-							  Q_ARG(int, current_stage),
-							  Q_ARG(QString, file_name) );
+	getPlugin<RunsPlugin>()->exportResultsIofXml30Stage(current_stage, file_name);
 }
 
 bool EmmaClient::createExportDir()

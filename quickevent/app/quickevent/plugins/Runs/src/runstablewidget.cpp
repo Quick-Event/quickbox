@@ -220,13 +220,8 @@ void RunsTableWidget::reload()
 void RunsTableWidget::editCompetitor(const QVariant &id, int mode)
 {
 	Q_UNUSED(id)
-	int result;
 	int competitor_id = ui->tblRuns->tableRow().value("competitorId").toInt();
-	QMetaObject::invokeMethod(getPlugin<CompetitorsPlugin>(), "editCompetitor", Qt::DirectConnection
-							  , Q_RETURN_ARG(int, result)
-							  , Q_ARG(int, competitor_id)
-							  , Q_ARG(int, mode)
-							  );
+	int result = getPlugin<CompetitorsPlugin>()->editCompetitor(competitor_id, mode);
 	if(result == QDialog::Accepted) {
 		ui->tblRuns->reload();
 	}
@@ -266,14 +261,14 @@ void RunsTableWidget::onCustomContextMenuRequest(const QPoint &pos)
 		int run_id = ui->tblRuns->tableRow().value(QStringLiteral("runs.id")).toInt();
 		int card_id = getPlugin<RunsPlugin>()->cardForRun(run_id);
 		if(card_id > 0) {
-			QMetaObject::invokeMethod(getPlugin<ReceiptsPlugin>(), "previewReceipt", Qt::DirectConnection, Q_ARG(int, card_id));
+			getPlugin<ReceiptsPlugin>()->previewReceipt(card_id);
 		}
 	}
 	else if(a == &a_print_card) {
 		int run_id = ui->tblRuns->tableRow().value(QStringLiteral("runs.id")).toInt();
 		int card_id = getPlugin<RunsPlugin>()->cardForRun(run_id);
 		if(card_id > 0) {
-			QMetaObject::invokeMethod(getPlugin<ReceiptsPlugin>(), "printReceipt", Qt::DirectConnection, Q_ARG(int, card_id));
+			getPlugin<ReceiptsPlugin>()->printReceipt(card_id);
 		}
 	}
 	else if(a == &a_shift_start_times) {

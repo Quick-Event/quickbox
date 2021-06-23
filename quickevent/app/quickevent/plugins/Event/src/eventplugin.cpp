@@ -433,10 +433,7 @@ void EventPlugin::emitDbEvent(const QString &domain, const QVariant &data, bool 
 	if(loopback) {
 		// emit queued
 		//emit dbEventNotify(domain, payload);
-		QMetaObject::invokeMethod(this, "dbEventNotify", Qt::QueuedConnection,
-								  Q_ARG(QString, domain),
-								  Q_ARG(int, connection_id),
-								  Q_ARG(QVariant, data));
+		dbEventNotify(domain, connection_id, data);
 	}
 	if(connectionType() == ConnectionType::SingleFile)
 		return;
@@ -801,10 +798,6 @@ bool EventPlugin::createEvent(const QString &event_name, const QVariantMap &even
 		create_options["schemaName"] = event_id;
 		create_options["driverName"] = conn.driverName();
 
-		//QVariant ret_val;
-		//QMetaObject::invokeMethod(this, "createDbSqlScript", Qt::DirectConnection,
-		//						  Q_RETURN_ARG(QVariant, ret_val),
-		//						  Q_ARG(QVariant, create_options));
 		QStringList create_script = dbSchema()->createDbSqlScript(create_options);
 
 		qfInfo().nospace() << create_script.join(";\n") << ';';
