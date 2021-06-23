@@ -3,7 +3,6 @@ message(including $$PWD)
 HEADERS += \
     $$PWD/relaydocument.h \
     $$PWD/relaysplugin.h \
-	$$PWD/relayspluginglobal.h \
     $$PWD/relaysthispartwidget.h \
     $$PWD/relayswidget.h \
     $$PWD/relaywidget.h \

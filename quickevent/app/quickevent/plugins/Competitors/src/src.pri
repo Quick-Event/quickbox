@@ -1,7 +1,6 @@
 message(including $$PWD)
 
 HEADERS += \
-	$$PWD/competitorspluginglobal.h \
     $$PWD/competitorsplugin.h \
     $$PWD/competitordocument.h \
     $$PWD/competitorsthispartwidget.h \

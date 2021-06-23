@@ -402,7 +402,6 @@ void ReceiptsPlugin::previewCard(int card_id)
 
 void ReceiptsPlugin::previewReceipt(int card_id)
 {
-	//QMetaObject::invokeMethod(this, "previewReceipeClassic", Qt::DirectConnection, Q_ARG(QVariant, card_id));
 	previewReceipt(card_id, currentReceiptPath());
 }
 

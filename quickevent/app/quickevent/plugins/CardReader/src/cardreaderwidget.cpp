@@ -226,11 +226,11 @@ void CardReaderWidget::onCustomContextMenuRequest(const QPoint & pos)
 	}
 	else if(a == &a_print_receipt) {
 		int card_id = ui->tblCards->tableRow().value("cards.id").toInt();
-		QMetaObject::invokeMethod(getPlugin<ReceiptsPlugin>(), "printReceipt", Q_ARG(int, card_id));
+		getPlugin<ReceiptsPlugin>()->printReceipt(card_id);
 	}
 	else if(a == &a_print_card) {
 		int card_id = ui->tblCards->tableRow().value("cards.id").toInt();
-		QMetaObject::invokeMethod(getPlugin<ReceiptsPlugin>(), "printCard", Q_ARG(int, card_id));
+		getPlugin<ReceiptsPlugin>()->printCard(card_id);
 	}
 	else if(a == &a_assign_runner) {
 		assignRunnerToSelectedCard();
@@ -742,14 +742,14 @@ void CardReaderWidget::showSelectedReceipt()
 {
 	qfLogFuncFrame();
 	int card_id = ui->tblCards->selectedRow().value("cards.id").toInt();
-	QMetaObject::invokeMethod(getPlugin<ReceiptsPlugin>(), "previewReceipt", Q_ARG(int, card_id));
+	getPlugin<ReceiptsPlugin>()->previewReceipt(card_id);
 }
 
 void CardReaderWidget::showSelectedCard()
 {
 	qfLogFuncFrame();
 	int card_id = ui->tblCards->selectedRow().value("cards.id").toInt();
-	QMetaObject::invokeMethod(getPlugin<ReceiptsPlugin>(), "previewCard", Q_ARG(int, card_id));
+	getPlugin<ReceiptsPlugin>()->previewCard(card_id);
 }
 
 void CardReaderWidget::assignRunnerToSelectedCard()
@@ -807,7 +807,7 @@ void CardReaderWidget::assignRunnerToSelectedCard()
 
 		this->ui->tblCards->reloadRow();
 
-		QMetaObject::invokeMethod(getPlugin<ReceiptsPlugin>(), "printOnAutoPrintEnabled", Q_ARG(int, card_id));
+		getPlugin<ReceiptsPlugin>()->printOnAutoPrintEnabled(card_id);
 	}
 }
 

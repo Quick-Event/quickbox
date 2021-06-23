@@ -1,7 +1,6 @@
 message(including $$PWD)
 
 HEADERS += \
-    $$PWD/orispluginglobal.h \
     $$PWD/orisimporter.h \
     $$PWD/chooseoriseventdialog.h \
     $$PWD/orisplugin.h \

@@ -1,7 +1,5 @@
 #pragma once
 
-#include "orispluginglobal.h"
-
 #include <qf/qmlwidgets/framework/plugin.h>
 //#include <qf/qmlwidgets/framework/ipersistentsettings.h>
 
@@ -10,7 +8,7 @@ class TxtImporter;
 
 namespace Oris {
 
-class ORISPLUGIN_DECL_EXPORT OrisPlugin : public qf::qmlwidgets::framework::Plugin//, public qf::qmlwidgets::framework::IPersistentSettings
+class OrisPlugin : public qf::qmlwidgets::framework::Plugin//, public qf::qmlwidgets::framework::IPersistentSettings
 {
 	Q_OBJECT
 	using Super = qf::qmlwidgets::framework::Plugin;

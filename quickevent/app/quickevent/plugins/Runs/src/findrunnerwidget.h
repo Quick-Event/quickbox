@@ -1,8 +1,6 @@
 #ifndef RUNS_FINDRUNNERWIDGETWIDGET_H
 #define RUNS_FINDRUNNERWIDGETWIDGET_H
 
-#include "runspluginglobal.h"
-
 #include <QWidget>
 #include <QVariantMap>
 
@@ -22,7 +20,7 @@ namespace Ui {
 class FindRunnerWidget;
 }
 
-class RUNSPLUGIN_DECL_EXPORT FindRunnerWidget : public QWidget
+class FindRunnerWidget : public QWidget
 {
 	Q_OBJECT
 public:

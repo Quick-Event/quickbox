@@ -1,13 +1,11 @@
 #ifndef CLASSES_CLASSDOCUMENT_H
 #define CLASSES_CLASSDOCUMENT_H
 
-#include "classespluginglobal.h"
-
 #include <qf/core/model/sqldatadocument.h>
 
 namespace Classes {
 
-class CLASSESPLUGIN_DECL_EXPORT ClassDocument : public qf::core::model::SqlDataDocument
+class ClassDocument : public qf::core::model::SqlDataDocument
 {
 	Q_OBJECT
 private:

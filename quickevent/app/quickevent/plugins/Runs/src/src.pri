@@ -3,7 +3,6 @@ message(including $$PWD)
 include($$PWD/services/services.pri)
 
 HEADERS += \
-    $$PWD/runspluginglobal.h \
     $$PWD/runsplugin.h \
     $$PWD/findrunneredit.h \
     $$PWD/findrunnerwidget.h \

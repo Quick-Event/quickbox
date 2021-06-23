@@ -363,14 +363,8 @@ QWidget *RunsPlugin::createNStagesReportOptionsDialog(QWidget *parent)
 
 bool RunsPlugin::reloadTimesFromCard(int run_id)
 {
-
 	int card_id = cardForRun(run_id);
-	bool ok;
-	QMetaObject::invokeMethod(getPlugin<CardReaderPlugin>(), "reloadTimesFromCard", Qt::DirectConnection,
-							  Q_RETURN_ARG(bool, ok),
-							  Q_ARG(int, card_id),
-							  Q_ARG(int, run_id));
-	return ok;
+	return getPlugin<CardReaderPlugin>()->reloadTimesFromCard(card_id, run_id);
 }
 
 int RunsPlugin::cardForRun(int run_id)

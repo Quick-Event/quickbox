@@ -1,7 +1,6 @@
 message(including $$PWD)
 
 HEADERS += \
-	$$PWD/classespluginglobal.h \
     $$PWD/classesplugin.h \
     $$PWD/classdocument.h \
     $$PWD/classesthispartwidget.h \

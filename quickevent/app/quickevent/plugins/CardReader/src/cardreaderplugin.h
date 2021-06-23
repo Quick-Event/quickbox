@@ -1,8 +1,6 @@
 #ifndef CARDREADER_CARDREADERPLUGIN_H
 #define CARDREADER_CARDREADERPLUGIN_H
 
-#include "cardreaderpluginglobal.h"
-
 #include <qf/core/utils.h>
 #include <qf/qmlwidgets/framework/plugin.h>
 
@@ -19,7 +17,7 @@ class ReadCard;
 class PunchRecord;
 class CheckedCard;
 
-class CARDREADERPLUGIN_DECL_EXPORT CardReaderPlugin : public qf::qmlwidgets::framework::Plugin
+class CardReaderPlugin : public qf::qmlwidgets::framework::Plugin
 {
 	Q_OBJECT
 	Q_PROPERTY(QQmlListProperty<CardReader::CardChecker> cardCheckers READ cardCheckersListProperty)

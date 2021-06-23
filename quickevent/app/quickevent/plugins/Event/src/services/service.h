@@ -1,7 +1,5 @@
 #pragma once
 
-#include "../eventpluginglobal.h"
-
 #include <qf/core/utils.h>
 
 #include <QObject>
@@ -12,7 +10,7 @@ namespace Event { class EventPlugin; }
 namespace Event {
 namespace services {
 
-class EVENTPLUGIN_DECL_EXPORT ServiceSettings : public QVariantMap
+class ServiceSettings : public QVariantMap
 {
 	using Super = QVariantMap;
 
@@ -22,7 +20,7 @@ public:
 	ServiceSettings(const QVariantMap &o = QVariantMap()) : Super(o) {}
 };
 
-class EVENTPLUGIN_DECL_EXPORT Service : public QObject
+class Service : public QObject
 {
 	Q_OBJECT
 

@@ -1,7 +1,5 @@
 #pragma once
 
-#include "relayspluginglobal.h"
-
 #include <qf/qmlwidgets/framework/plugin.h>
 
 #include <qf/core/utils.h>
@@ -24,7 +22,7 @@ namespace quickevent {  namespace core {  namespace si { class CheckedCard; }}}
 
 namespace Relays {
 
-class RELAYSPLUGIN_DECL_EXPORT RelaysPlugin : public qf::qmlwidgets::framework::Plugin
+class RelaysPlugin : public qf::qmlwidgets::framework::Plugin
 {
 	Q_OBJECT
 	Q_PROPERTY(qf::qmlwidgets::framework::PartWidget* partWidget READ partWidget FINAL)

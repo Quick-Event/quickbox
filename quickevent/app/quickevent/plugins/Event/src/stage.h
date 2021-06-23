@@ -1,8 +1,6 @@
 #ifndef EVENT_STAGE_H
 #define EVENT_STAGE_H
 
-#include "eventpluginglobal.h"
-
 #include <qf/core/utils.h>
 
 #include <QVariantMap>
@@ -11,9 +9,9 @@
 
 namespace Event {
 
-class EVENTPLUGIN_DECL_EXPORT StageDocument;
+class StageDocument;
 
-class EVENTPLUGIN_DECL_EXPORT StageData : public QVariantMap
+class StageData : public QVariantMap
 {
 private:
 	typedef QVariantMap Super;
