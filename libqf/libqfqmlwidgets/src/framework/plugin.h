@@ -38,6 +38,7 @@ private:
 	PluginManifest *m_manifest = nullptr;
 };
 
+
 }}}
 
 #endif

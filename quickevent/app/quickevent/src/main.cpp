@@ -3,7 +3,7 @@
 #include "appversion.h"
 #include "appclioptions.h"
 
-#include <Core/coreplugin.h>
+#include <plugins/Core/src/coreplugin.h>
 
 #include <quickevent/core/si/siid.h>
 #include <quickevent/core/og/timems.h>

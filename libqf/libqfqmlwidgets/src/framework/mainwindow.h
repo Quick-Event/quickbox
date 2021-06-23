@@ -69,21 +69,6 @@ public:
 	Q_INVOKABLE void addDockWidget(Qt::DockWidgetArea area, QDockWidget *dockwidget);
 	Q_INVOKABLE void addPartWidget(qf::qmlwidgets::framework::PartWidget *widget, const QString &feature_id = QString());
 
-	template<class T>
-	T plugin(bool throw_exc = true)
-	{
-		T ret = nullptr;
-		for(auto *p : installedPlugins()) {
-			ret = dynamic_cast<T>(p);
-			if(ret)
-				break;
-		}
-		if(!ret) {
-			if(throw_exc)
-				QF_EXCEPTION(QString("Plugin ") + typeid(T).name() + " not installed!");
-		}
-		return ret;
-	}
 	Q_INVOKABLE qf::qmlwidgets::framework::Plugin* plugin(const QString &feature_id, bool throw_exc = false);
 	Q_INVOKABLE qf::qmlwidgets::framework::Plugin* pluginForObject(QObject *qml_object);
 
@@ -114,11 +99,12 @@ protected:
 	Q_SLOT virtual void onPluginsLoaded();
 private:
 	Q_SLOT void savePersistentSettings();
-	QList<qf::qmlwidgets::framework::Plugin*> installedPlugins();
 private:
 	PluginLoader *m_pluginLoader = nullptr;
 	QMap<QString, qf::qmlwidgets::ToolBar*> m_toolBars;
 	static MainWindow *self;
+public:
+	QList<qf::qmlwidgets::framework::Plugin*> installedPlugins();
 };
 
 template<typename T>
@@ -126,7 +112,16 @@ static T* getPlugin()
 {
 	static_assert( std::is_base_of<qf::qmlwidgets::framework::Plugin, T>::value, "given type is not Plugin");
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	return fwk->plugin<T*>();
+	T* ret = nullptr;
+	for(auto *p : fwk->installedPlugins()) {
+		ret = dynamic_cast<T*>(p);
+		if(ret)
+			break;
+	}
+	if(!ret) {
+		QF_EXCEPTION(QString("Plugin ") + typeid(T).name() + " not installed!");
+	}
+	return ret;
 }
 
 }}}

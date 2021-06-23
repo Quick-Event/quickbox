@@ -140,7 +140,7 @@ fi
 
 mkdir -p $BUILD_DIR
 cd $BUILD_DIR
-$QMAKE $SRC_DIR/quickbox.pro CONFIG+=release -r -spec linux-g++
+$QMAKE $SRC_DIR/quickbox.pro CONFIG+=release -r -spec linux-g++ && make qmake_all
 make -j2
 if [ $? -ne 0 ]; then
 	echo "Make Error" >&2
