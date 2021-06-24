@@ -9,7 +9,6 @@ HEADERS += \
     $$PWD/receiptsprinter.h
 
 SOURCES += \
-    $$PWD/plugin.cpp \
     $$PWD/receiptspartwidget.cpp \
     $$PWD/receiptswidget.cpp \
     $$PWD/receiptsplugin.cpp \
