@@ -51,7 +51,6 @@ Source: {#BUILD_DIR}\bin\qfcore.dll; DestDir: {app}; Flags: ignoreversion
 Source: {#BUILD_DIR}\bin\qfqmlwidgets.dll; DestDir: {app}; Flags: ignoreversion
 Source: {#BUILD_DIR}\bin\quickeventcore.dll; DestDir: {app}; Flags: ignoreversion
 Source: {#BUILD_DIR}\bin\quickeventgui.dll; DestDir: {app}; Flags: ignoreversion
-Source: {#BUILD_DIR}\bin\*QEPlugin.dll; DestDir: {app}; Flags: ignoreversion
 Source: {#BUILD_DIR}\bin\siut.dll; DestDir: {app}; Flags: ignoreversion
 Source: {#BUILD_DIR}\bin\necrolog.dll; DestDir: {app}; Flags: ignoreversion
 
