@@ -25,6 +25,23 @@ INCLUDEPATH += \
     $$QF_PROJECT_TOP_SRCDIR/libquickevent/libquickeventgui/include \
     $$QF_PROJECT_TOP_SRCDIR/libsiut/include \
 
+#helper function for copying folders from SRC_DIR to DEST_DIR
+defineTest(copyFiles) {
+    SRC_DIR = $$1
+    DEST_DIR = $$2
+
+    unix: QMAKE_POST_LINK += $(MKDIR) $$DEST_DATA_DIR; rsync -r $$SRC_DATA_DIR $$DEST_DATA_DIR $$escape_expand(\n\t)
+    win32 {
+        !isEmpty(GITHUB_ACTIONS) {
+	    QMAKE_POST_LINK += $(MKDIR) $$DEST_DATA_DIR; cp -R $$SRC_DATA_DIR/* $$DEST_DATA_DIR $$escape_expand(\n\t)
+	}
+	else {
+	    QMAKE_POST_LINK += = xcopy $$shell_path($$SRC_DATA_DIR) $$shell_path($$DEST_DATA_DIR) /s /e /y /i $$escape_expand(\n\t)
+	}
+    }
+    export(QMAKE_POST_LINK)
+}
+
 message(INCLUDEPATH: $$INCLUDEPATH)
 
 include(plugins/shared/shared.pri)
@@ -84,8 +101,3 @@ TRANSLATIONS += \
 	$${TARGET}.pl_PL.ts \
 	$${TARGET}.ru_RU.ts \
 	$${TARGET}.uk_UA.ts \
-
-# register copy commands as build targets
-first.depends = $(first) shared Event Classes Competitors Runs CardReader Receipts Relays Speaker # Core Oris
-export(first.depends)
-QMAKE_EXTRA_TARGETS += first shared Event Classes Competitors Runs CardReader Receipts Relays Speaker # Core Oris
