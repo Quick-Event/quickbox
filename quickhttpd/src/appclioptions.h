@@ -12,6 +12,7 @@ public:
 	AppCliOptions(QObject *parent = nullptr);
 	~AppCliOptions() Q_DECL_OVERRIDE {}
 
+	CLIOPTION_GETTER_SETTER(QString, l, setL, ocale)
 	CLIOPTION_GETTER_SETTER2(QString, "application.htmlDir", h, setH, tmlDir)
 	CLIOPTION_GETTER_SETTER2(int, "application.refreshTime", r, setR, efreshTime)
 	CLIOPTION_GETTER_SETTER2(QString, "event.name", e, setE, ventName)
