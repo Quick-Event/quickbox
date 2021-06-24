@@ -11,7 +11,6 @@ HEADERS += \
 SOURCES += \
     $$PWD/relaydocument.cpp \
     $$PWD/relaysplugin.cpp \
-    $$PWD/relaysqmlplugin.cpp \
     $$PWD/relaysthispartwidget.cpp \
     $$PWD/relayswidget.cpp \
     $$PWD/relaywidget.cpp \

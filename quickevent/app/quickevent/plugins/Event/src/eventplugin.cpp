@@ -433,7 +433,10 @@ void EventPlugin::emitDbEvent(const QString &domain, const QVariant &data, bool 
 	if(loopback) {
 		// emit queued
 		//emit dbEventNotify(domain, payload);
-		dbEventNotify(domain, connection_id, data);
+		QMetaObject::invokeMethod(this, "dbEventNotify", Qt::QueuedConnection,
+										  Q_ARG(QString, domain),
+										  Q_ARG(int, connection_id),
+										  Q_ARG(QVariant, data));
 	}
 	if(connectionType() == ConnectionType::SingleFile)
 		return;
