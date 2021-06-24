@@ -71,6 +71,14 @@
 		return false; \
 	}
 
+#define QF_PROPERTY(ptype, lower_letter, upper_letter, name_rest) \
+	Q_PROPERTY(ptype lower_letter##name_rest READ lower_letter##name_rest WRITE set##upper_letter##name_rest NOTIFY lower_letter##name_rest##Changed) \
+	QF_PROPERTY_IMPL(ptype, lower_letter, upper_letter, name_rest)
+
+#define QF_PROPERTY2(ptype, lower_letter, upper_letter, name_rest) \
+	Q_PROPERTY(ptype lower_letter##name_rest READ lower_letter##name_rest WRITE set##upper_letter##name_rest NOTIFY lower_letter##name_rest##Changed) \
+	QF_PROPERTY_IMPL2(ptype, lower_letter, upper_letter, name_rest, default_value)
+
 #define QF_PROPERTY_OBJECT_IMPL(ptype, lower_letter, upper_letter, name_rest) \
 	private: ptype m_##lower_letter##name_rest = nullptr; \
 	public: Q_SIGNAL void lower_letter##name_rest##Changed(ptype new_val); \
@@ -105,6 +113,14 @@
 
 #define QF_PROPERTY_BOOL_IMPL(lower_letter, upper_letter, name_rest) \
 	QF_PROPERTY_BOOL_IMPL2(lower_letter, upper_letter, name_rest, false)
+
+#define QF_PROPERTY_BOOL(lower_letter, upper_letter, name_rest) \
+	Q_PROPERTY(bool lower_letter##name_rest READ is##upper_letter##name_rest WRITE set##upper_letter##name_rest NOTIFY lower_letter##name_rest##Changed) \
+	QF_PROPERTY_BOOL_IMPL(lower_letter, upper_letter, name_rest)
+
+#define QF_PROPERTY_BOOL2(lower_letter, upper_letter, name_rest, default_value) \
+	Q_PROPERTY(bool lower_letter##name_rest READ is##upper_letter##name_rest WRITE set##upper_letter##name_rest NOTIFY lower_letter##name_rest##Changed) \
+	QF_PROPERTY_BOOL_IMPL2(lower_letter, upper_letter, name_rest, default_value)
 
 #define QF_VARIANTMAP_FIELD(ptype, getter_prefix, setter_prefix, name_rest) \
 	public: bool getter_prefix##name_rest##_isset() const {return contains(QF_QUOTE_QSTRINGLITERAL(getter_prefix##name_rest));} \
