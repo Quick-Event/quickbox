@@ -3,7 +3,7 @@
 AppCliOptions::AppCliOptions(QObject *parent)
 	: Super(parent)
 {
-    addOption("locale").setType(QVariant::String).setNames("--locale").setComment("Application locale (e.g. cs_CZ for Czech, en_US for English etc.)").setDefaultValue("system");
+	addOption("locale").setType(QVariant::String).setNames("--locale").setComment("Application locale (e.g. cs_CZ for Czech, en_US for English etc.)").setDefaultValue("system");
 	addOption("profile").setType(QVariant::String).setNames("--profile").setComment("Profile name [startlist | results]").setDefaultValue("results");
 	addOption("application.refreshTime").setType(QVariant::Int).setNames("--refresh-time").setDefaultValue(1000).setComment("refresh time in msec");
 	addOption("application.columnCount").setType(QVariant::Int).setNames("-c", "--column-count").setDefaultValue(2);
