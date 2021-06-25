@@ -49,7 +49,7 @@ ReceiptsPlugin::ReceiptsPlugin(QObject *parent)
 void ReceiptsPlugin::onInstalled()
 {
 	qff::MainWindow *framework = qff::MainWindow::frameWork();
-	ReceiptsPartWidget *pw = new ReceiptsPartWidget(manifest()->featureId());
+	ReceiptsPartWidget *pw = new ReceiptsPartWidget(featureId());
 	framework->addPartWidget(pw);
 }
 
@@ -390,7 +390,7 @@ void ReceiptsPlugin::previewCard(int card_id)
 	auto *w = new qf::qmlwidgets::reports::ReportViewWidget();
 	w->setPersistentSettingsId("cardPreview");
 	w->setWindowTitle(tr("Card"));
-	w->setReport(manifest()->homeDir() + "/reports/sicard.qml");
+	w->setReport(homeDir() + "/reports/sicard.qml");
 	QVariantMap dt = readCardTablesData(card_id);
 	for(auto key : dt.keys())
 		w->setTableData(key, dt.value(key));
@@ -424,7 +424,7 @@ bool ReceiptsPlugin::printCard(int card_id)
 	QF_TIME_SCOPE("ReceiptsPlugin::printCard()");
 	try {
 		QVariantMap dt = readCardTablesData(card_id);
-		receiptsPrinter()->printReceipt(manifest()->homeDir() + "/reports/sicard.qml", dt);
+		receiptsPrinter()->printReceipt(homeDir() + "/reports/sicard.qml", dt);
 		return true;
 	}
 	catch(const qf::core::Exception &e) {
@@ -439,7 +439,7 @@ bool ReceiptsPlugin::printError(int card_id)
 	QF_TIME_SCOPE("ReceiptsPlugin::printError()");
 	try {
 		QVariantMap dt = readCardTablesData(card_id);
-		receiptsPrinter()->printReceipt(manifest()->homeDir() + "/reports/error.qml", dt);
+		receiptsPrinter()->printReceipt(homeDir() + "/reports/error.qml", dt);
 		return true;
 	}
 		catch(const qf::core::Exception &e) {

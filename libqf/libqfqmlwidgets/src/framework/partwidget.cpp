@@ -116,21 +116,6 @@ qf::qmlwidgets::ToolBar *PartWidget::toolBar(const QString &name, bool create_if
 	return ret;
 }
 
-bool PartWidget::isAddToPartSwitchFromBottom()
-{
-	bool add_from_bottom = false;
-	auto framework = framework::MainWindow::frameWork();
-	if(framework) {
-		auto plugin = framework->plugin(featureId());
-		if(plugin) {
-			auto manifest = plugin->manifest();
-			if(manifest)
-				add_from_bottom = manifest->isAddFromBottom();
-		}
-	}
-	return add_from_bottom;
-}
-
 QIcon PartWidget::createIcon()
 {
 	qfLogFuncFrame() << this << "feature:" << featureId();
@@ -149,11 +134,9 @@ QIcon PartWidget::createIcon()
 			if(icon_path.isEmpty())
 				icon_path = "images/feature";
 			if(!icon_path.startsWith(":/")) {
-				PluginManifest *manifest = plugin->manifest();
-				if(manifest)
-					icon_path = plugin->manifest()->homeDir() + "/" + icon_path;
+				icon_path = plugin->homeDir() + "/" + icon_path;
 			}
-			qfDebug() << plugin << "feature:" << plugin->manifest()->featureId() << "icon path:" << icon_path;
+			qfDebug() << plugin << "feature:" << plugin->featureId() << "icon path:" << icon_path;
 			ico = QIcon(icon_path);
 			if(ico.isNull())
 				qfWarning() << "Cannot load icon on path:" << icon_path;
@@ -219,10 +202,4 @@ void PartWidget::classBegin()
 
 void PartWidget::componentComplete()
 {
-}
-
-qf::qmlwidgets::framework::Plugin *qf::qmlwidgets::framework::PartWidget::plugin(bool throw_exc)
-{
-	qf::qmlwidgets::framework::Plugin *ret = qf::qmlwidgets::framework::MainWindow::frameWork()->plugin(featureId(), throw_exc);
-	return ret;
 }

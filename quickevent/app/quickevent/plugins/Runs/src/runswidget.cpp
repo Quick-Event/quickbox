@@ -224,7 +224,7 @@ void RunsWidget::settleDownInPartWidget(RunsThisPartWidget *part_widget)
 			QVariantMap props;
 			props["stageId"] = selectedStageId();
 			qf::qmlwidgets::reports::ReportViewWidget::showReport(fwk
-										, getPlugin<RunsPlugin>()->manifest()->homeDir() + "/reports/competitorsWithCardRent.qml"
+										, getPlugin<RunsPlugin>()->homeDir() + "/reports/competitorsWithCardRent.qml"
 										, QVariant()
 										, tr("Competitors with rented cards")
 										, "printReport"

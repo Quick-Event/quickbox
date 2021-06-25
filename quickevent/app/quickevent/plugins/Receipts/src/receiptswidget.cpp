@@ -281,7 +281,7 @@ bool ReceiptsWidget::printReceipt(int card_id)
 void ReceiptsWidget::loadReceptList()
 {
 	ui->lstReceipt->clear();
-	QString receipts_dir = getPlugin<ReceiptsPlugin>()->manifest()->homeDir() + "/reports/receipts";
+	QString receipts_dir = getPlugin<ReceiptsPlugin>()->homeDir() + "/reports/receipts";
 	QDirIterator it(receipts_dir, QStringList{"*.qml"}, QDir::Files | QDir::Readable, QDirIterator::Subdirectories);
 	while (it.hasNext()) {
 		it.next();

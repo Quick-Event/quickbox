@@ -71,7 +71,7 @@ void RelaysPlugin::onInstalled()
 {
 	qff::MainWindow *fwk = qff::MainWindow::frameWork();
 	m_partWidget = new RelaysThisPartWidget();
-	fwk->addPartWidget(m_partWidget, manifest()->featureId());
+	fwk->addPartWidget(m_partWidget, featureId());
 
 	connect(getPlugin<EventPlugin>(), &Event::EventPlugin::dbEventNotify, this, &RelaysPlugin::onDbEventNotify);
 

@@ -142,6 +142,7 @@ int main(int argc, char *argv[])
 	main_window.setUiLanguageName(lc_name);
 	main_window.loadPlugins();
 	main_window.show();
+	emit main_window.applicationLaunched();
 
 	int ret = app.exec();
 

@@ -307,7 +307,7 @@ void EventPlugin::onInstalled()
 	connect(this, &EventPlugin::eventNameChanged, this, &EventPlugin::updateWindowTitle);
 	connect(this, &EventPlugin::currentStageIdChanged, this, &EventPlugin::updateWindowTitle);
 	connect(this, SIGNAL(currentStageIdChanged(int)), fwk->statusBar(), SLOT(setStageNo(int)));
-	connect(fwk, &qff::MainWindow::pluginsLoaded, this, &EventPlugin::connectToSqlServer);
+	connect(fwk, &qff::MainWindow::applicationLaunched, this, &EventPlugin::connectToSqlServer);
 	connect(this, &EventPlugin::eventOpenChanged, this, &EventPlugin::onEventOpened);
 
 	qfw::Action *a_import = fwk->menuBar()->actionForPath("file/import", false);

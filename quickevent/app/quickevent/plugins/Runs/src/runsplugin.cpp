@@ -123,7 +123,7 @@ void RunsPlugin::onInstalled()
 	});
 	connect(getPlugin<CompetitorsPlugin>(), SIGNAL(competitorEdited()), this, SLOT(clearRunnersTableCache()));
 
-	fwk->addPartWidget(m_partWidget, manifest()->featureId());
+	fwk->addPartWidget(m_partWidget, featureId());
 
 	{
 		m_eventStatisticsDockWidget = new qff::DockWidget(nullptr);
@@ -756,7 +756,7 @@ QVariantMap RunsPlugin::printAwardsOptionsWithDialog(const QVariantMap &opts)
 	w->setPrintOptions(opts);
 	qf::qmlwidgets::dialogs::Dialog dlg(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, partWidget());
 	dlg.setCentralWidget(w);
-	QString plugin_home = manifest()->homeDir();
+	QString plugin_home = homeDir();
 	w->init(plugin_home);
 	if(dlg.exec()) {
 		ret = w->printOptions();
@@ -1340,7 +1340,7 @@ void RunsPlugin::report_startListClasses()
 		QVariantMap props;
 		props["options"] = opts;
 		qf::qmlwidgets::reports::ReportViewWidget::showReport(fwk
-									, manifest()->homeDir() + "/reports/startList_classes.qml"
+									, homeDir() + "/reports/startList_classes.qml"
 									, tt.toVariant()
 									, tr("Start list by classes")
 									, "printStartList"
@@ -1367,7 +1367,7 @@ void RunsPlugin::report_startListClubs()
 		QVariantMap props;
 		props["options"] = opts;
 		qf::qmlwidgets::reports::ReportViewWidget::showReport(fwk
-									, manifest()->homeDir() + "/reports/startList_clubs.qml"
+									, homeDir() + "/reports/startList_clubs.qml"
 									, tt.toVariant()
 									, tr("Start list by clubs")
 									, "printStartList"
@@ -1392,7 +1392,7 @@ void RunsPlugin::report_startListStarters()
 		QVariantMap props;
 		props["options"] = opts;
 		qf::qmlwidgets::reports::ReportViewWidget::showReport(fwk
-									, manifest()->homeDir() + "/reports/startList_starters.qml"
+									, homeDir() + "/reports/startList_starters.qml"
 									, tt.toVariant()
 									, tr("Start list for starters")
 									, "printStartList"
@@ -1425,7 +1425,7 @@ void RunsPlugin::report_startListClassesNStages()
 		//qfDebug() << props;
 		//qfDebug() << "dlg.stagesCount():" << dlg.stagesCount() << opts.stagesCount();
 		qf::qmlwidgets::reports::ReportViewWidget::showReport(fwk
-									, manifest()->homeDir() + "/reports/startList_classes_nstages.qml"
+									, homeDir() + "/reports/startList_classes_nstages.qml"
 									, tt.toVariant()
 									, tr("Start list by classes for %n stage(s)", "", dlg.stagesCount())
 									, "printStartList"
@@ -1459,7 +1459,7 @@ void RunsPlugin::report_startListClubsNStages()
 		//props["reportTitle"] = "report_title";
 		//qfInfo() << props;
 		qf::qmlwidgets::reports::ReportViewWidget::showReport(fwk
-									, manifest()->homeDir() + "/reports/startList_clubs_nstages.qml"
+									, homeDir() + "/reports/startList_clubs_nstages.qml"
 									, tt.toVariant()
 									, tr("Start list by clubs for %n stage(s)", "", dlg.stagesCount())
 									, "printStartList"
@@ -1482,7 +1482,7 @@ void RunsPlugin::report_resultsClasses()
 		QVariantMap props;
 		props["options"] = opts;
 		qf::qmlwidgets::reports::ReportViewWidget::showReport(fwk
-									, manifest()->homeDir() + "/reports/results_stage.qml"
+									, homeDir() + "/reports/results_stage.qml"
 									, tt.toVariant()
 									, tr("Results by classes")
 									, "printResults"
@@ -1508,7 +1508,7 @@ void RunsPlugin::report_resultsForSpeaker()
 		//props["stageCount"] = getPlugin<EventPlugin>()->eventConfig()->stageCount();
 		//props["stageNumber"] = selectedStageId();
 		qf::qmlwidgets::reports::ReportViewWidget::showReport(fwk
-									, manifest()->homeDir() + "/reports/results_stageSpeaker.qml"
+									, homeDir() + "/reports/results_stageSpeaker.qml"
 									, tt.toVariant()
 									, tr("Results by classes")
 									, "printResultsSpeaker"
@@ -1558,7 +1558,7 @@ void RunsPlugin::report_resultsNStages()
 	props["stagesCount"] = dlg.stagesCount();
 	props["options"] = opts;
 	qf::qmlwidgets::reports::ReportViewWidget::showReport(fwk
-								, manifest()->homeDir() + "/reports/results_nstages.qml"
+								, homeDir() + "/reports/results_nstages.qml"
 								, tt.toVariant()
 								, tr("Results after %n stage(s)", "", dlg.stagesCount())
 								, "printResultsNStages"
@@ -1584,7 +1584,7 @@ void RunsPlugin::report_resultsNStagesSpeaker()
 	QVariantMap props;
 	props["stagesCount"] = dlg.stagesCount();
 	qf::qmlwidgets::reports::ReportViewWidget::showReport(fwk
-								, manifest()->homeDir() + "/reports/results_nstagesSpeaker.qml"
+								, homeDir() + "/reports/results_nstagesSpeaker.qml"
 								, tt.toVariant()
 								, tr("Results after %n stage(s)", "", dlg.stagesCount())
 								, "printResultsNStagesWide"

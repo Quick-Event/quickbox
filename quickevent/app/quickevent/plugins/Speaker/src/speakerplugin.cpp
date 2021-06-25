@@ -26,7 +26,7 @@ void SpeakerPlugin::onInstalled()
 	qfLogFuncFrame();
 	qff::MainWindow *fwk = qff::MainWindow::frameWork();
 	m_partWidget = new SpeakerThisPartWidget();
-	fwk->addPartWidget(m_partWidget, manifest()->featureId());
+	fwk->addPartWidget(m_partWidget, featureId());
 }
 
 }

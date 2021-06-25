@@ -1,12 +1,13 @@
 #include "plugin.h"
-#include "pluginmanifest.h"
 #include "application.h"
+#include "mainwindow.h"
 
 #include <qf/core/utils.h>
 #include <qf/core/log.h>
 #include <qf/core/assert.h>
 
 #include <QQmlEngine>
+#include <QTranslator>
 
 using namespace qf::qmlwidgets::framework;
 
@@ -14,16 +15,12 @@ Plugin::Plugin(const QString &feature_id, QObject *parent)
 	: QObject(parent)
 {
 	qfLogFuncFrame();
-	auto *mani = new PluginManifest();
-	mani->setFeatureId(feature_id);
-	mani->setHomeDir(qf::qmlwidgets::framework::Application::instance()->pluginDataDir() + '/' + feature_id);
-
-	setManifest(mani);
+	m_featureId = feature_id;
+	loadTranslations();
 }
 
 Plugin::Plugin(QObject *parent)
 	: QObject(parent)
-	, m_manifest(nullptr)
 {
 	qfLogFuncFrame();
 }
@@ -32,26 +29,24 @@ Plugin::~Plugin()
 {
 	qfLogFuncFrame() << this;
 }
-/*
-QString Plugin::homeDir() const
+
+void Plugin::loadTranslations()
 {
-	QString ret;
-	PluginManifest *m = manifest();
-	if(m)
-		ret = m->homeDir();
-	else
-		qfWarning() << "Cannot find manifest of plugin:" << this;
-	return ret;
-}
-*/
-void Plugin::setManifest(PluginManifest *mf)
-{
-	if(mf != m_manifest) {
-		mf->setParent(this);
-		m_manifest = mf;
-		if(mf)
-			setObjectName(mf->featureId());
-		emit manifestChanged(mf);
+	auto mainWindow = qobject_cast<MainWindow*>(this->parent());
+	QString lc_name = mainWindow->uiLanguageName();
+	if(!lc_name.isEmpty()) {
+		QString tr_name = featureId() + '.' + lc_name;
+		QString app_translations_path = QCoreApplication::applicationDirPath() + "/translations";
+		QTranslator *trans = new QTranslator(mainWindow);
+		bool ok = trans->load(tr_name, app_translations_path);
+		if(ok) {
+			qfInfo() << "Found translation file for:" << tr_name;
+			QCoreApplication::instance()->installTranslator(trans);
+		}
+		else {
+			qfInfo() << "Cannot load translation file for:" << tr_name << "in:" << app_translations_path;
+			delete trans;
+		}
 	}
 }
 

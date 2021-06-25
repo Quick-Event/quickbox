@@ -34,6 +34,7 @@ class DockWidget;
 class PartWidget;
 class CentralWidget;
 class Plugin;
+typedef QList<qf::qmlwidgets::framework::Plugin*> PluginList;
 
 class QFQMLWIDGETS_DECL_EXPORT MainWindow : public QMainWindow, public IPersistentSettings
 {
@@ -42,10 +43,9 @@ class QFQMLWIDGETS_DECL_EXPORT MainWindow : public QMainWindow, public IPersiste
 	Q_PROPERTY(qf::qmlwidgets::StatusBar* statusBar READ statusBar)
 	Q_PROPERTY(QString persistentSettingsId READ persistentSettingsId WRITE setPersistentSettingsId)
 	Q_PROPERTY(QString uiLanguageName READ uiLanguageName WRITE setUiLanguageName NOTIFY uiLanguageNameChanged)
+	PluginList m_loadedPlugins;
 private:
 	typedef QMainWindow Super;
-public:
-	typedef QMap<QString, QObject*> PluginMap;
 public:
 	explicit MainWindow(QWidget * parent = nullptr, Qt::WindowFlags flags = Qt::WindowFlags());
 	~MainWindow() Q_DECL_OVERRIDE;
@@ -55,6 +55,7 @@ public:
 	CentralWidget* centralWidget();
 	void setCentralWidget(CentralWidget *widget);
 public:
+	void registerPlugin(qf::qmlwidgets::framework::Plugin *plugin);
 	virtual void loadPlugins();
 	/// framework API
 	Q_INVOKABLE void setPersistentSettingDomains(const QString &organization_domain, const QString &organization_name, const QString &application_name = QString());
@@ -82,6 +83,7 @@ public:
 
 	/// emitted by plugin loader when all plugins are loaded
 	Q_SIGNAL void pluginsLoaded();
+	Q_SIGNAL void applicationLaunched();
 	Q_SIGNAL void aboutToClose();
 #ifdef GET_RESOURCE_IN_FRAMEWORK
 	Q_INVOKABLE int getResource(const QUrl &url, bool show_progress = true);
@@ -93,7 +95,6 @@ public:
 
 	//Q_INVOKABLE QObject* obj_testing();
 protected:
-	void registerPlugin(qf::qmlwidgets::framework::Plugin *plugin);
 	PluginLoader *pluginLoader();
 	void closeEvent(QCloseEvent *ev) Q_DECL_OVERRIDE;
 	Q_SLOT virtual void onPluginsLoaded();

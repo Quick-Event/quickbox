@@ -66,7 +66,7 @@ void CompetitorsPlugin::onInstalled()
 {
 	qff::MainWindow *fwk = qff::MainWindow::frameWork();
 	m_partWidget = new CompetitorsThisPartWidget();
-	fwk->addPartWidget(m_partWidget, manifest()->featureId());
+	fwk->addPartWidget(m_partWidget, featureId());
 	{
 		m_registrationsDockWidget = new qff::DockWidget(nullptr);
 		m_registrationsDockWidget->setObjectName("registrationsDockWidget");

@@ -3,8 +3,6 @@
 #include "stackedcentralwidget.h"
 #include "mainwindow.h"
 #include "plugin.h"
-#include "pluginmanifest.h"
-#include "pluginloader.h"
 
 #include <qf/core/log.h>
 #include <qf/core/assert.h>
@@ -48,28 +46,12 @@ qf::qmlwidgets::framework::PartSwitch::~PartSwitch()
 void PartSwitch::addPartWidget(PartWidget *widget)
 {
 	qfLogFuncFrame() << widget << widget->featureId() << widget->title();
-	auto alst = actions();
-	QAction *first_bottom_part_action = nullptr;
-	bool add_from_bottom = widget->isAddToPartSwitchFromBottom();
-	if(!add_from_bottom) {
-		for (int i = 0; i < alst.count(); ++i) {
-			PartSwitchToolButton *bt = qobject_cast<PartSwitchToolButton*>(widgetForAction(alst.at(i)));
-			if(bt) {
-				PartWidget *pw = m_centralWidget->partWidget(bt->partIndex());
-				if(pw->isAddToPartSwitchFromBottom()) {
-					first_bottom_part_action = alst.at(i);
-					break;
-				}
-			}
-		}
-	}
 	PartSwitchToolButton *bt = new PartSwitchToolButton();
 	bt->setCheckable(true);
 	connect(bt, SIGNAL(clicked(int)), this, SLOT(setCurrentPartIndex(int)));
 	bt->setText(widget->title());
 	bt->setPartIndex(buttonCount());
-	qfDebug() << "first_bottom_part_action:" << first_bottom_part_action << "add_from_bottom:" << add_from_bottom;
-	insertWidget(first_bottom_part_action, bt);
+	addWidget(bt);
 	{
 		QIcon ico = widget->createIcon();
 		//bt->setIconSize(QSize{128, 128});
