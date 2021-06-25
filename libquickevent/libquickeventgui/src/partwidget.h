@@ -2,7 +2,6 @@
 #define QUICKEVENTGUI_PARTWIDGET_H
 
 #include "quickeventguiglobal.h"
-
 #include <qf/qmlwidgets/framework/partwidget.h>
 
 namespace quickevent {
@@ -14,8 +13,7 @@ class QUICKEVENTGUI_DECL_EXPORT PartWidget : public qf::qmlwidgets::framework::P
 private:
 	typedef qf::qmlwidgets::framework::PartWidget Super;
 public:
-	explicit PartWidget(QWidget *parent = 0) : PartWidget(QString(), parent) {}
-	explicit PartWidget(const QString &feature_id, QWidget *parent = 0);
+	explicit PartWidget(const QString &title, const QString &feature_id, QWidget *parent = nullptr);
 
 	Q_SIGNAL void resetPartRequest();
 	Q_SIGNAL void reloadPartRequest();

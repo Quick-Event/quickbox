@@ -125,6 +125,16 @@ static T* getPlugin()
 	return ret;
 }
 
+template<typename Widget, typename PartWidget>
+static void initPluginWidget(QString title, QString featureId)
+{
+	auto* widget = new Widget();
+	auto *partWidget = new PartWidget(title, featureId);
+	qf::qmlwidgets::framework::MainWindow::frameWork()->addPartWidget(partWidget);
+	partWidget->addWidget(widget);
+	widget->settleDownInPartWidget(partWidget);
+}
+
 }}}
 
 #endif // QF_QMLWIDGETS_FRAMEWORK_MAINWINDOW_H

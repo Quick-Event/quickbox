@@ -3,7 +3,6 @@
 
 #include "codeclassresultswidget.h"
 #include "punchestableview.h"
-#include "speakerthispartwidget.h"
 
 #include <plugins/Event/src/eventplugin.h>
 #include <plugins/Speaker/src/speakerplugin.h>
@@ -94,7 +93,7 @@ SpeakerWidget::~SpeakerWidget()
 	delete ui;
 }
 
-void SpeakerWidget::settleDownInPartWidget(SpeakerThisPartWidget *part_widget)
+void SpeakerWidget::settleDownInPartWidget(quickevent::gui::PartWidget *part_widget)
 {
 	m_partWidget = part_widget;
 

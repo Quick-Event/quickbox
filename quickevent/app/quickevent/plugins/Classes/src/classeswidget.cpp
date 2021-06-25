@@ -223,7 +223,7 @@ int ClassesWidget::selectedStageId()
 	return m_cbxStage->currentData().toInt();
 }
 
-void ClassesWidget::settleDownInPartWidget(ClassesThisPartWidget *part_widget)
+void ClassesWidget::settleDownInPartWidget(quickevent::gui::PartWidget *part_widget)
 {
 	connect(part_widget, SIGNAL(resetPartRequest()), this, SLOT(reset()));
 	connect(part_widget, SIGNAL(reloadPartRequest()), this, SLOT(reload()));

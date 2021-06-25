@@ -69,6 +69,7 @@ public:
 
 	MenuBar* menuBar();
 	Q_INVOKABLE qf::qmlwidgets::ToolBar* toolBar(const QString &name, bool create_if_not_exists = false);
+	void addWidget(QWidget *w);
 protected:
 	QQmlListProperty<QWidget> widgets();
 	QQmlListProperty<QObject> attachedObjects();

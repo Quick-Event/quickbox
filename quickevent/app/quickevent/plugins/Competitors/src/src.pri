@@ -3,7 +3,6 @@ message(including $$PWD)
 HEADERS += \
     $$PWD/competitorsplugin.h \
     $$PWD/competitordocument.h \
-    $$PWD/competitorsthispartwidget.h \
     $$PWD/competitorswidget.h \
     $$PWD/competitorwidget.h \
     $$PWD/registrationswidget.h \
@@ -14,7 +13,6 @@ HEADERS += \
 SOURCES += \
     $$PWD/competitorsplugin.cpp \
     $$PWD/competitordocument.cpp \
-    $$PWD/competitorsthispartwidget.cpp \
     $$PWD/competitorswidget.cpp \
     $$PWD/competitorwidget.cpp \
     $$PWD/registrationswidget.cpp \

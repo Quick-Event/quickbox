@@ -1,9 +1,9 @@
 #ifndef COMPETITORSWIDGET_H
 #define COMPETITORSWIDGET_H
 
-#include "competitorsthispartwidget.h"
-
 #include <QFrame>
+
+#include <quickevent/gui/partwidget.h>
 
 class QCheckBox;
 
@@ -32,7 +32,7 @@ public:
 	explicit CompetitorsWidget(QWidget *parent = nullptr);
 	~CompetitorsWidget() Q_DECL_OVERRIDE;
 
-	void settleDownInPartWidget(CompetitorsThisPartWidget *part_widget);
+	void settleDownInPartWidget(quickevent::gui::PartWidget *part_widget);
 private:
 	Q_SLOT void lazyInit();
 	Q_SLOT void reset();

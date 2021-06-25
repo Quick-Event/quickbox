@@ -1,7 +1,6 @@
 #include "relayswidget.h"
 #include "ui_relayswidget.h"
 #include "relaywidget.h"
-#include "relaysthispartwidget.h"
 
 #include "relaydocument.h"
 #include "relaysplugin.h"
@@ -9,6 +8,7 @@
 #include <plugins/Event/src/eventplugin.h>
 #include <plugins/Runs/src/runsplugin.h>
 
+#include <quickevent/gui/partwidget.h>
 #include <quickevent/gui/reportoptionsdialog.h>
 
 #include <quickevent/core/si/siid.h>
@@ -111,7 +111,7 @@ RelaysWidget::~RelaysWidget()
 	delete ui;
 }
 
-void RelaysWidget::settleDownInPartWidget(RelaysThisPartWidget *part_widget)
+void RelaysWidget::settleDownInPartWidget(quickevent::gui::PartWidget *part_widget)
 {
 	connect(part_widget, SIGNAL(resetPartRequest()), this, SLOT(reset()));
 	connect(part_widget, SIGNAL(reloadPartRequest()), this, SLOT(reload()));

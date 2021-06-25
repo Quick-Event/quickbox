@@ -1,9 +1,9 @@
 #ifndef CLASSESWIDGET_H
 #define CLASSESWIDGET_H
 
-#include "classesthispartwidget.h"
-
 #include <QFrame>
+
+#include <quickevent/gui/partwidget.h>
 
 class QComboBox;
 
@@ -32,7 +32,7 @@ public:
 
 	Q_INVOKABLE int selectedStageId();
 
-	void settleDownInPartWidget(ClassesThisPartWidget *part_widget);
+	void settleDownInPartWidget(quickevent::gui::PartWidget *part_widget);
 private:
 	void edit_courses();
 	void edit_codes();

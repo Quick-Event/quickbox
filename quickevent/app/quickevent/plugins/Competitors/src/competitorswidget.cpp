@@ -1,7 +1,6 @@
 #include "competitorswidget.h"
 #include "ui_competitorswidget.h"
 #include "competitorwidget.h"
-#include "competitorsthispartwidget.h"
 #include "lentcardswidget.h"
 #include "stationsbackupmemorywidget.h"
 
@@ -88,7 +87,7 @@ CompetitorsWidget::~CompetitorsWidget()
 	delete ui;
 }
 
-void CompetitorsWidget::settleDownInPartWidget(CompetitorsThisPartWidget *part_widget)
+void CompetitorsWidget::settleDownInPartWidget(quickevent::gui::PartWidget *part_widget)
 {
 	connect(part_widget, SIGNAL(resetPartRequest()), this, SLOT(reset()));
 	connect(part_widget, SIGNAL(reloadPartRequest()), this, SLOT(reload()));

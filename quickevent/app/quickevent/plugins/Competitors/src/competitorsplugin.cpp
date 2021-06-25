@@ -1,8 +1,8 @@
 #include "competitorsplugin.h"
-#include "competitorsthispartwidget.h"
 #include "competitordocument.h"
 #include "registrationswidget.h"
 #include "competitorwidget.h"
+#include "competitorswidget.h"
 
 #include <qf/qmlwidgets/framework/application.h>
 #include <qf/qmlwidgets/framework/mainwindow.h>
@@ -23,7 +23,8 @@ namespace qff = qf::qmlwidgets::framework;
 namespace qfd = qf::qmlwidgets::dialogs;
 namespace qfm = qf::core::model;
 namespace qfs = qf::core::sql;
-using qf::qmlwidgets::framework::getPlugin;
+using quickevent::gui::PartWidget;
+using qff::getPlugin;
 using Event::EventPlugin;
 
 namespace Competitors {
@@ -65,8 +66,7 @@ int CompetitorsPlugin::editCompetitor(int id, int mode)
 void CompetitorsPlugin::onInstalled()
 {
 	qff::MainWindow *fwk = qff::MainWindow::frameWork();
-	m_partWidget = new CompetitorsThisPartWidget();
-	fwk->addPartWidget(m_partWidget, featureId());
+	qff::initPluginWidget<CompetitorsWidget, PartWidget>(tr("Competitors"), featureId());
 	{
 		m_registrationsDockWidget = new qff::DockWidget(nullptr);
 		m_registrationsDockWidget->setObjectName("registrationsDockWidget");

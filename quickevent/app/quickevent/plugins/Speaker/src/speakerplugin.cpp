@@ -1,5 +1,5 @@
 #include "speakerplugin.h"
-#include "speakerthispartwidget.h"
+#include "speakerwidget.h"
 
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/dialogs/messagebox.h>
@@ -11,6 +11,7 @@
 
 namespace qff = qf::qmlwidgets::framework;
 namespace qfw = qf::qmlwidgets;
+using quickevent::gui::PartWidget;
 
 namespace Speaker {
 
@@ -24,9 +25,7 @@ SpeakerPlugin::SpeakerPlugin(QObject *parent)
 void SpeakerPlugin::onInstalled()
 {
 	qfLogFuncFrame();
-	qff::MainWindow *fwk = qff::MainWindow::frameWork();
-	m_partWidget = new SpeakerThisPartWidget();
-	fwk->addPartWidget(m_partWidget, featureId());
+	qff::initPluginWidget<SpeakerWidget, PartWidget>(tr("Speaker"), featureId());
 }
 
 }

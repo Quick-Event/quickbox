@@ -1,7 +1,6 @@
 #include "cardreaderwidget.h"
 #include "ui_cardreaderwidget.h"
 #include "dlgsettings.h"
-#include "cardreaderpartwidget.h"
 
 #include "cardreaderplugin.h"
 #include "cardchecker.h"
@@ -263,7 +262,7 @@ CardReaderWidget::~CardReaderWidget()
 	delete ui;
 }
 
-void CardReaderWidget::settleDownInPartWidget(CardReaderPartWidget *part_widget)
+void CardReaderWidget::settleDownInPartWidget(quickevent::gui::PartWidget *part_widget)
 {
 	connect(part_widget, SIGNAL(resetPartRequest()), this, SLOT(reset()));
 	connect(part_widget, SIGNAL(reloadPartRequest()), this, SLOT(reload()));

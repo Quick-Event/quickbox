@@ -1,6 +1,5 @@
 #include "runswidget.h"
 #include "ui_runswidget.h"
-#include "runsthispartwidget.h"
 #include "runstablemodel.h"
 #include "runstableitemdelegate.h"
 #include "runsplugin.h"
@@ -139,7 +138,7 @@ void RunsWidget::reload()
 	ui->wRunsTableWidget->reload(stage_id, class_id, m_chkShowOffRace->isChecked());
 }
 
-void RunsWidget::settleDownInPartWidget(RunsThisPartWidget *part_widget)
+void RunsWidget::settleDownInPartWidget(quickevent::gui::PartWidget *part_widget)
 {
 	qfLogFuncFrame();
 	connect(part_widget, SIGNAL(resetPartRequest()), this, SLOT(reset()));

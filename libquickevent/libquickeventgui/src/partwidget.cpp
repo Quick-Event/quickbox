@@ -5,12 +5,16 @@
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/framework/plugin.h>
 
+
 namespace quickevent {
 namespace gui {
 
-PartWidget::PartWidget(const QString &feature_id, QWidget *parent)
+PartWidget::PartWidget(const QString& title, const QString &feature_id, QWidget *parent)
 	: Super(feature_id, parent)
 {
+	setPersistentSettingsId(featureId());
+	setTitle(title);
+
 	connect(this, &PartWidget::activeChanged, this, &PartWidget::onActiveChanged);
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 	qf::qmlwidgets::framework::Plugin *event_plugin = fwk->plugin("Event", qf::core::Exception::Throw);

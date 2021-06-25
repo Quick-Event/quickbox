@@ -3,7 +3,6 @@ message(including $$PWD)
 HEADERS += \
     $$PWD/classesplugin.h \
     $$PWD/classdocument.h \
-    $$PWD/classesthispartwidget.h \
     $$PWD/importcoursedef.h \
     $$PWD/classeswidget.h \
     $$PWD/editcodeswidget.h \
@@ -16,7 +15,6 @@ HEADERS += \
 SOURCES += \
     $$PWD/classesplugin.cpp \
     $$PWD/classdocument.cpp \
-    $$PWD/classesthispartwidget.cpp \
     $$PWD/importcoursedef.cpp \
     $$PWD/classeswidget.cpp \
     $$PWD/editcodeswidget.cpp \

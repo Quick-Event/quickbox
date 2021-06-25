@@ -1,9 +1,9 @@
 #ifndef SPEAKERWIDGET_H
 #define SPEAKERWIDGET_H
 
-#include "speakerthispartwidget.h"
-
 #include <QFrame>
+
+#include <quickevent/gui/partwidget.h>
 
 namespace Ui {
 class SpeakerWidget;
@@ -29,7 +29,7 @@ public:
 	explicit SpeakerWidget(QWidget *parent = 0);
 	~SpeakerWidget() Q_DECL_OVERRIDE;
 
-	void settleDownInPartWidget(SpeakerThisPartWidget *part_widget);
+	void settleDownInPartWidget(quickevent::gui::PartWidget *part_widget);
 
 	void onDbEventNotify(const QString &domain, int connection_id, const QVariant &data);
 	Q_SIGNAL void punchReceived(const quickevent::core::si::PunchRecord &punch);

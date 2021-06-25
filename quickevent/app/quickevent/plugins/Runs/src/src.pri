@@ -7,7 +7,6 @@ HEADERS += \
     $$PWD/findrunneredit.h \
     $$PWD/findrunnerwidget.h \
     $$PWD/nstagesreportoptionsdialog.h \
-    $$PWD/runsthispartwidget.h \
     $$PWD/runswidget.h \
     $$PWD/runstablemodel.h \
     $$PWD/runstableitemdelegate.h \
@@ -22,7 +21,6 @@ SOURCES += \
     $$PWD/findrunneredit.cpp \
     $$PWD/findrunnerwidget.cpp \
     $$PWD/nstagesreportoptionsdialog.cpp \
-    $$PWD/runsthispartwidget.cpp \
     $$PWD/runswidget.cpp \
     $$PWD/runstablemodel.cpp \
     $$PWD/runstableitemdelegate.cpp \

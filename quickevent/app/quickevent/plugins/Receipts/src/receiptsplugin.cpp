@@ -1,6 +1,5 @@
 #include "receiptsplugin.h"
 #include "receiptswidget.h"
-#include "receiptspartwidget.h"
 #include "receiptsprinter.h"
 
 #include <quickevent/core/si/readcard.h>
@@ -21,6 +20,7 @@
 #include <qf/qmlwidgets/reports/processor/reportpainter.h>
 #include <plugins/CardReader/src/cardreaderplugin.h>
 #include <plugins/Event/src/eventplugin.h>
+#include <quickevent/gui/partwidget.h>
 
 #include <QDomDocument>
 #include <QSqlRecord>
@@ -31,7 +31,8 @@
 
 namespace qfu = qf::core::utils;
 namespace qff = qf::qmlwidgets::framework;
-using qf::qmlwidgets::framework::getPlugin;
+using quickevent::gui::PartWidget;
+using qff::getPlugin;
 using Event::EventPlugin;
 using Receipts::ReceiptsPlugin;
 using CardReader::CardReaderPlugin;
@@ -48,9 +49,7 @@ ReceiptsPlugin::ReceiptsPlugin(QObject *parent)
 
 void ReceiptsPlugin::onInstalled()
 {
-	qff::MainWindow *framework = qff::MainWindow::frameWork();
-	ReceiptsPartWidget *pw = new ReceiptsPartWidget(featureId());
-	framework->addPartWidget(pw);
+	qff::initPluginWidget<ReceiptsWidget, PartWidget>(tr("Receipts"), featureId());
 }
 
 QString ReceiptsPlugin::currentReceiptPath()

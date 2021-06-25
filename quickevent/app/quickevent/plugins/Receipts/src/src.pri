@@ -1,7 +1,6 @@
 message(including $$PWD)
 
 HEADERS += \
-    $$PWD/receiptspartwidget.h \
     $$PWD/receiptswidget.h \
     $$PWD/receiptsplugin.h \
     $$PWD/receiptsprinteroptions.h \
@@ -9,7 +8,6 @@ HEADERS += \
     $$PWD/receiptsprinter.h
 
 SOURCES += \
-    $$PWD/receiptspartwidget.cpp \
     $$PWD/receiptswidget.cpp \
     $$PWD/receiptsplugin.cpp \
     $$PWD/receiptsprinteroptions.cpp \

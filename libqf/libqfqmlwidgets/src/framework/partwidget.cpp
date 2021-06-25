@@ -175,6 +175,10 @@ qf::qmlwidgets::Frame *PartWidget::centralFrame()
 	return m_centralFrame;
 }
 
+void PartWidget::addWidget(QWidget *w)
+{
+	m_centralFrame->addWidget(w);
+}
 void PartWidget::loadPersistentSettings()
 {
 	qfLogFuncFrame();

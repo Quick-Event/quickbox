@@ -1,6 +1,6 @@
 #include "classesplugin.h"
-#include "classesthispartwidget.h"
 #include "classdocument.h"
+#include "classeswidget.h"
 
 #include "importcoursedef.h"
 
@@ -18,6 +18,7 @@
 #include <qf/core/sql/querybuilder.h>
 #include <qf/core/sql/transaction.h>
 #include <plugins/Event/src/eventplugin.h>
+#include <quickevent/gui/partwidget.h>
 
 #include <QQmlEngine>
 
@@ -25,7 +26,8 @@ namespace qfw = qf::qmlwidgets;
 namespace qff = qf::qmlwidgets::framework;
 //namespace qfd = qf::qmlwidgets::dialogs;
 namespace qfs = qf::core::sql;
-using qf::qmlwidgets::framework::getPlugin;
+using quickevent::gui::PartWidget;
+using qff::getPlugin;
 using Event::EventPlugin;
 
 namespace Classes {
@@ -38,11 +40,7 @@ ClassesPlugin::ClassesPlugin(QObject *parent)
 
 void ClassesPlugin::onInstalled()
 {
-	qff::MainWindow *fwk = qff::MainWindow::frameWork();
-	m_partWidget = new ClassesThisPartWidget();
-	fwk->addPartWidget(m_partWidget, "Classes");
-
-	emit nativeInstalled();
+	qff::initPluginWidget<ClassesWidget, PartWidget>(tr("Classes"), featureId());
 }
 
 QObject *ClassesPlugin::createClassDocument(QObject *parent)

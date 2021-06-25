@@ -3,6 +3,8 @@
 
 #include <QFrame>
 
+#include <quickevent/gui/partwidget.h>
+
 namespace Ui {
 	class ReceiptsWidget;
 }
@@ -40,7 +42,7 @@ public:
 
 	static const char *SETTINGS_PREFIX;
 
-	void settleDownInPartWidget(ReceiptsPartWidget *part_widget);
+	void settleDownInPartWidget(quickevent::gui::PartWidget *part_widget);
 
 	Q_SLOT void reset();
 	Q_SLOT void reload();

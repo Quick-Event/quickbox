@@ -1,7 +1,7 @@
 #include "cardreaderplugin.h"
 #include "cardcheckerclassiccpp.h"
 #include "cardcheckerfreeordercpp.h"
-#include "cardreaderpartwidget.h"
+#include "cardreaderwidget.h"
 #include "services/racomclient.h"
 
 #include <quickevent/core/og/timems.h>
@@ -20,7 +20,6 @@
 #include <qf/core/sql/querybuilder.h>
 #include <plugins/Event/src/eventplugin.h>
 #include <plugins/Runs/src/runsplugin.h>
-
 #include <QJSValue>
 #include <QMetaObject>
 #include <QSqlRecord>
@@ -30,7 +29,8 @@
 
 namespace qff = qf::qmlwidgets::framework;
 namespace qfs = qf::core::sql;
-using qf::qmlwidgets::framework::getPlugin;
+using quickevent::gui::PartWidget;
+using qff::getPlugin;
 using Event::EventPlugin;
 using Runs::RunsPlugin;
 
@@ -56,9 +56,7 @@ void CardReaderPlugin::onInstalled()
 	m_cardCheckers << new CardCheckerClassicCpp(this);
 	m_cardCheckers << new CardCheckerFreeOrderCpp(this);
 
-	qff::MainWindow *fwk = qff::MainWindow::frameWork();
-	CardReaderPartWidget *pw = new CardReaderPartWidget(featureId());
-	fwk->addPartWidget(pw);
+	qff::initPluginWidget<CardReaderWidget, PartWidget>("Card Reader", featureId());
 
 	services::RacomClient *racom_client = new services::RacomClient(this);
 	Event::services::Service::addService(racom_client);

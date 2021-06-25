@@ -1,8 +1,8 @@
 #pragma once
 
-#include "relaysthispartwidget.h"
-
 #include <QFrame>
+
+#include <quickevent/gui/partwidget.h>
 
 class QCheckBox;
 
@@ -31,7 +31,7 @@ public:
 	explicit RelaysWidget(QWidget *parent = nullptr);
 	~RelaysWidget() Q_DECL_OVERRIDE;
 
-	void settleDownInPartWidget(RelaysThisPartWidget *part_widget);
+	void settleDownInPartWidget(quickevent::gui::PartWidget *part_widget);
 private:
 	Q_SLOT void lazyInit();
 	Q_SLOT void reset();

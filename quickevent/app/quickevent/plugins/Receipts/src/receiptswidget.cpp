@@ -1,6 +1,5 @@
 #include "receiptswidget.h"
 #include "ui_receiptswidget.h"
-#include "receiptspartwidget.h"
 #include "receiptsprinteroptionsdialog.h"
 #include "receiptsprinter.h"
 #include "receiptsprinteroptions.h"
@@ -113,7 +112,7 @@ void ReceiptsWidget::lazyInit()
 	updateReceiptsPrinterLabel();
 }
 
-void ReceiptsWidget::settleDownInPartWidget(ReceiptsPartWidget *part_widget)
+void ReceiptsWidget::settleDownInPartWidget(quickevent::gui::PartWidget *part_widget)
 {
 	connect(part_widget, SIGNAL(resetPartRequest()), this, SLOT(reset()));
 	connect(part_widget, SIGNAL(reloadPartRequest()), this, SLOT(reload()));

@@ -1,7 +1,7 @@
 #include "relaysplugin.h"
-#include "relaysthispartwidget.h"
 #include "relaydocument.h"
 #include "relaywidget.h"
+#include "relayswidget.h"
 
 #include <quickevent/core/og/timems.h>
 #include <quickevent/core/si/checkedcard.h>
@@ -28,7 +28,8 @@ namespace qfd = qf::qmlwidgets::dialogs;
 namespace qfm = qf::core::model;
 namespace qfs = qf::core::sql;
 namespace qog = quickevent::core::og;
-using qf::qmlwidgets::framework::getPlugin;
+using quickevent::gui::PartWidget;
+using qff::getPlugin;
 using Event::EventPlugin;
 
 namespace Relays {
@@ -69,9 +70,7 @@ int RelaysPlugin::editRelay(int id, int mode)
 
 void RelaysPlugin::onInstalled()
 {
-	qff::MainWindow *fwk = qff::MainWindow::frameWork();
-	m_partWidget = new RelaysThisPartWidget();
-	fwk->addPartWidget(m_partWidget, featureId());
+	qff::initPluginWidget<RelaysWidget, PartWidget>(tr("Relays"), featureId());
 
 	connect(getPlugin<EventPlugin>(), &Event::EventPlugin::dbEventNotify, this, &RelaysPlugin::onDbEventNotify);
 

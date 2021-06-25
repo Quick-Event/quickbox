@@ -8,6 +8,8 @@
 
 #include <QFrame>
 
+#include <quickevent/gui/partwidget.h>
+
 namespace Ui {
 	class CardReaderWidget;
 }
@@ -60,7 +62,7 @@ public:
 	Q_SIGNAL void logRequest(NecroLog::Level level, const QString &msg);
 	void emitLogRequest(NecroLog::Level level, const QString &msg) {emit logRequest(level, msg);}
 
-	void settleDownInPartWidget(CardReaderPartWidget *part_widget);
+	void settleDownInPartWidget(quickevent::gui::PartWidget *part_widget);
 
 	Q_SLOT void reset();
 	Q_SLOT void reload();

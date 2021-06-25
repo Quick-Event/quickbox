@@ -1,6 +1,5 @@
 #include "runsplugin.h"
 #include "nstagesreportoptionsdialog.h"
-#include "runsthispartwidget.h"
 #include "runswidget.h"
 #include "runstabledialogwidget.h"
 #include "eventstatisticswidget.h"
@@ -30,6 +29,7 @@
 #include <plugins/CardReader/src/cardreaderplugin.h>
 #include <plugins/Competitors/src/competitorsplugin.h>
 #include <plugins/Event/src/eventplugin.h>
+#include <quickevent/gui/partwidget.h>
 
 #include <QDesktopServices>
 #include <QFile>
@@ -44,7 +44,8 @@ namespace qfw = qf::qmlwidgets;
 namespace qff = qf::qmlwidgets::framework;
 namespace qfu = qf::core::utils;
 namespace qfs = qf::core::sql;
-using qf::qmlwidgets::framework::getPlugin;
+using quickevent::gui::PartWidget;
+using qff::getPlugin;
 using Event::EventPlugin;
 using Competitors::CompetitorsPlugin;
 using CardReader::CardReaderPlugin;
@@ -115,12 +116,8 @@ void RunsPlugin::onInstalled()
 {
 	qfLogFuncFrame();
 	qff::MainWindow *fwk = qff::MainWindow::frameWork();
-	auto *tpw = new RunsThisPartWidget();
-	m_partWidget = tpw;
-	connect(tpw, &RunsThisPartWidget::selectedStageIdChanged, [this](int stage_id) {
-		//qfInfo() << stage_id;
-		this->setSelectedStageId(stage_id);
-	});
+	qff::initPluginWidget<RunsWidget, PartWidget>(tr("Runs"), featureId());
+
 	connect(getPlugin<CompetitorsPlugin>(), SIGNAL(competitorEdited()), this, SLOT(clearRunnersTableCache()));
 
 	fwk->addPartWidget(m_partWidget, featureId());
