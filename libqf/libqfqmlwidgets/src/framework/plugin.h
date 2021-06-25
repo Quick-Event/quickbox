@@ -2,11 +2,9 @@
 #define QF_QMLWIDGETS_FRAMEWORK_PLUGIN_H
 
 #include "../qmlwidgetsglobal.h"
-#include "mainwindow.h"
 #include "pluginmanifest.h"
 
 #include <qf/core/utils.h>
-#include <type_traits>
 
 #include <QObject>
 
@@ -37,7 +35,6 @@ public:
 private:
 	PluginManifest *m_manifest = nullptr;
 };
-
 
 }}}
 

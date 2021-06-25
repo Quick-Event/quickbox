@@ -4,7 +4,7 @@ QT += core gui qml widgets sql xml sql printsupport serialport
 
 TEMPLATE = app
 
-CONFIG += c++14 hide_symbols lrelease
+CONFIG += c++14 hide_symbols
 
 PROJECT_TOP_SRCDIR = $$PWD
 QF_PROJECT_TOP_SRCDIR = $$PWD/../../../
