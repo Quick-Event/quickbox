@@ -120,8 +120,6 @@ void RunsPlugin::onInstalled()
 
 	connect(getPlugin<CompetitorsPlugin>(), SIGNAL(competitorEdited()), this, SLOT(clearRunnersTableCache()));
 
-	fwk->addPartWidget(m_partWidget, featureId());
-
 	{
 		m_eventStatisticsDockWidget = new qff::DockWidget(nullptr);
 		m_eventStatisticsDockWidget->setObjectName("eventStatisticsDockWidget");
