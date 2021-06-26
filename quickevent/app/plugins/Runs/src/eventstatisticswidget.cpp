@@ -134,7 +134,7 @@ EventStatisticsModel::EventStatisticsModel(QObject *parent)
 				.orderBy("runs.timeMs")
 				.limit(3)
 				.as("results3");
-			qb_third_time.select("CASE WHEN COUNT(timeMs) == 3 THEN MAX(timeMs) ELSE NULL END")
+			qb_third_time.select("CASE WHEN COUNT(timeMs) = 3 THEN MAX(timeMs) ELSE NULL END")
 					.from(qb.toString());
 		}
 
