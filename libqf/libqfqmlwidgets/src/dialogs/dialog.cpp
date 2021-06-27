@@ -331,8 +331,10 @@ void Dialog::setDefaultButton(int standard_button)
 	DialogButtonBox *bbx = buttonBox();
 	if(bbx) {
 		bt = bbx->button((QDialogButtonBox::StandardButton)standard_button);
-		if(bt)
+		if(bt) {
 			bt->setDefault(true);
+			bt->setFocus();
+		}
 	}
 	QF_CHECK(bt != nullptr, QString("Cannot find standard button: %1").arg(standard_button));
 }
