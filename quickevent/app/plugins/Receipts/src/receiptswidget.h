@@ -56,12 +56,13 @@ private:
 
 	Receipts::ReceiptsPlugin* receiptsPlugin();
 	Event::EventPlugin* eventPlugin();
-	void onCardRead();
+	void onCardRead(int connection_id, int card_id);
 	void printNewCards();
 	void loadNewCards();
 	Q_SLOT void onDbEventNotify(const QString &domain, int connection_id, const QVariant &data);
 
 	bool printReceipt(int card_id);
+	void markAsPrinted(int connection_id, int card_id);
 
 	void lazyInit();
 	void loadReceptList();
@@ -69,6 +70,8 @@ private:
 
 	void createActions();
 	int currentStageId();
+	int currentConnectionId();
+	bool thisReaderOnly();
 private:
 	Ui::ReceiptsWidget *ui;
 	qf::core::model::SqlTableModel *m_cardsModel = nullptr;
