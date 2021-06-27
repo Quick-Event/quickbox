@@ -11,6 +11,7 @@
 #include <QStringBuilder>
 #include <QDate>
 #include <QDomElement>
+#include <QTextStream>
 
 #include <limits>
 

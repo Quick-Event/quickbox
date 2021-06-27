@@ -35,6 +35,7 @@
 #include <QInputDialog>
 #include <QDir>
 #include <QUrl>
+#include <QTextStream>
 
 #include <math.h>
 
