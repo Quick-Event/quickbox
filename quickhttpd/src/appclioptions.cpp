@@ -3,6 +3,7 @@
 AppCliOptions::AppCliOptions(QObject *parent)
 	: Super(parent)
 {
+	addOption("locale").setType(QVariant::String).setNames("--locale").setComment("Application locale (e.g. cs_CZ for Czech, en_US for English etc.)").setDefaultValue("system");
 	addOption("application.htmlDir").setType(QVariant::String).setNames("--html-dir").setDefaultValue("./html").setComment("directory where HTML pages will be stored");
 	addOption("application.refreshTime").setType(QVariant::Int).setNames("--refresh-time").setDefaultValue(60*1000).setComment("refresh time in msec");
 	addOption("event.name").setType(QVariant::String).setNames("-e", "--event");

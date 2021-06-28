@@ -36,12 +36,12 @@ ReceiptsPrinter::ReceiptsPrinter(const ReceiptsPrinterOptions &opts, QObject *pa
 {
 }
 
-void ReceiptsPrinter::printReceipt(const QString &report_file_name, const QVariantMap &report_data)
+bool ReceiptsPrinter::printReceipt(const QString &report_file_name, const QVariantMap &report_data)
 {
 	qfLogFuncFrame();
 	if(report_file_name.isEmpty()) {
 		qfError() << "Empty receipt path.";
-		return;
+		return false;
 	}
 	QF_TIME_SCOPE("ReceiptsPrinter::printReceipt()");
 	const ReceiptsPrinterOptions &printer_opts = m_printerOptions;
@@ -58,7 +58,7 @@ void ReceiptsPrinter::printReceipt(const QString &report_file_name, const QVaria
 		}
 		if(pi.isNull()) {
 			qfWarning() << "Default printer not set";
-			return;
+			return false;
 		}
 		qfInfo() << "printing on:" << pi.printerName();
 		printer = new QPrinter(pi);
@@ -76,7 +76,7 @@ void ReceiptsPrinter::printReceipt(const QString &report_file_name, const QVaria
 	{
 		QF_TIME_SCOPE("setting report and data");
 		if(!rp.setReport(report_file_name))
-			return;
+			return false;
 		for(auto key : report_data.keys()) {
 			rp.setTableData(key, report_data.value(key));
 		}
@@ -99,8 +99,9 @@ void ReceiptsPrinter::printReceipt(const QString &report_file_name, const QVaria
 			painter.drawMetaPaint(it);
 		}
 		QF_SAFE_DELETE(printer);
+		return true;
 	}
-	else if(printer_opts.printerType() == ReceiptsPrinterOptions::PrinterType::CharacterPrinter) {
+	if(printer_opts.printerType() == ReceiptsPrinterOptions::PrinterType::CharacterPrinter) {
 		QDomDocument doc;
 		doc.setContent(QLatin1String("<?xml version=\"1.0\"?><report><body/></report>"));
 		QDomElement el_body = doc.documentElement().firstChildElement("body");
@@ -117,9 +118,11 @@ void ReceiptsPrinter::printReceipt(const QString &report_file_name, const QVaria
 					f.write(ba);
 					f.write("\n");
 				}
+				return true;
 			}
 			else {
 				qfError() << "Cannot open file" << f.fileName() << "for writing!";
+				return false;
 			}
 		};
 		switch(printer_opts.characterPrinterType()) {
@@ -131,15 +134,15 @@ void ReceiptsPrinter::printReceipt(const QString &report_file_name, const QVaria
 					for(QByteArray ba : data_lines)
 						ch.addData(ba);
 					fn += '/' + QString::fromLatin1(ch.result().toHex().mid(0, 8)) + ".txt";
-					save_file(fn);
+					return save_file(fn);
 				}
-				break;
+				return false;
 			}
 			case ReceiptsPrinterOptions::CharacterPrinteType::LPT: {
 				if (!printer_opts.characterPrinterDevice().isEmpty()) {
-					save_file(printer_opts.characterPrinterDevice());
+					return save_file(printer_opts.characterPrinterDevice());
 				}
-				break;
+				return false;
 			}
 			case ReceiptsPrinterOptions::CharacterPrinteType::Network: {
 				if (!printer_opts.characterPrinterUrl().isEmpty()) {
@@ -157,6 +160,7 @@ void ReceiptsPrinter::printReceipt(const QString &report_file_name, const QVaria
 						dgram += "\n\n\n";
 						QUdpSocket socket;
 						socket.writeDatagram(dgram, host_addr, port);
+						return true;
 					}
 					else {
 						QTcpSocket socket;
@@ -170,19 +174,24 @@ void ReceiptsPrinter::printReceipt(const QString &report_file_name, const QVaria
 							if (!socket.waitForDisconnected(1000)) { // waiting till all data are sent
 								qfError() << "Error while closing the connection to printer: "
 										<< socket.error();
+								return false;
 							}
+							return true;
 						}
 						else {
 							qfError() << "Cannot open tcp connection to address "
 									<< host << " on port " << port
 									<< " reason: " << socket.error();
+							return false;
 						}
 					}
 				}
-				break;
+				return false;
 			}
 		}
 	}
+	qfError() << "Unknow printer type";
+	return false;
 }
 
 static const QByteArray epson_commands[] =

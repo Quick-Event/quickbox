@@ -53,7 +53,7 @@ private:
 	ReceiptsPrinterOptions receiptsPrinterOptions();
 
 	void previewReceipt(int card_id, const QString &receipt_path);
-	void printReceipt(int card_id, const QString &receipt_path);
+	bool printReceipt(int card_id, const QString &receipt_path);
 	QList<QByteArray> createPrinterData(const QDomElement &body, const ReceiptsPrinterOptions &printer_options);
 
 	class DirectPrintContext;

@@ -160,7 +160,8 @@ void ReceiptsWidget::onDbEventNotify(const QString &domain, int connection_id, c
 	Q_UNUSED(connection_id)
 	Q_UNUSED(data)
 	if(domain == QLatin1String(Event::EventPlugin::DBEVENT_CARD_READ)) {
-		onCardRead();
+		int card_id = data.toInt();
+		onCardRead(connection_id, card_id);
 	}
 }
 
@@ -183,39 +184,34 @@ int ReceiptsWidget::currentStageId()
 	return getPlugin<EventPlugin>()->currentStageId();
 }
 
-void ReceiptsWidget::onCardRead()
+void ReceiptsWidget::onCardRead(int connection_id, int card_id)
 {
 	if(isAutoPrintEnabled()) {
-		printNewCards();
+		if(!thisReaderOnly() || connection_id == currentConnectionId()) {
+			printReceipt(card_id);
+		}
 	}
 	loadNewCards();
 }
 
 void ReceiptsWidget::printNewCards()
 {
-	auto conn  = qf::core::sql::Connection::forName();
-	int connection_id = conn.connectionId();
+	int connection_id = currentConnectionId();
 	QF_ASSERT(connection_id > 0, "Cannot get SQL connection id", return);
 	int current_stage = currentStageId();
-	QString qs = "UPDATE cards SET printerConnectionId=" QF_IARG(connection_id)
+	qf::core::sql::Query q;
+	QString qs = "SELECT id FROM cards"
 			" WHERE printerConnectionId IS NULL"
-			" AND cards.stageId=" QF_IARG(current_stage);
+			" AND stageId=" QF_IARG(current_stage);
 	if(ui->chkThisReaderOnly->isChecked()) {
 		qs += " AND readerConnectionId=" QF_IARG(connection_id);
 	}
-	qf::core::sql::Query q(conn);
-	q.exec(qs, qf::core::Exception::Throw);
-	int num_rows = q.numRowsAffected();
-	if(num_rows > 0) {
-		qs = "SELECT id FROM cards WHERE printerConnectionId=" QF_IARG(connection_id)
-				" ORDER BY id DESC"
-				" LIMIT " QF_IARG(num_rows);
-		q.exec(qs, qf::core::Exception::Throw);
-		while(q.next()) {
-			int card_id = q.value(0).toInt();
-			if(!printReceipt(card_id))
-				break;
-		}
+	qs += " ORDER BY id DESC";
+	q.execThrow(qs);
+	while(q.next()) {
+		int card_id = q.value(0).toInt();
+		if(!printReceipt(card_id))
+			break;
 	}
 }
 
@@ -259,22 +255,35 @@ void ReceiptsWidget::printSelectedCards()
 
 bool ReceiptsWidget::printReceipt(int card_id)
 {
+	int connection_id = currentConnectionId();
+	QF_ASSERT(connection_id > 0, "Cannot get SQL connection id", return false);
+	bool ok = false;
 	qf::core::sql::Query q;
-	if(q.exec("SELECT runId FROM cards WHERE id=" QF_IARG(card_id))) {
+	if(q.execThrow("SELECT runId FROM cards WHERE id=" QF_IARG(card_id))) {
 		if(q.next()) {
 			int run_id = q.value(0).toInt();
 			if(run_id > 0)
-				return getPlugin<ReceiptsPlugin>()->printReceipt(card_id);
+				ok = getPlugin<ReceiptsPlugin>()->printReceipt(card_id);
 			else
 			{
 				if (ui->lstNotFound->currentIndex() == 0)
-					return getPlugin<ReceiptsPlugin>()->printError(card_id);
+					ok = getPlugin<ReceiptsPlugin>()->printError(card_id);
 				else
-					return getPlugin<ReceiptsPlugin>()->printCard(card_id);
+					ok = getPlugin<ReceiptsPlugin>()->printCard(card_id);
 			}
 		}
 	}
-	return false;
+	if(ok)
+		markAsPrinted(connection_id, card_id);
+	return ok;
+}
+
+void ReceiptsWidget::markAsPrinted(int connection_id, int card_id)
+{
+	QString qs = "UPDATE cards SET printerConnectionId=" QF_IARG(connection_id)
+			" WHERE id == " QF_IARG(card_id);
+	qf::core::sql::Query q;
+	q.execThrow(qs);
 }
 
 void ReceiptsWidget::loadReceptList()
@@ -331,4 +340,13 @@ void ReceiptsWidget::on_btPrinterOptions_clicked()
 bool ReceiptsWidget::isAutoPrintEnabled()
 {
 	return ui->chkAutoPrint->isChecked();
+}
+
+int ReceiptsWidget::currentConnectionId()
+{
+	return qf::core::sql::Connection::forName().connectionId();
+}
+
+bool ReceiptsWidget::thisReaderOnly() {
+	return ui->chkThisReaderOnly->isChecked();
 }

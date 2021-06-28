@@ -408,8 +408,7 @@ bool ReceiptsPlugin::printReceipt(int card_id)
 {
 	QF_TIME_SCOPE("ReceiptsPlugin::printReceipt()");
 	try {
-		printReceipt(card_id, currentReceiptPath());
-		return true;
+		return printReceipt(card_id, currentReceiptPath());
 	}
 	catch(const qf::core::Exception &e) {
 		qfError() << e.toString();
@@ -423,8 +422,7 @@ bool ReceiptsPlugin::printCard(int card_id)
 	QF_TIME_SCOPE("ReceiptsPlugin::printCard()");
 	try {
 		QVariantMap dt = readCardTablesData(card_id);
-		receiptsPrinter()->printReceipt(homeDir() + "/reports/sicard.qml", dt);
-		return true;
+		return receiptsPrinter()->printReceipt(homeDir() + "/reports/sicard.qml", dt);
 	}
 	catch(const qf::core::Exception &e) {
 		qfError() << e.toString();
@@ -438,8 +436,7 @@ bool ReceiptsPlugin::printError(int card_id)
 	QF_TIME_SCOPE("ReceiptsPlugin::printError()");
 	try {
 		QVariantMap dt = readCardTablesData(card_id);
-		receiptsPrinter()->printReceipt(homeDir() + "/reports/error.qml", dt);
-		return true;
+		return receiptsPrinter()->printReceipt(homeDir() + "/reports/error.qml", dt);
 	}
 		catch(const qf::core::Exception &e) {
 		qfError() << e.toString();
@@ -464,11 +461,11 @@ void ReceiptsPlugin::previewReceipt(int card_id, const QString &receipt_path)
 	dlg.exec();
 }
 
-void ReceiptsPlugin::printReceipt(int card_id, const QString &receipt_path)
+bool ReceiptsPlugin::printReceipt(int card_id, const QString &receipt_path)
 {
 	qfLogFuncFrame() << "card id:" << card_id;
 	QVariantMap dt = receiptTablesData(card_id);
-	receiptsPrinter()->printReceipt(receipt_path, dt);
+	return receiptsPrinter()->printReceipt(receipt_path, dt);
 }
 
 bool ReceiptsPlugin::isAutoPrintEnabled()
