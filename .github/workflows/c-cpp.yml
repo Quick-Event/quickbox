@@ -119,7 +119,13 @@ jobs:
           echo "$QT_DIR/bin/lrelease $tsfile -qm $TRANS_DIR/$qmfile"
           $Qt5_Dir/bin/lrelease $tsfile -qm $TRANS_DIR/$qmfile
         done
-      
+
+        LANGUAGES=("cs_CZ" "fr_FR" "nb_NO" "nl_BE" "pl_PL" "ru_RU" "uk_UA")
+        for language in ${LANGUAGES[@]} ; do
+          # some languages don't have qtbase file translated
+          cp --verbose "${Qt5_Dir}/translations/qtbase_${language:0:2}.qm" "${TRANS_DIR}/qtbase.${language}.qm" || true
+        done
+
     - name: Get app version
       run: echo "VERSION=`grep APP_VERSION quickevent/app/quickevent/src/appversion.h | cut -d\\" -f2`" >> $GITHUB_ENV
   

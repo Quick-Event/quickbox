@@ -13,6 +13,12 @@ for tsfile in `/usr/bin/find . -name "*.ts"` ; do
 	$QT_DIR/bin/lrelease $tsfile -qm $TRANS_DIR/$qmfile
 done
 
+LANGUAGES=("cs_CZ" "fr_FR" "nb_NO" "nl_BE" "pl_PL" "ru_RU" "uk_UA")
+for language in ${LANGUAGES[@]} ; do
+	# some languages don't have qtbase file translated
+	cp --verbose "${QT_DIR}/translations/qtbase_${language:0:2}.qm" "${TRANS_DIR}/qtbase.${language}.qm" || true
+done
+
 QUICKEVENT_VERSION=`grep APP_VERSION quickevent/app/quickevent/src/appversion.h | cut -d\" -f2`
 
 "C:\Program Files (x86)\Inno Setup 5\iscc.exe" "-DVERSION=${QUICKEVENT_VERSION}" quickevent/quickevent.iss  || exit 2
