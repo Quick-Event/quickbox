@@ -29,8 +29,6 @@ public:
 	QQmlEngine* qmlEngine();
 
 	Q_SIGNAL void installed();
-private:
-	void loadTranslations();
 };
 
 }}}
