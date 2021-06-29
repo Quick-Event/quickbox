@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="nb_NO">
+<TS version="2.1" language="uk_UA">
 <context>
     <name>PreviewDialog</name>
     <message>
@@ -24,77 +24,77 @@
     <message>
         <location filename="src/exporttableviewwidget.ui" line="30"/>
         <source>CSV options</source>
-        <translation>CSV-valg</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="42"/>
         <source>header</source>
-        <translation>hode</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="60"/>
         <source>lines from</source>
-        <translation>linjer fra</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="89"/>
         <source>to</source>
-        <translation>til</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="102"/>
         <source>value -1 means all lines</source>
-        <translation>verdien -1 betyr alle linjer</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="147"/>
         <source>codec</source>
-        <translation>kodek</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="178"/>
         <source>separator</source>
-        <translation type="unfinished">deletegn</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="186"/>
         <source>other</source>
-        <translation>annet</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="202"/>
         <source>,</source>
-        <translation>,</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="224"/>
         <source>Tab</source>
-        <translation>Fane</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="237"/>
         <source>quotes</source>
-        <translation>sitat</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="243"/>
         <source>alwa&amp;ys</source>
-        <translation>all&amp;tid</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="250"/>
         <source>when necessary</source>
-        <translation>når nødvendig</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="260"/>
         <source>ne&amp;ver</source>
-        <translation>al&amp;dri</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="269"/>
         <source>quote char</source>
-        <translation>sitattegn</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="282"/>
@@ -162,27 +162,27 @@
     <message>
         <location filename="src/tableview.cpp" line="694"/>
         <source>Enter value</source>
-        <translation>Skriv inn verdi</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="694"/>
         <source>new value:</source>
-        <translation>ny verdi:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="793"/>
         <source>Save File</source>
-        <translation>Lagre fil</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="805"/>
         <source>Open File</source>
-        <translation>Åpne fil</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="962"/>
         <source>Save as ...</source>
-        <translation type="unfinished">Lagre som…</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="968"/>
@@ -218,7 +218,7 @@
     <message>
         <location filename="src/tableview.cpp" line="1599"/>
         <source>Copy</source>
-        <translation>Kopier</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1602"/>
@@ -703,7 +703,7 @@
     <message>
         <location filename="src/framework/logwidget.cpp" line="31"/>
         <source>Copy</source>
-        <translation type="unfinished">Kopier</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/framework/logwidget.cpp" line="34"/>
@@ -715,7 +715,7 @@
 <context>
     <name>qf::qmlwidgets::framework::MainWindow</name>
     <message>
-        <location filename="src/framework/mainwindow.cpp" line="328"/>
+        <location filename="src/framework/mainwindow.cpp" line="304"/>
         <source>Plugin for feature id: &apos;%1&apos; is not installed!</source>
         <translation type="unfinished"></translation>
     </message>
@@ -723,7 +723,7 @@
 <context>
     <name>qf::qmlwidgets::framework::PartSwitch</name>
     <message>
-        <location filename="src/framework/partswitch.cpp" line="39"/>
+        <location filename="src/framework/partswitch.cpp" line="37"/>
         <source>Part switch</source>
         <translation type="unfinished"></translation>
     </message>
@@ -738,7 +738,6 @@
     <message>
         <location filename="src/internal/dlgtableviewcopyspecial.ui" line="22"/>
         <source>fields separator</source>
-        <oldsource>fields separtor</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -749,7 +748,6 @@
     <message>
         <location filename="src/internal/dlgtableviewcopyspecial.ui" line="36"/>
         <source>rows separator</source>
-        <oldsource>rows separtor</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -968,102 +966,102 @@
 <context>
     <name>qf::qmlwidgets::reports::ReportViewWidget</name>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="570"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="571"/>
         <source>&amp;File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="578"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="579"/>
         <source>&amp;View</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="615"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="616"/>
         <source>First page</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="622"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="623"/>
         <source>Prev page</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="629"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="630"/>
         <source>Next page</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="636"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="637"/>
         <source>Last page</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="643"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="644"/>
         <source>Zoom in</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="650"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="651"/>
         <source>Zoom out</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="657"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="658"/>
         <source>Zoom to fit width</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="664"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="665"/>
         <source>Zoom to fit height</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="671"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="672"/>
         <source>&amp;Print</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="679"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="680"/>
         <source>Print pre&amp;view</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="687"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="688"/>
         <source>Export PD&amp;F</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="688"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="689"/>
         <source>Export in the Adobe Acrobat PDF format</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="695"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="696"/>
         <source>Export &amp;HTML</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="696"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="697"/>
         <source>Export data in HTML</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="1097"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="1098"/>
         <source>empty file name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="1159"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="1160"/>
         <source>Save as PDF</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="1174"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="1175"/>
         <source>Save as HTML</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="1179"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="1180"/>
         <source>Cannot open &apos;%1&apos; for write.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1077,12 +1075,12 @@
 <context>
     <name>qf::qmlwidgets::reports::ReportViewWidget::PainterWidget</name>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="297"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="298"/>
         <source>Item menu</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="298"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="299"/>
         <source>Editovat text</source>
         <translation type="unfinished"></translation>
     </message>

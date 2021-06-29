@@ -110,31 +110,16 @@ int main(int argc, char *argv[])
 		}
 		if(lc_name.isEmpty() || lc_name == QLatin1String("system"))
 			lc_name = QLocale::system().name();
-		QString app_translations_path = QCoreApplication::applicationDirPath() + "/translations";
+
 		qfInfo() << "Loading translations for:" << lc_name;
-		{
-			QTranslator *qt_translator = new QTranslator(&app);
-			QString tr_name = "qt_" + lc_name;
-			bool ok = qt_translator->load(tr_name, app_translations_path);
-			if(ok) {
-				ok = app.installTranslator(qt_translator);
-				qfInfo() << "Installing translator file:" << tr_name << " ... " << (ok? "OK": "ERROR");
+
+		for(QString file_name : {"libqfcore", "libqfqmlwidgets", "libquickeventcore", "libquickeventgui", "libsiut", "quickevent"}) {
+			QTranslator *translator = new QTranslator(&app);
+			bool ok = translator->load(QLocale(lc_name), file_name, QString("-"), QString(":/i18n"));
+			if (ok) {
+				ok = QCoreApplication::installTranslator(translator);
 			}
-			else {
-				qfInfo() << "Erorr loading translator file:" << (app_translations_path + '/' + tr_name);
-			}
-		}
-		for(QString prefix : {"libqfcore", "libqfqmlwidgets", "libquickeventcore", "libquickeventgui", "libsiut", "quickevent"}) {
-			QTranslator *qt_translator = new QTranslator(&app);
-			QString tr_name = prefix + "." + lc_name;
-			bool ok = qt_translator->load(tr_name, app_translations_path);
-			if(ok) {
-				ok = app.installTranslator(qt_translator);
-				qfInfo() << "Installing translator file:" << tr_name << " ... " << (ok? "OK": "ERROR");
-			}
-			else {
-				qfInfo() << "Erorr loading translator file:" << (app_translations_path + '/' + tr_name);
-			}
+			qfInfo() << "Installing translator file:" << file_name << " ... " << (ok? "OK": "ERROR");
 		}
 	}
 

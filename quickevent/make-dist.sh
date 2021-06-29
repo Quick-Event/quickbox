@@ -194,15 +194,6 @@ $RSYNC $QT_DIR/plugins/audio/ $DIST_BIN_DIR/audio/
 mkdir -p $DIST_QML_DIR
 $RSYNC $QT_DIR/qml/QtQml $DIST_BIN_DIR/
 
-# process translation files
-TRANS_DIR=$DIST_BIN_DIR/translations
-mkdir -p $TRANS_DIR
-for tsfile in `/usr/bin/find $SRC_DIR -name "*.ts"` ; do
-	qmfile=`basename "${tsfile%.*}.qm"`
-	echo "$QT_DIR/bin/lrelease $tsfile -qm $TRANS_DIR/$qmfile"
-	$QT_DIR/bin/lrelease $tsfile -qm $TRANS_DIR/$qmfile
-done
-
 ARTIFACTS_DIR=$WORK_DIR/artifacts
 mkdir -p $ARTIFACTS_DIR
 

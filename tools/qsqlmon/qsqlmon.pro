@@ -2,6 +2,7 @@ message(including $$PWD)
 QT += core gui qml widgets sql xml
 
 CONFIG += C++11
+CONFIG += lrelease embed_translations
 
 TEMPLATE = app
 
@@ -52,10 +53,10 @@ console: message(CONSOLE)
 include($$PWD/src/src.pri)
 
 TRANSLATIONS += \
-	$${TARGET}.cs_CZ.ts \
-	$${TARGET}.fr_FR.ts \
-	$${TARGET}.nb_NO.ts \
-	$${TARGET}.nl_BE.ts \
-	$${TARGET}.pl_PL.ts \
-	$${TARGET}.ru_RU.ts \
-	$${TARGET}.uk_UA.ts \
+        $${TARGET}-cs_CZ.ts \
+	$${TARGET}-fr_FR.ts \
+	$${TARGET}-nb_NO.ts \
+	$${TARGET}-nl_BE.ts \
+	$${TARGET}-pl_PL.ts \
+	$${TARGET}-ru_RU.ts \
+	$${TARGET}-uk_UA.ts \

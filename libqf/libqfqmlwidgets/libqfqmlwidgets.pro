@@ -4,6 +4,7 @@ QT += widgets qml sql
 QT += xml printsupport svg # needed by reports
 
 CONFIG += c++11 hide_symbols
+CONFIG += lrelease embed_translations
 
 DEFINES += QFQMLWIDGETS_BUILD_DLL
 
@@ -56,10 +57,10 @@ RESOURCES += \
     $$PWD/images/flat/flat.qrc
 
 TRANSLATIONS += \
-	libqfqmlwidgets.cs_CZ.ts \
-	libqfqmlwidgets.fr_FR.ts \
-	libqfqmlwidgets.nb_NO.ts \
-	libqfqmlwidgets.nl_BE.ts \
-	libqfqmlwidgets.pl_PL.ts \
-	libqfqmlwidgets.ru_RU.ts \
-	libqfqmlwidgets.uk_UA.ts \
+        libqfqmlwidgets-cs_CZ.ts \
+	libqfqmlwidgets-fr_FR.ts \
+	libqfqmlwidgets-nb_NO.ts \
+	libqfqmlwidgets-nl_BE.ts \
+	libqfqmlwidgets-pl_PL.ts \
+	libqfqmlwidgets-ru_RU.ts \
+	libqfqmlwidgets-uk_UA.ts \
