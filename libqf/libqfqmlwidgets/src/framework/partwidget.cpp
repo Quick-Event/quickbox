@@ -130,12 +130,7 @@ QIcon PartWidget::createIcon()
 			qfWarning() << "Cannot found plugin for part featureId:" << feature_id << ", default icon will be set.";
 		}
 		else {
-			QString icon_path = iconSource();
-			if(icon_path.isEmpty())
-				icon_path = "images/feature";
-			if(!icon_path.startsWith(":/")) {
-				icon_path = plugin->homeDir() + "/" + icon_path;
-			}
+			QString icon_path = plugin->homeDir() + "/images/feature.svg";
 			qfDebug() << plugin << "feature:" << plugin->featureId() << "icon path:" << icon_path;
 			ico = QIcon(icon_path);
 			if(ico.isNull())

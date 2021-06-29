@@ -1,5 +1,6 @@
 <RCC>
 	<qresource prefix="/quickevent/CardReader">
+		<file>images/feature.svg</file>
 		<file>images/comm.svg</file>
     </qresource>
 </RCC>

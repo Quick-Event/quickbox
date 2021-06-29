@@ -1,0 +1,12 @@
+<RCC>
+    <qresource prefix="/quickevent/shared/">
+    	<file>qml/Cell.qml</file>
+    	<file>qml/QuickEventHeaderFooter.qml</file>
+    	<file>qml/QuickEventReportHeader.qml</file>
+    	<file>qml/HeaderCell.qml</file>
+    	<file>qml/ReportStyleCommon.qml</file>
+    	<file>qml/Space.qml</file>
+    	<file>qml/qmldir</file>
+    </qresource>
+</RCC>
+

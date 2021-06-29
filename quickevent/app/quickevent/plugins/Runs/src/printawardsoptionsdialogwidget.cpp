@@ -19,10 +19,11 @@ PrintAwardsOptionsDialogWidget::~PrintAwardsOptionsDialogWidget()
 	delete ui;
 }
 
-void PrintAwardsOptionsDialogWidget::init(const QString &plugin_home)
+void PrintAwardsOptionsDialogWidget::init(const QString &plugin_qml_files)
 {
-	qfLogFuncFrame() << "plugin home:" << plugin_home;
-	QDirIterator it(plugin_home + "/reports/awards", QDirIterator::Subdirectories);
+	qfLogFuncFrame() << "plugin qml files:" << plugin_qml_files;
+
+	QDirIterator it(plugin_qml_files + "/awards", QDirIterator::Subdirectories);
 	while (it.hasNext()) {
 		it.next();
 		QFileInfo fi = it.fileInfo();

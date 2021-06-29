@@ -24,6 +24,7 @@ public:
 	~Plugin() Q_DECL_OVERRIDE;
 
 	QString homeDir() const { return qf::qmlwidgets::framework::Application::instance()->pluginDataDir() + '/' +  featureId(); }
+	QString qmlDir() const { return homeDir() + "/qml"; }
 	QString featureId() const { return m_featureId; }
 
 	QQmlEngine* qmlEngine();

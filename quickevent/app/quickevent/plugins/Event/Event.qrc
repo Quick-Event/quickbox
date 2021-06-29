@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/quickevent/Event">
+    	<file>qml/DbSchema.qml</file>
+    </qresource>
+</RCC>

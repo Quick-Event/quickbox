@@ -15,31 +15,32 @@ using namespace qf::qmlwidgets::framework;
 Application::Application(int &argc, char **argv) :
 	Super(argc, argv), m_qmlEngine(nullptr)
 {
-	{
+	m_pluginDataDir = ":/quickevent";
+/*
 	#ifdef Q_OS_UNIX
 		m_pluginDataDir = QCoreApplication::applicationDirPath() + "/../lib/qml/quickevent";
 	#else
 		m_pluginDataDir = QCoreApplication::applicationDirPath() + "/qml/quickevent";
 	#endif
-	}
-	{
+*/
 		QString path;
 	#ifdef Q_OS_UNIX
 		path = QCoreApplication::applicationDirPath() + "/../lib/qml";
 	#else
 		path = QCoreApplication::applicationDirPath() + "/qml";
 	#endif
-		m_qmlLibraryImportPaths << path;
-	}
-	{
-		QString path;
+	m_qmlLibraryImportPaths << path;
+/*
+	QString path;
 #ifdef Q_OS_UNIX
 		path = QCoreApplication::applicationDirPath() + "/../lib/qml/" + QCoreApplication::applicationName().toLower();
 #else
 		path = QCoreApplication::applicationDirPath() + "/qml/" + QCoreApplication::applicationName().toLower();
 #endif
-		m_qmlPluginImportPaths << path;
-	}
+	m_qmlPluginImportPaths << path;
+*/
+	m_qmlPluginImportPaths << ":/";
+
 	//loadStyleSheet();
 }
 

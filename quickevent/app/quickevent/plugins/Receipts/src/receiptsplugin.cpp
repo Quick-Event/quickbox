@@ -389,7 +389,7 @@ void ReceiptsPlugin::previewCard(int card_id)
 	auto *w = new qf::qmlwidgets::reports::ReportViewWidget();
 	w->setPersistentSettingsId("cardPreview");
 	w->setWindowTitle(tr("Card"));
-	w->setReport(homeDir() + "/reports/sicard.qml");
+	w->setReport(qmlDir() + "/sicard.qml");
 	QVariantMap dt = readCardTablesData(card_id);
 	for(auto key : dt.keys())
 		w->setTableData(key, dt.value(key));
@@ -422,7 +422,7 @@ bool ReceiptsPlugin::printCard(int card_id)
 	QF_TIME_SCOPE("ReceiptsPlugin::printCard()");
 	try {
 		QVariantMap dt = readCardTablesData(card_id);
-		return receiptsPrinter()->printReceipt(homeDir() + "/reports/sicard.qml", dt);
+		return receiptsPrinter()->printReceipt(qmlDir() + "/sicard.qml", dt);
 	}
 	catch(const qf::core::Exception &e) {
 		qfError() << e.toString();
@@ -436,7 +436,7 @@ bool ReceiptsPlugin::printError(int card_id)
 	QF_TIME_SCOPE("ReceiptsPlugin::printError()");
 	try {
 		QVariantMap dt = readCardTablesData(card_id);
-		return receiptsPrinter()->printReceipt(homeDir() + "/reports/error.qml", dt);
+		return receiptsPrinter()->printReceipt(qmlDir() + "/error.qml", dt);
 	}
 		catch(const qf::core::Exception &e) {
 		qfError() << e.toString();

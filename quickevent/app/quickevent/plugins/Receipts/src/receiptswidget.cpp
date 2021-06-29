@@ -289,7 +289,7 @@ void ReceiptsWidget::markAsPrinted(int connection_id, int card_id)
 void ReceiptsWidget::loadReceptList()
 {
 	ui->lstReceipt->clear();
-	QString receipts_dir = getPlugin<ReceiptsPlugin>()->homeDir() + "/reports/receipts";
+	QString receipts_dir = getPlugin<ReceiptsPlugin>()->qmlDir() + "/receipts";
 	QDirIterator it(receipts_dir, QStringList{"*.qml"}, QDir::Files | QDir::Readable, QDirIterator::Subdirectories);
 	while (it.hasNext()) {
 		it.next();

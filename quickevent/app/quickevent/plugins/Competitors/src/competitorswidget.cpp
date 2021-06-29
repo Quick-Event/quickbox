@@ -396,7 +396,7 @@ void CompetitorsWidget::report_competitorsStatistics()
 	//props["isColumnBreak"] = (opts.breakType() == (int)quickevent::gui::ReportOptionsDialog::BreakType::Column);
 	props["stageCount"] = stage_cnt;
 	qf::qmlwidgets::reports::ReportViewWidget::showReport(this
-								, getPlugin<CompetitorsPlugin>()->homeDir() + "/reports/competitorsStatistics.qml"
+								, getPlugin<CompetitorsPlugin>()->qmlDir() + "/competitorsStatistics.qml"
 								, tt.toVariant()
 								, tr("Competitors statistics")
 								, "competitorsStatistics"

@@ -28,7 +28,7 @@ QObject *DbSchema::dbSchemaRoot()
 	if(m_dbschemaComponent == nullptr) {
 		auto *qml_engine = qmlEngine();
 		//auto *app = qf::qmlwidgets::framework::Application::instance();
-		QString dbschema_file = m_eventPlugin->homeDir() + "/DbSchema.qml";
+		QString dbschema_file = m_eventPlugin->qmlDir() + "/DbSchema.qml";
 		m_dbschemaComponent = new QQmlComponent(qml_engine, qml_engine);
 		QUrl dbschema_url = QUrl::fromLocalFile(dbschema_file);
 		m_dbschemaComponent->loadUrl(dbschema_url, QQmlComponent::PreferSynchronous);
