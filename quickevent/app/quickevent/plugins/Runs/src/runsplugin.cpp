@@ -116,7 +116,7 @@ void RunsPlugin::onInstalled()
 {
 	qfLogFuncFrame();
 	qff::MainWindow *fwk = qff::MainWindow::frameWork();
-	qff::initPluginWidget<RunsWidget, PartWidget>(tr("Runs"), featureId());
+	qff::initPluginWidget<RunsWidget, PartWidget>(tr("&Runs"), featureId());
 
 	connect(getPlugin<CompetitorsPlugin>(), SIGNAL(competitorEdited()), this, SLOT(clearRunnersTableCache()));
 

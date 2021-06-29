@@ -56,7 +56,7 @@ void CardReaderPlugin::onInstalled()
 	m_cardCheckers << new CardCheckerClassicCpp(this);
 	m_cardCheckers << new CardCheckerFreeOrderCpp(this);
 
-	qff::initPluginWidget<CardReaderWidget, PartWidget>("Card Reader", featureId());
+	qff::initPluginWidget<CardReaderWidget, PartWidget>(tr("Card reader"), featureId());
 
 	services::RacomClient *racom_client = new services::RacomClient(this);
 	Event::services::Service::addService(racom_client);
