@@ -32,6 +32,7 @@ message ( DESTDIR: $$DESTDIR )
 QT += xml sql qml
 CONFIG += C++11
 CONFIG += hide_symbols
+CONFIG += lrelease embed_translations
 
 DEFINES += QFCORE_BUILD_DLL
 
@@ -55,10 +56,10 @@ RESOURCES += \
 	$$PWD/images/images.qrc \
 
 TRANSLATIONS += \
-	libqfcore.cs_CZ.ts \
-	libqfcore.fr_FR.ts \
-	libqfcore.nb_NO.ts \
-	libqfcore.nl_BE.ts \
-	libqfcore.pl_PL.ts \
-	libqfcore.ru_RU.ts \
-	libqfcore.uk_UA.ts \
+        libqfcore-cs_CZ.ts \
+	libqfcore-fr_FR.ts \
+	libqfcore-nb_NO.ts \
+	libqfcore-nl_BE.ts \
+	libqfcore-pl_PL.ts \
+	libqfcore-ru_RU.ts \
+	libqfcore-uk_UA.ts \

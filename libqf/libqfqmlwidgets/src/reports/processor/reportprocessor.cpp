@@ -344,6 +344,7 @@ QStringList &ReportProcessor::qmlEngineImportPaths()
 #else
 		lst << QCoreApplication::applicationDirPath() + "/qml";
 #endif
+		lst << ":/quickevent";
 	}
 	return lst;
 }
@@ -368,7 +369,7 @@ QQmlEngine *ReportProcessor::qmlEngine(bool throw_exc)
 		m_qmlEngine->rootContext()->setContextProperty("reportProcessor", this);
 		m_qmlEngine->rootContext()->setContextProperty("application", QCoreApplication::instance());
 		Q_FOREACH(auto path, qmlEngineImportPaths()) {
-			qfInfo() << "Adding ReportProcessor QML engine import path:" << path;
+			qfDebug() << "Adding ReportProcessor QML engine import path:" << path;
 			m_qmlEngine->addImportPath(path);
 		}
 	}

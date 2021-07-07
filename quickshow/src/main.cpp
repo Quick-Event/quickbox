@@ -49,18 +49,16 @@ int main(int argc, char *argv[])
 			lc_name = cli_opts.locale();
 		if(lc_name.isEmpty() || lc_name == QLatin1String("system"))
 			lc_name = QLocale::system().name();
-		QString app_translations_path = QCoreApplication::applicationDirPath() + "/translations";
 
 		qfInfo() << "Loading translations for:" << lc_name;
-		QTranslator *qt_translator = new QTranslator(&app);
-		QString tr_name = "quickshow." + lc_name;
-		bool ok = qt_translator->load(tr_name, app_translations_path);
-		if(ok) {
-			ok = app.installTranslator(qt_translator);
-			qfInfo() << "Installing translator file:" << tr_name << " ... " << (ok ? "OK" : "ERROR");
-		}
-		else {
-			qfInfo() << "Error loading translator file: " << (app_translations_path + '/' + tr_name);
+
+		for(QString file_name : {"libqfcore", "libqfqmlwidgets", "quickshow"}) {
+			QTranslator *translator = new QTranslator(&app);
+			bool ok = translator->load(QLocale(lc_name), file_name, QString("-"), QString(":/i18n"));
+			if (ok) {
+				ok = QCoreApplication::installTranslator(translator);
+			}
+			qfInfo() << "Installing translator file:" << file_name << " ... " << (ok? "OK": "ERROR");
 		}
 	}
 

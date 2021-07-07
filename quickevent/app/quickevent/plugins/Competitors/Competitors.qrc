@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/quickevent/Competitors">
+	<file>images/feature.svg</file>
+	<file>qml/competitorsStatistics.qml</file>
+    </qresource>
+</RCC>

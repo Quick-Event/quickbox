@@ -79,7 +79,7 @@ QIcon CaptionFrame::createIcon()
 				qfWarning() << "Cannot found plugin for:" << this << ", default icon will be set.";
 			}
 			else {
-				icon_path = plugin->manifest()->homeDir() + "/" + icon_path;
+				icon_path = plugin->homeDir() + "/" + icon_path;
 				QPixmap pm(icon_path);
 				if(pm.isNull())
 					qfWarning() << "Cannot load icon on path:" << icon_path;

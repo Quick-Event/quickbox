@@ -1,5 +1,4 @@
 import qf.qmlreports 1.0
-//import shared.QuickEvent.reports 1.
 
 Report {
 	id: root

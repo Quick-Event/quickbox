@@ -62,8 +62,6 @@ public:
 	void setFeatureId(QString id);
 	Q_SIGNAL void featureIdChanged(const QString &s);
 
-	Q_INVOKABLE Plugin* plugin(bool throw_exc = false);
-
 	Q_SLOT void loadPersistentSettings();
 
 	QIcon createIcon();
@@ -71,8 +69,7 @@ public:
 
 	MenuBar* menuBar();
 	Q_INVOKABLE qf::qmlwidgets::ToolBar* toolBar(const QString &name, bool create_if_not_exists = false);
-
-	bool isAddToPartSwitchFromBottom();
+	void addWidget(QWidget *w);
 protected:
 	QQmlListProperty<QWidget> widgets();
 	QQmlListProperty<QObject> attachedObjects();

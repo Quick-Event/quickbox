@@ -203,7 +203,7 @@ QString Utils::intToVersionString(int ver)
 bool Utils::invokeMethod_B_V(QObject *obj, const char *method_name)
 {
 	QVariant ret = false;
-	bool ok = QMetaObject::invokeMethod(obj, method_name, Qt::DirectConnection, Q_RETURN_ARG(QVariant, ret));
+	bool ok = QMetaObject::invokeMethod(obj, method_name, Q_RETURN_ARG(QVariant, ret));
 	if(!ok)
 		qfWarning() << obj << "Method" << method_name << "invocation failed!";
 	return ret.toBool();

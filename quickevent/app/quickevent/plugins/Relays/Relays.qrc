@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/quickevent/Relays">
+	<file>images/feature.svg</file>
+	<file>qml/results.qml</file>
+	<file>qml/results_condensed.qml</file>
+	<file>qml/startList_classes.qml</file>
+	<file>qml/startList_clubs.qml</file>
+    </qresource>
+</RCC>

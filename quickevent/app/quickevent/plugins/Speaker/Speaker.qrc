@@ -1,0 +1,5 @@
+<RCC>
+	<qresource prefix="/quickevent/Speaker">
+		<file>images/feature.svg</file>
+    </qresource>
+</RCC>

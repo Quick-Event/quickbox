@@ -1,53 +1,57 @@
 message(including $$PWD)
 
-QT += core gui qml widgets sql
-# plugin sometimes cannot find Qt libraries, CardReader needs QtSerialPort.so
-QT += serialport
+QT += core gui qml widgets sql xml sql printsupport serialport
 
-CONFIG += C++11
+CONFIG += lrelease embed_translations
 
 TEMPLATE = app
 
-include (../../../quickbox.pri)
+CONFIG += c++14 hide_symbols
 
 PROJECT_TOP_SRCDIR = $$PWD
+QF_PROJECT_TOP_SRCDIR = $$PWD/../../../
+QF_PROJECT_TOP_BUILDDIR = $$shadowed($$QF_PROJECT_TOP_SRCDIR)
+
+win32: LIB_DIR_NAME = bin
+else:  LIB_DIR_NAME = lib
+LIBS_DIR = $$QF_PROJECT_TOP_BUILDDIR/$$LIB_DIR_NAME
 
 DESTDIR = $$QF_PROJECT_TOP_BUILDDIR/bin
 TARGET = quickevent
 
-win32: LIB_DIR_NAME = bin
-else:  LIB_DIR_NAME = lib
-
 INCLUDEPATH += \
     $$QF_PROJECT_TOP_SRCDIR/3rdparty/necrolog/include \
-	$$QF_PROJECT_TOP_SRCDIR/libqf/libqfcore/include \
+    $$QF_PROJECT_TOP_SRCDIR/libqf/libqfcore/include \
     $$QF_PROJECT_TOP_SRCDIR/libqf/libqfqmlwidgets/include \
     $$QF_PROJECT_TOP_SRCDIR/libquickevent/libquickeventcore/include \
     $$QF_PROJECT_TOP_SRCDIR/libquickevent/libquickeventgui/include \
-    $$PWD/../plugins/include \
+    $$QF_PROJECT_TOP_SRCDIR/libsiut/include \
 
 message(INCLUDEPATH: $$INCLUDEPATH)
 
+include(plugins/shared/shared.pri)
+include(plugins/Core/Core.pri)
+include(plugins/Event/Event.pri)
+include(plugins/Classes/Classes.pri)
+include(plugins/Competitors/Competitors.pri)
+include(plugins/Runs/Runs.pri)
+include(plugins/Oris/Oris.pri)
+include(plugins/CardReader/CardReader.pri)
+include(plugins/Receipts/Receipts.pri)
+include(plugins/Relays/Relays.pri)
+include(plugins/Speaker/Speaker.pri)
+
+
 LIBS += \
-	-L$$QF_PROJECT_TOP_BUILDDIR/$$LIB_DIR_NAME \
+    -L$$QF_PROJECT_TOP_BUILDDIR/$$LIB_DIR_NAME \
 
 LIBS +=      \
     -lnecrolog  \
-	-lqfcore  \
-	-lqfqmlwidgets  \
+    -lqfcore  \
+    -lqfqmlwidgets  \
     -lsiut \
     -lquickeventcore \
     -lquickeventgui \
-    -lCoreQEPlugin \
-    -lEventQEPlugin \
-    -lClassesQEPlugin \
-    -lCompetitorsQEPlugin \
-    -lRunsQEPlugin \
-    -lOrisQEPlugin \
-    -lCardReaderQEPlugin \
-    -lReceiptsQEPlugin \
-    -lRelaysQEPlugin \
-    -lSpeakerQEPlugin \
 
 unix: LIBS +=  \
 	-L../../../lib  \
@@ -65,25 +69,19 @@ include ($$QF_PROJECT_TOP_SRCDIR/appdatafiles.pri)
 
 include($$PWD/src/src.pri)
 
-OTHER_FILES += \
-#    ../plugins/qml/Core/*.qml \
-    ../plugins/qml/SqlDb/*.qml \
-    ../plugins/qml/Event/*.qml \
-    ../plugins/qml/Help/*.qml \
-
 QML_IMPORT_PATH += \
+    $$PWD/plugins \
     $$QF_PROJECT_TOP_BUILDDIR/lib/qml \
-	$$QF_PROJECT_TOP_BUILDDIR/lib/qml/quickevent \
 
 
 win32:CONFIG(debug, debug|release):CONFIG += console
 #CONFIG += console
 
 TRANSLATIONS += \
-	$${TARGET}.cs_CZ.ts \
-	$${TARGET}.fr_FR.ts \
-	$${TARGET}.nb_NO.ts \
-	$${TARGET}.nl_BE.ts \
-	$${TARGET}.pl_PL.ts \
-	$${TARGET}.ru_RU.ts \
-	$${TARGET}.uk_UA.ts \
+        $${TARGET}-cs_CZ.ts \
+	$${TARGET}-fr_FR.ts \
+	$${TARGET}-nb_NO.ts \
+	$${TARGET}-nl_BE.ts \
+	$${TARGET}-pl_PL.ts \
+	$${TARGET}-ru_RU.ts \
+	$${TARGET}-uk_UA.ts \

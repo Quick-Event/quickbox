@@ -5,6 +5,7 @@ QT += widgets sql qml multimedia
 
 CONFIG += qt dll
 CONFIG += c++11 hide_symbols
+CONFIG += lrelease embed_translations
 
 DEFINES += QUICKEVENTGUI_BUILD_DLL
 
@@ -32,10 +33,10 @@ include ( src/src.pri )
 RESOURCES += libquickeventgui.qrc
 
 TRANSLATIONS += \
-	libquickeventgui.cs_CZ.ts \
-	libquickeventgui.fr_FR.ts \
-	libquickeventgui.nb_NO.ts \
-	libquickeventgui.nl_BE.ts \
-	libquickeventgui.pl_PL.ts \
-	libquickeventgui.ru_RU.ts \
-	libquickeventgui.uk_UA.ts \
+        libquickeventgui-cs_CZ.ts \
+	libquickeventgui-fr_FR.ts \
+	libquickeventgui-nb_NO.ts \
+	libquickeventgui-nl_BE.ts \
+	libquickeventgui-pl_PL.ts \
+	libquickeventgui-ru_RU.ts \
+	libquickeventgui-uk_UA.ts \
