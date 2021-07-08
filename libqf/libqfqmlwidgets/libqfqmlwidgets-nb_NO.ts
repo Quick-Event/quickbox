@@ -6,12 +6,12 @@
     <message>
         <location filename="src/dialogs/previewdialog.ui" line="53"/>
         <source>Word wrap</source>
-        <translation type="unfinished"></translation>
+        <translation>Ordbrytning</translation>
     </message>
     <message>
         <location filename="src/dialogs/previewdialog.ui" line="56"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>…</translation>
     </message>
 </context>
 <context>
@@ -19,7 +19,7 @@
     <message>
         <location filename="src/exporttableviewwidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Skjema</translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="30"/>
@@ -135,7 +135,7 @@
     <message>
         <location filename="src/htmlviewwidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Skjema</translation>
     </message>
 </context>
 <context>
@@ -143,13 +143,13 @@
     <message>
         <location filename="src/saveoptionswidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Skjema</translation>
     </message>
     <message>
         <location filename="src/saveoptionswidget.ui" line="78"/>
         <location filename="src/saveoptionswidget.ui" line="94"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>…</translation>
     </message>
 </context>
 <context>
@@ -157,7 +157,7 @@
     <message>
         <location filename="src/tableview.cpp" line="76"/>
         <source>Left click selects all, right click for menu.</source>
-        <translation type="unfinished"></translation>
+        <translation>Venstreklikk velger alt, høyreklikk åpner menyen.</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="694"/>
@@ -187,7 +187,7 @@
     <message>
         <location filename="src/tableview.cpp" line="968"/>
         <source>Cannot open file &apos;%1&apos; for writing.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan ikke åpne filen «%1» for skriving.</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1569"/>
@@ -295,7 +295,7 @@
         <location filename="src/tableview.cpp" line="1673"/>
         <source>Ctrl+D</source>
         <comment>insert row copy</comment>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+D</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1680"/>
@@ -331,7 +331,7 @@
     <message>
         <location filename="src/tableview.cpp" line="1731"/>
         <source>Edit cell content</source>
-        <translation type="unfinished"></translation>
+        <translation>Rediger celleinnhold</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1733"/>
@@ -405,7 +405,7 @@
     <message>
         <location filename="src/tableview.cpp" line="1823"/>
         <source>Calculate</source>
-        <translation type="unfinished"></translation>
+        <translation>Regn ut</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1830"/>
@@ -431,12 +431,12 @@
         <location filename="src/tableview.cpp" line="1857"/>
         <location filename="src/tableview.cpp" line="1895"/>
         <source>CSV</source>
-        <translation type="unfinished"></translation>
+        <translation>CSV</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1864"/>
         <source>HTML</source>
-        <translation type="unfinished"></translation>
+        <translation>HTML</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1872"/>
@@ -451,27 +451,27 @@
     <message>
         <location filename="src/tableview.cpp" line="1888"/>
         <source>Import</source>
-        <translation type="unfinished"></translation>
+        <translation>Importer</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1996"/>
         <source>Enter start value</source>
-        <translation type="unfinished"></translation>
+        <translation>Skriv inn startverdi</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1996"/>
         <source>start value:</source>
-        <translation type="unfinished"></translation>
+        <translation>startverdi:</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="2135"/>
         <source>Do you really want to remove row?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Fjern raden?</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="2138"/>
         <source>Do you really want to remove all selected rows?</source>
-        <translation type="unfinished"></translation>
+        <translation>Fjern alle valgte rader?</translation>
     </message>
 </context>
 <context>
@@ -487,7 +487,7 @@
     <message>
         <location filename="src/texteditwidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Skjema</translation>
     </message>
     <message>
         <location filename="src/texteditwidget.cpp" line="68"/>
@@ -512,32 +512,32 @@
     <message>
         <location filename="src/texteditwidget.cpp" line="116"/>
         <source>Print</source>
-        <translation type="unfinished"></translation>
+        <translation>Skriv ut</translation>
     </message>
     <message>
         <location filename="src/texteditwidget.cpp" line="122"/>
         <source>Save</source>
-        <translation type="unfinished"></translation>
+        <translation>Lagre</translation>
     </message>
     <message>
         <location filename="src/texteditwidget.cpp" line="128"/>
         <source>Save as</source>
-        <translation type="unfinished"></translation>
+        <translation>Lagre som</translation>
     </message>
     <message>
         <location filename="src/texteditwidget.cpp" line="134"/>
         <source>Wrap lines</source>
-        <translation type="unfinished"></translation>
+        <translation>Linjebryting</translation>
     </message>
     <message>
         <location filename="src/texteditwidget.cpp" line="147"/>
         <source>&amp;File</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Fil</translation>
     </message>
     <message>
         <location filename="src/texteditwidget.cpp" line="154"/>
         <source>&amp;View</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Vis</translation>
     </message>
     <message>
         <location filename="src/texteditwidget.cpp" line="203"/>
@@ -555,12 +555,12 @@
     <message>
         <location filename="src/dialogs/dialog.cpp" line="138"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Slett</translation>
     </message>
     <message>
         <location filename="src/dialogs/dialog.cpp" line="141"/>
         <source>Save</source>
-        <translation type="unfinished"></translation>
+        <translation>Lagre</translation>
     </message>
 </context>
 <context>
@@ -568,42 +568,42 @@
     <message>
         <location filename="src/dialogs/messagebox.cpp" line="27"/>
         <source>Show this message again</source>
-        <translation type="unfinished"></translation>
+        <translation>Vis denne meldingen igjen</translation>
     </message>
     <message>
         <location filename="src/dialogs/messagebox.cpp" line="44"/>
         <source>Exception</source>
-        <translation type="unfinished"></translation>
+        <translation>Unntak</translation>
     </message>
     <message>
         <location filename="src/dialogs/messagebox.cpp" line="54"/>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Feil</translation>
     </message>
     <message>
         <location filename="src/dialogs/messagebox.cpp" line="59"/>
         <source>Warning</source>
-        <translation type="unfinished"></translation>
+        <translation>Advarsel</translation>
     </message>
     <message>
         <location filename="src/dialogs/messagebox.cpp" line="64"/>
         <source>Information</source>
-        <translation type="unfinished"></translation>
+        <translation>Info</translation>
     </message>
     <message>
         <location filename="src/dialogs/messagebox.cpp" line="70"/>
         <source>Question</source>
-        <translation type="unfinished"></translation>
+        <translation>Spørsmål</translation>
     </message>
     <message>
         <location filename="src/dialogs/messagebox.cpp" line="71"/>
         <source>&amp;Yes</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ja</translation>
     </message>
     <message>
         <location filename="src/dialogs/messagebox.cpp" line="71"/>
         <source>&amp;No</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Nei</translation>
     </message>
 </context>
 <context>
@@ -624,12 +624,12 @@
     <message>
         <location filename="src/dialogs/internal/captionframe.cpp" line="110"/>
         <source>Delete </source>
-        <translation type="unfinished"></translation>
+        <translation>Slett </translation>
     </message>
     <message>
         <location filename="src/dialogs/internal/captionframe.cpp" line="114"/>
         <source>Edit </source>
-        <translation type="unfinished"></translation>
+        <translation>Rediger </translation>
     </message>
 </context>
 <context>
@@ -645,12 +645,12 @@
     <message>
         <location filename="src/framework/logwidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Skjema</translation>
     </message>
     <message>
         <location filename="src/framework/logwidget.ui" line="37"/>
         <source>Show:</source>
-        <translation type="unfinished"></translation>
+        <translation>Vis:</translation>
     </message>
     <message>
         <location filename="src/framework/logwidget.ui" line="47"/>
@@ -660,12 +660,12 @@
     <message>
         <location filename="src/framework/logwidget.ui" line="74"/>
         <source>Clear</source>
-        <translation type="unfinished"></translation>
+        <translation>Tøm</translation>
     </message>
     <message>
         <location filename="src/framework/logwidget.ui" line="88"/>
         <source>Copy to clipboard.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kopier til utklippstavle.</translation>
     </message>
     <message>
         <location filename="src/framework/logwidget.ui" line="102"/>
@@ -840,22 +840,22 @@
     <message>
         <location filename="src/internal/tableviewchoosecolumnswidget.ui" line="182"/>
         <source>model</source>
-        <translation type="unfinished"></translation>
+        <translation>modell</translation>
     </message>
     <message>
         <location filename="src/internal/tableviewchoosecolumnswidget.ui" line="196"/>
         <source>table</source>
-        <translation type="unfinished"></translation>
+        <translation>tabell</translation>
     </message>
     <message>
         <location filename="src/internal/tableviewchoosecolumnswidget.cpp" line="28"/>
         <source>name</source>
-        <translation type="unfinished"></translation>
+        <translation>navn</translation>
     </message>
     <message>
         <location filename="src/internal/tableviewchoosecolumnswidget.cpp" line="28"/>
         <source>width</source>
-        <translation type="unfinished"></translation>
+        <translation>bredde</translation>
     </message>
 </context>
 <context>
@@ -863,12 +863,12 @@
     <message>
         <location filename="src/internal/tableviewcopytodialogwidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Skjema</translation>
     </message>
     <message>
         <location filename="src/internal/tableviewcopytodialogwidget.ui" line="30"/>
         <source>Insert rows</source>
-        <translation type="unfinished"></translation>
+        <translation>Sett inn rader</translation>
     </message>
 </context>
 <context>
@@ -876,7 +876,7 @@
     <message>
         <location filename="src/reports/widgets/itemvalueeditorwidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Skjema</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/itemvalueeditorwidget.ui" line="20"/>
@@ -889,27 +889,27 @@
     <message>
         <location filename="src/reports/widgets/printtableviewwidget/printtableviewwidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Skjema</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/printtableviewwidget/printtableviewwidget.ui" line="23"/>
         <source>template</source>
-        <translation type="unfinished"></translation>
+        <translation>mal</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/printtableviewwidget/printtableviewwidget.ui" line="32"/>
         <source>file</source>
-        <translation type="unfinished"></translation>
+        <translation>fil</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/printtableviewwidget/printtableviewwidget.ui" line="56"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/printtableviewwidget/printtableviewwidget.ui" line="65"/>
         <source>resources</source>
-        <translation type="unfinished"></translation>
+        <translation>ressurser</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/printtableviewwidget/printtableviewwidget.ui" line="94"/>
@@ -929,32 +929,32 @@
     <message>
         <location filename="src/reports/widgets/printtableviewwidget/printtableviewwidget.ui" line="125"/>
         <source>data</source>
-        <translation type="unfinished"></translation>
+        <translation>data</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/printtableviewwidget/printtableviewwidget.ui" line="131"/>
         <source>only selected rows</source>
-        <translation type="unfinished"></translation>
+        <translation>kun valgte rader</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/printtableviewwidget/printtableviewwidget.cpp" line="24"/>
         <source>portrait</source>
-        <translation type="unfinished"></translation>
+        <translation>stående sideretning</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/printtableviewwidget/printtableviewwidget.cpp" line="25"/>
         <source>landscape</source>
-        <translation type="unfinished"></translation>
+        <translation>liggende sideretning</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/printtableviewwidget/printtableviewwidget.cpp" line="59"/>
         <source>Open report file</source>
-        <translation type="unfinished"></translation>
+        <translation>Åpne rapportfil</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/printtableviewwidget/printtableviewwidget.cpp" line="59"/>
         <source>QML reports (*.qml)</source>
-        <translation type="unfinished"></translation>
+        <translation>QML-rapporter (*.qml)</translation>
     </message>
 </context>
 <context>
@@ -962,7 +962,7 @@
     <message>
         <location filename="src/reports/processor/reportprocessor.cpp" line="69"/>
         <source>QML component</source>
-        <translation type="unfinished"></translation>
+        <translation>QML-komponent</translation>
     </message>
 </context>
 <context>
@@ -970,42 +970,42 @@
     <message>
         <location filename="src/reports/widgets/reportviewwidget.cpp" line="571"/>
         <source>&amp;File</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Fil</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/reportviewwidget.cpp" line="579"/>
         <source>&amp;View</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Vis</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/reportviewwidget.cpp" line="616"/>
         <source>First page</source>
-        <translation type="unfinished"></translation>
+        <translation>Første side</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/reportviewwidget.cpp" line="623"/>
         <source>Prev page</source>
-        <translation type="unfinished"></translation>
+        <translation>Forrige side</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/reportviewwidget.cpp" line="630"/>
         <source>Next page</source>
-        <translation type="unfinished"></translation>
+        <translation>Neste side</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/reportviewwidget.cpp" line="637"/>
         <source>Last page</source>
-        <translation type="unfinished"></translation>
+        <translation>Siste side</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/reportviewwidget.cpp" line="644"/>
         <source>Zoom in</source>
-        <translation type="unfinished"></translation>
+        <translation>Forstørr</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/reportviewwidget.cpp" line="651"/>
         <source>Zoom out</source>
-        <translation type="unfinished"></translation>
+        <translation>Forminsk</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/reportviewwidget.cpp" line="658"/>
@@ -1020,7 +1020,7 @@
     <message>
         <location filename="src/reports/widgets/reportviewwidget.cpp" line="672"/>
         <source>&amp;Print</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Skriv ut</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/reportviewwidget.cpp" line="680"/>
@@ -1055,12 +1055,12 @@
     <message>
         <location filename="src/reports/widgets/reportviewwidget.cpp" line="1160"/>
         <source>Save as PDF</source>
-        <translation type="unfinished"></translation>
+        <translation>Lagre som PDF</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/reportviewwidget.cpp" line="1175"/>
         <source>Save as HTML</source>
-        <translation type="unfinished"></translation>
+        <translation>Lagre som HTML</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/reportviewwidget.cpp" line="1180"/>
