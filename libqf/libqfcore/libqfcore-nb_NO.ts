@@ -7,7 +7,7 @@
         <location filename="src/sql/catalog.cpp" line="33"/>
         <location filename="src/sql/catalog.cpp" line="61"/>
         <source>Error getting the sequence nextval(&apos;%1&apos;)</source>
-        <translation type="unfinished">Klarte ikke å hente sekvens nextval(&apos;%1&apos;)</translation>
+        <translation type="unfinished">Klarte ikke å hente sekvensen nextval(&apos;%1&apos;)</translation>
     </message>
 </context>
 <context>
@@ -78,7 +78,7 @@
         <location filename="src/model/tablemodel.cpp" line="459"/>
         <location filename="src/model/tablemodel.cpp" line="563"/>
         <source>Cannot find table field index for column index: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Finner ikke tabellfelt-indeks for kolonne-indeks: %1</translation>
     </message>
     <message>
         <location filename="src/model/tablemodel.cpp" line="424"/>
@@ -106,13 +106,13 @@
     <message>
         <location filename="src/model/tablemodel.cpp" line="478"/>
         <source>%2 Cannot find table field for column index: %1 (row index: %3)</source>
-        <translation type="unfinished"></translation>
+        <translation>%2 Finner ikke tabellfelt for kolonneindeks: %1 (radindeks: %3)</translation>
     </message>
     <message>
         <location filename="src/model/tablemodel.cpp" line="503"/>
         <location filename="src/model/tablemodel.cpp" line="538"/>
         <source>Cannot find table field for column index: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Finner ikke tabellfelt for kolonneindeks: %1</translation>
     </message>
     <message>
         <location filename="src/model/tablemodel.cpp" line="622"/>
@@ -128,12 +128,12 @@
     <message>
         <location filename="src/model/tablemodel.cpp" line="672"/>
         <source>Column named &apos;%1&apos; not found in column list. Existing columns: [%2]</source>
-        <translation type="unfinished"></translation>
+        <translation>Kolonnen ved navn «%1» ble ikke funnet i kolonnelisten. Kolonner som finnes: [%2]</translation>
     </message>
     <message>
         <location filename="src/model/tablemodel.cpp" line="702"/>
         <source>Cannot find table field for column index: %1, table index: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Finner ikke tabellfelt for kolonneindeks: %1, tabellindeks: %2</translation>
     </message>
 </context>
 <context>
@@ -141,7 +141,7 @@
     <message>
         <location filename="src/sql/dbfsdriver.cpp" line="109"/>
         <source>Connection &apos;%1&apos; is not open!</source>
-        <translation type="unfinished"></translation>
+        <translation>Tilkoblingen «%1» er ikke åpen.</translation>
     </message>
 </context>
 <context>
@@ -150,7 +150,7 @@
         <location filename="src/sql/catalog.cpp" line="301"/>
         <location filename="src/sql/catalog.cpp" line="319"/>
         <source>Found info for nonexisting field &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Fant info for ikke-eksisterende felt «%1»</translation>
     </message>
 </context>
 <context>
@@ -158,17 +158,17 @@
     <message>
         <location filename="src/utils/clioptions.cpp" line="99"/>
         <source>Abort application on exception</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Avslutt kjøring av program ved unntak</translation>
     </message>
     <message>
         <location filename="src/utils/clioptions.cpp" line="100"/>
         <source>Print help</source>
-        <translation type="unfinished"></translation>
+        <translation>Skriv ut hjelp</translation>
     </message>
     <message>
         <location filename="src/utils/clioptions.cpp" line="101"/>
         <source>Config name, it is loaded from {app-name}[.conf] if file exists in {config-path}</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Oppsettsnavn. Innlastet fra {app-name}[.conf] hvis filen finnes i {config-path}</translation>
     </message>
 </context>
 </TS>
