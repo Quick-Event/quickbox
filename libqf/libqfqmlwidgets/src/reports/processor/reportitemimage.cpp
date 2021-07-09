@@ -137,8 +137,7 @@ void ReportItemImage::updateResolvedDataSource()
 	}
 	if(!m_resolvedDataSource.isEmpty()) {
 		if(m_resolvedDataSource.startsWith("./") || m_resolvedDataSource.startsWith("../")) {
-			m_resolvedDataSource = qfu::FileUtils::joinPath(qfu::FileUtils::path(processor()->reportUrl().toLocalFile()), m_resolvedDataSource);
-			//qfInfo() << "relative path joined to:" << m_resolvedDataSource;
+			m_resolvedDataSource = qfu::FileUtils::joinPath(qfu::FileUtils::path(processor()->reportUrl().toString()), m_resolvedDataSource);
 		}
 		/*--
 		m_resolvedDataSource = processor()->searchDirs()->findFile(m_resolvedDataSource);
@@ -161,6 +160,8 @@ void ReportItemImage::updateResolvedDataSource()
 
 	qfDebug() << "data_source:" << data_source;
 	qfDebug() << "m_resolvedDataSource:" << m_resolvedDataSource;
+	if(m_resolvedDataSource.startsWith("qrc"))
+		m_resolvedDataSource = m_resolvedDataSource.mid(3);
 	if(!m_resolvedDataSource.isEmpty()) {
 		if(m_resolvedDataSource.endsWith(".svg", Qt::CaseInsensitive)) {
 			QSvgRenderer ren;

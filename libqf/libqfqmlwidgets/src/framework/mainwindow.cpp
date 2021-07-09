@@ -1,6 +1,5 @@
 #include "mainwindow.h"
 #include "application.h"
-#include "pluginloader.h"
 #include "dockwidget.h"
 #include "partwidget.h"
 #include "stackedcentralwidget.h"
@@ -32,7 +31,7 @@ using namespace qf::qmlwidgets::framework;
 MainWindow* MainWindow::self = nullptr;
 
 MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
-    : QMainWindow(parent, flags)
+	: QMainWindow(parent, flags)
 	, IPersistentSettings(this)
 {
 	qfLogFuncFrame();
@@ -43,35 +42,13 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 	app->m_frameWork = this;
 	QQmlEngine *qe = app->qmlEngine();
 	qe->rootContext()->setContextProperty("FrameWork", this);
+	connect(this, &MainWindow::pluginsLoaded, this, &MainWindow::onPluginsLoaded);
 }
 
 MainWindow::~MainWindow()
 {
 	qfLogFuncFrame();
 	savePersistentSettings();
-}
-
-PluginLoader *MainWindow::pluginLoader()
-{
-	if(!m_pluginLoader) {
-		m_pluginLoader = new PluginLoader(this);
-		connect(m_pluginLoader, &PluginLoader::loadingFinished, this, &MainWindow::pluginsLoaded, Qt::QueuedConnection);
-		connect(this, &MainWindow::pluginsLoaded, this, &MainWindow::onPluginsLoaded);
-		//connect(m_pluginLoader, &PluginLoader::loadingFinished, this, &MainWindow::whenPluginsLoaded, Qt::QueuedConnection);
-	}
-	return m_pluginLoader;
-}
-
-void MainWindow::loadPlugins()
-{
-	Application *app = qobject_cast<Application*>(QCoreApplication::instance());
-	QJsonDocument profile = app->profile();
-	QJsonArray arr = profile.object().value(QStringLiteral("plugins")).toObject().value(QStringLiteral("features")).toArray();
-	QStringList feature_ids;
-	Q_FOREACH(auto o, arr)
-		feature_ids << o.toString();
-	//QString ui_language_name;
-	pluginLoader()->loadPlugins(feature_ids);
 }
 
 void MainWindow::loadPersistentSettings()
@@ -98,13 +75,13 @@ void MainWindow::savePersistentSettings()
 	}
 }
 
+void MainWindow::loadPlugins() {
+	emit pluginsLoaded();
+}
+
 QList<Plugin *> MainWindow::installedPlugins()
 {
-	QList<Plugin *> ret;
-	if(m_pluginLoader)
-		for(auto *p : m_pluginLoader->loadedPlugins().values())
-			ret << p;
-	return ret;
+	return m_loadedPlugins;
 }
 
 void MainWindow::showProgress(const QString &msg, int completed, int total)
@@ -197,7 +174,8 @@ bool MainWindow::setActivePart(const QString &feature_id)
 
 void MainWindow::registerPlugin(qf::qmlwidgets::framework::Plugin *plugin)
 {
-	pluginLoader()->registerPlugin(plugin->manifest()->featureId(), plugin);
+	m_loadedPlugins.append(plugin);
+	emit plugin->installed();
 }
 
 void MainWindow::closeEvent(QCloseEvent *ev)
@@ -316,12 +294,10 @@ void MainWindow::addPartWidget(PartWidget *widget, const QString &feature_id)
 Plugin *MainWindow::plugin(const QString &feature_id, bool throw_exc)
 {
 	Plugin *ret = nullptr;
-	if(m_pluginLoader) {
-		ret = m_pluginLoader->loadedPlugins().value(feature_id);
-		if(!ret) {
-			qfWarning() << "Plugin for feature id:" << feature_id << "is not installed!";
-			qfWarning() << "Available feature ids:" << QStringList(m_pluginLoader->loadedPlugins().keys()).join(",");
-		}
+	for(auto* plugin: m_loadedPlugins)
+	{
+		if(plugin->featureId() == feature_id)
+			ret = plugin;
 	}
 	if(!ret) {
 		if(throw_exc)

@@ -66,7 +66,7 @@ void Dialog::settleDownDialogWidget()
 	qf::qmlwidgets::framework::DialogWidget *dialog_widget = qobject_cast<qf::qmlwidgets::framework::DialogWidget *>(m_centralWidget);
 	if(dialog_widget) {
 		QVariant dlg = QVariant::fromValue(this);
-		bool ok = QMetaObject::invokeMethod(dialog_widget, "settleDownInDialog_qml", Qt::DirectConnection, Q_ARG(QVariant, dlg));
+		bool ok = QMetaObject::invokeMethod(dialog_widget, "settleDownInDialog_qml", Q_ARG(QVariant, dlg));
 		if(!ok) {
 			qfWarning() << this << "Method settleDownInDialog_qml() invocation failed!";
 		}
@@ -118,7 +118,7 @@ void Dialog::done(int result)
 		Super::done(result);
 	/*
 	QVariant ok = true;
-	QMetaObject::invokeMethod(this, "doneRequest_qml", Qt::DirectConnection,
+	QMetaObject::invokeMethod(this, "doneRequest_qml",
 							  Q_RETURN_ARG(QVariant, ok),
 							  Q_ARG(QVariant, result));
 	if(ok.toBool()) {
@@ -176,7 +176,7 @@ bool Dialog::doneRequest(int result)
 	if(dw) {
 		return dw->acceptDialogDone(result);
 		/*
-		QMetaObject::invokeMethod(dw, "dialogDoneRequest_qml", Qt::DirectConnection,
+		QMetaObject::invokeMethod(dw, "dialogDoneRequest_qml",
 								  Q_RETURN_ARG(QVariant, ret),
 								  Q_ARG(QVariant, result));
 		*/
@@ -331,8 +331,10 @@ void Dialog::setDefaultButton(int standard_button)
 	DialogButtonBox *bbx = buttonBox();
 	if(bbx) {
 		bt = bbx->button((QDialogButtonBox::StandardButton)standard_button);
-		if(bt)
+		if(bt) {
 			bt->setDefault(true);
+			bt->setFocus();
+		}
 	}
 	QF_CHECK(bt != nullptr, QString("Cannot find standard button: %1").arg(standard_button));
 }

@@ -42,7 +42,7 @@
 #include <QFileDialog>
 #include <QPainter>
 #include <QToolButton>
-
+#include <QTextStream>
 //#define QF_TIMESCOPE_ENABLED
 #include <qf/core/utils/timescope.h>
 

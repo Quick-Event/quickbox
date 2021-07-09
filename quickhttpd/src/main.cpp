@@ -4,7 +4,9 @@
 #include <qf/core/log.h>
 #include <necrolog.h>
 
+#include <QLocale>
 #include <QSettings>
+#include <QTranslator>
 
 int main(int argc, char *argv[])
 {
@@ -40,6 +42,25 @@ int main(int argc, char *argv[])
 		return 1;
 
 	Application app(argc, argv, &cli_opts);
+
+	QString lc_name;
+	{
+		if(cli_opts.locale_isset())
+			lc_name = cli_opts.locale();
+		if(lc_name.isEmpty() || lc_name == QLatin1String("system"))
+			lc_name = QLocale::system().name();
+
+		qfInfo() << "Loading translations for:" << lc_name;
+
+		for(QString file_name : {"libqfcore", "libquickeventcore", "libsiut"}) {
+			QTranslator *translator = new QTranslator(&app);
+			bool ok = translator->load(QLocale(lc_name), file_name, QString("-"), QString(":/i18n"));
+			if (ok) {
+				ok = QCoreApplication::installTranslator(translator);
+			}
+			qfInfo() << "Installing translator file:" << file_name << " ... " << (ok? "OK": "ERROR");
+		}
+	}
 
 	return app.exec();
 }

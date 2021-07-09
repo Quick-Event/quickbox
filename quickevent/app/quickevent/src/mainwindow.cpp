@@ -2,22 +2,21 @@
 #include "application.h"
 #include "loggerwidget.h"
 
-#include <Core/coreplugin.h>
-#include <Event/eventplugin.h>
-#include <Classes/classesplugin.h>
-#include <Competitors/competitorsplugin.h>
-#include <Runs/runsplugin.h>
-#include <Oris/orisplugin.h>
-#include <CardReader/cardreaderplugin.h>
-#include <Receipts/receiptsplugin.h>
-#include <Relays/relaysplugin.h>
-#include <Speaker/speakerplugin.h>
-
 #include <qf/qmlwidgets/framework/stackedcentralwidget.h>
 #include <qf/qmlwidgets/framework/partswitch.h>
 #include <qf/qmlwidgets/framework/dockwidget.h>
 #include <qf/qmlwidgets/menubar.h>
 #include <qf/qmlwidgets/action.h>
+#include <plugins/Core/src/coreplugin.h>
+#include <plugins/Event/src/eventplugin.h>
+#include <plugins/Classes/src/classesplugin.h>
+#include <plugins/Competitors/src/competitorsplugin.h>
+#include <plugins/Runs/src/runsplugin.h>
+#include <plugins/Oris/src/orisplugin.h>
+#include <plugins/CardReader/src/cardreaderplugin.h>
+#include <plugins/Receipts/src/receiptsplugin.h>
+#include <plugins/Relays/src/relaysplugin.h>
+#include <plugins/Speaker/src/speakerplugin.h>
 
 #include <QLabel>
 

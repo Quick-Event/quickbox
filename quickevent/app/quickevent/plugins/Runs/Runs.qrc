@@ -1,0 +1,29 @@
+<RCC>
+	<qresource prefix="/quickevent/Runs">
+		<file>images/feature.svg</file>
+		<file>images/print-new.svg</file>
+		<file>qml/startList_starters.qml</file>
+		<file>qml/startList_clubs_nstages.qml</file>
+		<file>qml/startList_clubs.qml</file>
+		<file>qml/startList_classes_nstages.qml</file>
+		<file>qml/startList_classes.qml</file>
+		<file>qml/results_stageSpeaker.qml</file>
+		<file>qml/results_stage.qml</file>
+		<file>qml/results_nstagesSpeaker.qml</file>
+		<file>qml/results_nstages.qml</file>
+		<file>qml/competitorsWithCardRent.qml</file>
+		<file>qml/awards/results_stage_awards.qml</file>
+		<file>qml/awards/results_stage_awards-apple.qml</file>
+		<file>qml/awards/results_stage_awards-apple2.qml</file>
+		<file>qml/awards/results_stage_awards-covid.qml</file>
+		<file>qml/awards/results_stage_awards-hsh.qml</file>
+		<file>qml/awards/images/apple.svg</file>
+		<file>qml/awards/images/covid.svg</file>
+		<file>qml/awards/images/covid2.svg</file>
+		<file>qml/awards/images/director-signature.png</file>
+		<file>qml/awards/images/invaders.svg</file>
+		<file>qml/awards/images/krejsa-signature.png</file>
+		<file>qml/awards/images/runyoumust.svg</file>
+		<file>qml/awards/images/slotmachine.svg</file>
+    </qresource>
+</RCC>

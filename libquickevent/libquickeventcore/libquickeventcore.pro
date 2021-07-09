@@ -5,6 +5,7 @@ QT += core sql qml
 
 CONFIG += qt dll
 CONFIG += c++11 hide_symbols
+CONFIG += lrelease embed_translations
 
 DEFINES += QUICKEVENTCORE_BUILD_DLL
 
@@ -30,10 +31,10 @@ include ( src/src.pri )
 RESOURCES += libquickeventcore.qrc
 
 TRANSLATIONS += \
-	libquickeventcore.cs_CZ.ts \
-	libquickeventcore.fr_FR.ts \
-	libquickeventcore.nb_NO.ts \
-	libquickeventcore.nl_BE.ts \
-	libquickeventcore.pl_PL.ts \
-	libquickeventcore.ru_RU.ts \
-	libquickeventcore.uk_UA.ts \
+        libquickeventcore-cs_CZ.ts \
+	libquickeventcore-fr_FR.ts \
+	libquickeventcore-nb_NO.ts \
+	libquickeventcore-nl_BE.ts \
+	libquickeventcore-pl_PL.ts \
+	libquickeventcore-ru_RU.ts \
+	libquickeventcore-uk_UA.ts \
