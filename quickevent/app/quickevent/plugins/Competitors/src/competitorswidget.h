@@ -2,7 +2,6 @@
 #define COMPETITORSWIDGET_H
 
 #include <QFrame>
-#include <mutex>
 
 #include <quickevent/gui/partwidget.h>
 
@@ -49,7 +48,7 @@ private:
 
 	void report_competitorsStatistics();
 private:
-	std::mutex m_editCompetitorMutex;
+	bool m_editCompetitorLock = false;
 	Ui::CompetitorsWidget *ui;
 	qf::core::model::SqlTableModel *m_competitorsModel;
 	qf::qmlwidgets::ForeignKeyComboBox *m_cbxClasses = nullptr;

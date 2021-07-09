@@ -201,13 +201,28 @@ void CompetitorsWidget::editCompetitor_helper(const QVariant &id, int mode, int 
 {
 	qfLogFuncFrame() << "id:" << id << "mode:" << mode;
 	//qf::core::sql::Transaction transaction;
-	if(auto lock = std::unique_lock<std::mutex>{m_editCompetitorMutex, std::try_to_lock})
+	if (m_editCompetitorLock) {
+		qfDebug() << "Another competitor dialog is opened, ignoring editOnPunch..";
+		return;
+	}
+
+	class EditGuard
 	{
+	public:
+		EditGuard(bool &lock) : m_lock(lock) { m_lock = true; }
+		~EditGuard() { m_lock = false; }
+	private:
+		bool &m_lock;
+	};
+	bool ok = false;
+	bool save_and_next = false;
+
+	{
+		EditGuard guard(m_editCompetitorLock);
 		auto *w = new CompetitorWidget();
 		w->setWindowTitle(tr("Edit Competitor"));
 		qfd::Dialog dlg(QDialogButtonBox::Save | QDialogButtonBox::Cancel, this);
 		dlg.setDefaultButton(QDialogButtonBox::Save);
-		bool save_and_next = false;
 		if(mode == qf::core::model::DataDocument::ModeInsert || mode == qf::core::model::DataDocument::ModeEdit) {
 			QPushButton *bt_save_and_next = dlg.buttonBox()->addButton(tr("Save and &next"), QDialogButtonBox::AcceptRole);
 			connect(dlg.buttonBox(), &qf::qmlwidgets::DialogButtonBox::clicked, [&save_and_next, bt_save_and_next](QAbstractButton *button) {
@@ -229,21 +244,17 @@ void CompetitorsWidget::editCompetitor_helper(const QVariant &id, int mode, int 
 		}
 		connect(doc, &Competitors::CompetitorDocument::saved, ui->tblCompetitors, &qf::qmlwidgets::TableView::rowExternallySaved, Qt::QueuedConnection);
 		connect(doc, &Competitors::CompetitorDocument::saved, getPlugin<CompetitorsPlugin>(), &Competitors::CompetitorsPlugin::competitorEdited, Qt::QueuedConnection);
-		bool ok = dlg.exec();
+		ok = dlg.exec();
 		//if(ok)
 		//	transaction.commit();
 		//else
 		//	transaction.rollback();
-		lock.unlock();
-		if(ok && save_and_next) {
-			QTimer::singleShot(0, [this]() {
-				this->editCompetitor(QVariant(), qf::core::model::DataDocument::ModeInsert);
-			});
-		}
+
 	}
-	else
-	{
-		qfDebug() << "Another competitor dialog is opened, ignoring..";
+	if(ok && save_and_next) {
+		QTimer::singleShot(0, [this]() {
+			this->editCompetitor(QVariant(), qf::core::model::DataDocument::ModeInsert);
+		});
 	}
 }
 
