@@ -40,6 +40,7 @@ public:
 	Q_INVOKABLE QObject* createCompetitorDocument(QObject *parent);
 	Q_INVOKABLE int editCompetitor(int id, int mode);
 
+	Q_SIGNAL int editCompetitorOnPunch(int siid);
 	Q_SIGNAL void dbEventNotify(const QString &domain, int connection_id, const QVariant &payload);
 	Q_SIGNAL void competitorEdited(); // used to clear caches with competitors
 

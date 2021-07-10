@@ -76,8 +76,7 @@ CompetitorsWidget::CompetitorsWidget(QWidget *parent) :
 
 	ui->tblCompetitors->setContextMenuPolicy(Qt::CustomContextMenu);
 	connect(ui->tblCompetitors, &qfw::TableView::customContextMenuRequested, this, &CompetitorsWidget::onCustomContextMenuRequest);
-
-	connect(getPlugin<CompetitorsPlugin>(), &Competitors::CompetitorsPlugin::dbEventNotify, this, &CompetitorsWidget::onDbEventNotify);
+	connect(getPlugin<CompetitorsPlugin>(), &Competitors::CompetitorsPlugin::editCompetitorOnPunch, this, &CompetitorsWidget::editCompetitorOnPunch);
 
 	QMetaObject::invokeMethod(this, "lazyInit", Qt::QueuedConnection);
 }
@@ -113,12 +112,6 @@ void CompetitorsWidget::settleDownInPartWidget(quickevent::gui::PartWidget *part
 			main_tb->addWidget(m_cbxClasses);
 		}
 		lbl->setBuddy(m_cbxClasses);
-	}
-	main_tb->addSeparator();
-	{
-		m_cbxEditCompetitorOnPunch = new QCheckBox(tr("Edit on punch"));
-		m_cbxEditCompetitorOnPunch->setToolTip(tr("Show Edit/Insert competitor dialog box when card is inserted into the reader station (reader mode \"Entries\" required)"));
-		main_tb->addWidget(m_cbxEditCompetitorOnPunch);
 	}
 
 	qf::qmlwidgets::Action *act_print = part_widget->menuBar()->actionForPath("print");
@@ -208,39 +201,56 @@ void CompetitorsWidget::editCompetitor_helper(const QVariant &id, int mode, int 
 {
 	qfLogFuncFrame() << "id:" << id << "mode:" << mode;
 	//qf::core::sql::Transaction transaction;
-	m_cbxEditCompetitorOnPunch->setEnabled(false);
-	auto *w = new CompetitorWidget();
-	w->setWindowTitle(tr("Edit Competitor"));
-	qfd::Dialog dlg(QDialogButtonBox::Save | QDialogButtonBox::Cancel, this);
-	dlg.setDefaultButton(QDialogButtonBox::Save);
+	if (m_editCompetitorLock) {
+		qfDebug() << "Another competitor dialog is opened, ignoring editOnPunch..";
+		return;
+	}
+
+	class EditGuard
+	{
+	public:
+		EditGuard(bool &lock) : m_lock(lock) { m_lock = true; }
+		~EditGuard() { m_lock = false; }
+	private:
+		bool &m_lock;
+	};
+	bool ok = false;
 	bool save_and_next = false;
-	if(mode == qf::core::model::DataDocument::ModeInsert || mode == qf::core::model::DataDocument::ModeEdit) {
-		QPushButton *bt_save_and_next = dlg.buttonBox()->addButton(tr("Save and &next"), QDialogButtonBox::AcceptRole);
-		connect(dlg.buttonBox(), &qf::qmlwidgets::DialogButtonBox::clicked, [&save_and_next, bt_save_and_next](QAbstractButton *button) {
-			save_and_next = (button == bt_save_and_next);
-		});
-	}
-	dlg.setCentralWidget(w);
-	w->load(id, mode);
-	auto *doc = qobject_cast<Competitors::CompetitorDocument*>(w->dataController()->document());
-	QF_ASSERT(doc != nullptr, "Document is null!", return);
-	if(mode == qfm::DataDocument::ModeInsert) {
-		if(siid == 0) {
-			int class_id = m_cbxClasses->currentData().toInt();
-			doc->setValue("competitors.classId", class_id);
+
+	{
+		EditGuard guard(m_editCompetitorLock);
+		auto *w = new CompetitorWidget();
+		w->setWindowTitle(tr("Edit Competitor"));
+		qfd::Dialog dlg(QDialogButtonBox::Save | QDialogButtonBox::Cancel, this);
+		dlg.setDefaultButton(QDialogButtonBox::Save);
+		if(mode == qf::core::model::DataDocument::ModeInsert || mode == qf::core::model::DataDocument::ModeEdit) {
+			QPushButton *bt_save_and_next = dlg.buttonBox()->addButton(tr("Save and &next"), QDialogButtonBox::AcceptRole);
+			connect(dlg.buttonBox(), &qf::qmlwidgets::DialogButtonBox::clicked, [&save_and_next, bt_save_and_next](QAbstractButton *button) {
+				save_and_next = (button == bt_save_and_next);
+			});
 		}
-		else {
-			w->loadFromRegistrations(siid);
+		dlg.setCentralWidget(w);
+		w->load(id, mode);
+		auto *doc = qobject_cast<Competitors::CompetitorDocument*>(w->dataController()->document());
+		QF_ASSERT(doc != nullptr, "Document is null!", return);
+		if(mode == qfm::DataDocument::ModeInsert) {
+			if(siid == 0) {
+				int class_id = m_cbxClasses->currentData().toInt();
+				doc->setValue("competitors.classId", class_id);
+			}
+			else {
+				w->loadFromRegistrations(siid);
+			}
 		}
+		connect(doc, &Competitors::CompetitorDocument::saved, ui->tblCompetitors, &qf::qmlwidgets::TableView::rowExternallySaved, Qt::QueuedConnection);
+		connect(doc, &Competitors::CompetitorDocument::saved, getPlugin<CompetitorsPlugin>(), &Competitors::CompetitorsPlugin::competitorEdited, Qt::QueuedConnection);
+		ok = dlg.exec();
+		//if(ok)
+		//	transaction.commit();
+		//else
+		//	transaction.rollback();
+
 	}
-	connect(doc, &Competitors::CompetitorDocument::saved, ui->tblCompetitors, &qf::qmlwidgets::TableView::rowExternallySaved, Qt::QueuedConnection);
-	connect(doc, &Competitors::CompetitorDocument::saved, getPlugin<CompetitorsPlugin>(), &Competitors::CompetitorsPlugin::competitorEdited, Qt::QueuedConnection);
-	bool ok = dlg.exec();
-	//if(ok)
-	//	transaction.commit();
-	//else
-	//	transaction.rollback();
-	m_cbxEditCompetitorOnPunch->setEnabled(true);
 	if(ok && save_and_next) {
 		QTimer::singleShot(0, [this]() {
 			this->editCompetitor(QVariant(), qf::core::model::DataDocument::ModeInsert);
@@ -275,19 +285,6 @@ void CompetitorsWidget::editCompetitors(int mode)
 					transaction.rollback();
 				}
 			}
-		}
-	}
-}
-
-void CompetitorsWidget::onDbEventNotify(const QString &domain, int connection_id, const QVariant &data)
-{
-	Q_UNUSED(connection_id)
-	qfLogFuncFrame() << "domain:" << domain << "payload:" << data;
-	if(m_cbxEditCompetitorOnPunch->isEnabled() && m_cbxEditCompetitorOnPunch->isChecked() && domain == QLatin1String(Event::EventPlugin::DBEVENT_PUNCH_RECEIVED)) {
-		quickevent::core::si::PunchRecord punch(data.toMap());
-		int siid = punch.siid();
-		if(siid > 0 && punch.marking() == quickevent::core::si::PunchRecord::MARKING_ENTRIES) {
-			editCompetitorOnPunch(siid);
 		}
 	}
 }

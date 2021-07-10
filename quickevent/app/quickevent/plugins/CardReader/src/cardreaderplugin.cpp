@@ -263,7 +263,6 @@ int CardReaderPlugin::saveCardToSql(const quickevent::core::si::ReadCard &read_c
 		punch.setrunid(read_card.runId());
 		punch.settime(read_card.finishTime());
 		punch.setcode(quickevent::core::CodeDef::FINISH_PUNCH_CODE);
-		punch.setmarking(quickevent::core::si::PunchRecord::MARKING_RACE);
 		int punch_id = savePunchRecordToSql(punch);
 		if(punch_id > 0) {
 			punch.setid(punch_id);
@@ -322,8 +321,8 @@ int CardReaderPlugin::savePunchRecordToSql(const quickevent::core::si::PunchReco
 
 	int code = resolveAltCode(punch.code(), punch.stageid());
 
-	q.prepare(QStringLiteral("INSERT INTO punches (siId, code, time, msec, runId, stageId, timeMs, runTimeMs, marking)"
-							 " VALUES (:siId, :code, :time, :msec, :runId, :stageId, :timeMs, :runTimeMs, :marking)")
+	q.prepare(QStringLiteral("INSERT INTO punches (siId, code, time, msec, runId, stageId, timeMs, runTimeMs)"
+							 " VALUES (:siId, :code, :time, :msec, :runId, :stageId, :timeMs, :runTimeMs)")
 							, qf::core::Exception::Throw);
 	q.bindValue(QStringLiteral(":siId"), punch.siid());
 	q.bindValue(QStringLiteral(":code"), code);
@@ -331,7 +330,6 @@ int CardReaderPlugin::savePunchRecordToSql(const quickevent::core::si::PunchReco
 	q.bindValue(QStringLiteral(":msec"), punch.msec());
 	q.bindValue(QStringLiteral(":runId"), punch.runid());
 	q.bindValue(QStringLiteral(":stageId"), punch.stageid());
-	q.bindValue(QStringLiteral(":marking"), punch.marking());
 	q.bindValue(QStringLiteral(":timeMs"), punch.timems());
 	q.bindValue(QStringLiteral(":runTimeMs"), punch.runtimems_isset()? punch.runtimems(): QVariant());
 	/// it is not possible to save punch time as date-time to be independent on start00 since it depends on start00 due to 12H time format

@@ -42,18 +42,16 @@ private:
 	void editCompetitors(int mode);
 
 	void editCompetitor_helper(const QVariant &id, int mode, int siid);
-
-	void onDbEventNotify(const QString &domain, int connection_id, const QVariant &data);
-	void editCompetitorOnPunch(int siid);
+	Q_SLOT void editCompetitorOnPunch(int siid);
 
 	void onCustomContextMenuRequest(const QPoint &pos);
 
 	void report_competitorsStatistics();
 private:
+	bool m_editCompetitorLock = false;
 	Ui::CompetitorsWidget *ui;
 	qf::core::model::SqlTableModel *m_competitorsModel;
 	qf::qmlwidgets::ForeignKeyComboBox *m_cbxClasses = nullptr;
-	QCheckBox *m_cbxEditCompetitorOnPunch = nullptr;
 };
 
 #endif // COMPETITORSWIDGET_H

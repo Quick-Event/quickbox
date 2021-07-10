@@ -54,6 +54,7 @@ class CardReaderWidget : public QFrame
 	Q_OBJECT
 private:
 	typedef QFrame Super;
+	enum PunchMode { Readout, EditOnPunch };
 public:
 	explicit CardReaderWidget(QWidget *parent = 0);
 	~CardReaderWidget() Q_DECL_OVERRIDE;
@@ -108,6 +109,7 @@ private:
 	quickevent::gui::audio::Player* audioPlayer();
 	void operatorAudioWakeUp();
 	void operatorAudioNotify();
+	int currentPunchMode();
 private:
 	Ui::CardReaderWidget *ui;
 	QLabel *m_lblCommInfo = nullptr;
@@ -115,7 +117,7 @@ private:
 	qf::qmlwidgets::Action *m_actSettings = nullptr;
 	qf::core::model::SqlTableModel *m_cardsModel = nullptr;
 	QComboBox *m_cbxCardCheckers = nullptr;
-	QComboBox *m_cbxPunchMarking = nullptr;
+	QComboBox *m_cbxPunchMode = nullptr;
 	quickevent::gui::audio::Player *m_audioPlayer = nullptr;
 	siut::DeviceDriver *f_siDriver = nullptr;
 	siut::CommPort *m_commPort = nullptr;

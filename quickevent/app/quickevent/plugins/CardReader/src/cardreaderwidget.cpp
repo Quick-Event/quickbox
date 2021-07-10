@@ -49,6 +49,7 @@
 #include <plugins/Receipts/src/receiptsplugin.h>
 #include <plugins/Event/src/eventplugin.h>
 #include <plugins/Runs/src/findrunnerwidget.h>
+#include <plugins/Competitors/src/competitorsplugin.h>
 
 #include <QSettings>
 #include <QFile>
@@ -71,6 +72,7 @@ using qf::qmlwidgets::framework::getPlugin;
 using Event::EventPlugin;
 using CardReader::CardReaderPlugin;
 using Receipts::ReceiptsPlugin;
+using Competitors::CompetitorsPlugin;
 
 namespace {
 class Model : public quickevent::core::og::SqlTableModel
@@ -366,10 +368,12 @@ void CardReaderWidget::settleDownInPartWidget(quickevent::gui::PartWidget *part_
 	{
 		QLabel *lbl = new QLabel(tr(" Reader mode "));
 		main_tb->addWidget(lbl);
-		m_cbxPunchMarking = new QComboBox();
-		m_cbxPunchMarking->addItem(tr("Race"), quickevent::core::si::PunchRecord::MARKING_RACE);
-		m_cbxPunchMarking->addItem(tr("Entries"), quickevent::core::si::PunchRecord::MARKING_ENTRIES);
-		main_tb->addWidget(m_cbxPunchMarking);
+		m_cbxPunchMode = new QComboBox();
+		m_cbxPunchMode->addItem(tr("Readout"), PunchMode::Readout);
+		m_cbxPunchMode->setItemData(0, tr("Readout mode - default"), Qt::ToolTipRole);
+		m_cbxPunchMode->addItem(tr("Edit on punch"), PunchMode::EditOnPunch);
+		m_cbxPunchMode->setItemData(1, tr("Show Edit/Insert competitor dialog when SI Card is inserted into the reader station"), Qt::ToolTipRole);
+		main_tb->addWidget(m_cbxPunchMode);
 	}
 	main_tb->addSeparator();
 	{
@@ -639,17 +643,8 @@ void CardReaderWidget::processSICard(const siut::SICard &card)
 	appendLog(NecroLog::Level::Debug, card.toString());
 	appendLog(NecroLog::Level::Info, tr("card: %1").arg(card.cardNumber()));
 
-	QString punch_marking = m_cbxPunchMarking->currentData().toString();
-	if(punch_marking == quickevent::core::si::PunchRecord::MARKING_ENTRIES) {
-		// send fake punch in the 'entries' mode to enable edit_competitor_by_punch function
-		quickevent::core::si::PunchRecord punch;
-		punch.setsiid(card.cardNumber());
-		punch.setmarking(punch_marking);
-		int punch_id = getPlugin<CardReaderPlugin>()->savePunchRecordToSql(punch);
-		if(punch_id > 0) {
-			punch.setid(punch_id);
-			getPlugin<EventPlugin>()->emitDbEvent(Event::EventPlugin::DBEVENT_PUNCH_RECEIVED, punch, true);
-		}
+	if(currentPunchMode() == PunchMode::EditOnPunch) {
+		getPlugin<CompetitorsPlugin>()->editCompetitorOnPunch(card.cardNumber());
 		return;
 	}
 
@@ -702,9 +697,7 @@ void CardReaderWidget::processSIPunch(const siut::SIPunch &rec)
 {
 	appendLog(NecroLog::Level::Info, tr("punch: %1 %2").arg(rec.cardNumber()).arg(rec.code()));
 	quickevent::core::si::PunchRecord punch(rec);
-	QString punch_marking = m_cbxPunchMarking->currentData().toString();
-	punch.setmarking(punch_marking);
-	if(punch_marking == quickevent::core::si::PunchRecord::MARKING_RACE) {
+	if(currentPunchMode() == PunchMode::Readout) {
 		int run_id = getPlugin<CardReaderPlugin>()->findRunId(rec.cardNumber(), 0xEEEE);
 		if(run_id == 0)
 			appendLog(NecroLog::Level::Error, tr("Cannot find run for punch record SI: %1").arg(rec.cardNumber()));
@@ -825,6 +818,11 @@ void CardReaderWidget::operatorAudioWakeUp()
 void CardReaderWidget::operatorAudioNotify()
 {
 	audioPlayer()->playAlert(quickevent::gui::audio::Player::AlertKind::OperatorNotify);
+}
+
+int CardReaderWidget::currentPunchMode()
+{
+	return m_cbxPunchMode->currentData().toInt();
 }
 
 static int msecToSISec(int msec)
