@@ -245,7 +245,7 @@
     <message>
         <location filename="src/tableview.cpp" line="1630"/>
         <source>Insert row</source>
-        <translation type="unfinished"></translation>
+        <translation>Sett inn rad</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1631"/>
@@ -256,7 +256,7 @@
     <message>
         <location filename="src/tableview.cpp" line="1639"/>
         <source>Delete selected rows</source>
-        <translation type="unfinished"></translation>
+        <translation>Slett valgte rader</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1640"/>
