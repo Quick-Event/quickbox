@@ -78,10 +78,21 @@ win32:CONFIG(debug, debug|release):CONFIG += console
 #CONFIG += console
 
 TRANSLATIONS += \
-        $${TARGET}-cs_CZ.ts \
+	$${TARGET}-cs_CZ.ts \
 	$${TARGET}-fr_FR.ts \
 	$${TARGET}-nb_NO.ts \
 	$${TARGET}-nl_BE.ts \
 	$${TARGET}-pl_PL.ts \
 	$${TARGET}-ru_RU.ts \
 	$${TARGET}-uk_UA.ts \
+
+qm_file.files += \
+	$$[QT_INSTALL_TRANSLATIONS]/qtbase_cs.qm \
+	$$[QT_INSTALL_TRANSLATIONS]/qtbase_fr.qm \
+	$$[QT_INSTALL_TRANSLATIONS]/qtbase_pl.qm \
+	$$[QT_INSTALL_TRANSLATIONS]/qtbase_ru.qm \
+	$$[QT_INSTALL_TRANSLATIONS]/qtbase_uk.qm \
+
+qm_file.base = $$[QT_INSTALL_TRANSLATIONS]
+qm_file.prefix = i18n
+RESOURCES += qm_file

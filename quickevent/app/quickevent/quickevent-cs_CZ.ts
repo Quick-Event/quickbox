@@ -178,13 +178,6 @@
     </message>
 </context>
 <context>
-    <name>CardReaderPartWidget</name>
-    <message>
-        <source>Card reader</source>
-        <translation type="vanished">Vyčítání SI čipů</translation>
-    </message>
-</context>
-<context>
     <name>CardReaderWidget</name>
     <message>
         <location filename="plugins/CardReader/src/cardreaderwidget.ui" line="14"/>
@@ -622,13 +615,6 @@ If you continue, this flag will be removed</source>
     </message>
 </context>
 <context>
-    <name>Classes::ThisPartWidget</name>
-    <message>
-        <source>Classes</source>
-        <translation type="vanished">Kategorie</translation>
-    </message>
-</context>
-<context>
     <name>ClassesTableView</name>
     <message>
         <location filename="plugins/Classes/src/classestableview.cpp" line="24"/>
@@ -885,41 +871,51 @@ If you continue, this flag will be removed</source>
 <context>
     <name>Classic</name>
     <message>
+        <location filename="plugins/Receipts/qml/receipts/Classic.qml" line="69"/>
         <source>E</source>
-        <translation type="vanished">E</translation>
+        <translation>E</translation>
     </message>
     <message>
+        <location filename="plugins/Receipts/qml/receipts/Classic.qml" line="242"/>
         <source>OK</source>
-        <translation type="vanished">OK</translation>
+        <translation>OK</translation>
     </message>
     <message>
+        <location filename="plugins/Receipts/qml/receipts/Classic.qml" line="242"/>
         <source>DISQ</source>
-        <translation type="vanished">DISK</translation>
+        <translation>DISK</translation>
     </message>
     <message>
+        <location filename="plugins/Receipts/qml/receipts/Classic.qml" line="256"/>
+        <location filename="plugins/Receipts/qml/receipts/Classic.qml" line="268"/>
         <source>-----</source>
-        <translation type="vanished">-----</translation>
+        <translation>-----</translation>
     </message>
     <message>
+        <location filename="plugins/Receipts/qml/receipts/Classic.qml" line="324"/>
         <source>!!! RENTED CARD !!!</source>
         <oldsource>!!! CARD LENT !!!</oldsource>
-        <translation type="vanished">!!! ZAPŮJČENÝ ČIP !!!</translation>
+        <translation>!!! ZAPŮJČENÝ ČIP !!!</translation>
     </message>
     <message>
+        <location filename="plugins/Receipts/qml/receipts/Classic.qml" line="339"/>
         <source>extra: </source>
-        <translation type="vanished">navíc: </translation>
+        <translation>navíc: </translation>
     </message>
     <message>
+        <location filename="plugins/Receipts/qml/receipts/Classic.qml" line="351"/>
         <source>BAD CHECK !!!</source>
-        <translation type="vanished">ŠPATNÝ ČAS KONTROLY NULOVÁNÍ ČIPU !!!</translation>
+        <translation>ŠPATNÝ ČAS KONTROLY NULOVÁNÍ ČIPU !!!</translation>
     </message>
     <message>
+        <location filename="plugins/Receipts/qml/receipts/Classic.qml" line="371"/>
         <source>current overall loss: +</source>
-        <translation type="vanished">ztráta na nejlepší mezičasy: +</translation>
+        <translation>ztráta na nejlepší mezičasy: +</translation>
     </message>
     <message>
+        <location filename="plugins/Receipts/qml/receipts/Classic.qml" line="386"/>
         <source>standings: </source>
-        <translation type="vanished">pořadí: </translation>
+        <translation>pořadí: </translation>
     </message>
 </context>
 <context>
@@ -1101,13 +1097,6 @@ If you continue, this flag will be removed</source>
         <location filename="plugins/Competitors/src/competitorsplugin.cpp" line="126"/>
         <source>SI</source>
         <translation>SI</translation>
-    </message>
-</context>
-<context>
-    <name>Competitors::ThisPartWidget</name>
-    <message>
-        <source>&amp;Competitors</source>
-        <translation type="vanished">&amp;Závodníci</translation>
     </message>
 </context>
 <context>
@@ -2918,13 +2907,6 @@ Použij: Soubor --&gt; Importovat --&gt; Závod (*.qbe) pro konverzi dat do aktu
     </message>
 </context>
 <context>
-    <name>ReceiptsPartWidget</name>
-    <message>
-        <source>Receipts</source>
-        <translation type="vanished">Mezičasy</translation>
-    </message>
-</context>
-<context>
     <name>ReceiptsPrinterOptions</name>
     <message>
         <location filename="plugins/Receipts/src/receiptsprinteroptions.cpp" line="17"/>
@@ -3554,30 +3536,30 @@ Použij: Soubor --&gt; Importovat --&gt; Závod (*.qbe) pro konverzi dat do aktu
         <translation>Statistiky závodu</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="905"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2130"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="904"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2129"/>
         <source>E%1 IOF XML stage results</source>
         <translation>E%1 IOF XML etapové výsledky</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1340"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1701"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1339"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1700"/>
         <source>Start list by classes</source>
         <translation>Startovní listina po kategoriích</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1367"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1797"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1366"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1796"/>
         <source>Start list by clubs</source>
         <translation>Startovní listina po klubech</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1392"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1391"/>
         <source>Start list for starters</source>
         <translation>Startovní listina pro startéry</translation>
     </message>
     <message numerus="yes">
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1425"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1424"/>
         <source>Start list by classes for %n stage(s)</source>
         <translation>
             <numerusform>Startovní listina po kategoriích na %n etapu</numerusform>
@@ -3586,7 +3568,7 @@ Použij: Soubor --&gt; Importovat --&gt; Závod (*.qbe) pro konverzi dat do aktu
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1459"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1458"/>
         <source>Start list by clubs for %n stage(s)</source>
         <translation>
             <numerusform>Startovní listina po klubech na %n etapu</numerusform>
@@ -3595,19 +3577,19 @@ Použij: Soubor --&gt; Importovat --&gt; Závod (*.qbe) pro konverzi dat do aktu
         </translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1482"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1508"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1481"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1507"/>
         <source>Results by classes</source>
         <translation>Výsledky po kategoriích</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1531"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1530"/>
         <source>Stage awards</source>
         <translation>Etapové diplomy</translation>
     </message>
     <message numerus="yes">
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1558"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1584"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1557"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1583"/>
         <source>Results after %n stage(s)</source>
         <oldsource>Results after %1 stages</oldsource>
         <translation>
@@ -3617,147 +3599,147 @@ Použij: Soubor --&gt; Importovat --&gt; Závod (*.qbe) pro konverzi dat do aktu
         </translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1606"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1605"/>
         <source>Awards after %1 stages</source>
         <translation>Diplomy po %1 etapách</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1657"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1856"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1656"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1855"/>
         <source>length:</source>
         <translation>délka:</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1659"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1858"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1658"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1857"/>
         <source>climb:</source>
         <translation>převýšení:</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1662"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1756"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1862"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1661"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1755"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1861"/>
         <source>Top</source>
         <translation>Nahoru</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1669"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1763"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1668"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1762"/>
         <source>St. Num</source>
         <translation>St. čís.</translation>
+    </message>
+    <message>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1669"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1764"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1869"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1957"/>
+        <source>Name</source>
+        <translation>Jméno</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/runsplugin.cpp" line="1670"/>
         <location filename="plugins/Runs/src/runsplugin.cpp" line="1765"/>
         <location filename="plugins/Runs/src/runsplugin.cpp" line="1870"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1958"/>
-        <source>Name</source>
-        <translation>Jméno</translation>
-    </message>
-    <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1671"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1766"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1871"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1973"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1972"/>
         <source>Registration</source>
         <translation>Registrace</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1672"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1767"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1671"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1766"/>
         <source>SI</source>
         <translation>SI</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1673"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1768"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1672"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1767"/>
         <source>Start</source>
         <translation>Start</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1764"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1763"/>
         <source>Class</source>
         <translation>Kategorie</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1812"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1811"/>
         <source>Preparing data</source>
         <translation>Připravuji data</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1842"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1841"/>
         <source>Procesing class %1</source>
         <translation>Zpracovávám kategorii %1</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1861"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1860"/>
         <source>Laps</source>
         <translation>Mezičasy</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1869"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1957"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1868"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1956"/>
         <source>Place</source>
         <translation>Pořadí</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1872"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1871"/>
         <source>Club</source>
         <translation>Klub</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1873"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1959"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1872"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1958"/>
         <source>Time</source>
         <translation>Čas</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1874"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1960"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1873"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1959"/>
         <source>Loss</source>
         <translation>Ztráta</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1890"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2028"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1889"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2027"/>
         <source>NC</source>
         <comment>Not Competing</comment>
         <translation>MS</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1893"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2031"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1892"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2030"/>
         <source>DISQ</source>
         <translation>DISK</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1913"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2052"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1912"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2051"/>
         <source>Stage results</source>
         <translation>Výsledky etapy</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1932"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1931"/>
         <source>Warning</source>
         <translation>Varování</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1932"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1931"/>
         <source>Export error</source>
         <translation>Chyba při exportu</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1934"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1933"/>
         <source>Information</source>
         <translation>Informace</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1934"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1933"/>
         <source>Results exported to %1</source>
         <translation>Výsledky exportovány do %1</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1966"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1965"/>
         <source>FIN</source>
         <translation>CÍL</translation>
     </message>
@@ -4640,21 +4622,6 @@ Použij: Soubor --&gt; Importovat --&gt; Závod (*.qbe) pro konverzi dat do aktu
     </message>
 </context>
 <context>
-    <name>ThisPartWidget</name>
-    <message>
-        <source>&amp;Relays</source>
-        <translation type="vanished">&amp;Štafety</translation>
-    </message>
-    <message>
-        <source>&amp;Runs</source>
-        <translation type="vanished">Úseky / &amp;Etapy</translation>
-    </message>
-    <message>
-        <source>&amp;Speaker</source>
-        <translation type="vanished">&amp;Komentátor</translation>
-    </message>
-</context>
-<context>
     <name>TxtImporter</name>
     <message>
         <location filename="plugins/Oris/src/txtimporter.cpp" line="35"/>
@@ -4724,27 +4691,27 @@ Použij: Soubor --&gt; Importovat --&gt; Závod (*.qbe) pro konverzi dat do aktu
 <context>
     <name>competitorsStatistics</name>
     <message>
-        <location filename="plugins/Competitors/qml/reports/competitorsStatistics.qml" line="10"/>
+        <location filename="plugins/Competitors/qml/competitorsStatistics.qml" line="10"/>
         <source>Competitors statistics</source>
         <translation>Statistiky závodníků</translation>
     </message>
     <message>
-        <location filename="plugins/Competitors/qml/reports/competitorsStatistics.qml" line="123"/>
+        <location filename="plugins/Competitors/qml/competitorsStatistics.qml" line="123"/>
         <source>Class name</source>
         <translation>Jméno kategorie</translation>
     </message>
     <message>
-        <location filename="plugins/Competitors/qml/reports/competitorsStatistics.qml" line="130"/>
+        <location filename="plugins/Competitors/qml/competitorsStatistics.qml" line="130"/>
         <source>maps</source>
         <translation>Map</translation>
     </message>
     <message>
-        <location filename="plugins/Competitors/qml/reports/competitorsStatistics.qml" line="132"/>
+        <location filename="plugins/Competitors/qml/competitorsStatistics.qml" line="132"/>
         <source>res</source>
         <translation>Rozdíl</translation>
     </message>
     <message>
-        <location filename="plugins/Competitors/qml/reports/competitorsStatistics.qml" line="168"/>
+        <location filename="plugins/Competitors/qml/competitorsStatistics.qml" line="168"/>
         <source>Sum</source>
         <translation>Součet</translation>
     </message>
@@ -4752,24 +4719,24 @@ Použij: Soubor --&gt; Importovat --&gt; Závod (*.qbe) pro konverzi dat do aktu
 <context>
     <name>competitorsWithCardRent</name>
     <message>
-        <location filename="plugins/Runs/qml/reports/competitorsWithCardRent.qml" line="11"/>
+        <location filename="plugins/Runs/qml/competitorsWithCardRent.qml" line="11"/>
         <source>Competitors with rented cards in stage %1</source>
         <oldsource>Competitors with card lent in stage %1</oldsource>
         <translation>Závodníci s půjčeným čipem v etapě %1</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/qml/reports/competitorsWithCardRent.qml" line="78"/>
+        <location filename="plugins/Runs/qml/competitorsWithCardRent.qml" line="78"/>
         <source>Off</source>
         <translation>Neběž</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/qml/reports/competitorsWithCardRent.qml" line="82"/>
+        <location filename="plugins/Runs/qml/competitorsWithCardRent.qml" line="82"/>
         <source>Ret</source>
         <translation>Vráce</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/qml/reports/competitorsWithCardRent.qml" line="130"/>
-        <location filename="plugins/Runs/qml/reports/competitorsWithCardRent.qml" line="134"/>
+        <location filename="plugins/Runs/qml/competitorsWithCardRent.qml" line="130"/>
+        <location filename="plugins/Runs/qml/competitorsWithCardRent.qml" line="134"/>
         <source>Y</source>
         <translation>Ano</translation>
     </message>
@@ -4905,7 +4872,7 @@ Přejete si uložit změny?</translation>
 <context>
     <name>error</name>
     <message>
-        <location filename="plugins/Receipts/qml/reports/error.qml" line="48"/>
+        <location filename="plugins/Receipts/qml/error.qml" line="48"/>
         <source>!!! Error !!!</source>
         <translation>!!! Chyba !!!</translation>
     </message>
@@ -4913,22 +4880,22 @@ Přejete si uložit změny?</translation>
 <context>
     <name>results</name>
     <message>
-        <location filename="plugins/Relays/qml/reports/results.qml" line="9"/>
+        <location filename="plugins/Relays/qml/results.qml" line="9"/>
         <source>Results</source>
         <translation>Výsledky</translation>
     </message>
     <message>
-        <location filename="plugins/Relays/qml/reports/results.qml" line="19"/>
+        <location filename="plugins/Relays/qml/results.qml" line="19"/>
         <source>DISQ</source>
         <translation>DISK</translation>
     </message>
     <message>
-        <location filename="plugins/Relays/qml/reports/results.qml" line="21"/>
+        <location filename="plugins/Relays/qml/results.qml" line="21"/>
         <source>NC</source>
         <translation>MS</translation>
     </message>
     <message>
-        <location filename="plugins/Relays/qml/reports/results.qml" line="23"/>
+        <location filename="plugins/Relays/qml/results.qml" line="23"/>
         <source>---</source>
         <translation>---</translation>
     </message>
@@ -4936,22 +4903,22 @@ Přejete si uložit změny?</translation>
 <context>
     <name>results_condensed</name>
     <message>
-        <location filename="plugins/Relays/qml/reports/results_condensed.qml" line="9"/>
+        <location filename="plugins/Relays/qml/results_condensed.qml" line="9"/>
         <source>Results</source>
         <translation>Výsledky</translation>
     </message>
     <message>
-        <location filename="plugins/Relays/qml/reports/results_condensed.qml" line="19"/>
+        <location filename="plugins/Relays/qml/results_condensed.qml" line="19"/>
         <source>DISQ</source>
         <translation>DISK</translation>
     </message>
     <message>
-        <location filename="plugins/Relays/qml/reports/results_condensed.qml" line="21"/>
+        <location filename="plugins/Relays/qml/results_condensed.qml" line="21"/>
         <source>NC</source>
         <translation>MS</translation>
     </message>
     <message>
-        <location filename="plugins/Relays/qml/reports/results_condensed.qml" line="23"/>
+        <location filename="plugins/Relays/qml/results_condensed.qml" line="23"/>
         <source>---</source>
         <translation>---</translation>
     </message>
@@ -4959,7 +4926,7 @@ Přejete si uložit změny?</translation>
 <context>
     <name>results_nstages</name>
     <message numerus="yes">
-        <location filename="plugins/Runs/qml/reports/results_nstages.qml" line="15"/>
+        <location filename="plugins/Runs/qml/results_nstages.qml" line="15"/>
         <source>Results after %n stage(s)</source>
         <oldsource>Results after %1 stages</oldsource>
         <translation>
@@ -4969,27 +4936,27 @@ Přejete si uložit změny?</translation>
         </translation>
     </message>
     <message>
-        <location filename="plugins/Runs/qml/reports/results_nstages.qml" line="138"/>
+        <location filename="plugins/Runs/qml/results_nstages.qml" line="138"/>
         <source>Reg</source>
         <translation>Reg. č.</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/qml/reports/results_nstages.qml" line="143"/>
+        <location filename="plugins/Runs/qml/results_nstages.qml" line="143"/>
         <source>Stage </source>
         <translation>Etapa </translation>
     </message>
     <message>
-        <location filename="plugins/Runs/qml/reports/results_nstages.qml" line="146"/>
+        <location filename="plugins/Runs/qml/results_nstages.qml" line="146"/>
         <source>Time</source>
         <translation>Čas</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/qml/reports/results_nstages.qml" line="148"/>
+        <location filename="plugins/Runs/qml/results_nstages.qml" line="148"/>
         <source>Loss</source>
         <translation>Ztráta</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/qml/reports/results_nstages.qml" line="186"/>
+        <location filename="plugins/Runs/qml/results_nstages.qml" line="186"/>
         <source>DISQ</source>
         <translation>DISK</translation>
     </message>
@@ -4997,7 +4964,7 @@ Přejete si uložit změny?</translation>
 <context>
     <name>results_nstagesSpeaker</name>
     <message numerus="yes">
-        <location filename="plugins/Runs/qml/reports/results_nstagesSpeaker.qml" line="13"/>
+        <location filename="plugins/Runs/qml/results_nstagesSpeaker.qml" line="13"/>
         <source>Results after %n stage(s)</source>
         <oldsource>Results after %1 stages</oldsource>
         <translation>
@@ -5007,22 +4974,22 @@ Přejete si uložit změny?</translation>
         </translation>
     </message>
     <message>
-        <location filename="plugins/Runs/qml/reports/results_nstagesSpeaker.qml" line="130"/>
+        <location filename="plugins/Runs/qml/results_nstagesSpeaker.qml" line="130"/>
         <source>Club</source>
         <translation>Klub</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/qml/reports/results_nstagesSpeaker.qml" line="133"/>
+        <location filename="plugins/Runs/qml/results_nstagesSpeaker.qml" line="133"/>
         <source>Time</source>
         <translation>Čas</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/qml/reports/results_nstagesSpeaker.qml" line="135"/>
+        <location filename="plugins/Runs/qml/results_nstagesSpeaker.qml" line="135"/>
         <source>Loss</source>
         <translation>Ztráta</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/qml/reports/results_nstagesSpeaker.qml" line="166"/>
+        <location filename="plugins/Runs/qml/results_nstagesSpeaker.qml" line="166"/>
         <source>DISQ</source>
         <translation>DISK</translation>
     </message>
@@ -5030,27 +4997,27 @@ Přejete si uložit změny?</translation>
 <context>
     <name>results_stage</name>
     <message>
-        <location filename="plugins/Runs/qml/reports/results_stage.qml" line="16"/>
+        <location filename="plugins/Runs/qml/results_stage.qml" line="16"/>
         <source>Results by classes</source>
         <translation>Výsledky po kategoriích</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/qml/reports/results_stage.qml" line="86"/>
+        <location filename="plugins/Runs/qml/results_stage.qml" line="86"/>
         <source>length: </source>
         <translation>délka: </translation>
     </message>
     <message>
-        <location filename="plugins/Runs/qml/reports/results_stage.qml" line="89"/>
+        <location filename="plugins/Runs/qml/results_stage.qml" line="89"/>
         <source>climb: </source>
         <translation>převýšení: </translation>
     </message>
     <message>
-        <location filename="plugins/Runs/qml/reports/results_stage.qml" line="129"/>
+        <location filename="plugins/Runs/qml/results_stage.qml" line="129"/>
         <source>DISQ</source>
         <translation>DISK</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/qml/reports/results_stage.qml" line="131"/>
+        <location filename="plugins/Runs/qml/results_stage.qml" line="131"/>
         <source>NC</source>
         <translation>MS</translation>
     </message>
@@ -5058,50 +5025,90 @@ Přejete si uložit změny?</translation>
 <context>
     <name>results_stageSpeaker</name>
     <message>
-        <location filename="plugins/Runs/qml/reports/results_stageSpeaker.qml" line="12"/>
+        <location filename="plugins/Runs/qml/results_stageSpeaker.qml" line="12"/>
         <source>Results by classes</source>
         <translation>Výsledky po kategoriích</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/qml/reports/results_stageSpeaker.qml" line="80"/>
+        <location filename="plugins/Runs/qml/results_stageSpeaker.qml" line="80"/>
         <source>length: </source>
         <translation>délka: </translation>
     </message>
     <message>
-        <location filename="plugins/Runs/qml/reports/results_stageSpeaker.qml" line="83"/>
+        <location filename="plugins/Runs/qml/results_stageSpeaker.qml" line="83"/>
         <source>climb: </source>
         <translation>převýšení: </translation>
     </message>
     <message>
-        <location filename="plugins/Runs/qml/reports/results_stageSpeaker.qml" line="127"/>
+        <location filename="plugins/Runs/qml/results_stageSpeaker.qml" line="127"/>
         <source>DISQ</source>
         <translation>DISK</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/qml/reports/results_stageSpeaker.qml" line="129"/>
+        <location filename="plugins/Runs/qml/results_stageSpeaker.qml" line="129"/>
         <source>NC</source>
         <translation>MS</translation>
     </message>
 </context>
 <context>
+    <name>results_stage_awards</name>
+    <message>
+        <location filename="plugins/Runs/qml/awards/results_stage_awards.qml" line="10"/>
+        <source>Results by classes</source>
+        <translation type="unfinished">Výsledky po kategoriích</translation>
+    </message>
+</context>
+<context>
+    <name>results_stage_awards-apple</name>
+    <message>
+        <location filename="plugins/Runs/qml/awards/results_stage_awards-apple.qml" line="10"/>
+        <source>Results by classes</source>
+        <translation type="unfinished">Výsledky po kategoriích</translation>
+    </message>
+</context>
+<context>
+    <name>results_stage_awards-apple2</name>
+    <message>
+        <location filename="plugins/Runs/qml/awards/results_stage_awards-apple2.qml" line="10"/>
+        <source>Results by classes</source>
+        <translation type="unfinished">Výsledky po kategoriích</translation>
+    </message>
+</context>
+<context>
+    <name>results_stage_awards-covid</name>
+    <message>
+        <location filename="plugins/Runs/qml/awards/results_stage_awards-covid.qml" line="10"/>
+        <source>Results by classes</source>
+        <translation type="unfinished">Výsledky po kategoriích</translation>
+    </message>
+</context>
+<context>
+    <name>results_stage_awards-hsh</name>
+    <message>
+        <location filename="plugins/Runs/qml/awards/results_stage_awards-hsh.qml" line="10"/>
+        <source>Results by classes</source>
+        <translation type="unfinished">Výsledky po kategoriích</translation>
+    </message>
+</context>
+<context>
     <name>sicard</name>
     <message>
-        <location filename="plugins/Receipts/qml/reports/sicard.qml" line="63"/>
+        <location filename="plugins/Receipts/qml/sicard.qml" line="63"/>
         <source>E</source>
         <translation>E</translation>
     </message>
     <message>
-        <location filename="plugins/Receipts/qml/reports/sicard.qml" line="83"/>
+        <location filename="plugins/Receipts/qml/sicard.qml" line="83"/>
         <source>Unassigned card !!!</source>
         <translation>Nepřiřazený čip!!!</translation>
     </message>
     <message>
-        <location filename="plugins/Receipts/qml/reports/sicard.qml" line="92"/>
+        <location filename="plugins/Receipts/qml/sicard.qml" line="92"/>
         <source>It will not be included in the results.</source>
         <translation>Nebude zahrnuto ve výsledcích.</translation>
     </message>
     <message>
-        <location filename="plugins/Receipts/qml/reports/sicard.qml" line="185"/>
+        <location filename="plugins/Receipts/qml/sicard.qml" line="185"/>
         <source>FI</source>
         <translation>Cíl</translation>
     </message>
@@ -5109,18 +5116,18 @@ Přejete si uložit změny?</translation>
 <context>
     <name>startList_classes</name>
     <message>
-        <location filename="plugins/Relays/qml/reports/startList_classes.qml" line="9"/>
-        <location filename="plugins/Runs/qml/reports/startList_classes.qml" line="8"/>
+        <location filename="plugins/Relays/qml/startList_classes.qml" line="9"/>
+        <location filename="plugins/Runs/qml/startList_classes.qml" line="8"/>
         <source>Start list by classes</source>
         <translation>Startovní listina po kategoriích</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/qml/reports/startList_classes.qml" line="82"/>
+        <location filename="plugins/Runs/qml/startList_classes.qml" line="82"/>
         <source>length: </source>
         <translation>délka: </translation>
     </message>
     <message>
-        <location filename="plugins/Runs/qml/reports/startList_classes.qml" line="85"/>
+        <location filename="plugins/Runs/qml/startList_classes.qml" line="85"/>
         <source>climb: </source>
         <translation>převýšení: </translation>
     </message>
@@ -5128,7 +5135,7 @@ Přejete si uložit změny?</translation>
 <context>
     <name>startList_classes_nstages</name>
     <message numerus="yes">
-        <location filename="plugins/Runs/qml/reports/startList_classes_nstages.qml" line="14"/>
+        <location filename="plugins/Runs/qml/startList_classes_nstages.qml" line="14"/>
         <source>Start list by classes for %n stage(s)</source>
         <oldsource>Start list by classes</oldsource>
         <translation>
@@ -5138,22 +5145,22 @@ Přejete si uložit změny?</translation>
         </translation>
     </message>
     <message>
-        <location filename="plugins/Runs/qml/reports/startList_classes_nstages.qml" line="112"/>
+        <location filename="plugins/Runs/qml/startList_classes_nstages.qml" line="112"/>
         <source>Bib</source>
         <translation>SČ</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/qml/reports/startList_classes_nstages.qml" line="118"/>
+        <location filename="plugins/Runs/qml/startList_classes_nstages.qml" line="118"/>
         <source>Registration</source>
         <translation>Registrace</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/qml/reports/startList_classes_nstages.qml" line="125"/>
+        <location filename="plugins/Runs/qml/startList_classes_nstages.qml" line="125"/>
         <source>SI</source>
         <translation>SI</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/qml/reports/startList_classes_nstages.qml" line="131"/>
+        <location filename="plugins/Runs/qml/startList_classes_nstages.qml" line="131"/>
         <source>Stage</source>
         <translation>Etapa</translation>
     </message>
@@ -5161,13 +5168,13 @@ Přejete si uložit změny?</translation>
 <context>
     <name>startList_clubs</name>
     <message>
-        <location filename="plugins/Relays/qml/reports/startList_clubs.qml" line="9"/>
-        <location filename="plugins/Runs/qml/reports/startList_clubs.qml" line="8"/>
+        <location filename="plugins/Relays/qml/startList_clubs.qml" line="9"/>
+        <location filename="plugins/Runs/qml/startList_clubs.qml" line="8"/>
         <source>Start list by clubs</source>
         <translation>Startovní listina po klubech</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/qml/reports/startList_clubs.qml" line="136"/>
+        <location filename="plugins/Runs/qml/startList_clubs.qml" line="136"/>
         <source>R </source>
         <translation>P </translation>
     </message>
@@ -5175,7 +5182,7 @@ Přejete si uložit změny?</translation>
 <context>
     <name>startList_clubs_nstages</name>
     <message numerus="yes">
-        <location filename="plugins/Runs/qml/reports/startList_clubs_nstages.qml" line="14"/>
+        <location filename="plugins/Runs/qml/startList_clubs_nstages.qml" line="14"/>
         <source>Start list by clubs for %n stage(s)</source>
         <oldsource>Start list by clubs</oldsource>
         <translation>
@@ -5185,22 +5192,22 @@ Přejete si uložit změny?</translation>
         </translation>
     </message>
     <message>
-        <location filename="plugins/Runs/qml/reports/startList_clubs_nstages.qml" line="118"/>
+        <location filename="plugins/Runs/qml/startList_clubs_nstages.qml" line="118"/>
         <source>Bib</source>
         <translation>SČ</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/qml/reports/startList_clubs_nstages.qml" line="124"/>
+        <location filename="plugins/Runs/qml/startList_clubs_nstages.qml" line="124"/>
         <source>Registration</source>
         <translation>Registrace</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/qml/reports/startList_clubs_nstages.qml" line="131"/>
+        <location filename="plugins/Runs/qml/startList_clubs_nstages.qml" line="131"/>
         <source>SI</source>
         <translation>SI</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/qml/reports/startList_clubs_nstages.qml" line="138"/>
+        <location filename="plugins/Runs/qml/startList_clubs_nstages.qml" line="138"/>
         <source>Stage</source>
         <translation>Etapa</translation>
     </message>
@@ -5208,7 +5215,7 @@ Přejete si uložit změny?</translation>
 <context>
     <name>startList_starters</name>
     <message>
-        <location filename="plugins/Runs/qml/reports/startList_starters.qml" line="9"/>
+        <location filename="plugins/Runs/qml/startList_starters.qml" line="9"/>
         <source>Start list for starters</source>
         <translation>Startovní listina pro startéry</translation>
     </message>
@@ -5216,17 +5223,17 @@ Přejete si uložit změny?</translation>
 <context>
     <name>table</name>
     <message>
-        <location filename="plugins/Classes/qml/reports/table.qml" line="40"/>
+        <location filename="plugins/Classes/qml/table.qml" line="40"/>
         <source>id</source>
         <translation>id</translation>
     </message>
     <message>
-        <location filename="plugins/Classes/qml/reports/table.qml" line="45"/>
+        <location filename="plugins/Classes/qml/table.qml" line="45"/>
         <source>name</source>
         <translation>jméno</translation>
     </message>
     <message>
-        <location filename="plugins/Classes/qml/reports/table.qml" line="50"/>
+        <location filename="plugins/Classes/qml/table.qml" line="50"/>
         <source>Course ID</source>
         <translation>Trať ID</translation>
     </message>

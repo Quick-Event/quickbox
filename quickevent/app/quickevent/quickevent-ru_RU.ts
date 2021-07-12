@@ -178,13 +178,6 @@
     </message>
 </context>
 <context>
-    <name>CardReaderPartWidget</name>
-    <message>
-        <source>Card reader</source>
-        <translation type="vanished">Считыватель чипов</translation>
-    </message>
-</context>
-<context>
     <name>CardReaderWidget</name>
     <message>
         <location filename="plugins/CardReader/src/cardreaderwidget.ui" line="14"/>
@@ -610,13 +603,6 @@ If you continue, this flag will be removed</source>
     </message>
 </context>
 <context>
-    <name>Classes::ThisPartWidget</name>
-    <message>
-        <source>Classes</source>
-        <translation type="obsolete">Классы</translation>
-    </message>
-</context>
-<context>
     <name>ClassesTableView</name>
     <message>
         <location filename="plugins/Classes/src/classestableview.cpp" line="24"/>
@@ -872,16 +858,50 @@ If you continue, this flag will be removed</source>
 <context>
     <name>Classic</name>
     <message>
+        <location filename="plugins/Receipts/qml/receipts/Classic.qml" line="69"/>
         <source>E</source>
-        <translation type="vanished">E</translation>
+        <translation>E</translation>
     </message>
     <message>
+        <location filename="plugins/Receipts/qml/receipts/Classic.qml" line="242"/>
         <source>OK</source>
-        <translation type="vanished">OK</translation>
+        <translation>OK</translation>
     </message>
     <message>
+        <location filename="plugins/Receipts/qml/receipts/Classic.qml" line="242"/>
+        <source>DISQ</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugins/Receipts/qml/receipts/Classic.qml" line="256"/>
+        <location filename="plugins/Receipts/qml/receipts/Classic.qml" line="268"/>
         <source>-----</source>
-        <translation type="vanished">-----</translation>
+        <translation>-----</translation>
+    </message>
+    <message>
+        <location filename="plugins/Receipts/qml/receipts/Classic.qml" line="324"/>
+        <source>!!! RENTED CARD !!!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugins/Receipts/qml/receipts/Classic.qml" line="339"/>
+        <source>extra: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugins/Receipts/qml/receipts/Classic.qml" line="351"/>
+        <source>BAD CHECK !!!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugins/Receipts/qml/receipts/Classic.qml" line="371"/>
+        <source>current overall loss: +</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugins/Receipts/qml/receipts/Classic.qml" line="386"/>
+        <source>standings: </source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3469,30 +3489,30 @@ Use: File --&gt; Import --&gt; Event (*.qbe) to convert event to current version
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="905"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2130"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="904"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2129"/>
         <source>E%1 IOF XML stage results</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1340"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1701"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1339"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1700"/>
         <source>Start list by classes</source>
         <translation type="unfinished">Стартовый список по классам</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1367"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1797"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1366"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1796"/>
         <source>Start list by clubs</source>
         <translation type="unfinished">Стартовый список по клубам</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1392"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1391"/>
         <source>Start list for starters</source>
         <translation type="unfinished"></translation>
     </message>
     <message numerus="yes">
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1425"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1424"/>
         <source>Start list by classes for %n stage(s)</source>
         <translation type="unfinished">
             <numerusform>Стартовый список по классам</numerusform>
@@ -3501,7 +3521,7 @@ Use: File --&gt; Import --&gt; Event (*.qbe) to convert event to current version
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1459"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1458"/>
         <source>Start list by clubs for %n stage(s)</source>
         <translation type="unfinished">
             <numerusform>Стартовый список по клубам</numerusform>
@@ -3510,19 +3530,19 @@ Use: File --&gt; Import --&gt; Event (*.qbe) to convert event to current version
         </translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1482"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1508"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1481"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1507"/>
         <source>Results by classes</source>
         <translation type="unfinished">Результаты по классам</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1531"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1530"/>
         <source>Stage awards</source>
         <translation type="unfinished"></translation>
     </message>
     <message numerus="yes">
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1558"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1584"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1557"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1583"/>
         <source>Results after %n stage(s)</source>
         <oldsource>Results after %1 stages</oldsource>
         <translation type="unfinished">
@@ -3532,147 +3552,147 @@ Use: File --&gt; Import --&gt; Event (*.qbe) to convert event to current version
         </translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1606"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1605"/>
         <source>Awards after %1 stages</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1657"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1856"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1656"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1855"/>
         <source>length:</source>
         <translation type="unfinished">длина:</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1659"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1858"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1658"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1857"/>
         <source>climb:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1662"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1756"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1862"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1661"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1755"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1861"/>
         <source>Top</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1669"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1763"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1668"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1762"/>
         <source>St. Num</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1669"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1764"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1869"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1957"/>
+        <source>Name</source>
+        <translation type="unfinished">Имя</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/runsplugin.cpp" line="1670"/>
         <location filename="plugins/Runs/src/runsplugin.cpp" line="1765"/>
         <location filename="plugins/Runs/src/runsplugin.cpp" line="1870"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1958"/>
-        <source>Name</source>
-        <translation type="unfinished">Имя</translation>
-    </message>
-    <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1671"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1766"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1871"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1973"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1972"/>
         <source>Registration</source>
         <translation type="unfinished">Регистрация</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1672"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1767"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1671"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1766"/>
         <source>SI</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1673"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1768"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1672"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1767"/>
         <source>Start</source>
         <translation type="unfinished">Старт</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1764"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1763"/>
         <source>Class</source>
         <translation type="unfinished">Класс</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1812"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1811"/>
         <source>Preparing data</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1842"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1841"/>
         <source>Procesing class %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1861"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1860"/>
         <source>Laps</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1869"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1957"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1868"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1956"/>
         <source>Place</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1872"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1871"/>
         <source>Club</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1873"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1959"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1872"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1958"/>
         <source>Time</source>
         <translation type="unfinished">Время</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1874"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1960"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1873"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1959"/>
         <source>Loss</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1890"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2028"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1889"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2027"/>
         <source>NC</source>
         <comment>Not Competing</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1893"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2031"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1892"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2030"/>
         <source>DISQ</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1913"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2052"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1912"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2051"/>
         <source>Stage results</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1932"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1931"/>
         <source>Warning</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1932"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1931"/>
         <source>Export error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1934"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1933"/>
         <source>Information</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1934"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1933"/>
         <source>Results exported to %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1966"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1965"/>
         <source>FIN</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4610,27 +4630,27 @@ Use: File --&gt; Import --&gt; Event (*.qbe) to convert event to current version
 <context>
     <name>competitorsStatistics</name>
     <message>
-        <location filename="plugins/Competitors/qml/reports/competitorsStatistics.qml" line="10"/>
+        <location filename="plugins/Competitors/qml/competitorsStatistics.qml" line="10"/>
         <source>Competitors statistics</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Competitors/qml/reports/competitorsStatistics.qml" line="123"/>
+        <location filename="plugins/Competitors/qml/competitorsStatistics.qml" line="123"/>
         <source>Class name</source>
         <translation>Название класса</translation>
     </message>
     <message>
-        <location filename="plugins/Competitors/qml/reports/competitorsStatistics.qml" line="130"/>
+        <location filename="plugins/Competitors/qml/competitorsStatistics.qml" line="130"/>
         <source>maps</source>
         <translation>карты</translation>
     </message>
     <message>
-        <location filename="plugins/Competitors/qml/reports/competitorsStatistics.qml" line="132"/>
+        <location filename="plugins/Competitors/qml/competitorsStatistics.qml" line="132"/>
         <source>res</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Competitors/qml/reports/competitorsStatistics.qml" line="168"/>
+        <location filename="plugins/Competitors/qml/competitorsStatistics.qml" line="168"/>
         <source>Sum</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4638,23 +4658,23 @@ Use: File --&gt; Import --&gt; Event (*.qbe) to convert event to current version
 <context>
     <name>competitorsWithCardRent</name>
     <message>
-        <location filename="plugins/Runs/qml/reports/competitorsWithCardRent.qml" line="11"/>
+        <location filename="plugins/Runs/qml/competitorsWithCardRent.qml" line="11"/>
         <source>Competitors with rented cards in stage %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/qml/reports/competitorsWithCardRent.qml" line="78"/>
+        <location filename="plugins/Runs/qml/competitorsWithCardRent.qml" line="78"/>
         <source>Off</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/qml/reports/competitorsWithCardRent.qml" line="82"/>
+        <location filename="plugins/Runs/qml/competitorsWithCardRent.qml" line="82"/>
         <source>Ret</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/qml/reports/competitorsWithCardRent.qml" line="130"/>
-        <location filename="plugins/Runs/qml/reports/competitorsWithCardRent.qml" line="134"/>
+        <location filename="plugins/Runs/qml/competitorsWithCardRent.qml" line="130"/>
+        <location filename="plugins/Runs/qml/competitorsWithCardRent.qml" line="134"/>
         <source>Y</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4788,7 +4808,7 @@ Do you want to save your changes?</oldsource>
 <context>
     <name>error</name>
     <message>
-        <location filename="plugins/Receipts/qml/reports/error.qml" line="48"/>
+        <location filename="plugins/Receipts/qml/error.qml" line="48"/>
         <source>!!! Error !!!</source>
         <translation>!!! Ошибка !!!</translation>
     </message>
@@ -4796,22 +4816,22 @@ Do you want to save your changes?</oldsource>
 <context>
     <name>results</name>
     <message>
-        <location filename="plugins/Relays/qml/reports/results.qml" line="9"/>
+        <location filename="plugins/Relays/qml/results.qml" line="9"/>
         <source>Results</source>
         <translation type="unfinished">Результаты</translation>
     </message>
     <message>
-        <location filename="plugins/Relays/qml/reports/results.qml" line="19"/>
+        <location filename="plugins/Relays/qml/results.qml" line="19"/>
         <source>DISQ</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Relays/qml/reports/results.qml" line="21"/>
+        <location filename="plugins/Relays/qml/results.qml" line="21"/>
         <source>NC</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Relays/qml/reports/results.qml" line="23"/>
+        <location filename="plugins/Relays/qml/results.qml" line="23"/>
         <source>---</source>
         <translation type="unfinished">---</translation>
     </message>
@@ -4819,22 +4839,22 @@ Do you want to save your changes?</oldsource>
 <context>
     <name>results_condensed</name>
     <message>
-        <location filename="plugins/Relays/qml/reports/results_condensed.qml" line="9"/>
+        <location filename="plugins/Relays/qml/results_condensed.qml" line="9"/>
         <source>Results</source>
         <translation type="unfinished">Результаты</translation>
     </message>
     <message>
-        <location filename="plugins/Relays/qml/reports/results_condensed.qml" line="19"/>
+        <location filename="plugins/Relays/qml/results_condensed.qml" line="19"/>
         <source>DISQ</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Relays/qml/reports/results_condensed.qml" line="21"/>
+        <location filename="plugins/Relays/qml/results_condensed.qml" line="21"/>
         <source>NC</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Relays/qml/reports/results_condensed.qml" line="23"/>
+        <location filename="plugins/Relays/qml/results_condensed.qml" line="23"/>
         <source>---</source>
         <translation type="unfinished">---</translation>
     </message>
@@ -4842,7 +4862,7 @@ Do you want to save your changes?</oldsource>
 <context>
     <name>results_nstages</name>
     <message numerus="yes">
-        <location filename="plugins/Runs/qml/reports/results_nstages.qml" line="15"/>
+        <location filename="plugins/Runs/qml/results_nstages.qml" line="15"/>
         <source>Results after %n stage(s)</source>
         <oldsource>Results after %1 stages</oldsource>
         <translation type="unfinished">
@@ -4852,27 +4872,27 @@ Do you want to save your changes?</oldsource>
         </translation>
     </message>
     <message>
-        <location filename="plugins/Runs/qml/reports/results_nstages.qml" line="138"/>
+        <location filename="plugins/Runs/qml/results_nstages.qml" line="138"/>
         <source>Reg</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/qml/reports/results_nstages.qml" line="143"/>
+        <location filename="plugins/Runs/qml/results_nstages.qml" line="143"/>
         <source>Stage </source>
         <translation type="unfinished">Этап </translation>
     </message>
     <message>
-        <location filename="plugins/Runs/qml/reports/results_nstages.qml" line="146"/>
+        <location filename="plugins/Runs/qml/results_nstages.qml" line="146"/>
         <source>Time</source>
         <translation>Время</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/qml/reports/results_nstages.qml" line="148"/>
+        <location filename="plugins/Runs/qml/results_nstages.qml" line="148"/>
         <source>Loss</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/qml/reports/results_nstages.qml" line="186"/>
+        <location filename="plugins/Runs/qml/results_nstages.qml" line="186"/>
         <source>DISQ</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4880,7 +4900,7 @@ Do you want to save your changes?</oldsource>
 <context>
     <name>results_nstagesSpeaker</name>
     <message numerus="yes">
-        <location filename="plugins/Runs/qml/reports/results_nstagesSpeaker.qml" line="13"/>
+        <location filename="plugins/Runs/qml/results_nstagesSpeaker.qml" line="13"/>
         <source>Results after %n stage(s)</source>
         <oldsource>Results after %1 stages</oldsource>
         <translation type="unfinished">
@@ -4890,22 +4910,22 @@ Do you want to save your changes?</oldsource>
         </translation>
     </message>
     <message>
-        <location filename="plugins/Runs/qml/reports/results_nstagesSpeaker.qml" line="130"/>
+        <location filename="plugins/Runs/qml/results_nstagesSpeaker.qml" line="130"/>
         <source>Club</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/qml/reports/results_nstagesSpeaker.qml" line="133"/>
+        <location filename="plugins/Runs/qml/results_nstagesSpeaker.qml" line="133"/>
         <source>Time</source>
         <translation type="unfinished">Время</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/qml/reports/results_nstagesSpeaker.qml" line="135"/>
+        <location filename="plugins/Runs/qml/results_nstagesSpeaker.qml" line="135"/>
         <source>Loss</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/qml/reports/results_nstagesSpeaker.qml" line="166"/>
+        <location filename="plugins/Runs/qml/results_nstagesSpeaker.qml" line="166"/>
         <source>DISQ</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4913,27 +4933,27 @@ Do you want to save your changes?</oldsource>
 <context>
     <name>results_stage</name>
     <message>
-        <location filename="plugins/Runs/qml/reports/results_stage.qml" line="16"/>
+        <location filename="plugins/Runs/qml/results_stage.qml" line="16"/>
         <source>Results by classes</source>
         <translation>Результаты по классам</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/qml/reports/results_stage.qml" line="86"/>
+        <location filename="plugins/Runs/qml/results_stage.qml" line="86"/>
         <source>length: </source>
         <translation>длина: </translation>
     </message>
     <message>
-        <location filename="plugins/Runs/qml/reports/results_stage.qml" line="89"/>
+        <location filename="plugins/Runs/qml/results_stage.qml" line="89"/>
         <source>climb: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/qml/reports/results_stage.qml" line="129"/>
+        <location filename="plugins/Runs/qml/results_stage.qml" line="129"/>
         <source>DISQ</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/qml/reports/results_stage.qml" line="131"/>
+        <location filename="plugins/Runs/qml/results_stage.qml" line="131"/>
         <source>NC</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4941,50 +4961,90 @@ Do you want to save your changes?</oldsource>
 <context>
     <name>results_stageSpeaker</name>
     <message>
-        <location filename="plugins/Runs/qml/reports/results_stageSpeaker.qml" line="12"/>
+        <location filename="plugins/Runs/qml/results_stageSpeaker.qml" line="12"/>
         <source>Results by classes</source>
         <translation type="unfinished">Результаты по классам</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/qml/reports/results_stageSpeaker.qml" line="80"/>
+        <location filename="plugins/Runs/qml/results_stageSpeaker.qml" line="80"/>
         <source>length: </source>
         <translation type="unfinished">длина: </translation>
     </message>
     <message>
-        <location filename="plugins/Runs/qml/reports/results_stageSpeaker.qml" line="83"/>
+        <location filename="plugins/Runs/qml/results_stageSpeaker.qml" line="83"/>
         <source>climb: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/qml/reports/results_stageSpeaker.qml" line="127"/>
+        <location filename="plugins/Runs/qml/results_stageSpeaker.qml" line="127"/>
         <source>DISQ</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/qml/reports/results_stageSpeaker.qml" line="129"/>
+        <location filename="plugins/Runs/qml/results_stageSpeaker.qml" line="129"/>
         <source>NC</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
+    <name>results_stage_awards</name>
+    <message>
+        <location filename="plugins/Runs/qml/awards/results_stage_awards.qml" line="10"/>
+        <source>Results by classes</source>
+        <translation type="unfinished">Результаты по классам</translation>
+    </message>
+</context>
+<context>
+    <name>results_stage_awards-apple</name>
+    <message>
+        <location filename="plugins/Runs/qml/awards/results_stage_awards-apple.qml" line="10"/>
+        <source>Results by classes</source>
+        <translation type="unfinished">Результаты по классам</translation>
+    </message>
+</context>
+<context>
+    <name>results_stage_awards-apple2</name>
+    <message>
+        <location filename="plugins/Runs/qml/awards/results_stage_awards-apple2.qml" line="10"/>
+        <source>Results by classes</source>
+        <translation type="unfinished">Результаты по классам</translation>
+    </message>
+</context>
+<context>
+    <name>results_stage_awards-covid</name>
+    <message>
+        <location filename="plugins/Runs/qml/awards/results_stage_awards-covid.qml" line="10"/>
+        <source>Results by classes</source>
+        <translation type="unfinished">Результаты по классам</translation>
+    </message>
+</context>
+<context>
+    <name>results_stage_awards-hsh</name>
+    <message>
+        <location filename="plugins/Runs/qml/awards/results_stage_awards-hsh.qml" line="10"/>
+        <source>Results by classes</source>
+        <translation type="unfinished">Результаты по классам</translation>
+    </message>
+</context>
+<context>
     <name>sicard</name>
     <message>
-        <location filename="plugins/Receipts/qml/reports/sicard.qml" line="63"/>
+        <location filename="plugins/Receipts/qml/sicard.qml" line="63"/>
         <source>E</source>
         <translation>E</translation>
     </message>
     <message>
-        <location filename="plugins/Receipts/qml/reports/sicard.qml" line="83"/>
+        <location filename="plugins/Receipts/qml/sicard.qml" line="83"/>
         <source>Unassigned card !!!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Receipts/qml/reports/sicard.qml" line="92"/>
+        <location filename="plugins/Receipts/qml/sicard.qml" line="92"/>
         <source>It will not be included in the results.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Receipts/qml/reports/sicard.qml" line="185"/>
+        <location filename="plugins/Receipts/qml/sicard.qml" line="185"/>
         <source>FI</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4992,18 +5052,18 @@ Do you want to save your changes?</oldsource>
 <context>
     <name>startList_classes</name>
     <message>
-        <location filename="plugins/Relays/qml/reports/startList_classes.qml" line="9"/>
-        <location filename="plugins/Runs/qml/reports/startList_classes.qml" line="8"/>
+        <location filename="plugins/Relays/qml/startList_classes.qml" line="9"/>
+        <location filename="plugins/Runs/qml/startList_classes.qml" line="8"/>
         <source>Start list by classes</source>
         <translation>Стартовый список по классам</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/qml/reports/startList_classes.qml" line="82"/>
+        <location filename="plugins/Runs/qml/startList_classes.qml" line="82"/>
         <source>length: </source>
         <translation>длина: </translation>
     </message>
     <message>
-        <location filename="plugins/Runs/qml/reports/startList_classes.qml" line="85"/>
+        <location filename="plugins/Runs/qml/startList_classes.qml" line="85"/>
         <source>climb: </source>
         <translation type="unfinished"></translation>
     </message>
@@ -5011,7 +5071,7 @@ Do you want to save your changes?</oldsource>
 <context>
     <name>startList_classes_nstages</name>
     <message numerus="yes">
-        <location filename="plugins/Runs/qml/reports/startList_classes_nstages.qml" line="14"/>
+        <location filename="plugins/Runs/qml/startList_classes_nstages.qml" line="14"/>
         <source>Start list by classes for %n stage(s)</source>
         <oldsource>Start list by classes</oldsource>
         <translation type="unfinished">
@@ -5021,22 +5081,22 @@ Do you want to save your changes?</oldsource>
         </translation>
     </message>
     <message>
-        <location filename="plugins/Runs/qml/reports/startList_classes_nstages.qml" line="112"/>
+        <location filename="plugins/Runs/qml/startList_classes_nstages.qml" line="112"/>
         <source>Bib</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/qml/reports/startList_classes_nstages.qml" line="118"/>
+        <location filename="plugins/Runs/qml/startList_classes_nstages.qml" line="118"/>
         <source>Registration</source>
         <translation type="unfinished">Регистрация</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/qml/reports/startList_classes_nstages.qml" line="125"/>
+        <location filename="plugins/Runs/qml/startList_classes_nstages.qml" line="125"/>
         <source>SI</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/qml/reports/startList_classes_nstages.qml" line="131"/>
+        <location filename="plugins/Runs/qml/startList_classes_nstages.qml" line="131"/>
         <source>Stage</source>
         <translation type="unfinished">Этап</translation>
     </message>
@@ -5044,13 +5104,13 @@ Do you want to save your changes?</oldsource>
 <context>
     <name>startList_clubs</name>
     <message>
-        <location filename="plugins/Relays/qml/reports/startList_clubs.qml" line="9"/>
-        <location filename="plugins/Runs/qml/reports/startList_clubs.qml" line="8"/>
+        <location filename="plugins/Relays/qml/startList_clubs.qml" line="9"/>
+        <location filename="plugins/Runs/qml/startList_clubs.qml" line="8"/>
         <source>Start list by clubs</source>
         <translation>Стартовый список по клубам</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/qml/reports/startList_clubs.qml" line="136"/>
+        <location filename="plugins/Runs/qml/startList_clubs.qml" line="136"/>
         <source>R </source>
         <translation type="unfinished"></translation>
     </message>
@@ -5058,7 +5118,7 @@ Do you want to save your changes?</oldsource>
 <context>
     <name>startList_clubs_nstages</name>
     <message numerus="yes">
-        <location filename="plugins/Runs/qml/reports/startList_clubs_nstages.qml" line="14"/>
+        <location filename="plugins/Runs/qml/startList_clubs_nstages.qml" line="14"/>
         <source>Start list by clubs for %n stage(s)</source>
         <oldsource>Start list by clubs</oldsource>
         <translation type="unfinished">
@@ -5068,22 +5128,22 @@ Do you want to save your changes?</oldsource>
         </translation>
     </message>
     <message>
-        <location filename="plugins/Runs/qml/reports/startList_clubs_nstages.qml" line="118"/>
+        <location filename="plugins/Runs/qml/startList_clubs_nstages.qml" line="118"/>
         <source>Bib</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/qml/reports/startList_clubs_nstages.qml" line="124"/>
+        <location filename="plugins/Runs/qml/startList_clubs_nstages.qml" line="124"/>
         <source>Registration</source>
         <translation type="unfinished">Регистрация</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/qml/reports/startList_clubs_nstages.qml" line="131"/>
+        <location filename="plugins/Runs/qml/startList_clubs_nstages.qml" line="131"/>
         <source>SI</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/qml/reports/startList_clubs_nstages.qml" line="138"/>
+        <location filename="plugins/Runs/qml/startList_clubs_nstages.qml" line="138"/>
         <source>Stage</source>
         <translation type="unfinished">Этап</translation>
     </message>
@@ -5091,7 +5151,7 @@ Do you want to save your changes?</oldsource>
 <context>
     <name>startList_starters</name>
     <message>
-        <location filename="plugins/Runs/qml/reports/startList_starters.qml" line="9"/>
+        <location filename="plugins/Runs/qml/startList_starters.qml" line="9"/>
         <source>Start list for starters</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5099,17 +5159,17 @@ Do you want to save your changes?</oldsource>
 <context>
     <name>table</name>
     <message>
-        <location filename="plugins/Classes/qml/reports/table.qml" line="40"/>
+        <location filename="plugins/Classes/qml/table.qml" line="40"/>
         <source>id</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Classes/qml/reports/table.qml" line="45"/>
+        <location filename="plugins/Classes/qml/table.qml" line="45"/>
         <source>name</source>
         <translation>имя</translation>
     </message>
     <message>
-        <location filename="plugins/Classes/qml/reports/table.qml" line="50"/>
+        <location filename="plugins/Classes/qml/table.qml" line="50"/>
         <source>Course ID</source>
         <translation type="unfinished"></translation>
     </message>

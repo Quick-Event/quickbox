@@ -121,6 +121,15 @@ int main(int argc, char *argv[])
 			}
 			qfInfo() << "Installing translator file:" << file_name << " ... " << (ok? "OK": "ERROR");
 		}
+
+		{
+			QTranslator *translator = new QTranslator(&app);
+			bool ok = translator->load(QLocale(lc_name), QString("qtbase"), QString("_"), QString(":/i18n"));
+			if (ok) {
+				ok = QCoreApplication::installTranslator(translator);
+			}
+			qfInfo() << "Installing translator file: qtbase ... " << (ok ? "OK" : "ERROR");
+		}
 	}
 
 	MainWindow main_window;
