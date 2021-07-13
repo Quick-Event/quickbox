@@ -141,7 +141,7 @@
     <message>
         <location filename="src/sql/dbfsdriver.cpp" line="109"/>
         <source>Connection &apos;%1&apos; is not open!</source>
-        <translation>Připojení &apos;%1&apos; není otevřeno!</translation>
+        <translation>Spojení &apos;%1&apos; není navázáno!</translation>
     </message>
 </context>
 <context>
