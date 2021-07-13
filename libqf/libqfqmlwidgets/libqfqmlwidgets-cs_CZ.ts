@@ -29,12 +29,12 @@
     <message>
         <location filename="src/exporttableviewwidget.ui" line="42"/>
         <source>header</source>
-        <translation>záhlaví</translation>
+        <translation>Záhlaví</translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="60"/>
         <source>lines from</source>
-        <translation>řádky od</translation>
+        <translation>Řádky od</translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="89"/>
@@ -74,7 +74,7 @@
     <message>
         <location filename="src/exporttableviewwidget.ui" line="237"/>
         <source>quotes</source>
-        <translation>uvozovky</translation>
+        <translation>Uvozovky</translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="243"/>
@@ -94,7 +94,7 @@
     <message>
         <location filename="src/exporttableviewwidget.ui" line="269"/>
         <source>quote char</source>
-        <translation>znak uvozovek</translation>
+        <translation>uvozovací znak</translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="282"/>
@@ -107,12 +107,12 @@
     <message>
         <location filename="src/headerview.cpp" line="66"/>
         <source>Resize section to contents</source>
-        <translation>Rozšířit sekci podle obsahu</translation>
+        <translation>Přizpůsobit šířku sekce obsahu</translation>
     </message>
     <message>
         <location filename="src/headerview.cpp" line="68"/>
         <source>Resize all sections to contents</source>
-        <translation>Rozšířit všechny sekce podle obsahu</translation>
+        <translation>Přizpůsobit šířku všech sekcí obsahu</translation>
     </message>
     <message>
         <location filename="src/headerview.cpp" line="69"/>
@@ -193,7 +193,7 @@
     <message>
         <location filename="src/tableview.cpp" line="1569"/>
         <source>Resize columns to contents</source>
-        <translation>Rozšířit sloupce podle obsahu</translation>
+        <translation>Přizpůsobit šířku sloupce obsahu</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1579"/>
@@ -671,7 +671,7 @@
     <message>
         <location filename="src/framework/logwidget.ui" line="102"/>
         <source>Resize columns to fit content</source>
-        <translation>Rozšířit sloupce podle obsahu</translation>
+        <translation>Přizpůsobit šířku sloupců obsahu</translation>
     </message>
     <message>
         <location filename="src/framework/logwidget.ui" line="116"/>
@@ -756,7 +756,7 @@
     <message>
         <location filename="src/internal/dlgtableviewcopyspecial.ui" line="43"/>
         <source>fields quotes</source>
-        <translation type="unfinished"></translation>
+        <translation>uvozovací znak</translation>
     </message>
     <message>
         <location filename="src/internal/dlgtableviewcopyspecial.ui" line="50"/>
