@@ -46,7 +46,7 @@
     <message>
         <location filename="src/reportoptionsdialog.ui" line="107"/>
         <source>An question mark (?) in pattern stands for (matches) any single character; a asterisk (*) matches any sequence of zero or more characters.</source>
-        <translation>Otazník (?) zastupuje libovolný znak, hvězdička (*) zastupuje skupinu 0–n libovolných znaků.</translation>
+        <translation>Otazník (?) zastupuje jeden libovolný znak, hvězdička (*) zastupuje posloupnost 0–n libovolných znaků.</translation>
     </message>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="110"/>
