@@ -193,7 +193,7 @@
     <message>
         <location filename="src/tableview.cpp" line="1569"/>
         <source>Resize columns to contents</source>
-        <translation>Přizpůsobit šířku sloupce obsahu</translation>
+        <translation>Přizpůsobit šířku sloupců obsahu</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1579"/>
