@@ -118,7 +118,7 @@
     <message>
         <location filename="plugins/CardReader/src/cardreaderplugin.cpp" line="59"/>
         <source>Card reader</source>
-        <translation type="unfinished">Vyčítání SI čipů</translation>
+        <translation>Vyčítání SI čipů</translation>
     </message>
     <message>
         <location filename="plugins/CardReader/src/cardreaderplugin.cpp" line="160"/>
@@ -377,14 +377,16 @@ Seznam dostupných portů:
     <message>
         <location filename="plugins/CardReader/src/cardreaderwidget.cpp" line="787"/>
         <source>Competitor off-race</source>
-        <translation type="unfinished"></translation>
+        <translation>Nestartující závodník</translation>
     </message>
     <message>
         <location filename="plugins/CardReader/src/cardreaderwidget.cpp" line="788"/>
         <source>Runner to which you are assinging SI card
 is currently flagged &quot;not running&quot; for this stage (race).
 If you continue, this flag will be removed</source>
-        <translation type="unfinished"></translation>
+        <translation>SI čip je přiřazován k závodníkovi, který má nastaveno,
+že v této etapě (v tomto závodu) nestartuje.
+Pokud budete pokračovat, toto označení bude odebráno.</translation>
     </message>
     <message>
         <location filename="plugins/CardReader/src/cardreaderwidget.cpp" line="1084"/>
@@ -606,7 +608,7 @@ If you continue, this flag will be removed</source>
     <message>
         <location filename="plugins/Classes/src/classesplugin.cpp" line="43"/>
         <source>Classes</source>
-        <translation type="unfinished">Kategorie</translation>
+        <translation>Kategorie</translation>
     </message>
     <message>
         <location filename="plugins/Classes/src/classesplugin.cpp" line="270"/>
@@ -1071,7 +1073,7 @@ If you continue, this flag will be removed</source>
     <message>
         <location filename="plugins/Competitors/src/competitorsplugin.cpp" line="69"/>
         <source>&amp;Competitors</source>
-        <translation type="unfinished">&amp;Závodníci</translation>
+        <translation>&amp;Závodníci</translation>
     </message>
     <message>
         <location filename="plugins/Competitors/src/competitorsplugin.cpp" line="73"/>
@@ -1538,7 +1540,7 @@ If you continue, this flag will be removed</source>
     <message>
         <location filename="plugins/Event/qml/DbSchema.qml" line="457"/>
         <source>Data version</source>
-        <translation type="unfinished"></translation>
+        <translation>Verze dat</translation>
     </message>
 </context>
 <context>
@@ -2893,7 +2895,7 @@ Použij: Soubor --&gt; Importovat --&gt; Závod (*.qbe) pro konverzi dat do aktu
     <message>
         <location filename="plugins/Receipts/src/receiptsplugin.cpp" line="52"/>
         <source>Receipts</source>
-        <translation type="unfinished">Mezičasy</translation>
+        <translation>Mezičasy</translation>
     </message>
     <message>
         <location filename="plugins/Receipts/src/receiptsplugin.cpp" line="391"/>
@@ -3291,7 +3293,7 @@ Použij: Soubor --&gt; Importovat --&gt; Závod (*.qbe) pro konverzi dat do aktu
     <message>
         <location filename="plugins/Relays/src/relaysplugin.cpp" line="73"/>
         <source>&amp;Relays</source>
-        <translation type="unfinished">&amp;Štafety</translation>
+        <translation>&amp;Štafety</translation>
     </message>
 </context>
 <context>
@@ -3528,7 +3530,7 @@ Použij: Soubor --&gt; Importovat --&gt; Závod (*.qbe) pro konverzi dat do aktu
     <message>
         <location filename="plugins/Runs/src/runsplugin.cpp" line="119"/>
         <source>&amp;Runs</source>
-        <translation type="unfinished">Úseky / &amp;Etapy</translation>
+        <translation>Úseky / &amp;Etapy</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/runsplugin.cpp" line="127"/>
@@ -4537,7 +4539,7 @@ Použij: Soubor --&gt; Importovat --&gt; Závod (*.qbe) pro konverzi dat do aktu
     <message>
         <location filename="plugins/Speaker/src/speakerplugin.cpp" line="28"/>
         <source>&amp;Speaker</source>
-        <translation type="unfinished">&amp;Komentátor</translation>
+        <translation>&amp;Komentátor</translation>
     </message>
 </context>
 <context>
@@ -5055,7 +5057,7 @@ Přejete si uložit změny?</translation>
     <message>
         <location filename="plugins/Runs/qml/awards/results_stage_awards.qml" line="10"/>
         <source>Results by classes</source>
-        <translation type="unfinished">Výsledky po kategoriích</translation>
+        <translation>Výsledky po kategoriích</translation>
     </message>
 </context>
 <context>
@@ -5063,7 +5065,7 @@ Přejete si uložit změny?</translation>
     <message>
         <location filename="plugins/Runs/qml/awards/results_stage_awards-apple.qml" line="10"/>
         <source>Results by classes</source>
-        <translation type="unfinished">Výsledky po kategoriích</translation>
+        <translation>Výsledky po kategoriích</translation>
     </message>
 </context>
 <context>
@@ -5071,7 +5073,7 @@ Přejete si uložit změny?</translation>
     <message>
         <location filename="plugins/Runs/qml/awards/results_stage_awards-apple2.qml" line="10"/>
         <source>Results by classes</source>
-        <translation type="unfinished">Výsledky po kategoriích</translation>
+        <translation>Výsledky po kategoriích</translation>
     </message>
 </context>
 <context>
@@ -5079,7 +5081,7 @@ Přejete si uložit změny?</translation>
     <message>
         <location filename="plugins/Runs/qml/awards/results_stage_awards-covid.qml" line="10"/>
         <source>Results by classes</source>
-        <translation type="unfinished">Výsledky po kategoriích</translation>
+        <translation>Výsledky po kategoriích</translation>
     </message>
 </context>
 <context>
@@ -5087,7 +5089,7 @@ Přejete si uložit změny?</translation>
     <message>
         <location filename="plugins/Runs/qml/awards/results_stage_awards-hsh.qml" line="10"/>
         <source>Results by classes</source>
-        <translation type="unfinished">Výsledky po kategoriích</translation>
+        <translation>Výsledky po kategoriích</translation>
     </message>
 </context>
 <context>
