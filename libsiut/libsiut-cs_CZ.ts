@@ -44,12 +44,12 @@
     <message>
         <location filename="src/device/commport.cpp" line="60"/>
         <source>%1 connected OK</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 připojeno OK</translation>
     </message>
     <message>
         <location filename="src/device/commport.cpp" line="64"/>
         <source>%1 connect ERROR: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 chyba při připojování: %2</translation>
     </message>
     <message>
         <location filename="src/device/commport.cpp" line="74"/>
@@ -62,7 +62,7 @@
     <message>
         <location filename="src/device/sidevicedriver.cpp" line="119"/>
         <source>Garbage received, stripping %1 characters from beginning of buffer</source>
-        <translation type="unfinished"></translation>
+        <translation>Přijata nevalidní data, odstraňuji %1 znaků ze začátku vyrovnávací paměti</translation>
     </message>
     <message>
         <location filename="src/device/sidevicedriver.cpp" line="136"/>
