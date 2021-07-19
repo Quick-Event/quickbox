@@ -90,6 +90,19 @@ Report {
 							}
 							textStyle: myStyle.textStyleBold
 						}
+						Cell {
+							objectName: "minuteHeaderCell2"
+							width: "%"
+							text: {
+								var t = detail.data(detail.currentIndex, "startTimeText");
+								if(t !== f1.prev.startTimeText) {
+									f1.prev.startTimeText = t;
+									return t;
+								}
+								return "";
+							}
+							textStyle: myStyle.textStyleBold
+						}
 					}
 					Frame {
 						objectName: "minuteFrame"

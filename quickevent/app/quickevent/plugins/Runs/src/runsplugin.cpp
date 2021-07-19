@@ -1187,6 +1187,7 @@ qf::core::utils::TreeTable RunsPlugin::startListClubsTable(const quickevent::gui
 qf::core::utils::TreeTable RunsPlugin::startListStartersTable(const QString &where_expr)
 {
 	int stage_id = selectedStageId();
+	auto start00_epoch_sec = getPlugin<EventPlugin>()->stageStartDateTime(stage_id).toSecsSinceEpoch();
 
 	qfs::QueryBuilder qb;
 	qb.select2("competitors", "registration, id, startNumber")
@@ -1207,6 +1208,7 @@ qf::core::utils::TreeTable RunsPlugin::startListStartersTable(const QString &whe
 	m.setQueryParameters(qpm);
 	m.reload();
 	auto tt = m.toTreeTable();
+	addStartTimeTextToClass(tt,start00_epoch_sec, quickevent::gui::ReportOptionsDialog::StartTimeFormat::DayTime);
 	tt.setValue("stageId", stage_id);
 	tt.setValue("event", getPlugin<EventPlugin>()->eventConfig()->value("event"));
 	tt.setValue("stageStart", getPlugin<EventPlugin>()->stageStartDateTime(stage_id));
