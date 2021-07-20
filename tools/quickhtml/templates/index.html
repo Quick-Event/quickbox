@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Etapa E{{ stage }}{% endblock %}
+{% block body %}
+  <h1>{{ self.title() }}</h1>
+  <h2>{{ event.name }}</h2>
+  <h3>{{ event.place }}</h3>
+  <hr>
+  <h2>Výsledky</h2>
+{%- for cls in classes %}
+<a href="results/{{ cls.ascii }}.html">{{ cls.name }}</a>{% if not loop.last %} | {% endif %}
+{%- endfor %}  
+  <hr />
+  <h2>Startovky</h2>
+{%- for cls in classes %}
+<a href="starts/{{ cls.ascii }}.html">{{ cls.name }}</a>{% if not loop.last %} | {% endif %}
+{%- endfor %}  
+  <hr />
+    <a href="../index.html">Hlavní strana</a>
+{% endblock %}
