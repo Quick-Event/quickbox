@@ -511,7 +511,7 @@ Pokud budete pokračovat, toto označení bude odebráno.</translation>
     <message>
         <location filename="plugins/Oris/src/chooseoriseventdialog.cpp" line="42"/>
         <source>Loading event list from Oris ...</source>
-        <translation>Nahrávám seznam zavodů z ORISu...</translation>
+        <translation>Načítám seznam závodů z ORISu...</translation>
     </message>
     <message>
         <location filename="plugins/Oris/src/chooseoriseventdialog.cpp" line="59"/>
@@ -1225,7 +1225,7 @@ Pokud budete pokračovat, toto označení bude odebráno.</translation>
     <message>
         <location filename="plugins/Competitors/src/competitorswidget.cpp" line="313"/>
         <source>Set class in selected rows</source>
-        <translation>Změnit kategorii ve vybraných řádcích</translation>
+        <translation>Nastavit kategorii ve vybraných řádcích</translation>
     </message>
     <message>
         <location filename="plugins/Competitors/src/competitorswidget.cpp" line="325"/>
@@ -1235,7 +1235,7 @@ Pokud budete pokračovat, toto označení bude odebráno.</translation>
     <message>
         <location filename="plugins/Competitors/src/competitorswidget.cpp" line="326"/>
         <source>Select class</source>
-        <translation>Vybrat kategorii</translation>
+        <translation>Vyberte kategorii</translation>
     </message>
 </context>
 <context>
@@ -1243,7 +1243,7 @@ Pokud budete pokračovat, toto označení bude odebráno.</translation>
     <message>
         <location filename="plugins/Event/src/connectdbdialogwidget.ui" line="14"/>
         <source>Select database</source>
-        <translation>Vybrat databázi</translation>
+        <translation>Vyberte databázi</translation>
     </message>
     <message>
         <location filename="plugins/Event/src/connectdbdialogwidget.ui" line="32"/>
@@ -1305,7 +1305,7 @@ Pokud budete pokračovat, toto označení bude odebráno.</translation>
     <message>
         <location filename="plugins/Event/src/connectdbdialogwidget.ui" line="239"/>
         <source>Directory where to store event files (*.qbe)</source>
-        <translation>Adresář, kam jsou ukládány soubory závodu (*.qbe)</translation>
+        <translation>Adresář, do kterého mají být ukládány soubory závodu (*.qbe)</translation>
     </message>
     <message>
         <location filename="plugins/Event/src/connectdbdialogwidget.ui" line="249"/>
@@ -1890,7 +1890,7 @@ To connect to a database or to choose a working directory where event files can 
         <translation>Databáze není připojena.
 Funkce programu budou omezeny.
 
-Připojení k databázi nebo vybrání pracovního adresáře, kam jsou ukládány soubory závodu, lze provést z:
+Připojení k databázi nebo vybrání pracovního adresáře, do kterého jsou ukládány soubory závodu, lze provést z:
  &quot;Soubor --&gt; Připojit k databázi&quot; </translation>
     </message>
     <message>
@@ -1966,7 +1966,7 @@ Začněte vytvořením nebo importováním nového závodu.</translation>
     <message>
         <location filename="plugins/Event/src/eventplugin.cpp" line="905"/>
         <source>select event to open:</source>
-        <translation>Vyberte závod pro otevření:</translation>
+        <translation>Vyberte závod k otevření:</translation>
     </message>
     <message>
         <location filename="plugins/Event/src/eventplugin.cpp" line="905"/>
@@ -2112,7 +2112,7 @@ Použij: Soubor --&gt; Importovat --&gt; Závod (*.qbe) pro konverzi dat do aktu
     <message>
         <location filename="plugins/Event/src/services/emmaclientwidget.ui" line="74"/>
         <source>Enable export IOF XML 3.0 file</source>
-        <translation>Zapnout export IOF XML 3.0 souboru</translation>
+        <translation>Zapnout exportování IOF XML 3.0 souboru</translation>
     </message>
     <message>
         <location filename="plugins/Event/src/services/emmaclientwidget.ui" line="96"/>
@@ -2247,7 +2247,7 @@ Použij: Soubor --&gt; Importovat --&gt; Závod (*.qbe) pro konverzi dat do aktu
     <message>
         <location filename="plugins/Event/src/eventdialogwidget.ui" line="168"/>
         <source>Import ID</source>
-        <translation>Importovat ID</translation>
+        <translation>Importované ID</translation>
     </message>
     <message>
         <location filename="plugins/Event/src/eventdialogwidget.ui" line="188"/>
@@ -2448,7 +2448,7 @@ Použij: Soubor --&gt; Importovat --&gt; Závod (*.qbe) pro konverzi dat do aktu
     <message>
         <location filename="plugins/Runs/src/eventstatisticsoptions.ui" line="27"/>
         <source>Table auto refresh</source>
-        <translation>Automaticky obnovovat tabulku</translation>
+        <translation>Automatické obnovování tabulky</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/eventstatisticsoptions.ui" line="36"/>
@@ -2809,7 +2809,7 @@ Použij: Soubor --&gt; Importovat --&gt; Závod (*.qbe) pro konverzi dat do aktu
     <message>
         <location filename="plugins/Oris/src/orisimporter.cpp" line="131"/>
         <source>Cannot find Oris import ID.</source>
-        <translation>ORIS ID importovaného závodu nelze najít.</translation>
+        <translation>Nelze najít ORIS ID pro provedení synchronizace.</translation>
     </message>
     <message>
         <location filename="plugins/Oris/src/orisimporter.cpp" line="661"/>
@@ -2981,11 +2981,10 @@ Použij: Soubor --&gt; Importovat --&gt; Závod (*.qbe) pro konverzi dat do aktu
     <message>
         <location filename="plugins/Receipts/src/receiptsprinteroptionsdialog.ui" line="133"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;There are two options how to configure the casch printer on Windows: &lt;/p&gt;&lt;ol style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;&lt;li style=&quot; margin-top:12px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;\\.\LPT1&lt;/li&gt;&lt;li style=&quot; margin-top:0px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;\\computer_name\printer_share_name&lt;/li&gt;&lt;/ol&gt;&lt;p&gt;When we want USB connected printer be accessible from LPT1 we need to : &lt;/p&gt;&lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;&lt;li style=&quot; margin-top:12px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Create given printer shared&lt;/li&gt;&lt;li style=&quot; margin-top:0px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;by &amp;quot;net use LPT1 \\computer_name\printer_share_name&amp;quot;&lt;/li&gt;&lt;/ul&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Existují dvě možnosti jak nastavit textovou tiskárnu na OS Windows: &lt;/p&gt;
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Existují dvě možnosti jak nastavit znakovou tiskárnu na OS Windows: &lt;/p&gt;
 &lt;ol style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;
 &lt;li style=&quot; margin-top:12px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;\\.\LPT1&lt;/li&gt;
-&lt;li style=&quot; margin-top:0px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;\\jmeno_pocitace\jmeno_sdilene_tiskarny&lt;/li&gt;&lt;/ol&gt;
-&lt;p&gt;Pokud chceme, aby byla USB tiskárna přístupná z LPT1 je nutné: &lt;/p&gt;
+&lt;li style=&quot; margin-top:0px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;\\jmeno_pocitace\jmeno_sdilene_tiskarny&lt;/li&gt;&lt;/ol&gt;&lt;p&gt;Pokud chceme, aby byla USB tiskárna přístupná z LPT1 je nutné: &lt;/p&gt;
 &lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;
 &lt;li style=&quot; margin-top:12px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Nastavit tiskárnu jako sdílenou&lt;/li&gt;
 &lt;li style=&quot; margin-top:0px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;pomocí &amp;quot;net use LPT1 \\jmeno_pocitace\jmeno_sdilene_tiskarny&amp;quot;&lt;/li&gt;&lt;/ul&gt;&lt;/body&gt;&lt;/html&gt;</translation>
@@ -3751,12 +3750,12 @@ Použij: Soubor --&gt; Importovat --&gt; Závod (*.qbe) pro konverzi dat do aktu
     <message>
         <location filename="plugins/Runs/src/services/resultsexporterwidget.ui" line="14"/>
         <source>Results Exporter</source>
-        <translation>Služba pro export výsledků</translation>
+        <translation>Služba pro exportování výsledků</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/services/resultsexporterwidget.ui" line="33"/>
         <source>Export interval</source>
-        <translation>Interval pro export</translation>
+        <translation>Interval pro exportování</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/services/resultsexporterwidget.ui" line="40"/>
@@ -4188,7 +4187,7 @@ Použij: Soubor --&gt; Importovat --&gt; Závod (*.qbe) pro konverzi dat do aktu
     <message>
         <location filename="plugins/Runs/src/runstablewidget.cpp" line="234"/>
         <source>Load times from card in selected rows</source>
-        <translation>Nahrát časy z čipu ve vybraných řádcích</translation>
+        <translation>Načíst časy z čipu ve vybraných řádcích</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/runstablewidget.cpp" line="235"/>
@@ -4199,7 +4198,7 @@ Použij: Soubor --&gt; Importovat --&gt; Závod (*.qbe) pro konverzi dat do aktu
     <message>
         <location filename="plugins/Runs/src/runstablewidget.cpp" line="237"/>
         <source>Shift start times in selected rows</source>
-        <translation>Posunout čas startu ve vybraných řádcích</translation>
+        <translation>Posunout startovní čas ve vybraných řádcích</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/runstablewidget.cpp" line="238"/>
@@ -4628,7 +4627,7 @@ Použij: Soubor --&gt; Importovat --&gt; Závod (*.qbe) pro konverzi dat do aktu
     <message>
         <location filename="plugins/Oris/src/txtimporter.cpp" line="35"/>
         <source>Import windows-1250 coded fixed column size text files in CSOS format.</source>
-        <translation>Import souboru ve formátu ČSOS a kódování Windows-1250.</translation>
+        <translation>Importování souboru ve formátu ČSOS a kódování Windows-1250.</translation>
     </message>
     <message>
         <location filename="plugins/Oris/src/txtimporter.cpp" line="36"/>
@@ -4662,7 +4661,7 @@ Použij: Soubor --&gt; Importovat --&gt; Závod (*.qbe) pro konverzi dat do aktu
     <message>
         <location filename="plugins/Oris/src/txtimporter.cpp" line="96"/>
         <source>Each row should have following columns: &lt;ol&gt;&lt;li&gt;Registration&lt;/li&gt;&lt;li&gt;Class&lt;/li&gt;&lt;li&gt;SI&lt;/li&gt;&lt;li&gt;LastName&lt;/li&gt;&lt;li&gt;FirstName&lt;/li&gt;&lt;li&gt;Licence&lt;/li&gt;&lt;li&gt;Note&lt;/li&gt;&lt;/ol&gt;</source>
-        <translation>Každá řádka by měla mít následující sloupce: &lt;ol&gt;&lt;li&gt;registrační číslo&lt;/li&gt;&lt;li&gt;kategorie&lt;/li&gt;&lt;li&gt;číslo SI čipu&lt;/li&gt;&lt;li&gt;příjmení&lt;/li&gt;&lt;li&gt;jméno&lt;/li&gt;&lt;li&gt;licence&lt;/li&gt;&lt;li&gt;poznámka&lt;/li&gt;&lt;/ol&gt;</translation>
+        <translation>Každá řádka by měla mít následující sloupce: &lt;ol&gt;&lt;li&gt;registrační číslo&lt;/li&gt;&lt;li&gt;kategorie&lt;/li&gt;&lt;li&gt;číslo SI čipu&lt;/li&gt;&lt;li&gt;příjmení&lt;/li&gt;&lt;li&gt;křestní jméno&lt;/li&gt;&lt;li&gt;licence&lt;/li&gt;&lt;li&gt;poznámka&lt;/li&gt;&lt;/ol&gt;</translation>
     </message>
     <message>
         <location filename="plugins/Oris/src/txtimporter.cpp" line="110"/>
@@ -4758,7 +4757,7 @@ Použij: Soubor --&gt; Importovat --&gt; Závod (*.qbe) pro konverzi dat do aktu
     <message>
         <location filename="plugins/Classes/src/drawing/classitem.cpp" line="250"/>
         <source>vacants before: %1, every: %2, after: %3&lt;br/&gt;</source>
-        <translation>vakanti před: %1, každých: %2, po: %3&lt;br/&gt;</translation>
+        <translation>vakantů před: %1, vakant každých: %2, vakantů po: %3&lt;br/&gt;</translation>
     </message>
     <message>
         <location filename="plugins/Classes/src/drawing/classitem.cpp" line="251"/>
