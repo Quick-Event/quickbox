@@ -78,12 +78,25 @@ Report {
 						fill: Brush {color: Color {def: "khaki"} }
 						Cell {
 							objectName: "minuteHeaderCell"
-							width: "%"
+							width: "10"
 							text: {
 								var t = detail.data(detail.currentIndex, "startTimeMin");
 								//console.warn(f1.prev, f1.prev.startTimeMin, t)
 								if(t !== f1.prev.startTimeMin) {
 									f1.prev.startTimeMin = t;
+									return t;
+								}
+								return "";
+							}
+							textStyle: myStyle.textStyleBold
+						}
+						Cell {
+							objectName: "minuteHeaderCell2"
+							width: "%"
+							text: {
+								var t = detail.data(detail.currentIndex, "startTimeText");
+								if(t !== f1.prev.startTimeText) {
+									f1.prev.startTimeText = t;
 									return t;
 								}
 								return "";
@@ -97,7 +110,7 @@ Report {
 						layout: Frame.LayoutHorizontal
 						Para {
 							objectName: "minuteCellClassName"
-							width: 9
+							width: 10
 							text: detail.data(detail.currentIndex, "classes.name");
 						}
 						Para {
