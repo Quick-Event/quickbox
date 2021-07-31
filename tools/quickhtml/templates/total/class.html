@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}Celkové výsledky {{ cls.name }}{% endblock %}
+{% block body %}
+  <h1>{{ self.title() }}</h1>
+  <h2>{{ event.name }}</h2>
+  <h3>{{ event.place }}</h3>
+	<p>
+{%- for cls in classes %}
+<a href="{{ cls.ascii }}.html">{{ cls.name }}</a>{% if not loop.last %} | {% endif %}
+{%- endfor %}  
+	</p>
+	<h3>{{ cls.name }}</h3>
+	<table>
+		<tr>
+			<th align="left">Poř</th>
+			<th align="left">Jméno</th>
+			<th align="left">Registrace</th>
+			<th align="right">Celkem</th>
+{%- for stg in range(1, event['stageCount'] | int +1) %}
+      <th colspan="2" align="center">E{{ stg }}</th>
+{%- endfor %}
+			<th align="left">St</th>
+    </tr>
+{#- res.stages[].stat: 0 ... OK, 1 ... DISK, 2 ... DNS, 3 ... DNF #}
+{#- res.stat: 0 ... OK, 1+ ... cumulative stages stats #}
+{%- macro result(stat, time, show_hours=False) -%}
+  {%- if stat == 0 -%}
+    {{ time | timefmt(show_hours) }}
+  {%- elif stat == 1 -%}
+    DISK
+  {%- elif stat == 2 -%}
+    NEST
+  {%- elif stat == 3 -%}
+    NEDO
+  {%- else -%}
+    ???
+  {%- endif -%}
+{%- endmacro -%}
+{%- macro rank(stat, notcomp, rank) %}
+  {%- if notcomp or stat > 0 %}&nbsp;{% else %}{{ rank }}{% endif %}
+{%- endmacro %}
+{%- for res in results %}
+  {%- if loop.changed(res.stat) and loop.previtem is defined and loop.previtem.stat == 0 %}
+  <tr class="sep"><td colspan="{{ 5 + event['stageCount'] | int * 2 }}"></td></tr>
+  {%- endif %}
+		<tr class="{{ loop.cycle('odd', 'even') }}">
+      <td>{{ rank(res.stat, res.notcompeting, loop.index) }}</td>
+      <td>{{ res.fullname }}</td>
+      <td>{{ res.registration }}</td>
+      <td align="right">{% if res.stat == 0 %}{{ res.totaltime | timefmt(True) }}{% else %}&nbsp;{% endif %}</td>
+  {%- for stg in res.stages %}
+      <td align="right">{{ result(stg.stat, stg.time, True) }}</td>
+      <td align="right">{{ rank(stg.stat, res.notcompeting, stg.rank) }}</td>
+  {%- endfor %}
+  {%- for stg in range(stage, event['stageCount'] | int) %}
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+  {%- endfor %}
+      <td>{% if res.notcompeting %}MS{% else %}&nbsp;{% endif %}</td>
+		</tr>
+{%- endfor %}
+	</table>
+  <p class="timestamp"><span class="timestamp">Vygenerováno: {{ curtime.strftime('%d. %m. %Y, %H:%M:%S') }}</span></p>
+  <hr>
+  <p>
+    <a href="index.html">Zpět</a>
+  </p>
+{% endblock %}

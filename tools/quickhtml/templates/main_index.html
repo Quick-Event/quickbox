@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Hlavní strana{% endblock %}
+{% block body %}
+  <h1>{{ event.name }}</h1>
+  <h3>{{ event.place }}</h3>
+  <ul class="nav">
+{%- for e in range(1, stage+1) -%}
+    <li><a href="E{{ e }}/index.html">E{{ e }}</a></li>
+{%- endfor -%}
+  </ul>
+{% if link_totals %}
+  <p><a class="nav" href='total/index.html'>Celkové výsledky</a></p>
+{% endif %}
+{% endblock %}

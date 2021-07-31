@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Startovka E{{ stage }} {{ cls.name }}{% endblock %}
+{% block body %}
+  <h1>{{ self.title() }}</h1>
+  <h2>{{ event.name }}</h2>
+  <h3>{{ event.place }}</h3>
+  <b>Start 00:</b> {{ start_dt.strftime('%d. %m. %Y, %H:%M') }}
+  <hr>
+	<p>
+{%- for cls in classes %}
+<a href="{{ cls.ascii }}.html">{{ cls.name }}</a>{% if not loop.last %} | {% endif %}
+{%- endfor %}  
+  </p>
+  <hr>
+  <p><b>{{ cls.name }}</b>; délka: {{ cls.length }} m{% if cls.climb > 0 %}, převýšení: {{ cls.climb }} m{% endif %}</p>
+	<table>
+		<tr>
+			<th>Start</th>
+			<th>Jméno</th>
+			<th>Registrace</th>
+			<th align="right">SI</th>
+		</tr>
+{%- for comp in competitors %}
+		<tr class="{{ loop.cycle('odd', 'even') }}">
+      <td>{{ comp.starttime | timefmt }}</td>
+      <td>{{ comp.fullname }}</td>
+      <td>{{ comp.registration }}</td>
+      <td align="right">{{ comp.siid }}</td>
+		</tr>
+{%- endfor %}
+	</table>
+  <p class="timestamp"><span class="timestamp">Vygenerováno: {{ curtime.strftime('%d. %m. %Y, %H:%M:%S') }}</span></p>
+  <hr>
+  <p>
+    <a href="../index.html">Zpět</a>
+  </p>
+{% endblock %}
