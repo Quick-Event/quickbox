@@ -52,7 +52,8 @@ bool CompetitorDocument::saveData()
 				q.exec(qf::core::Exception::Throw);
 				m_lastInsertedRunsIds << q.lastInsertId().toInt();
 			}
-			getPlugin<EventPlugin>()->emitDbEvent(Event::EventPlugin::DBEVENT_COMPETITOR_COUNTS_CHANGED);
+			if(m_isEmitDbEventsOnSave)
+				getPlugin<EventPlugin>()->emitDbEvent(Event::EventPlugin::DBEVENT_COMPETITOR_COUNTS_CHANGED);
 		}
 		else if(old_mode == DataDocument::ModeEdit) {
 			competitor_id = dataId().toInt();
@@ -67,13 +68,14 @@ bool CompetitorDocument::saveData()
 					q.exec(qf::core::Exception::Throw);
 				}
 			}
-			if(class_dirty)
+			if(class_dirty && m_isEmitDbEventsOnSave)
 				getPlugin<EventPlugin>()->emitDbEvent(Event::EventPlugin::DBEVENT_COMPETITOR_COUNTS_CHANGED);
 		}
 		else {
 			competitor_id = dataId().toInt();
 		}
-		getPlugin<EventPlugin>()->emitDbEvent(Event::EventPlugin::DBEVENT_COMPETITOR_EDITED, competitor_id);
+		if(m_isEmitDbEventsOnSave)
+			getPlugin<EventPlugin>()->emitDbEvent(Event::EventPlugin::DBEVENT_COMPETITOR_EDITED, competitor_id);
 	}
 	return ret;
 }
@@ -92,7 +94,8 @@ bool CompetitorDocument::dropData()
 	}
 	if(ret) {
 		ret = Super::dropData();
-		getPlugin<EventPlugin>()->emitDbEvent(Event::EventPlugin::DBEVENT_COMPETITOR_COUNTS_CHANGED);
+		if(m_isEmitDbEventsOnSave)
+			getPlugin<EventPlugin>()->emitDbEvent(Event::EventPlugin::DBEVENT_COMPETITOR_COUNTS_CHANGED);
 	}
 	return ret;
 }

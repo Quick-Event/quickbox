@@ -687,6 +687,7 @@ void OrisImporter::importEventOrisEntries(int event_id)
 				//QMap<int, int> cid_sid_changes; // competitorId->siId
 				const auto SIID = QStringLiteral("siId");
 				for(Competitors::CompetitorDocument *doc : doc_lst) {
+					doc->setEmitDbEventsOnSave(false);
 					if(doc->mode() == doc->ModeInsert || doc->mode() == doc->ModeEdit) {
 						if(doc->property(KEY_IS_DATA_DIRTY).toBool()) {
 							doc->save();
@@ -714,7 +715,8 @@ void OrisImporter::importEventOrisEntries(int event_id)
 				transaction.commit();
 			}
 			qDeleteAll(doc_lst);
-			emit getPlugin<EventPlugin>()->reloadDataRequest();
+			getPlugin<EventPlugin>()->emitReloadDataRequest();
+			getPlugin<EventPlugin>()->emitDbEvent(Event::EventPlugin::DBEVENT_COMPETITOR_COUNTS_CHANGED);
 		}
 		catch (qf::core::Exception &e) {
 			qf::qmlwidgets::dialogs::MessageBox::showException(fwk, e);

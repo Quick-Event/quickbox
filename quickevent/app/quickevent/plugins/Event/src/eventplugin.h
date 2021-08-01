@@ -76,6 +76,7 @@ public:
 	Q_SLOT void exportEvent_qbe();
 	Q_SLOT void importEvent_qbe();
 
+	void emitReloadDataRequest() { emit reloadDataRequest(); }
 	Q_SIGNAL void reloadDataRequest();
 
 	bool isSqlServerConnected() const { return m_sqlServerConnected; }

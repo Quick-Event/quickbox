@@ -198,9 +198,9 @@ void TxtImporter::importParsedCsv(const QList<QVariantList> &csv)
 	while(q.next()) {
 		classes_map[q.value(1).toString()] = q.value(0).toInt();
 	}
-	//QSet<int> used_idsi;
 	for(const QVariantList &row : csv) {
 		Competitors::CompetitorDocument doc;
+		doc.setEmitDbEventsOnSave(false);
 		doc.loadForInsert();
 		int siid = row.value(ColSiId).toInt();
 		//qfInfo() << "SI:" << siid, competitor_obj.ClassDesc, ' ', competitor_obj.LastName, ' ', competitor_obj.FirstName, "classId:", parseInt(competitor_obj.ClassID));
@@ -223,9 +223,6 @@ void TxtImporter::importParsedCsv(const QList<QVariantList> &csv)
 		//	qfWarning() << tr("%1 %2 %3 SI: %4 is duplicit!").arg(reg_no).arg(last_name).arg(first_name).arg(siid);
 		doc.setValue("classId", class_id);
 		if(siid > 0) {
-			//bool is_unique = !used_idsi.contains(siid);
-			//if(is_unique)
-			//	used_idsi << siid;
 			doc.setSiid(siid);
 		}
 		doc.setValue("firstName", first_name);
@@ -235,5 +232,6 @@ void TxtImporter::importParsedCsv(const QList<QVariantList> &csv)
 		doc.setValue("note", note);
 		doc.save();
 	}
-
+	getPlugin<EventPlugin>()->emitReloadDataRequest();
+	getPlugin<EventPlugin>()->emitDbEvent(Event::EventPlugin::DBEVENT_COMPETITOR_COUNTS_CHANGED);
 }
