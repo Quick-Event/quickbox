@@ -31,21 +31,15 @@ bool CompetitorDocument::saveData()
 	qfLogFuncFrame();
 	RecordEditMode old_mode = mode();
 	bool siid_dirty = isDirty("competitors.siId");
-	/*
-	if(siid_dirty) {
-		int id = siid().toInt();
-		if(id == 0)
-			setSiid(QVariant());
-	}
-	*/
 	bool class_dirty = isDirty("competitors.classId");
 	bool ret = Super::saveData();
 	qfDebug() << "Super save data:" << ret;
 	if(ret) {
+		int competitor_id = 0;
 		if(old_mode == DataDocument::ModeInsert) {
 			// insert runs
 			qfDebug() << "inserting runs";
-			int competitor_id = dataId().toInt();
+			competitor_id = dataId().toInt();
 			int stage_count = getPlugin<EventPlugin>()->stageCount();
 			qf::core::sql::Query q(model()->connectionName());
 			q.prepare("INSERT INTO runs (competitorId, stageId, siId) VALUES (:competitorId, :stageId, :siId)");
@@ -61,6 +55,7 @@ bool CompetitorDocument::saveData()
 			getPlugin<EventPlugin>()->emitDbEvent(Event::EventPlugin::DBEVENT_COMPETITOR_COUNTS_CHANGED);
 		}
 		else if(old_mode == DataDocument::ModeEdit) {
+			competitor_id = dataId().toInt();
 			if(siid_dirty) {
 				qfDebug() << "updating SIID in run tables";
 				if(siid_dirty) {
@@ -75,6 +70,10 @@ bool CompetitorDocument::saveData()
 			if(class_dirty)
 				getPlugin<EventPlugin>()->emitDbEvent(Event::EventPlugin::DBEVENT_COMPETITOR_COUNTS_CHANGED);
 		}
+		else {
+			competitor_id = dataId().toInt();
+		}
+		getPlugin<EventPlugin>()->emitDbEvent(Event::EventPlugin::DBEVENT_COMPETITOR_EDITED, competitor_id);
 	}
 	return ret;
 }

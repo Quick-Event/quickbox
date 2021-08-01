@@ -46,6 +46,7 @@
 #include <QDirIterator>
 #include <QJsonParseError>
 #include <QJsonDocument>
+#include <QTimer>
 
 #include <regex>
 
@@ -97,7 +98,7 @@ static auto QBE_EXT = QStringLiteral(".qbe");
 
 const char* EventPlugin::DBEVENT_COMPETITOR_COUNTS_CHANGED = "competitorCountsChanged";
 const char* EventPlugin::DBEVENT_CARD_READ = "cardRead";
-//const char* EventPlugin::DBEVENT_CARD_CHECKED = "cardChecked";
+const char* EventPlugin::DBEVENT_COMPETITOR_EDITED = "competitorEdited";
 const char* EventPlugin::DBEVENT_CARD_PROCESSED_AND_ASSIGNED = "cardProcessedAndAssigned";
 const char* EventPlugin::DBEVENT_PUNCH_RECEIVED = "punchReceived";
 const char* EventPlugin::DBEVENT_REGISTRATIONS_IMPORTED = "registrationsImported";
@@ -433,10 +434,9 @@ void EventPlugin::emitDbEvent(const QString &domain, const QVariant &data, bool 
 	if(loopback) {
 		// emit queued
 		//emit dbEventNotify(domain, payload);
-		QMetaObject::invokeMethod(this, "dbEventNotify", Qt::QueuedConnection,
-										  Q_ARG(QString, domain),
-										  Q_ARG(int, connection_id),
-										  Q_ARG(QVariant, data));
+		QTimer::singleShot(0, this, [this, domain, connection_id, data]() {
+			emit dbEventNotify(domain, connection_id, data);
+		});
 	}
 	if(connectionType() == ConnectionType::SingleFile)
 		return;

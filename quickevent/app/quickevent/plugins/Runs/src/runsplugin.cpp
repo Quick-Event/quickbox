@@ -118,7 +118,13 @@ void RunsPlugin::onInstalled()
 	qff::MainWindow *fwk = qff::MainWindow::frameWork();
 	qff::initPluginWidget<RunsWidget, PartWidget>(tr("&Runs"), featureId());
 
-	connect(getPlugin<CompetitorsPlugin>(), SIGNAL(competitorEdited()), this, SLOT(clearRunnersTableCache()));
+	//connect(getPlugin<CompetitorsPlugin>(), &CompetitorsPlugin::competitorEdited, this, &RunsPlugin::clearRunnersTableCache);
+	connect(getPlugin<EventPlugin>(), &Event::EventPlugin::dbEventNotify, this, [this](const QString &domain, const QVariant &payload) {
+		Q_UNUSED(payload)
+		if(domain == QLatin1String(Event::EventPlugin::DBEVENT_COMPETITOR_EDITED)) {
+			clearRunnersTableCache();
+		}
+	}, Qt::QueuedConnection);
 
 	{
 		m_eventStatisticsDockWidget = new qff::DockWidget(nullptr);
