@@ -1,6 +1,5 @@
-
-
 <!-- PROJECT SHIELDS -->
+[![Build status][build-shield]][build-url]
 [![Stargazers][stars-shield]][stars-url]
 [![Contributors][contributors-shield]][contributors-url]
 [![Issues][issues-shield]][issues-url]
@@ -20,7 +19,6 @@ The QuickBox is built upon the Qt framework, targeted for Linux and Windows and 
 * QuickHttpd - show start lists and results via webserver
 
 ### Features
-
 * competitors managment
 * SI card readout
 * receipts print
@@ -28,13 +26,11 @@ The QuickBox is built upon the Qt framework, targeted for Linux and Windows and 
 * start lists creation with classes layout
 * results print and export (PDF | [IOF XML](https://github.com/international-orienteering-federation/datastandard-v3))
 * export results for Liveresultat and Emma client
-* [WebLate localization](https://hosted.weblate.org/projects/quickbox/) - thanks to Michal Cihar and https://weblate.org/ for free localization hosting.
-* integration with [ORIS](https://oris.orientacnisporty.cz/) - czech orienteering federation information systmem
+* [Weblate localization](https://hosted.weblate.org/projects/quickbox/) - thanks to Michal Cihar and https://weblate.org/ for free localization hosting
+* integration with [ORIS](https://oris.orientacnisporty.cz/) - Czech orienteering federation information system
   * import events
   * sync entries
   * import clubs and registrations
-
-
 
 ### Documentation
 For now, most of the [documentation](https://github.com/Quick-Event/quickbox/wiki) is in Czech.
@@ -42,14 +38,16 @@ For now, most of the [documentation](https://github.com/Quick-Event/quickbox/wik
 * [Tipy a triky](https://github.com/Quick-Event/quickbox/wiki/Tipy-a-triky)
 * [Postup při pořádání závodů](https://github.com/Quick-Event/quickbox/wiki/Postup-p%C5%99i-po%C5%99%C3%A1d%C3%A1n%C3%AD-z%C3%A1vod%C5%AF)
   * [Zlínská uživatelská příručka](https://docs.google.com/document/d/1W8cPFhdmi7qP76Qv8TkzROivUucRSOzlqyeKix4pB7U/edit)
-* [Online mezičasy Liveresultat Emma](https://github.com/Quick-Event/quickbox/wiki/Online-mezi%C4%8Dasy---Liveresultat---Emma)
+* [Online mezičasy / Liveresultat / Emma](https://github.com/Quick-Event/quickbox/wiki/Online-mezi%C4%8Dasy---Liveresultat---Emma)
 * [Instalace tiskárny a nastavení tisku mezičasů](https://github.com/Quick-Event/quickbox/wiki/Instalace-tisk%C3%A1rny-a-nastaven%C3%AD-tisku-mezi%C4%8Das%C5%AF)
+* [Často kladené otázky, FAQ](https://github.com/Quick-Event/quickbox/wiki/%C4%8Casto-kladen%C3%A9-ot%C3%A1zky%2C-FAQ)
 
 ---
 ## QuickEvent installation
 #### Windows
 1. download the installation package (*.exe) from https://github.com/Quick-Event/quickbox/releases
 2. follow the installation wizard (keeping the default installation path is recommended)
+
 #### Linux
 1. download universal AppImage from https://github.com/Quick-Event/quickbox/releases
 2. make it executable
@@ -64,15 +62,17 @@ sudo usermod -aG dialout $USER
 ```sh 
 sudo usermod -aG lp $USER 
 ```
+
 ### SQLite vs PostgreSQL
 If you do not need to connect to the database simultaneously with multiple computers, you do not have to use a bulky database and opt for the SQLite instead. Event data will be stored as a single file with a _.qbe_ extension. When starting QuickEvent and `Connect to database` dialog will pop up, select `Single file` and choose a working directory where event files will be stored.
 
 You can later connect to a PostgreSQL database and import the event stored as _*.qbe_ file created earlier.
+
 ### Setting up for PostgreSQL
 #### Windows
 * download from https://www.enterprisedb.com/downloads/postgres-postgresql-downloads
-* tested version is PostreSQL 9.6.x (32 bit)
-* instal (keep the default settings, enter superuser password)
+* tested version is PostreSQL 12.7.x
+* install (keep the default settings, enter superuser password)
 
 #### Debian
 ```sh
@@ -93,7 +93,7 @@ CREATE DATABASE quickevent OWNER quickevent_admin_user_name;
 <!-- CONTRIBUTING -->
 ## Contributing
 
-Contributions are what makes the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+Contributions are what makes the open source community such an amazing place to learn, inspire and create. Any contributions you make are **greatly appreciated**.
 
 1. Fork the Project
 2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
@@ -103,17 +103,16 @@ Contributions are what makes the open source community such an amazing place to 
 
 Please see the [Code style](https://github.com/Quick-Event/quickbox/wiki/Code-style). Before opening a merge request, open related issue to discuss the upcoming changes first.
 
-
 ---
 <!-- LICENSE -->
 ## License
 
 Distributed under the GNU GPL v2.0 License. See `LICENSE` for more information.
 
-
-
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+[build-shield]: https://github.com/Quick-Event/quickbox/actions/workflows/c-cpp.yml/badge.svg?branch=master
+[build-url]: https://github.com/Quick-Event/quickbox/actions?query=branch%3Amaster
 [contributors-shield]: https://img.shields.io/github/contributors/Quick-Event/quickbox?style=flat-square
 [contributors-url]: https://github.com/Quick-Event/quickbox/graphs/contributors
 [stars-shield]: https://img.shields.io/github/stars/Quick-Event/quickbox?style=flat-square
