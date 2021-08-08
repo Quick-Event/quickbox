@@ -6,6 +6,9 @@ on:
   pull_request:
     branches: [ master ]
 
+env:
+  QT_VERSION: '5.15.2'
+
 jobs:
   build_linux:
     runs-on: ubuntu-latest
@@ -19,13 +22,13 @@ jobs:
       uses: actions/cache@v2
       with:
         path: ${{ runner.workspace }}/Qt
-        key: ${{ runner.os }}-Qt
+        key: ${{ runner.os }}-Qt-${{ env.QT_VERSION }}
 
     - name: Install Qt
       uses: jurplel/install-qt-action@v2
       with:
         cached: ${{ steps.cache-qt.outputs.cache-hit }}
-        version: '5.15.0'
+        version: ${{ env.QT_VERSION }}
         host: 'linux'
         
     - name: Get app version
@@ -93,13 +96,13 @@ jobs:
       uses: actions/cache@v2
       with:
         path: ${{ runner.workspace }}\Qt
-        key: ${{ runner.os }}-Qt
+        key: ${{ runner.os }}-Qt-${{ env.QT_VERSION }}
  
     - name: Install Qt
       uses: jurplel/install-qt-action@v2
       with:
         cached: ${{ steps.cache-qt.outputs.cache-hit }}
-        version: '5.15.0'
+        version: ${{ env.QT_VERSION }}
         host: 'windows'
         arch: 'win64_mingw81' 
     
