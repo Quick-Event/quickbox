@@ -79,7 +79,9 @@ Report {
 						fill: Brush {color: Color {def: "khaki"} }
 						Cell {
 							width: "%"
-							textFn: detail.dataFn("classes.name");
+							textFn: function() {
+								return detail.rowData("classes.name") + " (" + detail.rowData("runnersFinished") + "/" + detail.rowData("runnersCount") + ")";
+							}
 							textStyle: myStyle.textStyleBold
 						}
 						Cell {
