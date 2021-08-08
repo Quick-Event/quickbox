@@ -281,7 +281,7 @@ bool ReceiptsWidget::printReceipt(int card_id)
 void ReceiptsWidget::markAsPrinted(int connection_id, int card_id)
 {
 	QString qs = "UPDATE cards SET printerConnectionId=" QF_IARG(connection_id)
-			" WHERE id == " QF_IARG(card_id);
+			" WHERE id = " QF_IARG(card_id);
 	qf::core::sql::Query q;
 	q.execThrow(qs);
 }
