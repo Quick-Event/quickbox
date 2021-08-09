@@ -72,9 +72,14 @@ Report {
 						layout: Frame.LayoutHorizontal
 						fill: Brush {color: Color {def: "khaki"} }
 						Cell {
-							width: "%"
 							textFn: detail.dataFn("classes.name");
 							textStyle: myStyle.textStyleBold
+						}
+						Cell {
+							width: "%"
+							textFn: function() {
+								return "(" + detail.rowData("runnersFinished") + "/" + detail.rowData("runnersCount") + ")";
+							}
 						}
 						Cell {
 							textFn: function() { return qsTr("length: ") + detail.rowData("courses.length");}

@@ -546,10 +546,19 @@ qf::core::utils::TreeTable RunsPlugin::stageResultsTable(int stage_id, const QSt
 		qf::core::sql::QueryBuilder qb;
 		qb.select2("classes", "id, name")
 			.select2("courses", "id, length, climb")
+			.select("runnersFinished, runnersCount")
 			.from("classes")
 			//.where("classes.name NOT IN ('D21B', 'H40B', 'H35C', 'H55B')")
 			.joinRestricted("classes.id", "classdefs.classId", "classdefs.stageId={{stage_id}}")
 			.join("classdefs.courseId", "courses.id")
+			.join("JOIN (SELECT COUNT(runs.competitorId) AS runnersCount, "
+							   "COUNT(CASE WHEN (runs.finishTimeMs > 0 OR runs.checkTimeMs IS NOT NULL) THEN 1 ELSE NULL END) AS runnersFinished, "
+							   "competitors.classId "
+						"FROM runs "
+						"JOIN competitors ON runs.competitorId = competitors.id "
+						"WHERE runs.stageId={{stage_id}} AND runs.isRunning "
+						"GROUP BY competitors.classId) sub "
+				  "ON sub.classId = classes.id")
 			.orderBy("classes.name");//.limit(1);
 		//if(add_laps)
 		//	qb.where("classes.name='H40C'");
