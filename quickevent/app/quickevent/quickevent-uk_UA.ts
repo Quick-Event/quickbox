@@ -617,7 +617,7 @@ If you continue, this flag will be removed</source>
     <message>
         <location filename="plugins/Classes/src/classestableview.cpp" line="39"/>
         <source>Really delete all selected classes? This action cannot be undone!</source>
-        <translation>Дійсно видалити всі вибрані групи? Цю операцію не можливо відмінити!</translation>
+        <translation>Дійсно видалити всі вибрані групи? Цю операцію неможливо скасувати!</translation>
     </message>
 </context>
 <context>
@@ -1193,7 +1193,7 @@ If you continue, this flag will be removed</source>
     <message>
         <location filename="plugins/Competitors/src/competitorswidget.cpp" line="257"/>
         <source>Really delete all the selected competitors? This action cannot be reverted.</source>
-        <translation>Дійсно видалити всіх вибраних учасників? Цю дію не можна відмінити.</translation>
+        <translation>Дійсно видалити всіх вибраних учасників? Цю дію не можна скасувати.</translation>
     </message>
     <message>
         <location filename="plugins/Competitors/src/competitorswidget.cpp" line="270"/>
