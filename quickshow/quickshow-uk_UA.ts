@@ -6,7 +6,7 @@
     <message>
         <location filename="src/cellrenderer.cpp" line="77"/>
         <source>length: {{length}} climb: {{climb}}</source>
-        <translation type="unfinished"></translation>
+        <translation>довжина: {{length}} підйом: {{climb}}</translation>
     </message>
 </context>
 <context>
@@ -14,27 +14,27 @@
     <message>
         <location filename="src/mainwindow.ui" line="14"/>
         <source>MainWindow</source>
-        <translation type="unfinished"></translation>
+        <translation>ГоловнеВікно</translation>
     </message>
     <message>
         <location filename="src/mainwindow.cpp" line="26"/>
         <source>Toggle full screen</source>
-        <translation type="unfinished"></translation>
+        <translation>Перемикання на весь екран</translation>
     </message>
     <message>
         <location filename="src/mainwindow.cpp" line="39"/>
         <source>Increase font size</source>
-        <translation type="unfinished"></translation>
+        <translation>Збільшити розмір шрифту</translation>
     </message>
     <message>
         <location filename="src/mainwindow.cpp" line="52"/>
         <source>Decrease font size</source>
-        <translation type="unfinished"></translation>
+        <translation>Зменшити розмір шрифту</translation>
     </message>
     <message>
         <location filename="src/mainwindow.cpp" line="79"/>
         <source>E%1</source>
-        <translation type="unfinished"></translation>
+        <translation>E%1</translation>
     </message>
 </context>
 <context>
@@ -42,7 +42,7 @@
     <message>
         <location filename="src/cellrenderer.cpp" line="219"/>
         <source>DISQ</source>
-        <translation type="unfinished"></translation>
+        <translation>DISQ</translation>
     </message>
 </context>
 </TS>
