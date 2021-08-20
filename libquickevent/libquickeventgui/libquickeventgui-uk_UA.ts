@@ -36,7 +36,7 @@
     <message>
         <location filename="src/reportoptionsdialog.ui" line="97"/>
         <source>Posix regular expression</source>
-        <translation>Posix regular expression</translation>
+        <translation>Регулярний вираз Posix</translation>
     </message>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="100"/>
@@ -46,12 +46,12 @@
     <message>
         <location filename="src/reportoptionsdialog.ui" line="107"/>
         <source>An question mark (?) in pattern stands for (matches) any single character; a asterisk (*) matches any sequence of zero or more characters.</source>
-        <translation type="unfinished"></translation>
+        <translation>Знак питання (?) У шаблоні означає (відповідає) будь-якому окремому символу; зірочка (*) відповідає будь-якій послідовності з нуля або більше символів.</translation>
     </message>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="110"/>
         <source>Wild card</source>
-        <translation type="unfinished"></translation>
+        <translation>Вайлд кард</translation>
     </message>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="120"/>
@@ -61,7 +61,7 @@
     <message>
         <location filename="src/reportoptionsdialog.ui" line="127"/>
         <source>Coma delimited list of class names</source>
-        <translation type="unfinished"></translation>
+        <translation>Список назв класів, розділених комою</translation>
     </message>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="130"/>
@@ -116,17 +116,17 @@
     <message>
         <location filename="src/reportoptionsdialog.ui" line="258"/>
         <source>Start time format</source>
-        <translation type="unfinished"></translation>
+        <translation>Формат часу початку</translation>
     </message>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="264"/>
         <source>start at 0 (mmm.ss)  </source>
-        <translation type="unfinished"></translation>
+        <translation>починати з 0 (ммм.с)  </translation>
     </message>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="274"/>
         <source>daytime (hh:mm:ss)</source>
-        <translation type="unfinished"></translation>
+        <translation>вдень (гг:хв:сс)</translation>
     </message>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="284"/>
