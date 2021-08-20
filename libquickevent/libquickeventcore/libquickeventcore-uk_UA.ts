@@ -34,7 +34,7 @@
     <message>
         <location filename="src/exporters/stageresultshtmlexporter.cpp" line="63"/>
         <source>Pos</source>
-        <translation type="unfinished"></translation>
+        <translation>Pos</translation>
     </message>
     <message>
         <location filename="src/exporters/stageresultshtmlexporter.cpp" line="64"/>
@@ -59,7 +59,7 @@
     <message>
         <location filename="src/exporters/stageresultshtmlexporter.cpp" line="80"/>
         <source>NC</source>
-        <translation type="unfinished"></translation>
+        <translation>NC</translation>
     </message>
     <message>
         <location filename="src/exporters/stageresultshtmlexporter.cpp" line="84"/>
