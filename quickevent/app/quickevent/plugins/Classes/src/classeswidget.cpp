@@ -336,9 +336,12 @@ void ClassesWidget::reload()
 		qf::core::sql::QueryBuilder qb1;
 		qb1.select("COUNT(runs.isRunning)")
 				.from("runs")
-				.join("runs.competitorId", "competitors.id")
-				.where("competitors.classId=classdefs.classId")
-				.where("runs.stageId=" QF_IARG(stage_id));
+				.joinRestricted("runs.competitorId", "competitors.id",
+								"competitors.classId=classdefs.classId"
+								" AND runs.isRunning"
+								" AND runs.stageId=" QF_IARG(stage_id)
+				, qf::core::sql::QueryBuilder::INNER_JOIN);
+		qfDebug() << qb1.toString();
 		qfs::QueryBuilder qb;
 		qb.select2("classes", "*")
 				.select2("classdefs", "*")
@@ -348,6 +351,7 @@ void ClassesWidget::reload()
 				.joinRestricted("classes.id", "classdefs.classId", "classdefs.stageId=" QF_IARG(stage_id))
 				.join("classdefs.courseId", "courses.id")
 				.orderBy("classes.name");//.limit(10);
+		qfDebug() << qb.toString();
 		/*
 		int class_id = m_cbxClasses->currentData().toInt();
 		if(class_id > 0) {
