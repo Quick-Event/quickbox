@@ -269,7 +269,7 @@ void EmmaClient::exportFinish()
 	int current_stage = getPlugin<EventPlugin>()->currentStageId();
 	qfs::QueryBuilder qb;
 	qb.select2("cards", "id, siId")
-            .select2("runs", "finishTimeMs, misPunch, badCheck, disqualified, notCompeting")
+			.select2("runs", "finishTimeMs, misPunch, badCheck, disqualified, notCompeting, isRunning")
 			.from("cards")
 			.join("cards.runId", "runs.id")
 			.where("cards.stageId=" QF_IARG(current_stage))
@@ -285,6 +285,7 @@ void EmmaClient::exportFinish()
 		bool isBadCheck = q2.value("runs.badCheck").toBool();
 		bool isDisq = q2.value("runs.disqualified").toBool();
         bool notCompeting = q2.value("runs.notCompeting").toBool();
+		bool isRunning = q2.value("runs.isRunning").toBool();
 		QString s = QString("%1").arg(si , 8, 10, QChar(' '));
 		s += QStringLiteral(": FIN/");
 		int msec = start00 + finTime;
@@ -305,8 +306,13 @@ void EmmaClient::exportFinish()
 				s += QStringLiteral("O.K.");
 			}
 		} else {
-			// DidNotFinish
-			s += QStringLiteral("DNF ");
+			if (isRunning)
+			{
+				// DidNotFinish
+				s += QStringLiteral("DNF ");
+			}
+			else
+				s += QStringLiteral("DNS ");
 		}
 
 		ts << s << "\n";
