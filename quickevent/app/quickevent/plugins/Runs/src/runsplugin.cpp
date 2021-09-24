@@ -2127,6 +2127,9 @@ bool RunsPlugin::exportStartListStageIofXml30(int stage_id, const QString &file_
 			auto given = tt2_row.value(QStringLiteral("competitors.firstName"));
 			append_list(person, QVariantList{"Name", QVariantList{"Family", family}, QVariantList{"Given", given}});
 			QVariantList xml_start{"Start"};
+			auto bib_number = tt2_row.value(QStringLiteral("competitors.startNumber"));
+			if(!bib_number.isNull())
+				append_list(xml_start, QVariantList{"BibNumber", bib_number});
 			int stime_msec = tt2_row.value("startTimeMs").toInt();
 			//console.info(start00_datetime.toJSON(), start00_datetime.getHours(), start00_epoch_sec / 60 / 60);
 			//console.info(family, given, start00_epoch_sec, stime_sec, stime_sec / 60);
