@@ -105,8 +105,8 @@ void RunsWidget::reset(int class_id)
 		m_cbxStage->clear();
 		for(int i=0; i<getPlugin<EventPlugin>()->stageCount(); i++)
 			m_cbxStage->addItem(tr("E%1").arg(i+1), i+1);
-		connect(m_cbxStage, SIGNAL(currentIndexChanged(int)), this, SLOT(reload()), Qt::UniqueConnection);
-		connect(m_cbxStage, SIGNAL(currentIndexChanged(int)), this, SLOT(emitSelectedStageIdChanged(int)), Qt::UniqueConnection);
+		connect(m_cbxStage, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &RunsWidget::reload, Qt::UniqueConnection);
+		connect(m_cbxStage, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &RunsWidget::onCbxStageCurrentIndexChanged, Qt::UniqueConnection);
 		m_cbxStage->blockSignals(false);
 	}
 	/// Note: You should use QAction::setVisible() to change the visibility of the widget.
@@ -261,34 +261,41 @@ void RunsWidget::settleDownInPartWidget(quickevent::gui::PartWidget *part_widget
 	{
 		{
 			auto *a = new qfw::Action(tr("&IOF-XML 3.0"));
-			connect(a, &qfw::Action::triggered, this, &RunsWidget::export_startList_iofxml30_stage);
+			connect(a, &qfw::Action::triggered, this, &RunsWidget::export_startList_stage_iofxml30);
 			m_export_stlist_xml->addActionInto(a);
 		}
 	}
 
 	qfw::Action *a_export_results = a_export->addMenuInto("results", tr("Results"));
+	qfw::Action *a_export_results_stage = a_export_results->addMenuInto("currentStage", tr("Current stage"));
 	{
 		//a_export_results->addActionInto("iofxml23", tr("IOF XML &2.3"));
 		{
-			qfw::Action *a = a_export_results->addActionInto("iofxml30", tr("IOF XML &3.0"));
-			connect(a, &qfw::Action::triggered, this, &RunsWidget::export_results_iofxml30_stage);
+			qfw::Action *a = a_export_results_stage->addActionInto("iofxml30", tr("IOF XML &3.0"));
+			connect(a, &qfw::Action::triggered, this, &RunsWidget::export_results_stage_iofxml30);
 		}
 		{
-			qfw::Action *a = a_export_results->addActionInto("html", tr("&HTML"));
+			qfw::Action *a = a_export_results_stage->addActionInto("html", tr("&HTML"));
 			connect(a, &qfw::Action::triggered, getPlugin<RunsPlugin>(), &Runs::RunsPlugin::export_resultsHtmlStage);
 		}
 		{
-			qfw::Action *a = a_export_results->addActionInto("htmlWithLaps", tr("HTML with &laps"));
+			qfw::Action *a = a_export_results_stage->addActionInto("htmlWithLaps", tr("HTML with &laps"));
 			connect(a, &qfw::Action::triggered, getPlugin<RunsPlugin>(), &Runs::RunsPlugin::export_resultsHtmlStageWithLaps);
 		}
-		qfw::Action *a_export_results_csos = a_export_results->addMenuInto("csos", tr("CSOS"));
 		{
-			qfw::Action *a = a_export_results_csos->addActionInto("stage", tr("Current stage"));
-			connect(a, &qfw::Action::triggered, this, &RunsWidget::export_results_csos_stage);
+			qfw::Action *a = a_export_results_stage->addActionInto("csos", tr("CSOS"));
+			connect(a, &qfw::Action::triggered, this, &RunsWidget::export_results_stage_csos);
+		}
+	}
+	qfw::Action *a_export_results_overall = a_export_results->addMenuInto("overall", tr("Overall"));
+	{
+		{
+			qfw::Action *a = a_export_results_overall->addActionInto("html", tr("&HTML"));
+			connect(a, &qfw::Action::triggered, getPlugin<RunsPlugin>(), &Runs::RunsPlugin::export_resultsHtmlNStages);
 		}
 		{
-			qfw::Action *a = a_export_results_csos->addActionInto("overall", tr("Overall"));
-			connect(a, &qfw::Action::triggered, this, &RunsWidget::export_results_csos_overall);
+			qfw::Action *a = a_export_results_overall->addActionInto("csos", tr("CSOS"));
+			connect(a, &qfw::Action::triggered, this, &RunsWidget::export_results_overall_csos);
 		}
 	}
 
@@ -550,7 +557,7 @@ QString RunsWidget::getSaveFileName(const QString &file_name, int stage_id)
 	return fn;
 }
 
-void RunsWidget::export_results_iofxml30_stage()
+void RunsWidget::export_results_stage_iofxml30()
 {
 	int stage_id = selectedStageId();
 	QString fn = getSaveFileName("results-iof-3.0.xml", stage_id);
@@ -560,7 +567,7 @@ void RunsWidget::export_results_iofxml30_stage()
 	getPlugin<RunsPlugin>()->exportResultsIofXml30Stage(stage_id, fn);
 }
 
-void RunsWidget::export_results_csos_stage()
+void RunsWidget::export_results_stage_csos()
 {
 	int stage_id = selectedStageId();
 	QString fn = getSaveFileName("results-csos.txt", stage_id);
@@ -570,7 +577,7 @@ void RunsWidget::export_results_csos_stage()
 	getPlugin<RunsPlugin>()->exportResultsCsosStage(stage_id, fn);
 }
 
-void RunsWidget::export_results_csos_overall()
+void RunsWidget::export_results_overall_csos()
 {
 	QString fn = getSaveFileName("overall-results-csos.txt", 0);
 	if(fn.isEmpty())
@@ -917,17 +924,18 @@ void RunsWidget::on_btDrawRemove_clicked()
 	}
 }
 
-void RunsWidget::emitSelectedStageIdChanged(int ix)
+void RunsWidget::onCbxStageCurrentIndexChanged()
 {
-	emit selectedStageIdChanged(ix + 1);
+	getPlugin<RunsPlugin>()->setSelectedStageId(m_cbxStage->currentData().toInt());
+	qfInfo() << "selected stage:" << selectedStageId();
 }
 
 int RunsWidget::selectedStageId()
 {
-	return m_cbxStage->currentData().toInt();
+	return getPlugin<RunsPlugin>()->selectedStageId();
 }
 
-void RunsWidget::export_startList_iofxml30_stage()
+void RunsWidget::export_startList_stage_iofxml30()
 {
 	int stage_id = selectedStageId();
 	QString fn = getSaveFileName("startlist-iof-3.0.xml", stage_id);

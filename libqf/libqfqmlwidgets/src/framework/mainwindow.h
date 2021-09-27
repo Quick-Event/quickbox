@@ -111,7 +111,7 @@ public:
 template<typename T>
 static T* getPlugin()
 {
-	static_assert( std::is_base_of<qf::qmlwidgets::framework::Plugin, T>::value, "given type is not Plugin");
+	static_assert(std::is_base_of<qf::qmlwidgets::framework::Plugin, T>::value, "given type is not Plugin");
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 	T* ret = nullptr;
 	for(auto *p : fwk->installedPlugins()) {
