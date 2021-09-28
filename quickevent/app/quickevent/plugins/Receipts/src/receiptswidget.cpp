@@ -291,8 +291,8 @@ void ReceiptsWidget::loadReceptList()
 	ui->lstReceipt->clear();
 	QVector<QString> receipts_paths = {
 		getPlugin<ReceiptsPlugin>()->qmlDir() + "/receipts",
-		QCoreApplication::applicationDirPath() + "/receipts",
-		QDir(".").absolutePath() + "/receipts"
+		QCoreApplication::applicationDirPath() + "/quickevent-data/receipts",
+		QDir(".").absolutePath() + "/quickevent-data/receipts",
 	};
 	for (QString& receipts_dir: receipts_paths)
 	{
