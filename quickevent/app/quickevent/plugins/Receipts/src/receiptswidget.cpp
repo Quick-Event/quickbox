@@ -289,11 +289,15 @@ void ReceiptsWidget::markAsPrinted(int connection_id, int card_id)
 void ReceiptsWidget::loadReceptList()
 {
 	ui->lstReceipt->clear();
+	QString application_receipts_path = QCoreApplication::applicationDirPath() + "/quickevent-data/receipts";
+	QString cwd_receipts_path = QDir(".").absolutePath() + "/quickevent-data/receipts";
 	QVector<QString> receipts_paths = {
 		getPlugin<ReceiptsPlugin>()->qmlDir() + "/receipts",
-		QCoreApplication::applicationDirPath() + "/quickevent-data/receipts",
-		QDir(".").absolutePath() + "/quickevent-data/receipts",
+		application_receipts_path
 	};
+	if (application_receipts_path != cwd_receipts_path) {
+		receipts_paths.append(cwd_receipts_path);
+	}
 	for (QString& receipts_dir: receipts_paths)
 	{
 		qfInfo() << "looking for receipts in: " + receipts_dir;
