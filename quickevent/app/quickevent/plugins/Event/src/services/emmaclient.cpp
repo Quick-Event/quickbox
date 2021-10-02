@@ -106,7 +106,7 @@ void EmmaClient::exportRadioCodes()
 		//qfInfo() << qb_codes.toString();
 
 		QString class_name = q1.value("classes.name").toString();
-        class_name.remove(" ");
+		class_name.remove(" ");
 		QVector<int> codes;
 		qfs::Query q2;
 		q2.execThrow(qb_codes.toString());
@@ -272,45 +272,24 @@ void EmmaClient::exportFinish()
 	qfs::QueryBuilder qb;
 	qfs::Query q2;
 
-	// runners with DNS
-	qb.select2("runs", "siId")
+	qb.select2("runs", "siId, isRunning, finishTimeMs, misPunch, badCheck, disqualified, notCompeting")
 			.from("runs")
 			.where("runs.stageId=" QF_IARG(current_stage))
-			.where("runs.isRunning IS NULL")
-			.where("siID IS NOT NULL")
+			.where("runs.siId IS NOT NULL")
+			.orderBy("runs.finishTimeMs ASC ")
 			.orderBy("runs.id ASC");
 	q2.execThrow(qb.toString());
 	while(q2.next()) {
 		int si = q2.value("runs.siId").toInt();
-		QString s = QString("%1").arg(si , 8, 10, QChar(' '));
-		s += QStringLiteral(": FIN/");
-		QTime tm = QTime::fromMSecsSinceStartOfDay(start00);
-		s += tm.toString(QStringLiteral("HH:mm:ss.zzz"));
-		s += '0';
-		s += '/';
-		s += QStringLiteral("DNS ");
-		ts << s << "\n";
-	}
-	// readout cards
-	qb.clear();
-	qb.select2("cards", "id, siId")
-			.select2("runs", "finishTimeMs, misPunch, badCheck, disqualified, notCompeting")
-			.from("cards")
-			.join("cards.runId", "runs.id")
-			.where("cards.stageId=" QF_IARG(current_stage))
-			.orderBy("cards.id ASC");
-
-	q2.clear();
-	q2.execThrow(qb.toString());
-	while(q2.next()) {
-		if (q2.value("runs.finishTimeMs").isNull())
-			continue; // card without runs
-		int si = q2.value("cards.siId").toInt();
 		int finTime = q2.value("runs.finishTimeMs").toInt();
 		bool isMisPunch = q2.value("runs.misPunch").toBool();
 		bool isBadCheck = q2.value("runs.badCheck").toBool();
 		bool isDisq = q2.value("runs.disqualified").toBool();
+		bool isRunning = q2.value("runs.isRunning").toBool();
 		bool notCompeting = q2.value("runs.notCompeting").toBool();
+
+		if (si == 0)
+			continue; // without si is unusable
 		QString s = QString("%1").arg(si , 8, 10, QChar(' '));
 		s += QStringLiteral(": FIN/");
 		int msec = start00 + finTime;
@@ -318,7 +297,9 @@ void EmmaClient::exportFinish()
 		s += tm.toString(QStringLiteral("HH:mm:ss.zzz"));
 		s += '0';
 		s += '/';
-		if (finTime > 0) {
+		if (!isRunning) {
+			s += QStringLiteral("DNS ");
+		} else if (finTime > 0) {
 			if (notCompeting) {
 				s += QStringLiteral("NC  ");
 			} else if (isDisq) {
@@ -334,7 +315,6 @@ void EmmaClient::exportFinish()
 			// DidNotFinish
 			s += QStringLiteral("DNF ");
 		}
-
 		ts << s << "\n";
 	}
 }
@@ -356,12 +336,12 @@ void EmmaClient::exportStartList()
 	int current_stage = getPlugin<EventPlugin>()->currentStageId();
 	qfs::QueryBuilder qb;
 	qb.select2("runs", "startTimeMs, siId, competitorId, isrunning, leg")
-            .select2("competitors","firstName, lastName, registration")
-            .select2("classes","name")
-            .select2("cards", "id, siId, startTime")
+			.select2("competitors","firstName, lastName, registration")
+			.select2("classes","name")
+			.select2("cards", "id, startTime")
 			.from("runs")
 			.join("runs.competitorId","competitors.id")
-            .join("runs.id", "cards.runId")
+			.join("runs.id", "cards.runId")
 			.where("runs.stageId=" QF_IARG(current_stage));
 	if(is_relays) {
 		qb.select2("relays","number");
@@ -378,27 +358,26 @@ void EmmaClient::exportStartList()
 	qfDebug() << qb.toString();
 	qfs::Query q2;
 	q2.execThrow(qb.toString());
-    int lastId = -1;
+	int lastId = -1;
 	QMap <int,int> startTimesRelays;
 	while(q2.next()) {
-        int id = q2.value("runs.competitorId").toInt();
-        if (id == lastId)
-            continue;
-        bool isRunning = (q2.value("runs.isrunning").isNull()) ? false : q2.value("runs.isrunning").toBool();
-        if (!isRunning)
-            continue;
-        lastId = id;
-        int si = q2.value("runs.siId").toInt();
-        int siCards = q2.value("cards.siId").toInt();
-        int startTime = q2.value("runs.startTimeMs").toInt();
-        int startTimeCard = q2.value("cards.startTime").toInt();
-        if (startTimeCard == 61166)
-            startTimeCard = 0;
-        QString name = q2.value("competitors.lastName").toString() + " " + q2.value("competitors.firstName").toString();
-        QString clas = q2.value("classes.name").toString();
-        clas.remove(" ");
-        QString reg = q2.value("competitors.registration").toString();
-        name = name.leftJustified(22,QChar(' '),true);
+		int id = q2.value("runs.competitorId").toInt();
+		if (id == lastId)
+			continue;
+		bool isRunning = (q2.value("runs.isrunning").isNull()) ? false : q2.value("runs.isrunning").toBool();
+		if (!isRunning)
+			continue;
+		lastId = id;
+		int si = q2.value("runs.siId").toInt();
+		int startTime = q2.value("runs.startTimeMs").toInt();
+		int startTimeCard = q2.value("cards.startTime").toInt();
+		if (startTimeCard == 61166)
+			startTimeCard = 0;
+		QString name = q2.value("competitors.lastName").toString() + " " + q2.value("competitors.firstName").toString();
+		QString clas = q2.value("classes.name").toString();
+		clas.remove(" ");
+		QString reg = q2.value("competitors.registration").toString();
+		name = name.leftJustified(22,QChar(' '),true);
 		if (is_relays)
 		{
 			int leg = q2.value("runs.leg").toInt();
@@ -422,50 +401,47 @@ void EmmaClient::exportStartList()
 			reg = reg.leftJustified(7,QChar(' '),true);
 		}
 
-        int msec = startTime;
+		int msec = startTime;
 		if (startTimeCard != 0)
-        {
-            // has start in si card (P, T, HDR)
-            startTimeCard *= 1000; // msec
-            startTimeCard -= start00;
-            if (startTimeCard < 0) // 12h format
-                startTimeCard += (12*60*60*1000);
-            msec = startTimeCard;
-        }
+		{
+			// has start in si card (P, T, HDR)
+			startTimeCard *= 1000; // msec
+			startTimeCard -= start00;
+			if (startTimeCard < 0) // 12h format
+				startTimeCard += (12*60*60*1000);
+			msec = startTimeCard;
+		}
 
-        QString tm2;
-        //TODO zmenit na format mmm.ss,zzzz
-        if (msec < 0)
-            continue; // emma client has problem with negative times
-        int min = (msec / 60000);
-        if(min < 10)
-            tm2 += "00";
-        else if(min < 100)
-            tm2 += "0";
-        tm2 += QString::number(min);
-        tm2 += '.';
-        int sec = (msec % 60000 / 1000);
-        if(sec < 10)
-            tm2 += "0";
-        tm2 += QString::number(sec);
-        tm2 += ',';
-        int zzzz = msec % 1000 * 10;
-        if(zzzz < 10)
-            tm2 += "000";
-        else if(zzzz < 100)
-            tm2 += "00";
-        else if(zzzz < 1000)
-            tm2 += "000";
-        tm2 += QString::number(zzzz);
+		QString tm2;
+		//TODO zmenit na format mmm.ss,zzzz
+		if (msec < 0)
+			continue; // emma client has problem with negative times
+		int min = (msec / 60000);
+		if(min < 10)
+			tm2 += "00";
+		else if(min < 100)
+			tm2 += "0";
+		tm2 += QString::number(min);
+		tm2 += '.';
+		int sec = (msec % 60000 / 1000);
+		if(sec < 10)
+			tm2 += "0";
+		tm2 += QString::number(sec);
+		tm2 += ',';
+		int zzzz = msec % 1000 * 10;
+		if(zzzz < 10)
+			tm2 += "000";
+		else if(zzzz < 100)
+			tm2 += "00";
+		else if(zzzz < 1000)
+			tm2 += "000";
+		tm2 += QString::number(zzzz);
 
-        if (siCards != 0 && siCards != si)
-            si = siCards;
-
-        if (id != 0) // filter bad data
-        {
+		if (id != 0) // filter bad data
+		{
 			QString s = QString("%1 %2 %3 %4 %5 %6").arg(id , 5, 10, QChar(' ')).arg(si, 8, 10, QChar(' ')).arg(clas).arg(reg).arg(name).arg(tm2);
-            ts << s << "\n";
-        }
+			ts << s << "\n";
+		}
 	}
 }
 
