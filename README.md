@@ -83,11 +83,25 @@ sudo apt install libpq-dev
 sudo yum install libpq
 ```
 ### Create a Postgres database
-QuickEvent needs a database named _quickevent_
+QuickEvent needs a database named _quickevent_. Open `psql` shell: `[PostgreSQL home]\bin\psql -U postgres`, enter superuser password and type:
 ```sql
 CREATE USER quickevent_admin_user_name PASSWORD 'good_password';
 CREATE DATABASE quickevent OWNER quickevent_admin_user_name;
 ```
+
+#### Enable database access from network
+If you need access to the database from other computers, you need to enable access from other IP addresses. By default, only localhost connections are enabled.
+
+Add following line to your `[PostgreSQL home]\data\pg_hba.conf` file:
+```
+hostnossl    all          all            0.0.0.0/0  md5
+```
+
+Ensure following line is present in your `[PostgreSQL home]\data\postgresql.conf` (though this is default):
+```
+listen_addresses = '*'
+```
+Restart the PostgreSQL service.
 
 ---
 <!-- CONTRIBUTING -->

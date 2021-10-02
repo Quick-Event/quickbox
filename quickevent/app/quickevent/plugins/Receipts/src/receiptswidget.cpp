@@ -289,18 +289,28 @@ void ReceiptsWidget::markAsPrinted(int connection_id, int card_id)
 void ReceiptsWidget::loadReceptList()
 {
 	ui->lstReceipt->clear();
-	QString receipts_dir = getPlugin<ReceiptsPlugin>()->qmlDir() + "/receipts";
-	QDirIterator it(receipts_dir, QStringList{"*.qml"}, QDir::Files | QDir::Readable, QDirIterator::Subdirectories);
-	while (it.hasNext()) {
-		it.next();
-		QFileInfo fi = it.fileInfo();
-		QString path = fi.filePath();
-		QString name = path.mid(receipts_dir.length() + 1);
-		if(name.startsWith("private/", Qt::CaseInsensitive))
-			continue;
-		name = name.mid(0, name.indexOf(".qml", Qt::CaseInsensitive));
-		qfInfo() << "receipt:" << name << "path:" << path;
-		ui->lstReceipt->addItem(name, path);
+	QString application_receipts_path = QCoreApplication::applicationDirPath() + "/quickevent-data/receipts";
+	QString cwd_receipts_path = QDir(".").absolutePath() + "/quickevent-data/receipts";
+	QVector<QString> receipts_paths = {
+		getPlugin<ReceiptsPlugin>()->qmlDir() + "/receipts",
+		application_receipts_path
+	};
+	if (application_receipts_path != cwd_receipts_path) {
+		receipts_paths.append(cwd_receipts_path);
+	}
+	for (QString& receipts_dir: receipts_paths)
+	{
+		qfInfo() << "looking for receipts in: " + receipts_dir;
+		QDirIterator it(receipts_dir, QStringList{"*.qml"}, QDir::Files | QDir::Readable);
+		while (it.hasNext()) {
+			it.next();
+			QFileInfo fi = it.fileInfo();
+			QString path = fi.filePath();
+			QString name = path.mid(receipts_dir.length() + 1);
+			name = name.mid(0, name.indexOf(".qml", Qt::CaseInsensitive));
+			qfInfo() << "receipt found: " << name << ", path: " << path;
+			ui->lstReceipt->addItem(name, path);
+		}
 	}
 	ui->lstReceipt->setCurrentIndex(-1);
 	QString curr_path = getPlugin<ReceiptsPlugin>()->currentReceiptPath();

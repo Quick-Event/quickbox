@@ -1918,7 +1918,7 @@ QString RunsPlugin::export_resultsHtmlStage(bool with_laps)
 		}
 		append_list(body, table);
 		if(with_laps) {
-			exportHtmlStageWithLaps(laps_file_name, tt2);
+			exportResultsHtmlStageWithLaps(laps_file_name, tt2);
 		}
 	}
 	fwk->hideProgress();
@@ -1950,7 +1950,149 @@ void RunsPlugin::export_resultsHtmlStageWithLaps()
 		QMessageBox::information(fwk, tr("Information"), tr("Results exported to %1").arg(fn));
 }
 
-void RunsPlugin::exportHtmlStageWithLaps(const QString &laps_file_name, const qf::core::utils::TreeTable &tt)
+void RunsPlugin::export_resultsHtmlNStages()
+{
+	const QString sql_where_expr;
+	const int stages_cnt = getPlugin<EventPlugin>()->stageCount();
+	//const int curr_stage = getPlugin<EventPlugin>()->currentStageId();
+	int stage_id = selectedStageId();
+	const int num_places = std::numeric_limits<int>::max();
+	const bool exclude_disq = stage_id < stages_cnt;
+	qff::MainWindow *fwk = qff::MainWindow::frameWork();
+
+	auto tt1 = nstagesResultsTable(sql_where_expr, stage_id, num_places, exclude_disq);
+	tt1.setValue("event", getPlugin<EventPlugin>()->eventConfig()->value("event"));
+	//tt.setValue("stageStart", getPlugin<EventPlugin>()->stageStartDateTime(stages_count));
+
+	QString file_dir = QDir::tempPath() + "/quickevent/overall-e" + QString::number(stage_id);
+	QVariantList body{QStringLiteral("body")};
+	QVariantMap event = tt1.value("event").toMap();
+	QString h1_str = tr("Overall results after stage %1").arg(stage_id);
+	append_list(body, QVariantList{"h1", QVariantList{ "a", QVariantMap{{"name", "home"}}}, h1_str});
+	append_list(body, QVariantList{"h2", event.value("name")});
+	append_list(body, QVariantList{"h3", event.value("place")});
+	append_list(body, QVariantList{"h3", tt1.value("stageStart")});
+	QVariantList div1{"div"};
+	for(int i=0; i<tt1.rowCount(); i++) {
+		qf::core::utils::TreeTableRow tt1_row = tt1.row(i);
+		append_list(div1,
+					QVariantList{
+						"a",
+						QVariantMap{{"href", "#class_" + tt1_row.value("classes.name").toString()}},
+						tt1_row.value("classes.name"),
+						"&nbsp;"
+					});
+	}
+	append_list(body, div1);
+	int progress_cnt = tt1.rowCount();
+	int progress_ix = 0;
+	for(int i=0; i<tt1.rowCount(); i++) {
+		qf::core::utils::TreeTableRow tt1_row = tt1.row(i);
+		QString class_name = tt1_row.value(QStringLiteral("classes.name")).toString();
+		fwk->showProgress(tr("Procesing class %1").arg(class_name), progress_ix++, progress_cnt);
+		//QString laps_file_name = file_dir + "/results_" + class_name + ".html";
+		div1 = QVariantList{
+				"h2",
+				QVariantList{ "a", QVariantMap{{"name", "class_" + class_name}},
+					tt1_row.value("classes.name")
+				}
+			};
+		append_list(body, div1);
+		QVariantList table{"table"};
+		{
+			QVariantList ltr{
+				"tr",
+				QVariantList{"td", QVariantMap{{"colspan", QString::number(6 + 2*stage_id)}, {"align", "right"}},
+							QVariantList{"a", QVariantMap{{"href", "#home"}}, tr("Top") },
+							},
+			};
+			append_list(table, ltr);
+		}
+		qf::core::utils::TreeTable tt2 = tt1.row(i).table();
+		QVariantList trr{"tr",
+					QVariantList{"th", tr("Place")},
+					QVariantList{"th", tr("Name")},
+					QVariantList{"th", tr("Registration")},
+					QVariantList{"th", tr("Club")},
+				};
+		for (int i = 1; i <= stage_id; ++i) {
+			append_list(trr, QVariantList{"th",
+							  QVariantMap{{"colspan", QString::number(2)}},
+							  tr("Stage %1").arg(i)
+						});
+		}
+		append_list(trr, QVariantList{"th", tr("Time")});
+		append_list(trr, QVariantList{"th", tr("Loss")});
+
+		append_list(table, trr);
+		auto time_to_str = [](int msec) {
+			if(msec == UNREAL_TIME_MSEC)
+				return QStringLiteral("---");
+			quickevent::core::og::TimeMs t(msec);
+			return t.toString();
+		};
+		auto pos_to_str = [](const QString &pos) {
+			if(pos.isEmpty())
+				return pos;
+			return '(' + pos + ')';
+		};
+		auto loss_to_str = [](int msec) {
+			if(msec == UNREAL_TIME_MSEC)
+				return QString();
+			quickevent::core::og::TimeMs t(msec);
+			return '+' + t.toString();
+		};
+		for(int j=0; j<tt2.rowCount(); j++) {
+			qf::core::utils::TreeTableRow tt2_row = tt2.row(j);
+			QVariantList trr{"tr"};
+			if(j % 2)
+				trr << QVariantMap{{"class", "odd"}};
+			append_list(trr, QVariantList{"td", QVariantMap{{"align", "right"}}, tt2_row.value(QStringLiteral("pos"))});
+			append_list(trr, QVariantList{"td", tt2_row.value(QStringLiteral("competitorName"))});
+			append_list(trr, QVariantList{"td", tt2_row.value(QStringLiteral("registration"))});
+			append_list(trr, QVariantList{"td", tt2_row.value(QStringLiteral("clubs.name"))});
+
+			for (int i = 1; i <= stage_id; ++i) {
+				append_list(trr, QVariantList{"td", QVariantMap{{"style", "text-align:right;width:6em"}}, time_to_str(tt2_row.value("timeMs" + QString::number(i)).toInt())});
+				append_list(trr, QVariantList{"td", QVariantMap{{"align", "right"}}, pos_to_str(tt2_row.value("pos" + QString::number(i)).toString())});
+			}
+
+			append_list(trr, QVariantList{"td", QVariantMap{{"style", "text-align:right;width:7em"}}, time_to_str(tt2_row.value("timeMs").toInt())});
+
+			QString loss_str;
+			if(tt2_row.value("notCompeting").toBool()) {
+				loss_str = tr("NC", "Not Competing");
+			}
+			else if(tt2_row.value("disqualified").toBool()) {
+				loss_str = tr("DISQ");
+			}
+			else {
+				loss_str = loss_to_str(tt2_row.value("timeLossMs").toInt());
+			}
+			append_list(trr, QVariantList{"td", QVariantMap{{"align", "right"}}, loss_str});
+			append_list(table, trr);
+		}
+		append_list(body, table);
+	}
+	fwk->hideProgress();
+	if(QDir().mkpath(file_dir)) {
+		QString file_name = (file_dir + "/overall-results-e%1.html").arg(stage_id);
+		QVariantMap options;
+		qf::core::utils::HtmlUtils::FromHtmlListOptions opts;
+		opts.setDocumentTitle(tr("Stage results"));
+		QString str = qf::core::utils::HtmlUtils::fromHtmlList(body, opts);
+		QFile f(file_name);
+		if(f.open(QFile::WriteOnly)) {
+			f.write(str.toUtf8());
+			f.close();
+			qfInfo() << "exported:" << file_name;
+			QDesktopServices::openUrl(QUrl::fromLocalFile(file_name));
+		}
+	}
+
+}
+
+void RunsPlugin::exportResultsHtmlStageWithLaps(const QString &laps_file_name, const qf::core::utils::TreeTable &tt)
 {
 	qfInfo() << "exporting:" << laps_file_name;
 	using TimeMs = quickevent::core::og::TimeMs;
@@ -2127,6 +2269,9 @@ bool RunsPlugin::exportStartListStageIofXml30(int stage_id, const QString &file_
 			auto given = tt2_row.value(QStringLiteral("competitors.firstName"));
 			append_list(person, QVariantList{"Name", QVariantList{"Family", family}, QVariantList{"Given", given}});
 			QVariantList xml_start{"Start"};
+			auto bib_number = tt2_row.value(QStringLiteral("competitors.startNumber"));
+			if(!bib_number.isNull())
+				append_list(xml_start, QVariantList{"BibNumber", bib_number});
 			int stime_msec = tt2_row.value("startTimeMs").toInt();
 			//console.info(start00_datetime.toJSON(), start00_datetime.getHours(), start00_epoch_sec / 60 / 60);
 			//console.info(family, given, start00_epoch_sec, stime_sec, stime_sec / 60);

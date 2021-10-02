@@ -107,11 +107,12 @@ public:
 
 	QString export_resultsHtmlStage(bool with_laps = false);
 	void export_resultsHtmlStageWithLaps();
+	void export_resultsHtmlNStages();
 private:
 	Q_SLOT void onInstalled();
 
 	qf::core::utils::TreeTable addLapsToStageResultsTable(int course_id, const qf::core::utils::TreeTable &class_results);
-	void exportHtmlStageWithLaps(const QString &laps_file_name, const qf::core::utils::TreeTable &tt);
+	void exportResultsHtmlStageWithLaps(const QString &laps_file_name, const qf::core::utils::TreeTable &tt);
 
 	int courseForRun_Classic(int run_id);
 	int courseForRun_Relays(int run_id);
