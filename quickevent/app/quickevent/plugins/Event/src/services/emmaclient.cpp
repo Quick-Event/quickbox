@@ -273,12 +273,15 @@ void EmmaClient::exportFinish()
 	qfs::Query q2;
 
 	qb.select2("runs", "siId, isRunning, finishTimeMs, misPunch, badCheck, disqualified, notCompeting")
+			.select2("cards", "id")
 			.from("runs")
+			.join("runs.id","cards.runId")
 			.where("runs.stageId=" QF_IARG(current_stage))
 			.where("runs.siId IS NOT NULL")
 			.orderBy("runs.finishTimeMs ASC ")
 			.orderBy("runs.id ASC");
 	q2.execThrow(qb.toString());
+	int lastSi = 0;
 	while(q2.next()) {
 		int si = q2.value("runs.siId").toInt();
 		int finTime = q2.value("runs.finishTimeMs").toInt();
@@ -287,9 +290,11 @@ void EmmaClient::exportFinish()
 		bool isDisq = q2.value("runs.disqualified").toBool();
 		bool isRunning = q2.value("runs.isRunning").toBool();
 		bool notCompeting = q2.value("runs.notCompeting").toBool();
+		int cardsId = q2.value("cards.id").toInt();
 
-		if (si == 0)
-			continue; // without si is unusable
+		if (si == 0 || lastSi == si)
+			continue; // without si or duplicate readout are unusable
+		lastSi = si;
 		QString s = QString("%1").arg(si , 8, 10, QChar(' '));
 		s += QStringLiteral(": FIN/");
 		int msec = start00 + finTime;
@@ -311,6 +316,8 @@ void EmmaClient::exportFinish()
 				//checked_card is OK
 				s += QStringLiteral("O.K.");
 			}
+		} else if (cardsId == 0) {
+			continue; // skip if not yet readout
 		} else {
 			// DidNotFinish
 			s += QStringLiteral("DNF ");
