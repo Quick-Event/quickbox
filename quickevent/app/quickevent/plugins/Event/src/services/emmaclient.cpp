@@ -64,7 +64,6 @@ void EmmaClient::exportRadioCodes()
 {
 	EmmaClientSettings ss = settings();
 	QString export_dir = ss.exportDir();
-	QDir ed;
 	if(!createExportDir()) {
 		return;
 	}
@@ -86,45 +85,97 @@ void EmmaClient::exportRadioCodes()
 	QTextStream ts_codes(&f_splitcodes);
 
 	int current_stage = getPlugin<EventPlugin>()->currentStageId();
-	qfs::QueryBuilder qb_classes;
-	qb_classes.select2("classes", "name")
-			.select2("classdefs", "courseId")
-			.from("classes")
-			.joinRestricted("classes.id", "classdefs.classId", "classdefs.stageId=" + QString::number(current_stage))
-			.orderBy("classes.name");
-	qfs::Query q1;
-	q1.execThrow(qb_classes.toString());
-	while(q1.next()) {
-		int course_id = q1.value("courseId").toInt();
-		qfs::QueryBuilder qb_codes;
-		qb_codes.select2("codes", "*")
-				//.select2("coursecodes", "position")
-				.from("coursecodes")
-				.joinRestricted("coursecodes.codeId", "codes.id", "codes.radio", qfs::QueryBuilder::INNER_JOIN)
-				.where("coursecodes.courseId=" + QString::number(course_id))
-				.orderBy("coursecodes.position");
-		//qfInfo() << qb_codes.toString();
+	bool is_relays = getPlugin<EventPlugin>()->eventConfig()->isRelays();
 
-		QString class_name = q1.value("classes.name").toString();
-		class_name.remove(" ");
-		QVector<int> codes;
-		qfs::Query q2;
-		q2.execThrow(qb_codes.toString());
-		while(q2.next()) {
-			int code = q2.value("codes.code").toInt();
-			codes << code;
-		}
+	if (is_relays) {
+		qfs::QueryBuilder qb_classes;
+		qb_classes.select2("classes", "name")
+				.select2("classdefs", "relayStartNumber, relayLegCount")
+				.from("classes")
+				.joinRestricted("classes.id", "classdefs.classId", "classdefs.stageId=" + QString::number(current_stage))
+				.orderBy("classes.name");
+		qfs::Query q1;
+		q1.execThrow(qb_classes.toString());
+		while(q1.next()) {
+			int relayStartNumber = q1.value("relayStartNumber").toInt();
+			int relayLegCount = q1.value("relayLegCount").toInt();
+			for (int leg = 1; leg <= relayLegCount; leg++)
+			{
+				qfs::QueryBuilder qb_codes;
+				qb_codes.select2("codes", "*")
+						.from("coursecodes, courses")
+						.joinRestricted("coursecodes.codeId", "codes.id", "codes.radio", qfs::QueryBuilder::INNER_JOIN)
+						.where("coursecodes.courseId=courses.id")
+						.where("courses.name=" + QString("%1.%2").arg(relayStartNumber).arg(leg))
+						.orderBy("coursecodes.position");
+//				qfInfo() << qb_codes.toString();
 
-		ts_names << class_name;
-		ts_codes << class_name;
-		if(!codes.isEmpty()) {
-			for(int code : codes) {
-				ts_names << ' ' << QStringLiteral("cn%1").arg(code);
-				ts_codes << ' ' << code;
+				QString class_name = q1.value("classes.name").toString();
+				class_name.remove(" ");
+				class_name += QString("_%1").arg(leg);
+				QVector<int> codes;
+				qfs::Query q2;
+				q2.execThrow(qb_codes.toString());
+				while(q2.next()) {
+					int code = q2.value("codes.code").toInt();
+					codes << code;
+				}
+
+				ts_names << class_name;
+				ts_codes << class_name;
+				if(!codes.isEmpty()) {
+					for(auto &code : codes) {
+						ts_names << ' ' << QStringLiteral("cn%1").arg(code);
+						ts_codes << ' ' << code;
+					}
+				}
+				ts_names << " finish\n";
+				ts_codes << ' ' << 2 << '\n';
 			}
 		}
-		ts_names << " finish\n";
-		ts_codes << ' ' << 2 << '\n';
+	}
+	else
+	{
+		qfs::QueryBuilder qb_classes;
+		qb_classes.select2("classes", "name")
+				.select2("classdefs", "courseId")
+				.from("classes")
+				.joinRestricted("classes.id", "classdefs.classId", "classdefs.stageId=" + QString::number(current_stage))
+				.orderBy("classes.name");
+		qfs::Query q1;
+		q1.execThrow(qb_classes.toString());
+		while(q1.next()) {
+			int course_id = q1.value("courseId").toInt();
+			qfs::QueryBuilder qb_codes;
+			qb_codes.select2("codes", "*")
+					//.select2("coursecodes", "position")
+					.from("coursecodes")
+					.joinRestricted("coursecodes.codeId", "codes.id", "codes.radio", qfs::QueryBuilder::INNER_JOIN)
+					.where("coursecodes.courseId=" + QString::number(course_id))
+					.orderBy("coursecodes.position");
+//			qfInfo() << qb_codes.toString();
+
+			QString class_name = q1.value("classes.name").toString();
+			class_name.remove(" ");
+			QVector<int> codes;
+			qfs::Query q2;
+			q2.execThrow(qb_codes.toString());
+			while(q2.next()) {
+				int code = q2.value("codes.code").toInt();
+				codes << code;
+			}
+
+			ts_names << class_name;
+			ts_codes << class_name;
+			if(!codes.isEmpty()) {
+				for(auto &code : codes) {
+					ts_names << ' ' << QStringLiteral("cn%1").arg(code);
+					ts_codes << ' ' << code;
+				}
+			}
+			ts_names << " finish\n";
+			ts_codes << ' ' << 2 << '\n';
+		}
 	}
 }
 
