@@ -64,7 +64,6 @@ void EmmaClient::exportRadioCodes()
 {
 	EmmaClientSettings ss = settings();
 	QString export_dir = ss.exportDir();
-	QDir ed;
 	if(!createExportDir()) {
 		return;
 	}
@@ -86,45 +85,97 @@ void EmmaClient::exportRadioCodes()
 	QTextStream ts_codes(&f_splitcodes);
 
 	int current_stage = getPlugin<EventPlugin>()->currentStageId();
-	qfs::QueryBuilder qb_classes;
-	qb_classes.select2("classes", "name")
-			.select2("classdefs", "courseId")
-			.from("classes")
-			.joinRestricted("classes.id", "classdefs.classId", "classdefs.stageId=" + QString::number(current_stage))
-			.orderBy("classes.name");
-	qfs::Query q1;
-	q1.execThrow(qb_classes.toString());
-	while(q1.next()) {
-		int course_id = q1.value("courseId").toInt();
-		qfs::QueryBuilder qb_codes;
-		qb_codes.select2("codes", "*")
-				//.select2("coursecodes", "position")
-				.from("coursecodes")
-				.joinRestricted("coursecodes.codeId", "codes.id", "codes.radio", qfs::QueryBuilder::INNER_JOIN)
-				.where("coursecodes.courseId=" + QString::number(course_id))
-				.orderBy("coursecodes.position");
-		//qfInfo() << qb_codes.toString();
+	bool is_relays = getPlugin<EventPlugin>()->eventConfig()->isRelays();
 
-		QString class_name = q1.value("classes.name").toString();
-        class_name.remove(" ");
-		QVector<int> codes;
-		qfs::Query q2;
-		q2.execThrow(qb_codes.toString());
-		while(q2.next()) {
-			int code = q2.value("codes.code").toInt();
-			codes << code;
-		}
+	if (is_relays) {
+		qfs::QueryBuilder qb_classes;
+		qb_classes.select2("classes", "name")
+				.select2("classdefs", "relayStartNumber, relayLegCount")
+				.from("classes")
+				.joinRestricted("classes.id", "classdefs.classId", "classdefs.stageId=" + QString::number(current_stage))
+				.orderBy("classes.name");
+		qfs::Query q1;
+		q1.execThrow(qb_classes.toString());
+		while(q1.next()) {
+			int relayStartNumber = q1.value("relayStartNumber").toInt();
+			int relayLegCount = q1.value("relayLegCount").toInt();
+			for (int leg = 1; leg <= relayLegCount; leg++)
+			{
+				qfs::QueryBuilder qb_codes;
+				qb_codes.select2("codes", "*")
+						.from("coursecodes, courses")
+						.joinRestricted("coursecodes.codeId", "codes.id", "codes.radio", qfs::QueryBuilder::INNER_JOIN)
+						.where("coursecodes.courseId=courses.id")
+						.where("courses.name=" + QString("%1.%2").arg(relayStartNumber).arg(leg))
+						.orderBy("coursecodes.position");
+//				qfInfo() << qb_codes.toString();
 
-		ts_names << class_name;
-		ts_codes << class_name;
-		if(!codes.isEmpty()) {
-			for(int code : codes) {
-				ts_names << ' ' << QStringLiteral("cn%1").arg(code);
-				ts_codes << ' ' << code;
+				QString class_name = q1.value("classes.name").toString();
+				class_name.remove(" ");
+				class_name += QString("_%1").arg(leg);
+				QVector<int> codes;
+				qfs::Query q2;
+				q2.execThrow(qb_codes.toString());
+				while(q2.next()) {
+					int code = q2.value("codes.code").toInt();
+					codes << code;
+				}
+
+				ts_names << class_name;
+				ts_codes << class_name;
+				if(!codes.isEmpty()) {
+					for(auto &code : codes) {
+						ts_names << ' ' << QStringLiteral("cn%1").arg(code);
+						ts_codes << ' ' << code;
+					}
+				}
+				ts_names << " finish\n";
+				ts_codes << ' ' << 2 << '\n';
 			}
 		}
-		ts_names << " finish\n";
-		ts_codes << ' ' << 2 << '\n';
+	}
+	else
+	{
+		qfs::QueryBuilder qb_classes;
+		qb_classes.select2("classes", "name")
+				.select2("classdefs", "courseId")
+				.from("classes")
+				.joinRestricted("classes.id", "classdefs.classId", "classdefs.stageId=" + QString::number(current_stage))
+				.orderBy("classes.name");
+		qfs::Query q1;
+		q1.execThrow(qb_classes.toString());
+		while(q1.next()) {
+			int course_id = q1.value("courseId").toInt();
+			qfs::QueryBuilder qb_codes;
+			qb_codes.select2("codes", "*")
+					//.select2("coursecodes", "position")
+					.from("coursecodes")
+					.joinRestricted("coursecodes.codeId", "codes.id", "codes.radio", qfs::QueryBuilder::INNER_JOIN)
+					.where("coursecodes.courseId=" + QString::number(course_id))
+					.orderBy("coursecodes.position");
+//			qfInfo() << qb_codes.toString();
+
+			QString class_name = q1.value("classes.name").toString();
+			class_name.remove(" ");
+			QVector<int> codes;
+			qfs::Query q2;
+			q2.execThrow(qb_codes.toString());
+			while(q2.next()) {
+				int code = q2.value("codes.code").toInt();
+				codes << code;
+			}
+
+			ts_names << class_name;
+			ts_codes << class_name;
+			if(!codes.isEmpty()) {
+				for(auto &code : codes) {
+					ts_names << ' ' << QStringLiteral("cn%1").arg(code);
+					ts_codes << ' ' << code;
+				}
+			}
+			ts_names << " finish\n";
+			ts_codes << ' ' << 2 << '\n';
+		}
 	}
 }
 
@@ -267,24 +318,34 @@ void EmmaClient::exportFinish()
 	QTextStream ts(&f);
 
 	int current_stage = getPlugin<EventPlugin>()->currentStageId();
-	qfs::QueryBuilder qb;
-	qb.select2("cards", "id, siId")
-            .select2("runs", "finishTimeMs, misPunch, badCheck, disqualified, notCompeting")
-			.from("cards")
-			.join("cards.runId", "runs.id")
-			.where("cards.stageId=" QF_IARG(current_stage))
-            .orderBy("cards.id ASC");
 	int start00 = getPlugin<EventPlugin>()->stageStartMsec(current_stage);
 
+	qfs::QueryBuilder qb;
 	qfs::Query q2;
+
+	qb.select2("runs", "siId, isRunning, finishTimeMs, misPunch, badCheck, disqualified, notCompeting")
+			.select2("cards", "id")
+			.from("runs")
+			.join("runs.id","cards.runId")
+			.where("runs.stageId=" QF_IARG(current_stage))
+			.where("runs.siId IS NOT NULL")
+			.orderBy("runs.finishTimeMs ASC ")
+			.orderBy("runs.id ASC");
 	q2.execThrow(qb.toString());
+	int lastSi = 0;
 	while(q2.next()) {
-		int si = q2.value("cards.siId").toInt();
+		int si = q2.value("runs.siId").toInt();
 		int finTime = q2.value("runs.finishTimeMs").toInt();
 		bool isMisPunch = q2.value("runs.misPunch").toBool();
 		bool isBadCheck = q2.value("runs.badCheck").toBool();
 		bool isDisq = q2.value("runs.disqualified").toBool();
-        bool notCompeting = q2.value("runs.notCompeting").toBool();
+		bool isRunning = q2.value("runs.isRunning").toBool();
+		bool notCompeting = q2.value("runs.notCompeting").toBool();
+		int cardsId = q2.value("cards.id").toInt();
+
+		if (si == 0 || lastSi == si)
+			continue; // without si or duplicate readout are unusable
+		lastSi = si;
 		QString s = QString("%1").arg(si , 8, 10, QChar(' '));
 		s += QStringLiteral(": FIN/");
 		int msec = start00 + finTime;
@@ -292,23 +353,26 @@ void EmmaClient::exportFinish()
 		s += tm.toString(QStringLiteral("HH:mm:ss.zzz"));
 		s += '0';
 		s += '/';
-		if (finTime > 0) {
-            if (notCompeting) {
-                s += QStringLiteral("NC  ");
-            }
-            else if (isMisPunch || isBadCheck) {
-				s += QStringLiteral("MP  ");
+		if (!isRunning) {
+			s += QStringLiteral("DNS ");
+		} else if (finTime > 0) {
+			if (notCompeting) {
+				s += QStringLiteral("NC  ");
 			} else if (isDisq) {
-				s += QStringLiteral("DISQ");
-            } else {
+				if (isMisPunch || isBadCheck)
+					s += QStringLiteral("MP  ");
+				else
+					s += QStringLiteral("DISQ");
+			} else {
 				//checked_card is OK
 				s += QStringLiteral("O.K.");
 			}
+		} else if (cardsId == 0) {
+			continue; // skip if not yet readout
 		} else {
 			// DidNotFinish
 			s += QStringLiteral("DNF ");
 		}
-
 		ts << s << "\n";
 	}
 }
@@ -330,12 +394,12 @@ void EmmaClient::exportStartList()
 	int current_stage = getPlugin<EventPlugin>()->currentStageId();
 	qfs::QueryBuilder qb;
 	qb.select2("runs", "startTimeMs, siId, competitorId, isrunning, leg")
-            .select2("competitors","firstName, lastName, registration")
-            .select2("classes","name")
-            .select2("cards", "id, siId, startTime")
+			.select2("competitors","firstName, lastName, registration")
+			.select2("classes","name")
+			.select2("cards", "id, startTime")
 			.from("runs")
 			.join("runs.competitorId","competitors.id")
-            .join("runs.id", "cards.runId")
+			.join("runs.id", "cards.runId")
 			.where("runs.stageId=" QF_IARG(current_stage));
 	if(is_relays) {
 		qb.select2("relays","number");
@@ -352,27 +416,26 @@ void EmmaClient::exportStartList()
 	qfDebug() << qb.toString();
 	qfs::Query q2;
 	q2.execThrow(qb.toString());
-    int lastId = -1;
+	int lastId = -1;
 	QMap <int,int> startTimesRelays;
 	while(q2.next()) {
-        int id = q2.value("runs.competitorId").toInt();
-        if (id == lastId)
-            continue;
-        bool isRunning = (q2.value("runs.isrunning").isNull()) ? false : q2.value("runs.isrunning").toBool();
-        if (!isRunning)
-            continue;
-        lastId = id;
-        int si = q2.value("runs.siId").toInt();
-        int siCards = q2.value("cards.siId").toInt();
-        int startTime = q2.value("runs.startTimeMs").toInt();
-        int startTimeCard = q2.value("cards.startTime").toInt();
-        if (startTimeCard == 61166)
-            startTimeCard = 0;
-        QString name = q2.value("competitors.lastName").toString() + " " + q2.value("competitors.firstName").toString();
-        QString clas = q2.value("classes.name").toString();
-        clas.remove(" ");
-        QString reg = q2.value("competitors.registration").toString();
-        name = name.leftJustified(22,QChar(' '),true);
+		int id = q2.value("runs.competitorId").toInt();
+		if (id == lastId)
+			continue;
+		bool isRunning = (q2.value("runs.isrunning").isNull()) ? false : q2.value("runs.isrunning").toBool();
+		if (!isRunning)
+			continue;
+		lastId = id;
+		int si = q2.value("runs.siId").toInt();
+		int startTime = q2.value("runs.startTimeMs").toInt();
+		int startTimeCard = q2.value("cards.startTime").toInt();
+		if (startTimeCard == 61166)
+			startTimeCard = 0;
+		QString name = q2.value("competitors.lastName").toString() + " " + q2.value("competitors.firstName").toString();
+		QString clas = q2.value("classes.name").toString();
+		clas.remove(" ");
+		QString reg = q2.value("competitors.registration").toString();
+		name = name.leftJustified(22,QChar(' '),true);
 		if (is_relays)
 		{
 			int leg = q2.value("runs.leg").toInt();
@@ -396,50 +459,47 @@ void EmmaClient::exportStartList()
 			reg = reg.leftJustified(7,QChar(' '),true);
 		}
 
-        int msec = startTime;
+		int msec = startTime;
 		if (startTimeCard != 0)
-        {
-            // has start in si card (P, T, HDR)
-            startTimeCard *= 1000; // msec
-            startTimeCard -= start00;
-            if (startTimeCard < 0) // 12h format
-                startTimeCard += (12*60*60*1000);
-            msec = startTimeCard;
-        }
+		{
+			// has start in si card (P, T, HDR)
+			startTimeCard *= 1000; // msec
+			startTimeCard -= start00;
+			if (startTimeCard < 0) // 12h format
+				startTimeCard += (12*60*60*1000);
+			msec = startTimeCard;
+		}
 
-        QString tm2;
-        //TODO zmenit na format mmm.ss,zzzz
-        if (msec < 0)
-            continue; // emma client has problem with negative times
-        int min = (msec / 60000);
-        if(min < 10)
-            tm2 += "00";
-        else if(min < 100)
-            tm2 += "0";
-        tm2 += QString::number(min);
-        tm2 += '.';
-        int sec = (msec % 60000 / 1000);
-        if(sec < 10)
-            tm2 += "0";
-        tm2 += QString::number(sec);
-        tm2 += ',';
-        int zzzz = msec % 1000 * 10;
-        if(zzzz < 10)
-            tm2 += "000";
-        else if(zzzz < 100)
-            tm2 += "00";
-        else if(zzzz < 1000)
-            tm2 += "000";
-        tm2 += QString::number(zzzz);
+		QString tm2;
+		//TODO zmenit na format mmm.ss,zzzz
+		if (msec < 0)
+			continue; // emma client has problem with negative times
+		int min = (msec / 60000);
+		if(min < 10)
+			tm2 += "00";
+		else if(min < 100)
+			tm2 += "0";
+		tm2 += QString::number(min);
+		tm2 += '.';
+		int sec = (msec % 60000 / 1000);
+		if(sec < 10)
+			tm2 += "0";
+		tm2 += QString::number(sec);
+		tm2 += ',';
+		int zzzz = msec % 1000 * 10;
+		if(zzzz < 10)
+			tm2 += "000";
+		else if(zzzz < 100)
+			tm2 += "00";
+		else if(zzzz < 1000)
+			tm2 += "000";
+		tm2 += QString::number(zzzz);
 
-        if (siCards != 0 && siCards != si)
-            si = siCards;
-
-        if (id != 0) // filter bad data
-        {
+		if (id != 0) // filter bad data
+		{
 			QString s = QString("%1 %2 %3 %4 %5 %6").arg(id , 5, 10, QChar(' ')).arg(si, 8, 10, QChar(' ')).arg(clas).arg(reg).arg(name).arg(tm2);
-            ts << s << "\n";
-        }
+			ts << s << "\n";
+		}
 	}
 }
 
