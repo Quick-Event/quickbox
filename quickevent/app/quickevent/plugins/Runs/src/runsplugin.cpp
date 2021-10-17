@@ -1638,7 +1638,7 @@ void RunsPlugin::export_startListClassesHtml()
 	QVariantMap event = tt1.value("event").toMap();
 	if(event.value("stageCount").toInt() > 1)
 		h1_str = "E" + tt1.value("stageId").toString() + " " + h1_str;
-	append_list(body, QVariantList{"h1", QVariantList{ "a", QVariantMap{{"name", "home"}}}, h1_str});
+	append_list(body, QVariantList{"h1", QVariantMap{{"id", "home"}}, h1_str});
 	append_list(body, QVariantList{"h2", event.value("name")});
 	append_list(body, QVariantList{"h3", event.value("place")});
 	append_list(body, QVariantList{"h3", tt1.value("stageStart")});
@@ -1734,7 +1734,7 @@ void RunsPlugin::export_startListClubsHtml()
 	QVariantMap event = tt1.value("event").toMap();
 	if(event.value("stageCount").toInt() > 1)
 		h1_str = "E" + tt1.value("stageId").toString() + " " + h1_str;
-	append_list(body, QVariantList{"h1", QVariantList{ "a", QVariantMap{{"name", "home"}}}, h1_str});
+	append_list(body, QVariantList{"h1", QVariantMap{{"id", "home"}}, h1_str});
 	append_list(body, QVariantList{"h2", event.value("name")});
 	append_list(body, QVariantList{"h3", event.value("place")});
 	append_list(body, QVariantList{"h3", tt1.value("stageStart")});
@@ -1834,7 +1834,7 @@ QString RunsPlugin::export_resultsHtmlStage(bool with_laps)
 	QVariantMap event = tt1.value("event").toMap();
 	if(event.value("stageCount").toInt() > 1)
 		h1_str = "E" + tt1.value("stageId").toString() + " " + h1_str;
-	append_list(body, QVariantList{"h1", QVariantList{ "a", QVariantMap{{"name", "home"}}}, h1_str});
+	append_list(body, QVariantList{"h1", QVariantMap{{"id", "home"}}, h1_str});
 	append_list(body, QVariantList{"h2", event.value("name")});
 	append_list(body, QVariantList{"h3", event.value("place")});
 	append_list(body, QVariantList{"h3", tt1.value("stageStart")});
@@ -1874,7 +1874,7 @@ QString RunsPlugin::export_resultsHtmlStage(bool with_laps)
 									 tr("climb:"), tt1_row.value("courses.climb")
 							},
 				QVariantList{"td", QVariantMap{{"colspan", "2"}, {"align", "right"}},
-							with_laps? QVariantList{"a",  QVariantMap{ {"href", laps_file_name} }, tr("Laps") }: QVariantList{},
+							with_laps? QVariantList{"a",  QVariantMap{ {"href", "results_" + class_name + ".html"} }, tr("Laps") }: QVariantList{},
 							QVariantList{"a", QVariantMap{{"href", "#home"}}, tr("Top") },
 							},
 			};
@@ -1968,7 +1968,7 @@ void RunsPlugin::export_resultsHtmlNStages()
 	QVariantList body{QStringLiteral("body")};
 	QVariantMap event = tt1.value("event").toMap();
 	QString h1_str = tr("Overall results after stage %1").arg(stage_id);
-	append_list(body, QVariantList{"h1", QVariantList{ "a", QVariantMap{{"name", "home"}}}, h1_str});
+	append_list(body, QVariantList{"h1", QVariantMap{{"id", "home"}}, h1_str});
 	append_list(body, QVariantList{"h2", event.value("name")});
 	append_list(body, QVariantList{"h3", event.value("place")});
 	append_list(body, QVariantList{"h3", tt1.value("stageStart")});
@@ -2104,7 +2104,7 @@ void RunsPlugin::exportResultsHtmlStageWithLaps(const QString &laps_file_name, c
 	QVariantMap event = tt.value("event").toMap();
 	if(event.value("stageCount").toInt() > 1)
 		h1_str = "E" + tt.value("stageId").toString() + ' ' + tt.value("className").toString() + ' ' + h1_str;
-	append_list(body, QVariantList{"h1", QVariantList{ "a", QVariantMap{{"name", "home"}}}, h1_str});
+	append_list(body, QVariantList{"h1", QVariantMap{{"id", "home"}}, h1_str});
 	append_list(body, QVariantList{"h2", event.value("name")});
 	append_list(body, QVariantList{"h3", event.value("place")});
 	append_list(body, QVariantList{"h3", tt.value("stageStart")});
@@ -2205,15 +2205,17 @@ void RunsPlugin::exportResultsHtmlStageWithLaps(const QString &laps_file_name, c
 		append_list(table, trr2);
 	}
 	append_list(body, table);
-	QVariantMap options;
-	qf::core::utils::HtmlUtils::FromHtmlListOptions opts;
-	opts.setDocumentTitle(tr("Stage results"));
-	QString str = qf::core::utils::HtmlUtils::fromHtmlList(body, opts);
-	QFile f(laps_file_name);
-	if(f.open(QFile::WriteOnly)) {
-		f.write(str.toUtf8());
-		f.close();
-		//QDesktopServices::openUrl(QUrl::fromLocalFile(file_name));
+
+	if(QDir().mkpath(QFileInfo(laps_file_name).absolutePath())) {
+		QVariantMap options;
+		qf::core::utils::HtmlUtils::FromHtmlListOptions opts;
+		opts.setDocumentTitle(tr("Stage results"));
+		QString str = qf::core::utils::HtmlUtils::fromHtmlList(body, opts);
+		QFile f(laps_file_name);
+		if(f.open(QFile::WriteOnly)) {
+			f.write(str.toUtf8());
+			f.close();
+		}
 	}
 }
 
