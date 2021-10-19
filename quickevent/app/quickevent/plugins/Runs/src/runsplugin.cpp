@@ -393,7 +393,7 @@ qf::core::utils::Table RunsPlugin::nstagesClassResultsTable(int stages_count, in
 {
 	qfs::QueryBuilder qb;
 	qb.select2("competitors", "id, registration, licence")
-			.select2("clubs","name")
+			.select2("clubs","name, abbr")
 			.select("COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName")
 			.from("competitors")
 			.join("LEFT JOIN clubs ON substr(competitors.registration, 1, 3) = clubs.abbr")
@@ -584,7 +584,7 @@ qf::core::utils::TreeTable RunsPlugin::stageResultsTable(int stage_id, const QSt
 		qb.select2("competitors", "registration, lastName, firstName")
 			.select("COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName")
 			.select2("runs", "*")
-			.select2("clubs", "name")
+			.select2("clubs", "name, abbr")
 			.from("competitors")
 			.join("LEFT JOIN clubs ON substr(competitors.registration, 1, 3) = clubs.abbr")
 			.joinRestricted("competitors.id"
@@ -864,6 +864,14 @@ bool RunsPlugin::exportResultsIofXml30Stage(int stage_id, const QString &file_na
 				 }
 			);
 
+			person_result.insert(person_result.count(),
+				QVariantList{"Organisation",
+					QVariantList{"ShortName",
+						tt2_row.value(QStringLiteral("clubs.abbr"))
+					}
+				}
+			);
+
 			QVariantList result{"Result"};
 			//int run_id = tt2_row.value(QStringLiteral("runs.id")).toInt();
 			int stime = tt2_row.value(QStringLiteral("startTimeMs")).toInt();
@@ -896,7 +904,7 @@ bool RunsPlugin::exportResultsIofXml30Stage(int stage_id, const QString &file_na
 			}
 			result.insert(result.count(), QVariantList{"Status", competitor_status});
 			int ix = stpTime_0_ix;
-			for(QVariant v : codes) {
+			for(QVariant &v : codes) {
 				quickevent::core::CodeDef cd(v.toMap());
 				int stp_time = tt2_row.value(ix).toInt();
 				QVariantList split_time{
