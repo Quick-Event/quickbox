@@ -103,10 +103,11 @@ void EmmaClient::exportRadioCodes()
 			{
 				qfs::QueryBuilder qb_codes;
 				qb_codes.select2("codes", "*")
-						.from("coursecodes, courses")
-						.joinRestricted("coursecodes.codeId", "codes.id", "codes.radio", qfs::QueryBuilder::INNER_JOIN)
+						.from("coursecodes, courses, codes")
+						.where("coursecodes.codeId=codes.id")
 						.where("coursecodes.courseId=courses.id")
-						.where("courses.name=" + QString("%1.%2").arg(relayStartNumber).arg(leg))
+						.where("courses.name=" + QString("'%1.%2'").arg(relayStartNumber).arg(leg))
+						.where("codes.radio")
 						.orderBy("coursecodes.position");
 //				qfInfo() << qb_codes.toString();
 
