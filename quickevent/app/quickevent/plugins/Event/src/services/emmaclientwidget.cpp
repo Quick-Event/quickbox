@@ -26,7 +26,8 @@ EmmaClientWidget::EmmaClientWidget(QWidget *parent)
 		ui->edExportInterval->setValue(ss.exportIntervalSec());
 		ui->chExportStart->setCheckState((ss.exportStart()) ? Qt::Checked : Qt::Unchecked);
 		ui->chExportFinish->setCheckState((ss.exportFinish()) ? Qt::Checked : Qt::Unchecked);
-		ui->chExportXML30->setCheckState((ss.exportTypeXML3()) ? Qt::Checked : Qt::Unchecked);
+		ui->chExportStartXML30->setCheckState((ss.exportStartTypeXML3()) ? Qt::Checked : Qt::Unchecked);
+		ui->chExportXML30->setCheckState((ss.exportResultTypeXML3()) ? Qt::Checked : Qt::Unchecked);
 	}
 
 	connect(ui->btChooseExportDir, &QPushButton::clicked, this, &EmmaClientWidget::onBtChooseExportDirClicked);
@@ -34,6 +35,7 @@ EmmaClientWidget::EmmaClientWidget(QWidget *parent)
 	connect(ui->btExportFinish, &QPushButton::clicked, this, &EmmaClientWidget::onBtExportFinishClicked);
 	connect(ui->btExportStart, &QPushButton::clicked, this, &EmmaClientWidget::onBtExportStartClicked);
 	connect(ui->btExportXML30, &QPushButton::clicked, this, &EmmaClientWidget::onBtExportXML30Clicked);
+	connect(ui->btExportStartXML30, &QPushButton::clicked, this, &EmmaClientWidget::onBtExportStartXML30Clicked);
 }
 
 EmmaClientWidget::~EmmaClientWidget()
@@ -90,7 +92,8 @@ bool EmmaClientWidget::saveSettings()
 		ss.setFileName(ui->edFileName->text().trimmed());
 		ss.setExportStart(ui->chExportStart->isChecked());
 		ss.setExportFinish(ui->chExportFinish->isChecked());
-		ss.setExportTypeXML3(ui->chExportXML30->isChecked());;
+		ss.setExportStartTypeXML3(ui->chExportStartXML30->isChecked());;
+		ss.setExportResultTypeXML3(ui->chExportXML30->isChecked());;
 		svc->setSettings(ss);
 		if(!dir.isEmpty()) {
 			if(!QDir().mkpath(dir))
@@ -127,5 +130,13 @@ void EmmaClientWidget::onBtExportXML30Clicked()
 	}
 }
 
+void EmmaClientWidget::onBtExportStartXML30Clicked()
+{
+	EmmaClient *svc = service();
+	if(svc) {
+		saveSettings();
+		svc->exportStartListIofXml3();
+	}
+}
 }}
 

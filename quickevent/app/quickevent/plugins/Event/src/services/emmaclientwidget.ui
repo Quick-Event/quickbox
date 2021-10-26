@@ -69,9 +69,16 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
+       <widget class="QCheckBox" name="chExportStartXML30">
+        <property name="text">
+         <string>Enable export IOF XML 3.0 start list file</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QCheckBox" name="chExportXML30">
         <property name="text">
-         <string>Enable export IOF XML 3.0 file</string>
+         <string>Enable export IOF XML 3.0 result file</string>
         </property>
        </widget>
       </item>
@@ -91,9 +98,16 @@
          </spacer>
         </item>
         <item>
+         <widget class="QPushButton" name="btExportStartXML30">
+          <property name="text">
+           <string>Export start list</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="QPushButton" name="btExportXML30">
           <property name="text">
-           <string>Export IOF XML 3.0</string>
+           <string>Export results</string>
           </property>
          </widget>
         </item>
@@ -192,7 +206,9 @@
   <tabstop>edExportDir</tabstop>
   <tabstop>btChooseExportDir</tabstop>
   <tabstop>edExportInterval</tabstop>
+  <tabstop>chExportStartXML30</tabstop>
   <tabstop>chExportXML30</tabstop>
+  <tabstop>btExportStartXML30</tabstop>
   <tabstop>btExportXML30</tabstop>
   <tabstop>edFileName</tabstop>
   <tabstop>chExportStart</tabstop>

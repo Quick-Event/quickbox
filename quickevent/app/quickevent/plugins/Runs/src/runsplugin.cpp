@@ -1079,7 +1079,9 @@ qf::core::utils::TreeTable RunsPlugin::startListClassesTable(const QString &wher
 	qb2.select2("competitors", "lastName, firstName, registration, startNumber")
 		.select("COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName")
 		.select2("runs", "siId, startTimeMs")
+		.select2("clubs","name, abbr")
 		.from("competitors")
+		.join("LEFT JOIN clubs ON substr(competitors.registration, 1, 3) = clubs.abbr")
 		.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId={{stage_id}} AND runs.isRunning", "INNER JOIN")
 		.where("competitors.classId={{class_id}}")
 		.orderBy("runs.startTimeMs, competitors.lastName");
@@ -2293,6 +2295,11 @@ bool RunsPlugin::exportStartListStageIofXml30(int stage_id, const QString &file_
 			append_list(xml_start, QVariantList{"ControlCard", tt2_row.value(QStringLiteral("runs.siId"))});
 			append_list(xml_person, person);
 			append_list(xml_person, xml_start);
+			append_list(xml_person, QVariantList{"Organisation",
+										QVariantList{"ShortName", tt2_row.value(QStringLiteral("clubs.abbr"))
+						}
+					}
+				);
 			append_list(class_start, xml_person);
 		}
 		append_list(xml_root, class_start);

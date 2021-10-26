@@ -192,6 +192,18 @@ void EmmaClient::exportResultsIofXml3()
 	getPlugin<RunsPlugin>()->exportResultsIofXml30Stage(current_stage, file_name);
 }
 
+void EmmaClient::exportStartListIofXml3()
+{
+	if(!createExportDir())
+		return;
+	QString event_name = getPlugin<EventPlugin>()->eventName();
+	EmmaClientSettings ss = settings();
+	QString export_dir = ss.exportDir();
+	QString file_name = export_dir + '/' + event_name + ".startlist.xml";
+	int current_stage = getPlugin<EventPlugin>()->currentStageId();
+	getPlugin<RunsPlugin>()->exportStartListStageIofXml30(current_stage, file_name);
+}
+
 bool EmmaClient::createExportDir()
 {
 	EmmaClientSettings ss = settings();
@@ -289,9 +301,14 @@ void EmmaClient::onExportTimerTimeOut()
 
 	EmmaClientSettings ss = settings();
 
-	if (ss.exportTypeXML3())
+	if (ss.exportStartTypeXML3())
 	{
-		qfInfo() << "EmmaClient Iof Xml3 creation called";
+		qfInfo() << "EmmaClient Start Iof Xml3 creation called";
+		exportStartListIofXml3();
+	}
+	if (ss.exportResultTypeXML3())
+	{
+		qfInfo() << "EmmaClient Result Iof Xml3 creation called";
 		exportResultsIofXml3();
 	}
 	if (ss.exportStart())

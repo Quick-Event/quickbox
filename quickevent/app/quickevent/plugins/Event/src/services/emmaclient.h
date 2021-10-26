@@ -11,7 +11,8 @@ class EmmaClientSettings : public ServiceSettings
 {
 	using Super = ServiceSettings;
 
-	QF_VARIANTMAP_FIELD2(bool, e, setE, xportTypeXML3, 0)
+	QF_VARIANTMAP_FIELD2(bool, e, setE, xportStartTypeXML3, 0)
+	QF_VARIANTMAP_FIELD2(bool, e, setE, xportResultTypeXML3, 0)
 	QF_VARIANTMAP_FIELD(QString, e, setE, xportDir)
 	QF_VARIANTMAP_FIELD(QString, f, setF, ileName)
 	QF_VARIANTMAP_FIELD2(int, e, setE, xportIntervalSec, 0)
@@ -37,6 +38,7 @@ public:
 
 	void exportRadioCodes();
 	void exportResultsIofXml3();
+	void exportStartListIofXml3();
 	void exportFinish();
 	void exportStartList();
 	bool preExport();

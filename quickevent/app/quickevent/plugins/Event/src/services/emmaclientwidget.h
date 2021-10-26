@@ -25,6 +25,7 @@ private:
 	void onBtExportFinishClicked();
 	void onBtExportStartClicked();
 	void onBtExportXML30Clicked();
+	void onBtExportStartXML30Clicked();
 	bool acceptDialogDone(int result) override;
 	EmmaClient* service();
 	bool saveSettings();
