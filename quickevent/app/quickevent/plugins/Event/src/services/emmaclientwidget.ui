@@ -60,6 +60,16 @@
        </property>
       </widget>
      </item>
+     <item row="2" column="1">
+      <widget class="QLineEdit" name="edFileName"/>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>File name prefix</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
    <item>
@@ -71,14 +81,14 @@
       <item>
        <widget class="QCheckBox" name="chExportStartXML30">
         <property name="text">
-         <string>Enable export IOF XML 3.0 start list file</string>
+         <string>Enable export start list</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QCheckBox" name="chExportXML30">
+       <widget class="QCheckBox" name="chExportResultsXML30">
         <property name="text">
-         <string>Enable export IOF XML 3.0 result file</string>
+         <string>Enable export results</string>
         </property>
        </widget>
       </item>
@@ -105,7 +115,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="btExportXML30">
+         <widget class="QPushButton" name="btExportResultsXML30">
           <property name="text">
            <string>Export results</string>
           </property>
@@ -119,30 +129,20 @@
    <item>
     <widget class="QGroupBox" name="groupBox_2">
      <property name="title">
-      <string>RACOM</string>
+      <string>RACOM Text</string>
      </property>
      <layout class="QFormLayout" name="formLayout_2">
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_2">
-        <property name="text">
-         <string>File name prefix</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QLineEdit" name="edFileName"/>
-      </item>
       <item row="2" column="1">
-       <widget class="QCheckBox" name="chExportStart">
+       <widget class="QCheckBox" name="chExportStartTxt">
         <property name="text">
-         <string>Export start list</string>
+         <string>Enable export start list</string>
         </property>
        </widget>
       </item>
       <item row="3" column="1">
-       <widget class="QCheckBox" name="chExportFinish">
+       <widget class="QCheckBox" name="chExportFinishTxt">
         <property name="text">
-         <string>Export results</string>
+         <string>Enable export results</string>
         </property>
        </widget>
       </item>
@@ -162,23 +162,23 @@
          </spacer>
         </item>
         <item>
-         <widget class="QPushButton" name="btExportStart">
+         <widget class="QPushButton" name="btExportSplitsTxt">
+          <property name="text">
+           <string>Export radio codes</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btExportStartTxt">
           <property name="text">
            <string>Export start list</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="btExportFinish">
+         <widget class="QPushButton" name="btExportFinishTxt">
           <property name="text">
            <string>Export results</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="btExportSplits">
-          <property name="text">
-           <string>Export radio codes</string>
           </property>
          </widget>
         </item>
@@ -206,16 +206,16 @@
   <tabstop>edExportDir</tabstop>
   <tabstop>btChooseExportDir</tabstop>
   <tabstop>edExportInterval</tabstop>
-  <tabstop>chExportStartXML30</tabstop>
-  <tabstop>chExportXML30</tabstop>
-  <tabstop>btExportStartXML30</tabstop>
-  <tabstop>btExportXML30</tabstop>
   <tabstop>edFileName</tabstop>
-  <tabstop>chExportStart</tabstop>
-  <tabstop>chExportFinish</tabstop>
-  <tabstop>btExportStart</tabstop>
-  <tabstop>btExportFinish</tabstop>
-  <tabstop>btExportSplits</tabstop>
+  <tabstop>chExportStartXML30</tabstop>
+  <tabstop>chExportResultsXML30</tabstop>
+  <tabstop>btExportStartXML30</tabstop>
+  <tabstop>btExportResultsXML30</tabstop>
+  <tabstop>chExportStartTxt</tabstop>
+  <tabstop>chExportFinishTxt</tabstop>
+  <tabstop>btExportSplitsTxt</tabstop>
+  <tabstop>btExportStartTxt</tabstop>
+  <tabstop>btExportFinishTxt</tabstop>
  </tabstops>
  <resources/>
  <connections/>

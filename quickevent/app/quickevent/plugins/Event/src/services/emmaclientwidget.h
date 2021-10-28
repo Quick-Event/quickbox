@@ -21,10 +21,10 @@ public:
 	~EmmaClientWidget();
 private:
 	void onBtChooseExportDirClicked();
-	void onBtExportSplitsClicked();
-	void onBtExportFinishClicked();
-	void onBtExportStartClicked();
-	void onBtExportXML30Clicked();
+	void onBtExportSplitsTxtClicked();
+	void onBtExportFinishTxtClicked();
+	void onBtExportStartTxtClicked();
+	void onBtExportResultsXML30Clicked();
 	void onBtExportStartXML30Clicked();
 	bool acceptDialogDone(int result) override;
 	EmmaClient* service();

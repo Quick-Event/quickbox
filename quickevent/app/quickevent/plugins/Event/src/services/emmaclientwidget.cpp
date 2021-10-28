@@ -1,12 +1,15 @@
 #include "emmaclientwidget.h"
 #include "ui_emmaclientwidget.h"
 #include "emmaclient.h"
+#include "../eventplugin.h"
+#include <qf/qmlwidgets/framework/mainwindow.h>
 
 #include <qf/qmlwidgets/dialogs/messagebox.h>
 
 #include <qf/core/assert.h>
 
 #include <QFileDialog>
+using qf::qmlwidgets::framework::getPlugin;
 
 namespace Event {
 namespace services {
@@ -24,17 +27,19 @@ EmmaClientWidget::EmmaClientWidget(QWidget *parent)
 		ui->edExportDir->setText(ss.exportDir());
 		ui->edFileName->setText(ss.fileName());
 		ui->edExportInterval->setValue(ss.exportIntervalSec());
-		ui->chExportStart->setCheckState((ss.exportStart()) ? Qt::Checked : Qt::Unchecked);
-		ui->chExportFinish->setCheckState((ss.exportFinish()) ? Qt::Checked : Qt::Unchecked);
+		ui->chExportStartTxt->setCheckState((ss.exportStartTypeTxt()) ? Qt::Checked : Qt::Unchecked);
+		ui->chExportFinishTxt->setCheckState((ss.exportFinishTypeTxt()) ? Qt::Checked : Qt::Unchecked);
 		ui->chExportStartXML30->setCheckState((ss.exportStartTypeXML3()) ? Qt::Checked : Qt::Unchecked);
-		ui->chExportXML30->setCheckState((ss.exportResultTypeXML3()) ? Qt::Checked : Qt::Unchecked);
+		ui->chExportResultsXML30->setCheckState((ss.exportResultTypeXML3()) ? Qt::Checked : Qt::Unchecked);
+		if (ui->edFileName->text().isEmpty())
+			ui->edFileName->setText(getPlugin<EventPlugin>()->eventName());
 	}
 
 	connect(ui->btChooseExportDir, &QPushButton::clicked, this, &EmmaClientWidget::onBtChooseExportDirClicked);
-	connect(ui->btExportSplits, &QPushButton::clicked, this, &EmmaClientWidget::onBtExportSplitsClicked);
-	connect(ui->btExportFinish, &QPushButton::clicked, this, &EmmaClientWidget::onBtExportFinishClicked);
-	connect(ui->btExportStart, &QPushButton::clicked, this, &EmmaClientWidget::onBtExportStartClicked);
-	connect(ui->btExportXML30, &QPushButton::clicked, this, &EmmaClientWidget::onBtExportXML30Clicked);
+	connect(ui->btExportSplitsTxt, &QPushButton::clicked, this, &EmmaClientWidget::onBtExportSplitsTxtClicked);
+	connect(ui->btExportFinishTxt, &QPushButton::clicked, this, &EmmaClientWidget::onBtExportFinishTxtClicked);
+	connect(ui->btExportStartTxt, &QPushButton::clicked, this, &EmmaClientWidget::onBtExportStartTxtClicked);
+	connect(ui->btExportResultsXML30, &QPushButton::clicked, this, &EmmaClientWidget::onBtExportResultsXML30Clicked);
 	connect(ui->btExportStartXML30, &QPushButton::clicked, this, &EmmaClientWidget::onBtExportStartXML30Clicked);
 }
 
@@ -54,12 +59,12 @@ void EmmaClientWidget::onBtChooseExportDirClicked()
 	}
 }
 
-void EmmaClientWidget::onBtExportSplitsClicked()
+void EmmaClientWidget::onBtExportSplitsTxtClicked()
 {
 	EmmaClient *svc = service();
 	if(svc) {
 		saveSettings();
-		svc->exportRadioCodes();
+		svc->exportRadioCodesRacomTxt();
 	}
 }
 
@@ -90,10 +95,13 @@ bool EmmaClientWidget::saveSettings()
 		ss.setExportDir(dir);
 		ss.setExportIntervalSec(ui->edExportInterval->value());
 		ss.setFileName(ui->edFileName->text().trimmed());
-		ss.setExportStart(ui->chExportStart->isChecked());
-		ss.setExportFinish(ui->chExportFinish->isChecked());
+		ss.setExportStartTypeTxt(ui->chExportStartTxt->isChecked());
+		ss.setExportFinishTypeTxt(ui->chExportFinishTxt->isChecked());
 		ss.setExportStartTypeXML3(ui->chExportStartXML30->isChecked());;
-		ss.setExportResultTypeXML3(ui->chExportXML30->isChecked());;
+		ss.setExportResultTypeXML3(ui->chExportResultsXML30->isChecked());;
+		if (ss.fileName().isEmpty())
+			ss.setFileName(getPlugin<EventPlugin>()->eventName());
+
 		svc->setSettings(ss);
 		if(!dir.isEmpty()) {
 			if(!QDir().mkpath(dir))
@@ -103,25 +111,25 @@ bool EmmaClientWidget::saveSettings()
 	return true;
 }
 
-void EmmaClientWidget::onBtExportFinishClicked()
+void EmmaClientWidget::onBtExportFinishTxtClicked()
 {
 	EmmaClient *svc = service();
 	if(svc) {
 		saveSettings();
-		svc->exportFinish();
+		svc->exportFinishRacomTxt();
 	}
 }
 
-void EmmaClientWidget::onBtExportStartClicked()
+void EmmaClientWidget::onBtExportStartTxtClicked()
 {
 	EmmaClient *svc = service();
 	if(svc) {
 		saveSettings();
-		svc->exportStartList();
+		svc->exportStartListRacomTxt();
 	}
 }
 
-void EmmaClientWidget::onBtExportXML30Clicked()
+void EmmaClientWidget::onBtExportResultsXML30Clicked()
 {
 	EmmaClient *svc = service();
 	if(svc) {

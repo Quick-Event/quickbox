@@ -16,8 +16,8 @@ class EmmaClientSettings : public ServiceSettings
 	QF_VARIANTMAP_FIELD(QString, e, setE, xportDir)
 	QF_VARIANTMAP_FIELD(QString, f, setF, ileName)
 	QF_VARIANTMAP_FIELD2(int, e, setE, xportIntervalSec, 0)
-	QF_VARIANTMAP_FIELD2(bool, e, setE, xportStart, 0)
-	QF_VARIANTMAP_FIELD2(bool, e, setE, xportFinish, 0)
+	QF_VARIANTMAP_FIELD2(bool, e, setE, xportStartTypeTxt, 0)
+	QF_VARIANTMAP_FIELD2(bool, e, setE, xportFinishTypeTxt, 0)
 public:
 	EmmaClientSettings(const QVariantMap &o = QVariantMap()) : Super(o) {}
 };
@@ -36,11 +36,11 @@ public:
 
 	static QString serviceName();
 
-	void exportRadioCodes();
+	void exportRadioCodesRacomTxt();
 	void exportResultsIofXml3();
 	void exportStartListIofXml3();
-	void exportFinish();
-	void exportStartList();
+	void exportFinishRacomTxt();
+	void exportStartListRacomTxt();
 	bool preExport();
 	void loadSettings() override;
 private:
