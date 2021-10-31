@@ -43,11 +43,12 @@ AddLegDialogWidget::AddLegDialogWidget(QWidget *parent)
 			.select2("relays", "classId")
 			.select("COALESCE(relays.club, '') || ' ' || COALESCE(relays.name, '') AS relayName")
 			.select("COALESCE(lastName, '') || ' ' || COALESCE(firstName, '') AS competitorName")
-			.from("runs")
-			.join("runs.competitorId", "competitors.id")
+			.from("competitors")
+			.join("competitors.id", "runs.competitorId")
 			.join("runs.relayId", "relays.id")
 			.join("relays.classId", "classes.id")
 			.orderBy("competitorName");//.limit(10);
+//	qfInfo() << qb.toString();
 	competitors_model->setQueryBuilder(qb);
 	ui->tblCompetitors->setTableModel(competitors_model);
 	ui->tblCompetitors->setReadOnly(true);
@@ -74,7 +75,7 @@ void AddLegDialogWidget::onFilterTextChanged()
 {
 	QString txt = ui->edFilter->text().trimmed();
 	if(txt.length() < 3)
-		return;
+		txt.clear();	// clear filter when less than 3 chars (not return, need to clear filter)
 	ui->tblCompetitors->filterByString(txt);
 	ui->tblRegistrations->filterByString(txt);
 	ui->edFilter->setFocus();
