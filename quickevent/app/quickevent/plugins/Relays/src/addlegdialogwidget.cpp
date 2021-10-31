@@ -57,17 +57,19 @@ AddLegDialogWidget::AddLegDialogWidget(QWidget *parent)
 	auto *reg_model = getPlugin<CompetitorsPlugin>()->registrationsModel();
 	ui->tblRegistrations->setTableModel(reg_model);
 	ui->tblRegistrations->setReadOnly(true);
-	connect(reg_model, &qf::core::model::SqlTableModel::reloaded, [this]() {
+	regUpdateConnect = connect(reg_model, &qf::core::model::SqlTableModel::reloaded, [this]() {
 		ui->tblRegistrations->horizontalHeader()->resizeSections(QHeaderView::ResizeToContents);
 	});
 
 	connect(ui->edFilter, &QLineEdit::textChanged, this, &AddLegDialogWidget::onFilterTextChanged);
 	connect(ui->tblCompetitors, &qf::qmlwidgets::TableView::doubleClicked, this, &AddLegDialogWidget::onCompetitorSelected);
 	connect(ui->tblRegistrations, &qf::qmlwidgets::TableView::doubleClicked, this, &AddLegDialogWidget::onRegistrationSelected);
+	connect(ui->btUseUnregRunner, &QPushButton::clicked, this, &AddLegDialogWidget::onUnregistredRunnerAdded);
 }
 
 AddLegDialogWidget::~AddLegDialogWidget()
 {
+	disconnect(regUpdateConnect);
 	delete ui;
 }
 
@@ -176,4 +178,36 @@ int AddLegDialogWidget::findFreeLeg()
 		free_leg++;
 	}
 	return free_leg;
+}
+
+void AddLegDialogWidget::onUnregistredRunnerAdded()
+{
+	QString firstName = ui->edFirstName->text();
+	QString lastName = ui->edLastName->text();
+	if (lastName.isEmpty() || firstName.isEmpty())
+		return;
+
+	Competitors::CompetitorDocument doc;
+	doc.loadForInsert();
+	doc.setValue("firstName", firstName);
+	doc.setValue("lastName", lastName);
+	doc.setValue("siid", ui->edSiId->value());
+	doc.setValue("classId", classId());
+	doc.save();
+	QString name = lastName + " " + firstName;
+	int run_id = doc.lastInsertedRunsIds().value(0);
+	QF_ASSERT(run_id > 0, "Bad insert", return);
+	int free_leg = findFreeLeg();
+	qf::core::sql::Query q;
+	q.exec("UPDATE runs SET relayId=" + QString::number(relayId()) + ", leg=" + QString::number(free_leg)
+		   + " WHERE id=" + QString::number(run_id), qf::core::Exception::Throw);
+
+	updateLegAddedStatus(tr("Runner %1 was assigned to leg %2")
+						 .arg(name)
+						 .arg(free_leg));
+	emit legAdded();
+
+	ui->edFirstName->setText("");
+	ui->edLastName->setText("");
+	ui->edSiId->setValue(0);
 }

@@ -26,6 +26,7 @@ private:
 	void onFilterTextChanged();
 	void onCompetitorSelected();
 	void onRegistrationSelected();
+	void onUnregistredRunnerAdded();
 
 	void updateLegAddedStatus(const QString &msg);
 
@@ -34,6 +35,7 @@ private:
 	Ui::AddLegDialogWidget *ui;
 	QTimer *m_updateStatusTimer = nullptr;
 	QString m_defaultStatusText;
+	QMetaObject::Connection regUpdateConnect;
 };
 
 #endif // ADDLEGDIALOGWIDGET_H
