@@ -30,6 +30,7 @@ void send_log_entry_handler(NecroLog::Level level, const NecroLog::LogContext &c
 		Application *app = Application::instance();
 		if(app) {
 			qf::core::LogEntryMap le;
+			le.setTimeStamp(QDateTime::currentDateTime());
 			le.setLevel(level);
 			le.setCategory(context.topic());
 			le.setFile(context.file());

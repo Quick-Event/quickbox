@@ -90,7 +90,7 @@ QVariant LogTableModel::data(const QModelIndex &index, int role) const
 		if(ret.userType() == qMetaTypeId<NecroLog::Level>())
 			ret = NecroLog::levelToString(ret.value<NecroLog::Level>());
 		else if(ret.userType() == qMetaTypeId<QDateTime>())
-			ret = ret.value<QDateTime>().toString(Qt::ISODate);
+			ret = ret.value<QDateTime>().toString(Qt::ISODateWithMs);
 		return ret;
 	}
 	case Qt::EditRole:

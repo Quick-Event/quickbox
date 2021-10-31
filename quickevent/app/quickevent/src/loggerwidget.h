@@ -4,7 +4,6 @@
 #include <qf/qmlwidgets/framework/logwidget.h>
 
 namespace qf { namespace core { class LogEntryMap; }}
-namespace qf { namespace core { namespace model { class LogEntryMap; }}}
 
 class LoggerLogDevice;
 

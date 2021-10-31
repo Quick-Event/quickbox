@@ -19,7 +19,7 @@ class QFCORE_DECL_EXPORT  LogTableModel : public QAbstractTableModel
 private:
 	using Super = QAbstractTableModel;
 public:
-	enum Cols {Severity, Category, Message, TimeStamp, File, Line, Function, UserData, Count};
+	enum Cols {TimeStamp, Severity, Category, Message, File, Line, Function, UserData, Count};
 	class QFCORE_DECL_EXPORT Row {
 	public:
 		explicit Row() {}
