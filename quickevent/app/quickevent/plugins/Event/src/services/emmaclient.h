@@ -11,10 +11,10 @@ class EmmaClientSettings : public ServiceSettings
 {
 	using Super = ServiceSettings;
 
-	QF_VARIANTMAP_FIELD2(bool, e, setE, xportStartTypeXML3, 0)
-	QF_VARIANTMAP_FIELD2(bool, e, setE, xportResultTypeXML3, 0)
+	QF_VARIANTMAP_FIELD2(bool, e, setE, xportStartListTypeXml3, 0)
+	QF_VARIANTMAP_FIELD2(bool, e, setE, xportResultTypeXml3, 0)
 	QF_VARIANTMAP_FIELD(QString, e, setE, xportDir)
-	QF_VARIANTMAP_FIELD(QString, f, setF, ileName)
+	QF_VARIANTMAP_FIELD(QString, f, setF, ileNameBase)
 	QF_VARIANTMAP_FIELD2(int, e, setE, xportIntervalSec, 0)
 	QF_VARIANTMAP_FIELD2(bool, e, setE, xportStartTypeTxt, 0)
 	QF_VARIANTMAP_FIELD2(bool, e, setE, xportFinishTypeTxt, 0)

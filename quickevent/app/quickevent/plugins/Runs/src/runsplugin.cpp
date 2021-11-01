@@ -904,7 +904,7 @@ bool RunsPlugin::exportResultsIofXml30Stage(int stage_id, const QString &file_na
 			}
 			result.insert(result.count(), QVariantList{"Status", competitor_status});
 			int ix = stpTime_0_ix;
-			for(QVariant &v : codes) {
+			for(const QVariant &v : codes) {
 				quickevent::core::CodeDef cd(v.toMap());
 				int stp_time = tt2_row.value(ix).toInt();
 				QVariantList split_time{

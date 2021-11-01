@@ -23,9 +23,9 @@ private:
 	void onBtChooseExportDirClicked();
 	void onBtExportSplitsTxtClicked();
 	void onBtExportFinishTxtClicked();
-	void onBtExportStartTxtClicked();
-	void onBtExportResultsXML30Clicked();
-	void onBtExportStartXML30Clicked();
+	void onBtExportStartListTxtClicked();
+	void onBtExportResultsXml30Clicked();
+	void onBtExportStartListXml30Clicked();
 	bool acceptDialogDone(int result) override;
 	EmmaClient* service();
 	bool saveSettings();

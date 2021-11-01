@@ -57,9 +57,9 @@ AddLegDialogWidget::AddLegDialogWidget(QWidget *parent)
 	auto *reg_model = getPlugin<CompetitorsPlugin>()->registrationsModel();
 	ui->tblRegistrations->setTableModel(reg_model);
 	ui->tblRegistrations->setReadOnly(true);
-	regUpdateConnect = connect(reg_model, &qf::core::model::SqlTableModel::reloaded, [this]() {
-		ui->tblRegistrations->horizontalHeader()->resizeSections(QHeaderView::ResizeToContents);
-	});
+	connect(reg_model, &qf::core::model::SqlTableModel::reloaded, this, [this]() {
+			ui->tblRegistrations->horizontalHeader()->resizeSections(QHeaderView::ResizeToContents);
+		});
 
 	connect(ui->edFilter, &QLineEdit::textChanged, this, &AddLegDialogWidget::onFilterTextChanged);
 	connect(ui->tblCompetitors, &qf::qmlwidgets::TableView::doubleClicked, this, &AddLegDialogWidget::onCompetitorSelected);
@@ -69,7 +69,6 @@ AddLegDialogWidget::AddLegDialogWidget(QWidget *parent)
 
 AddLegDialogWidget::~AddLegDialogWidget()
 {
-	disconnect(regUpdateConnect);
 	delete ui;
 }
 

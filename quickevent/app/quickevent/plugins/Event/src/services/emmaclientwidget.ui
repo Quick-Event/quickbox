@@ -61,12 +61,12 @@
       </widget>
      </item>
      <item row="2" column="1">
-      <widget class="QLineEdit" name="edFileName"/>
+      <widget class="QLineEdit" name="edFileNameBase"/>
      </item>
      <item row="2" column="0">
       <widget class="QLabel" name="label_2">
        <property name="text">
-        <string>File name prefix</string>
+        <string>File name base</string>
        </property>
       </widget>
      </item>
@@ -79,14 +79,14 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
-       <widget class="QCheckBox" name="chExportStartXML30">
+       <widget class="QCheckBox" name="chExportStartListXml30">
         <property name="text">
          <string>Enable export start list</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QCheckBox" name="chExportResultsXML30">
+       <widget class="QCheckBox" name="chExportResultsXml30">
         <property name="text">
          <string>Enable export results</string>
         </property>
@@ -108,14 +108,14 @@
          </spacer>
         </item>
         <item>
-         <widget class="QPushButton" name="btExportStartXML30">
+         <widget class="QPushButton" name="btExportStartListXml30">
           <property name="text">
            <string>Export start list</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="btExportResultsXML30">
+         <widget class="QPushButton" name="btExportResultsXml30">
           <property name="text">
            <string>Export results</string>
           </property>
@@ -133,7 +133,7 @@
      </property>
      <layout class="QFormLayout" name="formLayout_2">
       <item row="2" column="1">
-       <widget class="QCheckBox" name="chExportStartTxt">
+       <widget class="QCheckBox" name="chExportStartListTxt">
         <property name="text">
          <string>Enable export start list</string>
         </property>
@@ -169,7 +169,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="btExportStartTxt">
+         <widget class="QPushButton" name="btExportStartListTxt">
           <property name="text">
            <string>Export start list</string>
           </property>
@@ -206,15 +206,15 @@
   <tabstop>edExportDir</tabstop>
   <tabstop>btChooseExportDir</tabstop>
   <tabstop>edExportInterval</tabstop>
-  <tabstop>edFileName</tabstop>
-  <tabstop>chExportStartXML30</tabstop>
-  <tabstop>chExportResultsXML30</tabstop>
-  <tabstop>btExportStartXML30</tabstop>
-  <tabstop>btExportResultsXML30</tabstop>
-  <tabstop>chExportStartTxt</tabstop>
+  <tabstop>edFileNameBase</tabstop>
+  <tabstop>chExportStartListXml30</tabstop>
+  <tabstop>chExportResultsXml30</tabstop>
+  <tabstop>btExportStartListXml30</tabstop>
+  <tabstop>btExportResultsXml30</tabstop>
+  <tabstop>chExportStartListTxt</tabstop>
   <tabstop>chExportFinishTxt</tabstop>
   <tabstop>btExportSplitsTxt</tabstop>
-  <tabstop>btExportStartTxt</tabstop>
+  <tabstop>btExportStartListTxt</tabstop>
   <tabstop>btExportFinishTxt</tabstop>
  </tabstops>
  <resources/>

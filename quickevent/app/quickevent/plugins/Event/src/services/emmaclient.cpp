@@ -67,13 +67,13 @@ void EmmaClient::exportRadioCodesRacomTxt()
 	if(!createExportDir()) {
 		return;
 	}
-	QFile f_splitnames(export_dir + '/' + ss.fileName() + ".splitnames.txt");
+	QFile f_splitnames(export_dir + '/' + ss.fileNameBase() + ".splitnames.txt");
 	if(!f_splitnames.open(QFile::WriteOnly)) {
 		qfError() << "Canot open file:" << f_splitnames.fileName() << "for writing.";
 		return;
 	}
 	qfInfo() << "EmmaClient: exporting code names to" << f_splitnames.fileName();
-	QFile f_splitcodes(ss.exportDir() + '/' + ss.fileName() + ".splitcodes.txt");
+	QFile f_splitcodes(ss.exportDir() + '/' + ss.fileNameBase() + ".splitcodes.txt");
 	if(!f_splitcodes.open(QFile::WriteOnly)) {
 		qfError() << "Canot open file:" << f_splitcodes.fileName() << "for writing.";
 		return;
@@ -185,7 +185,7 @@ void EmmaClient::exportResultsIofXml3()
 		return;
 	EmmaClientSettings ss = settings();
 	QString export_dir = ss.exportDir();
-	QString file_name = export_dir + '/' + ss.fileName() + ".results.xml";
+	QString file_name = export_dir + '/' + ss.fileNameBase() + ".results.xml";
 	int current_stage = getPlugin<EventPlugin>()->currentStageId();
 	getPlugin<RunsPlugin>()->exportResultsIofXml30Stage(current_stage, file_name);
 }
@@ -196,7 +196,7 @@ void EmmaClient::exportStartListIofXml3()
 		return;
 	EmmaClientSettings ss = settings();
 	QString export_dir = ss.exportDir();
-	QString file_name = export_dir + '/' + ss.fileName() + ".startlist.xml";
+	QString file_name = export_dir + '/' + ss.fileNameBase() + ".startlist.xml";
 	int current_stage = getPlugin<EventPlugin>()->currentStageId();
 	getPlugin<RunsPlugin>()->exportStartListStageIofXml30(current_stage, file_name);
 }
@@ -298,12 +298,12 @@ void EmmaClient::onExportTimerTimeOut()
 
 	EmmaClientSettings ss = settings();
 
-	if (ss.exportStartTypeXML3())
+	if (ss.exportStartListTypeXml3())
 	{
-		qfInfo() << "EmmaClient Start Iof Xml3 creation called";
+		qfInfo() << "EmmaClient Start List Iof Xml3 creation called";
 		exportStartListIofXml3();
 	}
-	if (ss.exportResultTypeXML3())
+	if (ss.exportResultTypeXml3())
 	{
 		qfInfo() << "EmmaClient Result Iof Xml3 creation called";
 		exportResultsIofXml3();
@@ -324,7 +324,7 @@ void EmmaClient::exportFinishRacomTxt()
 {
 	EmmaClientSettings ss = settings();
 	QString export_dir = ss.exportDir();
-	QFile f(export_dir + '/' + ss.fileName() + ".finish.txt");
+	QFile f(export_dir + '/' + ss.fileNameBase() + ".finish.txt");
 	if(!f.open(QFile::WriteOnly)) {
 		qfError() << "Canot open file:" << f.fileName() << "for writing.";
 		return;
@@ -396,7 +396,7 @@ void EmmaClient::exportStartListRacomTxt()
 {
 	EmmaClientSettings ss = settings();
 	QString export_dir = ss.exportDir();
-	QFile f(export_dir + '/' + ss.fileName() + ".start.txt");
+	QFile f(export_dir + '/' + ss.fileNameBase() + ".start.txt");
 	if(!f.open(QFile::WriteOnly)) {
 		qfError() << "Canot open file:" << f.fileName() << "for writing.";
 		return;
