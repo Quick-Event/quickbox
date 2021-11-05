@@ -26,6 +26,7 @@ private:
 	void onFilterTextChanged();
 	void onCompetitorSelected();
 	void onRegistrationSelected();
+	void onUnregistredRunnerAdded();
 
 	void updateLegAddedStatus(const QString &msg);
 

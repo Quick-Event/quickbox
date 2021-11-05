@@ -43,11 +43,12 @@ AddLegDialogWidget::AddLegDialogWidget(QWidget *parent)
 			.select2("relays", "classId")
 			.select("COALESCE(relays.club, '') || ' ' || COALESCE(relays.name, '') AS relayName")
 			.select("COALESCE(lastName, '') || ' ' || COALESCE(firstName, '') AS competitorName")
-			.from("runs")
-			.join("runs.competitorId", "competitors.id")
+			.from("competitors")
+			.join("competitors.id", "runs.competitorId")
 			.join("runs.relayId", "relays.id")
 			.join("relays.classId", "classes.id")
 			.orderBy("competitorName");//.limit(10);
+//	qfInfo() << qb.toString();
 	competitors_model->setQueryBuilder(qb);
 	ui->tblCompetitors->setTableModel(competitors_model);
 	ui->tblCompetitors->setReadOnly(true);
@@ -56,13 +57,14 @@ AddLegDialogWidget::AddLegDialogWidget(QWidget *parent)
 	auto *reg_model = getPlugin<CompetitorsPlugin>()->registrationsModel();
 	ui->tblRegistrations->setTableModel(reg_model);
 	ui->tblRegistrations->setReadOnly(true);
-	connect(reg_model, &qf::core::model::SqlTableModel::reloaded, [this]() {
-		ui->tblRegistrations->horizontalHeader()->resizeSections(QHeaderView::ResizeToContents);
-	});
+	connect(reg_model, &qf::core::model::SqlTableModel::reloaded, this, [this]() {
+			ui->tblRegistrations->horizontalHeader()->resizeSections(QHeaderView::ResizeToContents);
+		});
 
 	connect(ui->edFilter, &QLineEdit::textChanged, this, &AddLegDialogWidget::onFilterTextChanged);
 	connect(ui->tblCompetitors, &qf::qmlwidgets::TableView::doubleClicked, this, &AddLegDialogWidget::onCompetitorSelected);
 	connect(ui->tblRegistrations, &qf::qmlwidgets::TableView::doubleClicked, this, &AddLegDialogWidget::onRegistrationSelected);
+	connect(ui->btUseUnregRunner, &QPushButton::clicked, this, &AddLegDialogWidget::onUnregistredRunnerAdded);
 }
 
 AddLegDialogWidget::~AddLegDialogWidget()
@@ -74,7 +76,7 @@ void AddLegDialogWidget::onFilterTextChanged()
 {
 	QString txt = ui->edFilter->text().trimmed();
 	if(txt.length() < 3)
-		return;
+		txt.clear();	// clear filter when less than 3 chars (not return, need to clear filter)
 	ui->tblCompetitors->filterByString(txt);
 	ui->tblRegistrations->filterByString(txt);
 	ui->edFilter->setFocus();
@@ -175,4 +177,36 @@ int AddLegDialogWidget::findFreeLeg()
 		free_leg++;
 	}
 	return free_leg;
+}
+
+void AddLegDialogWidget::onUnregistredRunnerAdded()
+{
+	QString firstName = ui->edFirstName->text();
+	QString lastName = ui->edLastName->text();
+	if (lastName.isEmpty() || firstName.isEmpty())
+		return;
+
+	Competitors::CompetitorDocument doc;
+	doc.loadForInsert();
+	doc.setValue("firstName", firstName);
+	doc.setValue("lastName", lastName);
+	doc.setValue("siid", ui->edSiId->value());
+	doc.setValue("classId", classId());
+	doc.save();
+	QString name = lastName + " " + firstName;
+	int run_id = doc.lastInsertedRunsIds().value(0);
+	QF_ASSERT(run_id > 0, "Bad insert", return);
+	int free_leg = findFreeLeg();
+	qf::core::sql::Query q;
+	q.exec("UPDATE runs SET relayId=" + QString::number(relayId()) + ", leg=" + QString::number(free_leg)
+		   + " WHERE id=" + QString::number(run_id), qf::core::Exception::Throw);
+
+	updateLegAddedStatus(tr("Runner %1 was assigned to leg %2")
+						 .arg(name)
+						 .arg(free_leg));
+	emit legAdded();
+
+	ui->edFirstName->setText("");
+	ui->edLastName->setText("");
+	ui->edSiId->setValue(0);
 }

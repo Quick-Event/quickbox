@@ -60,21 +60,20 @@ QString EmmaClient::serviceName()
 	return QStringLiteral("EmmaClient");
 }
 
-void EmmaClient::exportRadioCodes()
+void EmmaClient::exportRadioCodesRacomTxt()
 {
 	EmmaClientSettings ss = settings();
 	QString export_dir = ss.exportDir();
 	if(!createExportDir()) {
 		return;
 	}
-	QString event_name = getPlugin<EventPlugin>()->eventName();
-	QFile f_splitnames(export_dir + '/' + event_name + ".splitnames.txt");
+	QFile f_splitnames(export_dir + '/' + ss.fileNameBase() + ".splitnames.txt");
 	if(!f_splitnames.open(QFile::WriteOnly)) {
 		qfError() << "Canot open file:" << f_splitnames.fileName() << "for writing.";
 		return;
 	}
 	qfInfo() << "EmmaClient: exporting code names to" << f_splitnames.fileName();
-	QFile f_splitcodes(ss.exportDir() + '/' + event_name + ".splitcodes.txt");
+	QFile f_splitcodes(ss.exportDir() + '/' + ss.fileNameBase() + ".splitcodes.txt");
 	if(!f_splitcodes.open(QFile::WriteOnly)) {
 		qfError() << "Canot open file:" << f_splitcodes.fileName() << "for writing.";
 		return;
@@ -103,10 +102,11 @@ void EmmaClient::exportRadioCodes()
 			{
 				qfs::QueryBuilder qb_codes;
 				qb_codes.select2("codes", "*")
-						.from("coursecodes, courses")
-						.joinRestricted("coursecodes.codeId", "codes.id", "codes.radio", qfs::QueryBuilder::INNER_JOIN)
+						.from("coursecodes, courses, codes")
+						.where("coursecodes.codeId=codes.id")
 						.where("coursecodes.courseId=courses.id")
-						.where("courses.name=" + QString("%1.%2").arg(relayStartNumber).arg(leg))
+						.where("courses.name=" + QString("'%1.%2'").arg(relayStartNumber).arg(leg))
+						.where("codes.radio")
 						.orderBy("coursecodes.position");
 //				qfInfo() << qb_codes.toString();
 
@@ -183,12 +183,22 @@ void EmmaClient::exportResultsIofXml3()
 {
 	if(!createExportDir())
 		return;
-	QString event_name = getPlugin<EventPlugin>()->eventName();
 	EmmaClientSettings ss = settings();
 	QString export_dir = ss.exportDir();
-	QString file_name = export_dir + '/' + event_name + ".results.xml";
+	QString file_name = export_dir + '/' + ss.fileNameBase() + ".results.xml";
 	int current_stage = getPlugin<EventPlugin>()->currentStageId();
 	getPlugin<RunsPlugin>()->exportResultsIofXml30Stage(current_stage, file_name);
+}
+
+void EmmaClient::exportStartListIofXml3()
+{
+	if(!createExportDir())
+		return;
+	EmmaClientSettings ss = settings();
+	QString export_dir = ss.exportDir();
+	QString file_name = export_dir + '/' + ss.fileNameBase() + ".startlist.xml";
+	int current_stage = getPlugin<EventPlugin>()->currentStageId();
+	getPlugin<RunsPlugin>()->exportStartListStageIofXml30(current_stage, file_name);
 }
 
 bool EmmaClient::createExportDir()
@@ -288,28 +298,33 @@ void EmmaClient::onExportTimerTimeOut()
 
 	EmmaClientSettings ss = settings();
 
-	if (ss.exportTypeXML3())
+	if (ss.exportStartListTypeXml3())
 	{
-		qfInfo() << "EmmaClient Iof Xml3 creation called";
+		qfInfo() << "EmmaClient Start List Iof Xml3 creation called";
+		exportStartListIofXml3();
+	}
+	if (ss.exportResultTypeXml3())
+	{
+		qfInfo() << "EmmaClient Result Iof Xml3 creation called";
 		exportResultsIofXml3();
 	}
-	if (ss.exportStart())
+	if (ss.exportStartTypeTxt())
 	{
 		qfInfo() << "EmmaClient startlist creation called";
-		exportStartList();
+		exportStartListRacomTxt();
 	}
-	if (ss.exportFinish())
+	if (ss.exportFinishTypeTxt())
 	{
 		qfInfo() << "EmmaClient finish creation called";
-		exportFinish();
+		exportFinishRacomTxt();
 	}
 }
 
-void EmmaClient::exportFinish()
+void EmmaClient::exportFinishRacomTxt()
 {
 	EmmaClientSettings ss = settings();
 	QString export_dir = ss.exportDir();
-	QFile f(export_dir + '/' + ss.fileName() + ".finish.txt");
+	QFile f(export_dir + '/' + ss.fileNameBase() + ".finish.txt");
 	if(!f.open(QFile::WriteOnly)) {
 		qfError() << "Canot open file:" << f.fileName() << "for writing.";
 		return;
@@ -377,11 +392,11 @@ void EmmaClient::exportFinish()
 	}
 }
 
-void EmmaClient::exportStartList()
+void EmmaClient::exportStartListRacomTxt()
 {
 	EmmaClientSettings ss = settings();
 	QString export_dir = ss.exportDir();
-	QFile f(export_dir + '/' + ss.fileName() + ".start.txt");
+	QFile f(export_dir + '/' + ss.fileNameBase() + ".start.txt");
 	if(!f.open(QFile::WriteOnly)) {
 		qfError() << "Canot open file:" << f.fileName() << "for writing.";
 		return;
