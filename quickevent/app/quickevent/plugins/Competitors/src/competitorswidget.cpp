@@ -235,8 +235,14 @@ void CompetitorsWidget::editCompetitor_helper(const QVariant &id, int mode, int 
 		QF_ASSERT(doc != nullptr, "Document is null!", return);
 		if(mode == qfm::DataDocument::ModeInsert) {
 			if(siid == 0) {
-				int class_id = m_cbxClasses->currentData().toInt();
-				doc->setValue("competitors.classId", class_id);
+				bool is_relays = getPlugin<EventPlugin>()->eventConfig()->isRelays();
+				if(!is_relays) {
+					int class_id = m_cbxClasses->currentData().toInt();
+					if(class_id > 0)
+						doc->setValue("competitors.classId", class_id);
+					else
+						doc->setValue("competitors.classId", QVariant());
+				}
 			}
 			else {
 				w->loadFromRegistrations(siid);

@@ -289,8 +289,7 @@ QString CompetitorWidget::guessClassFromRegistration(const QString &registration
 	int candidate = 0;
 	if (runner_age > 21)
 	{
-		for(int cls : classes)
-		{
+		for(int cls : classes) {
 			if(runner_age >= cls)
 				candidate = cls;
 		}
@@ -298,8 +297,7 @@ QString CompetitorWidget::guessClassFromRegistration(const QString &registration
 	else
 	{
 		std::reverse(classes.begin(), classes.end());
-		for(int cls : classes)
-		{
+		for(int cls : classes) {
 			if(runner_age <= cls)
 				candidate = cls;
 		}
@@ -328,15 +326,18 @@ void CompetitorWidget::onRegistrationSelected(const QVariantMap &values)
 		qfDebug() << "\t" << s << "->" << values.value(s);
 		doc->setValue(s, values.value(s));
 	}
-	// if no class is set, guess class from registration
-	if(ui->cbxClass->currentText().isEmpty()) {
-		QString class_name_prefix = guessClassFromRegistration(values.value("registration").toString());
-		if(!class_name_prefix.isEmpty()) {
-			for (int i = 0; i < ui->cbxClass->count(); ++i) {
-				QString class_name = ui->cbxClass->itemText(i);
-				if(class_name.startsWith(class_name_prefix)) {
-					ui->cbxClass->setCurrentText(class_name);
-					break;
+	bool is_relays = getPlugin<EventPlugin>()->eventConfig()->isRelays();
+	if(!is_relays) {
+		// if no class is set, guess class from registration
+		if(ui->cbxClass->currentText().isEmpty()) {
+			QString class_name_prefix = guessClassFromRegistration(values.value("registration").toString());
+			if(!class_name_prefix.isEmpty()) {
+				for (int i = 0; i < ui->cbxClass->count(); ++i) {
+					QString class_name = ui->cbxClass->itemText(i);
+					if(class_name.startsWith(class_name_prefix)) {
+						ui->cbxClass->setCurrentText(class_name);
+						break;
+					}
 				}
 			}
 		}
@@ -358,14 +359,19 @@ void CompetitorWidget::loadFromRegistrations(int siid)
 
 bool CompetitorWidget::saveData()
 {
-	bool is_relays = getPlugin<EventPlugin>()->eventConfig()->isRelays();
-	Competitors::CompetitorDocument*doc = qobject_cast<Competitors::CompetitorDocument*>(dataController()->document());
-	if(!is_relays && doc->value(QStringLiteral("classId")).toInt() == 0) {
-		qf::qmlwidgets::dialogs::MessageBox::showWarning(this, tr("Class should be entered."));
-		return false;
+	try {
+		bool is_relays = getPlugin<EventPlugin>()->eventConfig()->isRelays();
+		Competitors::CompetitorDocument*doc = qobject_cast<Competitors::CompetitorDocument*>(dataController()->document());
+		if(!is_relays && doc->value(QStringLiteral("classId")).toInt() == 0) {
+			qf::qmlwidgets::dialogs::MessageBox::showWarning(this, tr("Class should be entered."));
+			return false;
+		}
+		if(Super::saveData())
+			return saveRunsTable();
 	}
-	if(Super::saveData())
-		return saveRunsTable();
+	catch (const qf::core::Exception &e) {
+		QMessageBox::warning(this, tr("SQL error"), e.message());
+	}
 	return false;
 }
 

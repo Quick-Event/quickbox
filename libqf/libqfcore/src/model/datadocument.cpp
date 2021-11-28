@@ -208,7 +208,7 @@ QVariant DataDocument::origValue(const QString &data_id) const
 void DataDocument::setValue(const QString &data_id, const QVariant &val)
 {
 	//qfInfo() << data_id << val;
-	//if(data_id == "competitors.classId") {
+	//if(data_id == "competitors.classId" && val == 0) {
 	//	qfError() << val;
 	//}
 	qfLogFuncFrame() << "data_id:" << data_id << "val:" << val.toString();
