@@ -40,31 +40,28 @@
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
-     <widget class="QGroupBox" name="groupBox">
+     <widget class="QFrame" name="frame">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
         <horstretch>4</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
-      <property name="title">
-       <string>Classes</string>
-      </property>
       <layout class="QVBoxLayout" name="verticalLayout">
        <property name="spacing">
         <number>3</number>
        </property>
        <property name="leftMargin">
-        <number>5</number>
+        <number>0</number>
        </property>
        <property name="topMargin">
-        <number>5</number>
+        <number>0</number>
        </property>
        <property name="rightMargin">
         <number>5</number>
        </property>
        <property name="bottomMargin">
-        <number>5</number>
+        <number>0</number>
        </property>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout">
