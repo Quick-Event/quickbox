@@ -30,37 +30,10 @@
     <number>5</number>
    </property>
    <item>
-    <widget class="QFrame" name="frame">
-     <property name="frameShape">
-      <enum>QFrame::StyledPanel</enum>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Raised</enum>
-     </property>
-     <layout class="QVBoxLayout" name="verticalLayout_4">
-      <property name="spacing">
-       <number>2</number>
-      </property>
-      <property name="leftMargin">
-       <number>2</number>
-      </property>
-      <property name="topMargin">
-       <number>2</number>
-      </property>
-      <property name="rightMargin">
-       <number>2</number>
-      </property>
-      <property name="bottomMargin">
-       <number>2</number>
-      </property>
-      <item>
-       <widget class="qf::qmlwidgets::TableViewToolBar" name="tblCardsTB" native="true"/>
-      </item>
-      <item>
-       <widget class="qf::qmlwidgets::TableView" name="tblCards"/>
-      </item>
-     </layout>
-    </widget>
+    <widget class="qf::qmlwidgets::TableViewToolBar" name="tblCardsTB" native="true"/>
+   </item>
+   <item>
+    <widget class="qf::qmlwidgets::TableView" name="tblCards"/>
    </item>
   </layout>
  </widget>
