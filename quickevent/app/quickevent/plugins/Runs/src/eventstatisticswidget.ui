@@ -73,7 +73,7 @@
          <string>Print results in selected rows</string>
         </property>
         <property name="icon">
-         <iconset resource="../../../../../libqf/libqfqmlwidgets/images/flat/flat.qrc">
+         <iconset resource="../../../../../../libqf/libqfqmlwidgets/images/flat/flat.qrc">
           <normaloff>:/qf/qmlwidgets/images/flat/printer.svg</normaloff>:/qf/qmlwidgets/images/flat/printer.svg</iconset>
         </property>
         <property name="autoRaise">
@@ -87,7 +87,7 @@
          <string>Clear new results in selected rows</string>
         </property>
         <property name="icon">
-         <iconset resource="../../../../../libqf/libqfqmlwidgets/images/flat/flat.qrc">
+         <iconset resource="../../../../../../libqf/libqfqmlwidgets/images/flat/flat.qrc">
           <normaloff>:/qf/qmlwidgets/images/flat/delete.svg</normaloff>:/qf/qmlwidgets/images/flat/delete.svg</iconset>
         </property>
         <property name="autoRaise">
@@ -101,7 +101,7 @@
          <string>Reload table</string>
         </property>
         <property name="icon">
-         <iconset resource="../../../../../libqf/libqfqmlwidgets/images/flat/flat.qrc">
+         <iconset resource="../../../../../../libqf/libqfqmlwidgets/images/flat/flat.qrc">
           <normaloff>:/qf/qmlwidgets/images/flat/reload.svg</normaloff>:/qf/qmlwidgets/images/flat/reload.svg</iconset>
         </property>
         <property name="autoRaise">
@@ -115,7 +115,7 @@
          <string>Options</string>
         </property>
         <property name="icon">
-         <iconset resource="../../../../../libqf/libqfqmlwidgets/images/flat/flat.qrc">
+         <iconset resource="../../../../../../libqf/libqfqmlwidgets/images/flat/flat.qrc">
           <normaloff>:/qf/qmlwidgets/images/flat/settings.svg</normaloff>:/qf/qmlwidgets/images/flat/settings.svg</iconset>
         </property>
         <property name="autoRaise">
@@ -159,7 +159,7 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../../../../../libqf/libqfqmlwidgets/images/flat/flat.qrc"/>
+  <include location="../../../../../../libqf/libqfqmlwidgets/images/flat/flat.qrc"/>
   <include location="../Runs.qrc"/>
  </resources>
  <connections/>

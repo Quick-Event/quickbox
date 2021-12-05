@@ -15,19 +15,19 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="spacing">
-    <number>3</number>
+    <number>5</number>
    </property>
    <property name="leftMargin">
-    <number>3</number>
+    <number>5</number>
    </property>
    <property name="topMargin">
-    <number>3</number>
+    <number>5</number>
    </property>
    <property name="rightMargin">
-    <number>3</number>
+    <number>5</number>
    </property>
    <property name="bottomMargin">
-    <number>3</number>
+    <number>5</number>
    </property>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -121,7 +121,7 @@
   <customwidget>
    <class>qf::qmlwidgets::TableViewToolBar</class>
    <extends>QWidget</extends>
-   <header>qf/qmlwidgets/tableviewtoolbar.h</header>
+   <header location="global">qf/qmlwidgets/tableviewtoolbar.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
