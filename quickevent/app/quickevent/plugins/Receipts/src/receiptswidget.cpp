@@ -68,7 +68,7 @@ ReceiptsWidget::ReceiptsWidget(QWidget *parent) :
 		ui->tblCards->setItemDelegate(new quickevent::gui::og::ItemDelegate(ui->tblCards));
 		auto m = new quickevent::core::og::SqlTableModel(this);
 
-		m->addColumn("cards.id", "ID").setReadOnly(true);
+		m->addColumn("cards.id", "id").setReadOnly(true);
 		m->addColumn("cards.siId", tr("SI")).setReadOnly(true).setCastType(qMetaTypeId<quickevent::core::si::SiId>());
 		m->addColumn("classes.name", tr("Class"));
 		m->addColumn("competitorName", tr("Name"));
