@@ -169,9 +169,7 @@ CardReaderWidget::CardReaderWidget(QWidget *parent)
 {
 	ui->setupUi(this);
 
-	ui->tblCards->setInsertRowEnabled(false);
-	ui->tblCards->setRemoveRowEnabled(false);
-	ui->tblCards->setCloneRowEnabled(false);
+	ui->tblCards->setInsertRemoveRowEnabled(false);
 	ui->tblCards->setPersistentSettingsId(ui->tblCards->objectName());
 
 	createActions();

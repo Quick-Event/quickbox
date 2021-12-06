@@ -265,8 +265,9 @@ void TableView::refreshActions()
 		curr_row = m->tableRow(toTableModelRowNo(curr_ix.row()));
 	//qfDebug() << QF_FUNC_NAME << "valid:" << r.isValid() << "dirty:" << r.isDirty();
 	if(curr_row.isDirty()) {
-		action("postRow")->setEnabled(true);
-		action("revertRow")->setEnabled(true);
+		qfError() << "Unexpected dirty row";
+		//action("postRow")->setEnabled(true);
+		//action("revertRow")->setEnabled(true);
 	}
 	else {
 		a_insert_row->setEnabled(a_insert_row->isVisible() && is_insert_rows_allowed);
@@ -342,6 +343,14 @@ void TableView::enableAllActions(bool on)
 	}
 }
 
+void TableView::setInsertRemoveRowEnabled(bool b)
+{
+	setInsertRowEnabled(b);
+	setRemoveRowEnabled(b);
+	Action *a = action(QStringLiteral("insertRemoveSeparator"));
+	a->setVisible(b);
+}
+
 void TableView::setInsertRowEnabled(bool b)
 {
 	Action *a = action(QStringLiteral("insertRow"));
@@ -354,11 +363,13 @@ void TableView::setRemoveRowEnabled(bool b)
 	a->setVisible(b);
 }
 
+/*
 void TableView::setCloneRowEnabled(bool b)
 {
 	Action *a = action(QStringLiteral("cloneRow"));
 	a->setVisible(b);
 }
+*/
 
 void TableView::setReadOnly(bool ro)
 {
@@ -368,7 +379,7 @@ void TableView::setReadOnly(bool ro)
 
 	setInsertRowEnabled(!ro);
 	setRemoveRowEnabled(!ro);
-	setCloneRowEnabled(!ro);
+	//setCloneRowEnabled(!ro);
 	{
 		Action *a = action(QStringLiteral("postRow"));
 		a->setVisible(!ro);
@@ -1645,6 +1656,13 @@ void TableView::createActions()
 		connect(a, SIGNAL(triggered()), this, SLOT(removeSelectedRows()));
 	}
 	{
+		a = new Action("insertRemoveSeparator", this);
+		a->setOid("insertRemoveSeparator");
+		a->setSeparator(true);
+		m_actionGroups[RowActions] << a->oid();
+		m_actions[a->oid()] = a;
+	}
+	{
 		a = new Action(tr("Post row edits"), this);
 		a->setIcon(style->icon("save"));
 		a->setShortcut(QKeySequence(tr("Ctrl+Return", "post row SQL table")));
@@ -1901,14 +1919,13 @@ void TableView::createActions()
 	}
 
 	m_toolBarActions << action("insertRow");
-	m_toolBarActions << action("cloneRow");
+	//m_toolBarActions << action("cloneRow");
 	m_toolBarActions << action("removeSelectedRows");
-	m_toolBarActions << action("postRow");
-	m_toolBarActions << action("revertRow");
+	//m_toolBarActions << action("postRow");
+	//m_toolBarActions << action("revertRow");
 	//m_toolBarActions << action("viewRowExternal");
 	//m_toolBarActions << action("editRowExternal");
-	a = new Action(this); a->setSeparator(true);
-	m_toolBarActions << a;
+	m_toolBarActions << action("insertRemoveSeparator");
 	m_toolBarActions << action("reload");
 	m_toolBarActions << action("resizeColumnsToContents");
 	a = new Action(this); a->setSeparator(true);

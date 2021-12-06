@@ -164,9 +164,7 @@ ClassesWidget::ClassesWidget(QWidget *parent) :
 	ui->splitter->setPersistentSettingsId(ui->splitter->objectName());
 	{
 		ui->tblClasses->setPersistentSettingsId("tblClasses");
-		ui->tblClasses->setInsertRowEnabled(true);
-		ui->tblClasses->setCloneRowEnabled(false);
-		ui->tblClasses->setRemoveRowEnabled(true);
+		ui->tblClasses->setInsertRemoveRowEnabled(false);
 
 		ui->tblClassesTB->setTableView(ui->tblClasses);
 		qfm::SqlTableModel *m = new qfm::SqlTableModel(this);
@@ -199,9 +197,7 @@ ClassesWidget::ClassesWidget(QWidget *parent) :
 	}
 	{
 		ui->tblCourseCodes->setPersistentSettingsId("tblCourseCodes");
-		ui->tblCourseCodes->setInsertRowEnabled(false);
-		ui->tblCourseCodes->setCloneRowEnabled(false);
-		ui->tblCourseCodes->setRemoveRowEnabled(false);
+		ui->tblCourseCodes->setInsertRemoveRowEnabled(false);
 		ui->tblCourseCodesTB->setTableView(ui->tblCourseCodes);
 		qfm::SqlTableModel *m = new CourseCodesTableModel(this);
 		ui->tblCourseCodes->setTableModel(m);

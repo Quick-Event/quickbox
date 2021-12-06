@@ -58,7 +58,6 @@ SpeakerWidget::SpeakerWidget(QWidget *parent) :
 	ui->tblPunchesToolBar->addWidget(lbl_spc);
 	*/
 	ui->tblPunches->setReadOnly(true);
-	ui->tblPunches->setCloneRowEnabled(false);
 	ui->tblPunches->setPersistentSettingsId("tblPunches");
 
 	connect(ui->tblPunches, &PunchesTableView::codeClassActivated, this, &SpeakerWidget::onCodeClassActivated);

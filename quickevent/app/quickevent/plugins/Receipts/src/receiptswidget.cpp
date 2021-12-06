@@ -59,9 +59,7 @@ ReceiptsWidget::ReceiptsWidget(QWidget *parent) :
 	{
 		ui->tblPrintJobsTB->setTableView(ui->tblCards);
 
-		ui->tblCards->setInsertRowEnabled(false);
-		ui->tblCards->setRemoveRowEnabled(false);
-		ui->tblCards->setCloneRowEnabled(false);
+		ui->tblCards->setInsertRemoveRowEnabled(false);
 		ui->tblCards->setPersistentSettingsId(ui->tblCards->objectName());
 		//ui->tblPrintJobs->setRowEditorMode(qfw::TableView::EditRowsMixed);
 		ui->tblCards->setInlineEditSaveStrategy(qfw::TableView::OnEditedValueCommit);

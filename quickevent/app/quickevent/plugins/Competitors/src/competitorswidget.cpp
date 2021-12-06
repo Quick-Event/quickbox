@@ -54,7 +54,6 @@ CompetitorsWidget::CompetitorsWidget(QWidget *parent) :
 
 	ui->tblCompetitorsToolBar->setTableView(ui->tblCompetitors);
 
-	ui->tblCompetitors->setCloneRowEnabled(false);
 	ui->tblCompetitors->setPersistentSettingsId("tblCompetitors");
 	ui->tblCompetitors->setRowEditorMode(qfw::TableView::EditRowsMixed);
 	ui->tblCompetitors->setInlineEditSaveStrategy(qfw::TableView::OnEditedValueCommit);

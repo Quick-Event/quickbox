@@ -83,10 +83,6 @@ public:
 	void setReadOnly(bool ro);
 	Q_SIGNAL void readOnlyChanged(bool b);
 
-	void setInsertRowEnabled(bool b);
-	void setRemoveRowEnabled(bool b);
-	void setCloneRowEnabled(bool b);
-
 	Q_SLOT void resetColumnsSettings();
 
 	Q_SLOT virtual void reload(bool preserve_sorting = false);
@@ -160,6 +156,11 @@ public:
 
 	Q_SLOT void loadPersistentSettings();
 	Q_SLOT void savePersistentSettings();
+	//void setCloneRowEnabled(bool b);
+	void setInsertRemoveRowEnabled(bool b);
+private:
+	void setInsertRowEnabled(bool b);
+	void setRemoveRowEnabled(bool b);
 protected:
 	virtual bool postRowImpl(int row_no = -1);
 private:

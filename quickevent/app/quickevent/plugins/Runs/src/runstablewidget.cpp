@@ -46,9 +46,7 @@ RunsTableWidget::RunsTableWidget(QWidget *parent) :
 
 	ui->tblRuns->setShowExceptionDialog(false);
 	connect(ui->tblRuns, &qf::qmlwidgets::TableView::sqlException, this, &RunsTableWidget::onTableViewSqlException, Qt::QueuedConnection);
-	ui->tblRuns->setInsertRowEnabled(false);
-	ui->tblRuns->setRemoveRowEnabled(false);
-	ui->tblRuns->setCloneRowEnabled(false);
+	ui->tblRuns->setInsertRemoveRowEnabled(false);
 	ui->tblRuns->setPersistentSettingsId("tblRuns");
 	ui->tblRuns->setRowEditorMode(qfw::TableView::EditRowsMixed);
 	ui->tblRuns->setInlineEditSaveStrategy(qfw::TableView::OnEditedValueCommit);
