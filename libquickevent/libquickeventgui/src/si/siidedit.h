@@ -20,6 +20,8 @@ private:
 	typedef qf::qmlwidgets::SpinBox Super;
 protected:
 	void fixup(QString &input) const override;
+	int valueFromText(const QString &text) const override;
+	QString textFromValue(int value) const override;
 public:
 	SiIdEdit(QWidget *parent = nullptr);
 
