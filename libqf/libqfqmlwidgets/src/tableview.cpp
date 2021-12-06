@@ -377,9 +377,9 @@ void TableView::setReadOnly(bool ro)
 		return;
 	m_isReadOnly = ro;
 
-	setInsertRowEnabled(!ro);
-	setRemoveRowEnabled(!ro);
-	//setCloneRowEnabled(!ro);
+	setInsertRemoveRowEnabled(!ro);
+	/*
+	setCloneRowEnabled(!ro);
 	{
 		Action *a = action(QStringLiteral("postRow"));
 		a->setVisible(!ro);
@@ -388,6 +388,7 @@ void TableView::setReadOnly(bool ro)
 		Action *a = action(QStringLiteral("revertRow"));
 		a->setVisible(!ro);
 	}
+	*/
 
 	emit readOnlyChanged(ro);
 }
