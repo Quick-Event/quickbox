@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>361</height>
+    <height>373</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -157,7 +157,7 @@
        </widget>
       </item>
       <item row="0" column="3">
-       <widget class="QSpinBox" name="edSiId">
+       <widget class="quickevent::gui::si::SiIdEdit" name="edSiId">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
           <horstretch>2</horstretch>
@@ -189,6 +189,11 @@
    <class>qf::qmlwidgets::TableView</class>
    <extends>QTableView</extends>
    <header location="global">qf/qmlwidgets/tableview.h</header>
+  </customwidget>
+  <customwidget>
+   <class>quickevent::gui::si::SiIdEdit</class>
+   <extends>QSpinBox</extends>
+   <header location="global">quickevent/gui/si/siidedit.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
