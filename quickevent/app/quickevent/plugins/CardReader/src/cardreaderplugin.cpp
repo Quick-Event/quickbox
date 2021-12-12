@@ -96,8 +96,9 @@ int CardReaderPlugin::cardIdToSiId(int card_id)
 int CardReaderPlugin::findRunId(int si_id, int si_finish_time, QString *err_msg)
 {
 	int ret = 0;
-	int row_cnt = 0;
 	int last_id = 0;
+	if(err_msg)
+		*err_msg = QString();
 	//int start_time_msec = getPlugin<EventPlugin>()->msecToStageStartAM(si_start_time);
 	int finish_time_msec = getPlugin<EventPlugin>()->msecToStageStartAM(si_finish_time);
 	bool is_relays = getPlugin<EventPlugin>()->eventConfig()->isRelays();
@@ -108,7 +109,6 @@ int CardReaderPlugin::findRunId(int si_id, int si_finish_time, QString *err_msg)
 			   " ORDER BY leg DESC"
 			   , qf::core::Exception::Throw);
 		while(q.next()) {
-			row_cnt++;
 			last_id = q.value("id").toInt();
 			if(finish_time_msec == quickevent::core::og::TimeMs::UNREAL_TIME_MSEC)
 				continue; /// skip all checks when finish time is not known
@@ -122,11 +122,19 @@ int CardReaderPlugin::findRunId(int si_id, int si_finish_time, QString *err_msg)
 				/// start in future, this run cannot have this siid
 				continue;
 			}
+
 			int ft = q.value("finishTimeMs").toInt();
-			if(ft == finish_time_msec)
-				qfInfo() << "Multiple reads of SI:" << si_id;
-			else if(ft > 0)
-				qfWarning() << "Multiple reads of SI:" << si_id << "with different finish time";
+			if(ft == finish_time_msec) {
+				/// reading the same Si card with no data change
+				qfInfo() << tr("Multiple reads of SI: %1").arg(si_id);
+			}
+			else if(ft > 0) {
+				/// finnish time is different, manual assign required
+				if(err_msg)
+					*err_msg = tr("Multiple reads of SI: %1 with different finish time, manual assign required").arg(si_id);
+				return 0;
+			}
+
 			ret = last_id;
 			break;
 		}
@@ -140,40 +148,40 @@ int CardReaderPlugin::findRunId(int si_id, int si_finish_time, QString *err_msg)
 			   //" ORDER BY finishTimeMs"
 			   , qf::core::Exception::Throw);
 		while(q.next()) {
-			row_cnt++;
 			last_id = q.value("id").toInt();
 			if(finish_time_msec == quickevent::core::og::TimeMs::UNREAL_TIME_MSEC)
-				continue; /// skip all checks when finish time is not known
+				/// skip all checks when finish time is not known
+				continue;
+
 			int st = q.value("startTimeMs").toInt();
-			//int ft = q.value("finishTimeMs").toInt();
 			if(st > finish_time_msec) {
 				/// start in future, this run cannot have this siid
 				continue;
 			}
-			if(ret == 0) {
-				ret = last_id;
+
+			int ft = q.value("finishTimeMs").toInt();
+			if(ft == finish_time_msec) {
+				/// reading the same Si card with no data change
+				qfInfo() << tr("Multiple reads of SI: %1").arg(si_id);
 			}
-			else {
+			else if(ft > 0) {
+				/// finnish time is different, manual assign required
+				if(err_msg)
+					*err_msg = tr("Multiple reads of SI: %1 with different finish time, manual assign required").arg(si_id);
+				return 0;
+			}
+
+			if(ret != 0) {
 				/// second possible run, give it up
-				qfWarning() << "There are more competitors with SI:" << si_id << "run id1:" << ret << "id2:" << q.value("id").toInt();
 				if(err_msg)
 					*err_msg = tr("More competitors with SI: %1, run1 id: %2, run2 id: %3").arg(si_id).arg(ret).arg(q.value("id").toInt());
-				ret = 0;
-				break;
+				return 0;
 			}
+			ret = last_id;
 		}
 	}
-	if(row_cnt == 1) {
-		/// if we have just one record, skip all the checks
-		ret = last_id;
-	}
-	if(ret == 0) {
-		if(err_msg && err_msg->isEmpty())
-			*err_msg = tr("Cannot find competitor with SI: %1").arg(si_id);
-	}
-	else {
-		if(err_msg)
-			*err_msg = QString();
+	if(ret == 0 && err_msg) {
+		*err_msg = tr("Cannot find competitor with SI: %1").arg(si_id);
 	}
 	return ret;
 }
