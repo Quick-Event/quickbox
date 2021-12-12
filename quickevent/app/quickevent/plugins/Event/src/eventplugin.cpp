@@ -370,6 +370,7 @@ void EventPlugin::onInstalled()
 		m_servicesDockWidget = new qff::DockWidget(nullptr);
 		m_servicesDockWidget->setObjectName("servicesDockWidget");
 		m_servicesDockWidget->setWindowTitle(tr("Services"));
+		m_servicesDockWidget->setMinimumWidth(230);
 		fwk->addDockWidget(Qt::RightDockWidgetArea, m_servicesDockWidget);
 		m_servicesDockWidget->hide();
 		connect(m_servicesDockWidget, &qff::DockWidget::visibilityChanged, this, &EventPlugin::onServiceDockVisibleChanged);

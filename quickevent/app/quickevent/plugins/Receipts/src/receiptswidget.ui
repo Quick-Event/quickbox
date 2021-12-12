@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>897</width>
+    <width>949</width>
     <height>612</height>
    </rect>
   </property>
@@ -15,19 +15,19 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="spacing">
-    <number>1</number>
+    <number>5</number>
    </property>
    <property name="leftMargin">
-    <number>3</number>
+    <number>5</number>
    </property>
    <property name="topMargin">
-    <number>3</number>
+    <number>5</number>
    </property>
    <property name="rightMargin">
-    <number>3</number>
+    <number>5</number>
    </property>
    <property name="bottomMargin">
-    <number>3</number>
+    <number>5</number>
    </property>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
@@ -111,7 +111,11 @@
     </layout>
    </item>
    <item>
-    <widget class="qf::qmlwidgets::TableViewToolBar" name="tblPrintJobsTB" native="true"/>
+    <widget class="qf::qmlwidgets::TableViewToolBar" name="tblPrintJobsTB" native="true">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+    </widget>
    </item>
    <item>
     <widget class="qf::qmlwidgets::TableView" name="tblCards"/>
