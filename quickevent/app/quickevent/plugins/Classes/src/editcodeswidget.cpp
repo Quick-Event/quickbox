@@ -18,9 +18,8 @@ EditCodesWidget::EditCodesWidget(QWidget *parent)
 	ui->setupUi(this);
 	{
 		ui->tableView->setPersistentSettingsId("tableView");
-		//ui->tableView->setInsertRowEnabled(false);
-		//ui->tableView->setCloneRowEnabled(false);
-		//ui->tableView->setRemoveRowEnabled(false);
+		//ui->tableView->setEditRowsSectionEnabled(false);
+		ui->tableView->setDirtyRowsMenuSectionEnabled(false);
 		ui->tableViewTB->setTableView(ui->tableView);
 		qfm::SqlTableModel *m = new qfm::SqlTableModel(this);
 		//m->setObjectName("classes.classesModel");

@@ -169,9 +169,7 @@ CardReaderWidget::CardReaderWidget(QWidget *parent)
 {
 	ui->setupUi(this);
 
-	ui->tblCards->setInsertRowEnabled(false);
-	ui->tblCards->setRemoveRowEnabled(false);
-	ui->tblCards->setCloneRowEnabled(false);
+	ui->tblCards->setEditRowsMenuSectionEnabled(false);
 	ui->tblCards->setPersistentSettingsId(ui->tblCards->objectName());
 
 	createActions();
@@ -181,6 +179,7 @@ CardReaderWidget::CardReaderWidget(QWidget *parent)
 		ui->tblCardsTB->setTableView(ui->tblCards);
 
 		ui->tblCards->setPersistentSettingsId("tblCards");
+		ui->tblCards->setDirtyRowsMenuSectionEnabled(false);
 		ui->tblCards->setRowEditorMode(qfw::TableView::EditRowsMixed);
 		ui->tblCards->setInlineEditSaveStrategy(qfw::TableView::OnEditedValueCommit);
 		ui->tblCards->setItemDelegate(new quickevent::gui::og::ItemDelegate(ui->tblCards));
