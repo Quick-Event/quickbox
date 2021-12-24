@@ -13,9 +13,23 @@ SiIdEdit::SiIdEdit(QWidget *parent)
 
 void SiIdEdit::fixup(QString &input) const
 {
-    if (input.isEmpty())
-	input = QString::fromLatin1("0");
-    Super::fixup(input);
+	if (input.isEmpty())
+		input = QString::fromLatin1("0");
+	Super::fixup(input);
+}
+
+int SiIdEdit::valueFromText(const QString &text) const
+{
+	if (text.isEmpty())
+		return 0;
+	return text.toInt();
+}
+
+QString SiIdEdit::textFromValue(int value) const
+{
+	if (value == 0)
+		return "";
+	return QString::number(value);
 }
 
 }}}
