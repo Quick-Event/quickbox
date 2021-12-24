@@ -82,6 +82,7 @@ RelaysWidget::RelaysWidget(QWidget *parent) :
 	ui->tblRelaysToolBar->setTableView(ui->tblRelays);
 
 	ui->tblRelays->setCloneRowEnabled(false);
+	ui->tblRelays->setDirtyRowsMenuSectionEnabled(false);
 	ui->tblRelays->setPersistentSettingsId("tblRelays");
 	ui->tblRelays->setRowEditorMode(qfw::TableView::EditRowsMixed);
 	ui->tblRelays->setInlineEditSaveStrategy(qfw::TableView::OnEditedValueCommit);

@@ -109,6 +109,7 @@ RelayWidget:: RelayWidget(QWidget *parent) :
 	m_legsModel = new LegsModel(this);
 	ui->tblLegs->setTableModel(m_legsModel);
 	ui->tblLegs->setPersistentSettingsId(ui->tblLegs->objectName());
+	ui->tblLegs->setDirtyRowsMenuSectionEnabled(false);
 	ui->tblLegs->setInlineEditSaveStrategy(qf::qmlwidgets::TableView::OnEditedValueCommit);
 	ui->tblLegs->setItemDelegate(new quickevent::gui::og::ItemDelegate(ui->tblLegs));
 	//ui->tblLegs->setContextMenuPolicy(Qt::CustomContextMenu);

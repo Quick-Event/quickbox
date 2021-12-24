@@ -360,23 +360,37 @@ void TableView::setCloneRowEnabled(bool b)
 	a->setVisible(b);
 }
 
+void TableView::setEditRowsMenuSectionEnabled(bool b)
+{
+	setInsertRowEnabled(b);
+	setRemoveRowEnabled(b);
+	setCloneRowEnabled(b);
+	{
+		Action *a = action(QStringLiteral("editRowsSeparator"));
+		a->setVisible(b);
+	}
+}
+
+void TableView::setDirtyRowsMenuSectionEnabled(bool b)
+{
+	{
+		Action *a = action(QStringLiteral("postRow"));
+		a->setVisible(b);
+	}
+	{
+		Action *a = action(QStringLiteral("revertRow"));
+		a->setVisible(b);
+	}
+}
+
 void TableView::setReadOnly(bool ro)
 {
 	if(ro == isReadOnly())
 		return;
 	m_isReadOnly = ro;
 
-	setInsertRowEnabled(!ro);
-	setRemoveRowEnabled(!ro);
-	setCloneRowEnabled(!ro);
-	{
-		Action *a = action(QStringLiteral("postRow"));
-		a->setVisible(!ro);
-	}
-	{
-		Action *a = action(QStringLiteral("revertRow"));
-		a->setVisible(!ro);
-	}
+	setEditRowsMenuSectionEnabled(!ro);
+	setDirtyRowsMenuSectionEnabled(!ro);
 
 	emit readOnlyChanged(ro);
 }
@@ -1677,6 +1691,13 @@ void TableView::createActions()
 		connect(a, SIGNAL(triggered()), this, SLOT(cloneRow()));
 	}
 	{
+		a = new Action("editRowsSeparator", this);
+		a->setOid("editRowsSeparator");
+		a->setSeparator(true);
+		m_actionGroups[RowActions] << a->oid();
+		m_actions[a->oid()] = a;
+	}
+	{
 		a = new Action(tr("Zobrazit ve formulari"), this);
 		a->setIcon(style->icon("view"));
 		a->setToolTip(tr("Zobrazit radek v formulari pro cteni"));
@@ -1907,8 +1928,7 @@ void TableView::createActions()
 	m_toolBarActions << action("revertRow");
 	//m_toolBarActions << action("viewRowExternal");
 	//m_toolBarActions << action("editRowExternal");
-	a = new Action(this); a->setSeparator(true);
-	m_toolBarActions << a;
+	m_toolBarActions << action("editRowsSeparator");
 	m_toolBarActions << action("reload");
 	m_toolBarActions << action("resizeColumnsToContents");
 	a = new Action(this); a->setSeparator(true);

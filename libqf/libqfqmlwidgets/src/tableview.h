@@ -86,6 +86,8 @@ public:
 	void setInsertRowEnabled(bool b);
 	void setRemoveRowEnabled(bool b);
 	void setCloneRowEnabled(bool b);
+	void setEditRowsMenuSectionEnabled(bool b);
+	void setDirtyRowsMenuSectionEnabled(bool b);
 
 	Q_SLOT void resetColumnsSettings();
 

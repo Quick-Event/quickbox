@@ -23,6 +23,7 @@ EditCoursesWidget::EditCoursesWidget(QWidget *parent)
 	ui->setupUi(this);
 	{
 		ui->tblCourses->setPersistentSettingsId("tblCourses");
+		ui->tblCourses->setDirtyRowsMenuSectionEnabled(false);
 		ui->tblCoursesTB->setTableView(ui->tblCourses);
 		ui->tblCourses->setRowEditorMode(qfw::TableView::RowEditorMode::EditRowsInline);
 		connect(ui->tblCourses, &qfw::TableView::editCellRequest, [this](const QModelIndex &ix) {
