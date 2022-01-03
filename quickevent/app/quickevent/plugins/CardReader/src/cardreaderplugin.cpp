@@ -95,95 +95,71 @@ int CardReaderPlugin::cardIdToSiId(int card_id)
 
 int CardReaderPlugin::findRunId(int si_id, int si_finish_time, QString *err_msg)
 {
-	int ret = 0;
-	int last_id = 0;
+	int run_id = 0;
+	int prev_run_id = 0;
 	if(err_msg)
 		*err_msg = QString();
-	//int start_time_msec = getPlugin<EventPlugin>()->msecToStageStartAM(si_start_time);
-	int finish_time_msec = getPlugin<EventPlugin>()->msecToStageStartAM(si_finish_time);
+	int si_finish_time_msec = getPlugin<EventPlugin>()->msecToStageStartAM(si_finish_time);
+	qf::core::sql::Query q;
 	bool is_relays = getPlugin<EventPlugin>()->eventConfig()->isRelays();
 	if(is_relays) {
-		qf::core::sql::Query q;
 		q.exec("SELECT id, leg, startTimeMs, finishTimeMs FROM runs WHERE siId=" QF_IARG(si_id)
-			   " AND isRunning"
-			   " ORDER BY leg DESC"
-			   , qf::core::Exception::Throw);
-		while(q.next()) {
-			last_id = q.value("id").toInt();
-			if(finish_time_msec == quickevent::core::og::TimeMs::UNREAL_TIME_MSEC)
-				continue; /// skip all checks when finish time is not known
-			int st = q.value("startTimeMs").toInt();
-			int leg = q.value("leg").toInt();
-			if(st == 0 && leg != 1) {
-				/// start time not set => this leg does not event start
-				continue;
-			}
-			if(st >= finish_time_msec) {
-				/// start in future, this run cannot have this siid
-				continue;
-			}
-
-			int ft = q.value("finishTimeMs").toInt();
-			if(ft == finish_time_msec) {
-				/// reading the same Si card with no data change
-				qfInfo() << tr("Multiple reads of SI: %1").arg(si_id);
-			}
-			else if(ft > 0) {
-				/// finnish time is different, manual assign required
-				if(err_msg)
-					*err_msg = tr("Multiple reads of SI: %1 with different finish time, manual assign required").arg(si_id);
-				return 0;
-			}
-
-			ret = last_id;
-			break;
-		}
+		       " AND isRunning"
+		       " ORDER BY leg DESC"
+		       , qf::core::Exception::Throw);
 	}
 	else {
 		int stage_no = currentStageId();
-		qf::core::sql::Query q;
 		q.exec("SELECT id, startTimeMs, finishTimeMs FROM runs WHERE stageId=" QF_IARG(stage_no)
-			   " AND siId=" QF_IARG(si_id)
-			   " AND isRunning"
-			   //" ORDER BY finishTimeMs"
-			   , qf::core::Exception::Throw);
-		while(q.next()) {
-			last_id = q.value("id").toInt();
-			if(finish_time_msec == quickevent::core::og::TimeMs::UNREAL_TIME_MSEC)
-				/// skip all checks when finish time is not known
-				continue;
+		       " AND siId=" QF_IARG(si_id)
+		       " AND isRunning"
+		       //" ORDER BY finishTimeMs"
+		       , qf::core::Exception::Throw);
 
-			int st = q.value("startTimeMs").toInt();
-			if(st > finish_time_msec) {
-				/// start in future, this run cannot have this siid
-				continue;
-			}
-
-			int ft = q.value("finishTimeMs").toInt();
-			if(ft == finish_time_msec) {
-				/// reading the same Si card with no data change
-				qfInfo() << tr("Multiple reads of SI: %1").arg(si_id);
-			}
-			else if(ft > 0) {
-				/// finnish time is different, manual assign required
-				if(err_msg)
-					*err_msg = tr("Multiple reads of SI: %1 with different finish time, manual assign required").arg(si_id);
-				return 0;
-			}
-
-			if(ret != 0) {
-				/// second possible run, give it up
-				if(err_msg)
-					*err_msg = tr("More competitors with SI: %1, run1 id: %2, run2 id: %3").arg(si_id).arg(ret).arg(q.value("id").toInt());
-				return 0;
-			}
-			ret = last_id;
-		}
 	}
-	if(ret == 0 && err_msg) {
+	while(q.next()) {
+		run_id = q.value("id").toInt();
+		int run_start = q.value("startTimeMs").toInt();
+		int run_finish = q.value("finishTimeMs").toInt();
+		if(is_relays) {
+			int run_leg = q.value("leg").toInt();
+			if(run_start == 0 && run_leg != 1) {
+				/// start time not set => this leg does not event start
+				qfInfo() << tr("skipping assign of SI: %1 to run_id: %2; start time not set, this leg does not event start").arg(si_id).arg(run_id);
+				continue;
+			}
+		}
+		if(si_finish_time == siut::SICard::INVALID_SI_TIME) {
+			/// No finnishTime given, cannot guess between runners with duplicate SI Card
+			return run_id;
+		}
+		if(run_start > si_finish_time_msec) {
+			/// start in future, this run cannot have this siid
+			qfInfo() << tr("skipping assign of SI: %1 to run_id: %2; start in future, this run cannot have this siid").arg(si_id).arg(run_id);
+			continue;
+		}
+		if(run_finish == si_finish_time_msec) {
+			/// reading the same Si card with no data change
+			qfInfo() << tr("Multiple reads of SI: %1").arg(si_id);
+		}
+		if(run_finish > 0 && run_finish != si_finish_time_msec) {
+			/// finnish time is different, manual assign required
+			if(err_msg)
+				*err_msg = tr("Multiple reads of SI: %1 with different finish time, manual assign required").arg(si_id);
+			return 0;
+		}
+		if(prev_run_id != 0) {
+			/// second possible run, give it up
+			if(err_msg)
+				*err_msg = tr("More competitors with SI: %1, run1 id: %2, run2 id: %3").arg(si_id).arg(prev_run_id).arg(run_id);
+			return 0;
+		}
+		prev_run_id = run_id;
+	}
+	if(run_id == 0 && err_msg) {
 		*err_msg = tr("Cannot find competitor with SI: %1").arg(si_id);
 	}
-	return ret;
+	return run_id;
 }
 
 bool CardReaderPlugin::isCardLent(int si_id, int si_finish_time, int run_id)
@@ -394,25 +370,6 @@ void CardReaderPlugin::updateCheckedCardValuesSql(const quickevent::core::si::Ch
 	q.exec(qf::core::Exception::Throw);
 	if(q.numRowsAffected() != 1)
 		QF_EXCEPTION("Update runs error!");
-	/*
-	bool is_relays = getPlugin<EventPlugin>()->eventConfig()->isRelays();
-	if(is_relays) {
-		/// set start time for next leg
-		q.execThrow("SELECT relayId, leg FROM runs WHERE id=" + QString::number(run_id));
-		if(q.next()) {
-			int relay_id = q.value(0).toInt();
-			int leg = q.value(1).toInt();
-			q.exec("UPDATE runs SET startTimeMs=" + QString::number(checked_card.finishTimeMs())
-				   + " WHERE relayId=" + QString::number(relay_id)
-				   + " AND leg=" + QString::number(leg+1)
-				   + " AND COALESCE(startTimeMs, 0)=0"
-				   , qf::core::Exception::Throw);
-		}
-		else {
-			qfError() << "run should be loaded, id:" << run_id;
-		}
-	}
-	*/
 }
 
 void CardReaderPlugin::updateCardToRunAssignmentInPunches(int stage_id, int card_id, int run_id)
@@ -487,6 +444,15 @@ void CardReaderPlugin::assignCardToRun(int card_id, int run_id)
 	processCardToRunAssignment(card_id, run_id);
 }
 
+void CardReaderPlugin::setStartTimeForNextLeg(int relay_id, int prev_leg, int prev_finish_time) {
+	qf::core::sql::Query q;
+	q.exec("UPDATE runs SET startTimeMs=" + QString::number(prev_finish_time)
+		   + " WHERE relayId=" + QString::number(relay_id)
+		   + " AND leg=" + QString::number(prev_leg+1)
+		   + " AND COALESCE(startTimeMs, 0)=0"
+		   , qf::core::Exception::Throw);
+}
+
 bool CardReaderPlugin::processCardToRunAssignment(int card_id, int run_id)
 {
 	qfLogFuncFrame();
@@ -502,17 +468,14 @@ bool CardReaderPlugin::processCardToRunAssignment(int card_id, int run_id)
 		int leg = q.value(1).toInt();
 		QVariant start_time = q.value(2);
 		if(start_time.isNull() && leg > 1) {
-			/// if strt time not set, take start time from previous leg
+			/// if start time not set, take start time from previous leg
 			q.execThrow("SELECT finishTimeMs FROM runs"
 					 " WHERE relayId=" + QString::number(relay_id)
 				   + " AND leg=" + QString::number(leg-1));
 			if(q.next()) {
 				int prev_finish_time = q.value(0).toInt();
 				if(prev_finish_time > 0) {
-					q.execThrow("UPDATE runs SET startTimeMs=" + QString::number(prev_finish_time)
-						   + " WHERE relayId=" + QString::number(relay_id)
-						   + " AND leg=" + QString::number(leg)
-						   + " AND COALESCE(startTimeMs, 0)=0");
+					setStartTimeForNextLeg(relay_id, leg-1, prev_finish_time);
 				}
 			}
 		}
@@ -535,6 +498,9 @@ bool CardReaderPlugin::processCardToRunAssignment(int card_id, int run_id)
 				processCardToRunAssignment(card_id, run_id);
 			}
 		}
+
+		/// set start time for next leg
+		setStartTimeForNextLeg(relay_id, leg, checked_card.finishTimeMs());
 	}
 	else {
 		quickevent::core::si::CheckedCard checked_card = checkCard(card_id, run_id);

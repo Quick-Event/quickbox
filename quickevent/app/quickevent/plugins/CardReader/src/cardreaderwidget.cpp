@@ -698,7 +698,7 @@ void CardReaderWidget::processSIPunch(const siut::SIPunch &rec)
 	appendLog(NecroLog::Level::Info, tr("punch: %1 %2").arg(rec.cardNumber()).arg(rec.code()));
 	quickevent::core::si::PunchRecord punch(rec);
 	if(currentPunchMode() == PunchMode::Readout) {
-		int run_id = getPlugin<CardReaderPlugin>()->findRunId(rec.cardNumber(), 0xEEEE);
+		int run_id = getPlugin<CardReaderPlugin>()->findRunId(rec.cardNumber(), siut::SICard::INVALID_SI_TIME);
 		if(run_id == 0)
 			appendLog(NecroLog::Level::Error, tr("Cannot find run for punch record SI: %1").arg(rec.cardNumber()));
 		else
