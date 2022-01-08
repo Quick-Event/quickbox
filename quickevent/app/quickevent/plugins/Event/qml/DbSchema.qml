@@ -207,6 +207,7 @@ Schema {
 
 				Field { name: 'isRunning'; type: Boolean { }
 					defaultValue: true;
+					notNull: true
 					comment: "Competitor is running in this stage"
 				},
 				Field { name: 'notCompeting'; type: Boolean { } // should be changed to notCompetiting in some future version
