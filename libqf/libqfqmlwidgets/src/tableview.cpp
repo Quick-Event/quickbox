@@ -202,8 +202,13 @@ void TableView::setTableModel(core::model::TableModel *m)
 		QAbstractProxyModel *pxm = lastProxyModel();
 		pxm->setSourceModel(m);
 		m_proxyModel->setSortRole(qf::core::model::TableModel::SortRole);
+		if(pxm->columnCount() > 0) {
+			qfDebug() << persistentSettingsPath() << "Load persistent settings.";
+			// it does not make sense to load column widths unless we have table columns
+			loadPersistentSettings();
+		}
 		refreshActions();
-		emit tableModelChanged();
+		//emit tableModelChanged();
 	}
 }
 
@@ -1323,23 +1328,28 @@ int TableView::toTableModelRowNo(int table_view_row_no) const
 void TableView::loadPersistentSettings()
 {
 	QString path = persistentSettingsPath();
-	//qfInfo() << Q_FUNC_INFO << this << path;
 	qfLogFuncFrame() << path;
 	if(!path.isEmpty()) {
 		HeaderView *horiz_header = qobject_cast<HeaderView*>(horizontalHeader());
-		if(!horiz_header || horiz_header->count() == 0)
+		if(!horiz_header || horiz_header->count() == 0) {
+			qfDebug() << path << "Cannot load persistent settings, horizontal header does not exist or it is empty.";
 			return;
+		}
 		qf::core::model::TableModel *mod = tableModel();
-		if(!mod || mod->columnCount() == 0)
+		if(!mod || mod->columnCount() == 0) {
+			qfDebug() << path << "Cannot load persistent settings, table model does not exist or it is empty.";
 			return;
+		}
 
 		QSettings settings;
 		settings.beginGroup(path);
 
 		QByteArray header_state = settings.value("horizontalheader").toString().toLatin1();
 		header_state = QByteArray::fromBase64(header_state);
-		if(!header_state.isEmpty())
+		//qfInfo() << path << "Restoring horizontal header state. State is empty:" << header_state.isEmpty();
+		if(!header_state.isEmpty()) {
 			horiz_header->restoreState(header_state);
+		}
 	}
 }
 
