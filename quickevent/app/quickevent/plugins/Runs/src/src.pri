@@ -3,6 +3,8 @@ message(including $$PWD)
 include($$PWD/services/services.pri)
 
 HEADERS += \
+    $$PWD/cardflagsdialog.h \
+    $$PWD/runflagsdialog.h \
     $$PWD/runsplugin.h \
     $$PWD/findrunneredit.h \
     $$PWD/findrunnerwidget.h \
@@ -17,6 +19,8 @@ HEADERS += \
     $$PWD/eventstatisticsoptions.h
 
 SOURCES += \
+    $$PWD/cardflagsdialog.cpp \
+    $$PWD/runflagsdialog.cpp \
     $$PWD/runsplugin.cpp \
     $$PWD/findrunneredit.cpp \
     $$PWD/findrunnerwidget.cpp \
@@ -31,8 +35,10 @@ SOURCES += \
     $$PWD/eventstatisticsoptions.cpp
 
 FORMS += \
+    $$PWD/cardflagsdialog.ui \
     $$PWD/findrunnerwidget.ui \
     $$PWD/nstagesreportoptionsdialog.ui \
+    $$PWD/runflagsdialog.ui \
     $$PWD/runswidget.ui \
     $$PWD/runstablewidget.ui \
     $$PWD/runstabledialogwidget.ui \

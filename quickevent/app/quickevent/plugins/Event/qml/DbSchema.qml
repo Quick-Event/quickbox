@@ -210,23 +210,54 @@ Schema {
 					notNull: true
 					comment: "Competitor is running in this stage"
 				},
-				Field { name: 'notCompeting'; type: Boolean { } // should be changed to notCompetiting in some future version
+				/*
+				  IOF-XML3.0 defines next run statuses
+
+				supported by QE
+					Disqualified
+					NotCompeting
+					MissingPunch
+					DidNotStart
+					DidNotFinish
+					OverTime - can be computed
+
+				not supported by QE
+					OK
+					Finished
+					Active
+					Inactive
+					Moved
+					MovedUp
+					DidNotEnter
+					SportingWithdrawal
+					Cancelled
+				  */
+				Field { name: 'disqualified'; type: Boolean { } // Disqualified
+					defaultValue: false;
+					notNull: true
+				},
+				Field { name: 'notCompeting'; type: Boolean { } // NotCompeting
 					defaultValue: false;
 					notNull: true
 					comment: "Competitor does run in this stage but not competing"
 				},
-				Field { name: 'disqualified'; type: Boolean { }
+				Field { name: 'misPunch'; type: Boolean { } // MissingPunch
 					defaultValue: false;
 					notNull: true
 				},
-				Field { name: 'misPunch'; type: Boolean { }
+				Field { name: 'notStart'; type: Boolean { } // DidNotStart
 					defaultValue: false;
 					notNull: true
 				},
-				Field { name: 'badCheck'; type: Boolean { }
+				Field { name: 'notFinish'; type: Boolean { } // DidNotFinish
 					defaultValue: false;
 					notNull: true
 				},
+				Field { name: 'badCheck'; type: Boolean { } // Bad CHECK time in card, cheating on start
+					defaultValue: false;
+					notNull: true
+				},
+
 				Field { name: 'cardLent'; type: Boolean { }
 					defaultValue: false;
 					notNull: true
@@ -235,6 +266,7 @@ Schema {
 					defaultValue: false;
 					notNull: true
 				},
+
 				Field { name: 'importId'; type: Int {} }
 			]
 			indexes: [

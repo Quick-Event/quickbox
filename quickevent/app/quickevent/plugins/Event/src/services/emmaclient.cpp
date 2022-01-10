@@ -347,34 +347,34 @@ void EmmaClient::exportFinishRacomTxt()
 			.orderBy("runs.finishTimeMs ASC ")
 			.orderBy("runs.id ASC");
 	q2.execThrow(qb.toString());
-	int lastSi = 0;
+	int last_si = 0;
 	while(q2.next()) {
 		int si = q2.value("runs.siId").toInt();
-		int finTime = q2.value("runs.finishTimeMs").toInt();
-		bool isMisPunch = q2.value("runs.misPunch").toBool();
-		bool isBadCheck = q2.value("runs.badCheck").toBool();
-		bool isDisq = q2.value("runs.disqualified").toBool();
-		bool isRunning = q2.value("runs.isRunning").toBool();
-		bool notCompeting = q2.value("runs.notCompeting").toBool();
-		int cardsId = q2.value("cards.id").toInt();
+		int fin_time = q2.value("runs.finishTimeMs").toInt();
+		bool is_misPunch = q2.value("runs.misPunch").toBool();
+		bool is_bad_check = q2.value("runs.badCheck").toBool();
+		bool is_disq = q2.value("runs.disqualified").toBool();
+		bool is_running = q2.value("runs.isRunning").toBool();
+		bool not_competing = q2.value("runs.notCompeting").toBool();
+		int cards_id = q2.value("cards.id").toInt();
 
-		if (si == 0 || lastSi == si)
+		if (si == 0 || last_si == si)
 			continue; // without si or duplicate readout are unusable
-		lastSi = si;
+		last_si = si;
 		QString s = QString("%1").arg(si , 8, 10, QChar(' '));
 		s += QStringLiteral(": FIN/");
-		int msec = start00 + finTime;
+		int msec = start00 + fin_time;
 		QTime tm = QTime::fromMSecsSinceStartOfDay(msec);
 		s += tm.toString(QStringLiteral("HH:mm:ss.zzz"));
 		s += '0';
 		s += '/';
-		if (!isRunning) {
+		if (!is_running) {
 			s += QStringLiteral("DNS ");
-		} else if (finTime > 0) {
-			if (notCompeting) {
+		} else if (fin_time > 0) {
+			if (not_competing) {
 				s += QStringLiteral("NC  ");
-			} else if (isDisq) {
-				if (isMisPunch || isBadCheck)
+			} else if (is_disq) {
+				if (is_misPunch || is_bad_check)
 					s += QStringLiteral("MP  ");
 				else
 					s += QStringLiteral("DISQ");
@@ -382,7 +382,7 @@ void EmmaClient::exportFinishRacomTxt()
 				//checked_card is OK
 				s += QStringLiteral("O.K.");
 			}
-		} else if (cardsId == 0) {
+		} else if (cards_id == 0) {
 			continue; // skip if not yet readout
 		} else {
 			// DidNotFinish

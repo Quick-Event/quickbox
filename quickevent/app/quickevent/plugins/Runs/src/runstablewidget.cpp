@@ -3,6 +3,8 @@
 #include "runstablemodel.h"
 #include "runstableitemdelegate.h"
 #include "runsplugin.h"
+#include "runflagsdialog.h"
+#include "cardflagsdialog.h"
 
 #include <quickevent/core/si/siid.h>
 #include <quickevent/core/og/timems.h>
@@ -91,7 +93,28 @@ RunsTableWidget::RunsTableWidget(QWidget *parent) :
 		ui->tblRuns->setDragEnabled(is_sort_start_time_asc);
 	});
 
-	connect(ui->tblRuns, &qfw::TableView::editRowInExternalEditor, this, &RunsTableWidget::editCompetitor, Qt::QueuedConnection);
+	connect(ui->tblRuns, &qfw::TableView::editCellRequest, this, [this](QModelIndex index) {
+		auto col = index.column();
+		if(col == RunsTableModel::col_runFlags) {
+			Runs::RunFlagsDialog dlg(this);
+			dlg.load(m_runsModel, ui->tblRuns->toTableModelRowNo(ui->tblRuns->currentIndex().row()));
+			if(dlg.exec()) {
+				dlg.save();
+			}
+		}
+		else if(col == RunsTableModel::col_cardFlags) {
+			Runs::CardFlagsDialog dlg(this);
+			dlg.load(m_runsModel, ui->tblRuns->toTableModelRowNo(ui->tblRuns->currentIndex().row()));
+			if(dlg.exec()) {
+				dlg.save();
+			}
+		}
+		else {
+			auto *tv = ui->tblRuns;
+			QVariant id = tv->selectedRow().value(tv->idColumnName());
+			editCompetitor(id, qfw::TableView::ModeEdit);
+		}
+	}, Qt::QueuedConnection);
 }
 
 RunsTableWidget::~RunsTableWidget()
@@ -138,7 +161,8 @@ void RunsTableWidget::reload(int stage_id, int class_id, bool show_offrace, cons
 			//.select2("checktimes", "punchDateTime")
 			.select("COALESCE(lastName, '') || ' ' || COALESCE(firstName, '') AS competitorName")
 			.select("lentcards.siid IS NOT NULL AS cardInLentTable")
-			.select("'' AS disqReason")
+			.select("'' AS runFlags")
+			.select("'' AS cardFlags")
 			.from("runs")
 			.join("runs.competitorId", "competitors.id")
 			.joinRestricted("runs.siid", "lentcards.siid", "NOT lentcards.ignored")
