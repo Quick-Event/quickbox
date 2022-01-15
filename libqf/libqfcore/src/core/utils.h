@@ -22,7 +22,7 @@
 	private: ptype m_##lower_letter##name_rest; \
 	public: ptype lower_letter##name_rest() const {return m_##lower_letter##name_rest;} \
 	public: bool set##upper_letter##name_rest(const ptype &val) { \
-		if(m_##lower_letter##name_rest != val) { m_##lower_letter##name_rest = val; return true; } \
+		if(!(m_##lower_letter##name_rest == val)) { m_##lower_letter##name_rest = val; return true; } \
 		return false; \
 	}
 
@@ -30,7 +30,7 @@
 	private: ptype m_##lower_letter##name_rest = default_value; \
 	public: ptype lower_letter##name_rest() const {return m_##lower_letter##name_rest;} \
 	public: bool set##upper_letter##name_rest(const ptype &val) { \
-		if(m_##lower_letter##name_rest != val) { m_##lower_letter##name_rest = val; return true; } \
+		if(!(m_##lower_letter##name_rest == val)) { m_##lower_letter##name_rest = val; return true; } \
 		return false; \
 	}
 
@@ -38,7 +38,7 @@
 	private: bool m_##lower_letter##name_rest = default_value; \
 	public: bool is##upper_letter##name_rest() const {return m_##lower_letter##name_rest;} \
 	public: bool set##upper_letter##name_rest(bool val) { \
-		if(m_##lower_letter##name_rest != val) { m_##lower_letter##name_rest = val; return true; } \
+		if(!(m_##lower_letter##name_rest == val)) { m_##lower_letter##name_rest = val; return true; } \
 		return false; \
 	}
 
