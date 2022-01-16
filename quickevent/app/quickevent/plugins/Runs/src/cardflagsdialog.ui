@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>299</width>
+    <width>363</width>
     <height>195</height>
    </rect>
   </property>
@@ -17,14 +17,17 @@
    <item>
     <widget class="QCheckBox" name="cbxCardLent">
      <property name="text">
-      <string>Card rent requested</string>
+      <string>Card rented / rent requested</string>
      </property>
     </widget>
    </item>
    <item>
     <widget class="QCheckBox" name="cbxCardInLentTable">
+     <property name="toolTip">
+      <string>Card exists in cards to rent table, see Competitors-&gt;Cards-&gt;Cards to rent</string>
+     </property>
      <property name="text">
-      <string>Card in rent cards table</string>
+      <string>Card rented from rent table</string>
      </property>
     </widget>
    </item>

@@ -127,7 +127,7 @@ bool RunsTableModel::setValue(int row_ix, int column_ix, const QVariant &val)
 				return false;
 			}
 		}
-		return Super::setValue(row_ix, column_ix, is_running? is_running: QVariant());
+		return Super::setValue(row_ix, column_ix, is_running);
 	}
 	if(column_ix == col_runs_finishTimeMs) {
 		QVariant start_ms = value(row_ix, col_runs_startTimeMs);
