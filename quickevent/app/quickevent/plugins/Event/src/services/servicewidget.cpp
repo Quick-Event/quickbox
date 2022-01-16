@@ -21,7 +21,7 @@ ServiceWidget::~ServiceWidget()
 
 void ServiceWidget::setStatus(Service::Status st)
 {
-	m_isRunning = st == Service::Status::Running;
+	m_isRunning = (st == Service::Status::Running);
 	static QIcon ico_play(":/qf/qmlwidgets/images/flat/media-play");
 	static QIcon ico_stop(":/qf/qmlwidgets/images/flat/media-stop");
 	ui->btPlay->setIcon(m_isRunning? ico_stop: ico_play);
