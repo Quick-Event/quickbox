@@ -243,16 +243,8 @@ void ClassesWidget::settleDownInPartWidget(quickevent::gui::PartWidget *part_wid
 	{
 		qfw::Action *a = new qfw::Action(tr("Classes &layout"));
 		a->setShortcut(tr("Ctrl+L"));
+		connect(a, &QAction::triggered, this, &ClassesWidget::edit_classes_layout);
 		a_edit->addActionInto(a);
-		connect(a, &qfw::Action::triggered, [this]()
-		{
-			auto *w = new drawing::DrawingGanttWidget;
-			qf::qmlwidgets::dialogs::Dialog dlg(this);
-			//dlg.setButtons(QDialogButtonBox::Save);
-			dlg.setCentralWidget(w);
-			w->load(selectedStageId());
-			dlg.exec();
-		});
 	}
 
 	qfw::Action *a_import = part_widget->menuBar()->actionForPath("import", true);
@@ -307,6 +299,25 @@ void ClassesWidget::edit_codes()
 	dlg.setCentralWidget(w);
 	//auto *bt_apply = dlg.buttonBox()->button(QDialogButtonBox::Apply);
 	//connect(bt_apply, &QPushButton::clicked, this, &MainWindow::askUserToRestartAppServer);
+	dlg.exec();
+	reload();
+}
+
+void ClassesWidget::edit_classes_layout()
+{
+	qf::core::sql::Query q;
+	q.exec("SELECT * FROM classdefs WHERE startIntervalMin IS NULL OR startIntervalMin = 0");
+	if(q.next()) {
+		qfd::MessageBox::showWarning(
+			qfw::framework::MainWindow::frameWork(),
+			tr("Classes without start interval won't be displayed.\n"
+			   "Consider setting \"Interval\" column for all classes before continuing."));
+	}
+	auto *w = new drawing::DrawingGanttWidget;
+	qf::qmlwidgets::dialogs::Dialog dlg(this);
+	//dlg.setButtons(QDialogButtonBox::Save);
+	dlg.setCentralWidget(w);
+	w->load(selectedStageId());
 	dlg.exec();
 	reload();
 }
