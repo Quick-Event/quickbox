@@ -36,22 +36,22 @@
     <message>
         <location filename="plugins/Relays/src/addlegdialogwidget.ui" line="97"/>
         <source>Unregistered runner</source>
-        <translation type="unfinished"></translation>
+        <translation>Neregistrovaný závodník</translation>
     </message>
     <message>
         <location filename="plugins/Relays/src/addlegdialogwidget.ui" line="109"/>
         <source>First name</source>
-        <translation type="unfinished"></translation>
+        <translation>Jméno</translation>
     </message>
     <message>
         <location filename="plugins/Relays/src/addlegdialogwidget.ui" line="132"/>
         <source>Last name</source>
-        <translation type="unfinished"></translation>
+        <translation>Příjmení</translation>
     </message>
     <message>
         <location filename="plugins/Relays/src/addlegdialogwidget.ui" line="178"/>
         <source>Add to leg</source>
-        <translation type="unfinished"></translation>
+        <translation>Přidat do štafety</translation>
     </message>
     <message>
         <location filename="plugins/Relays/src/addlegdialogwidget.cpp" line="33"/>
@@ -150,17 +150,17 @@
     <message>
         <location filename="plugins/CardReader/src/cardreaderplugin.cpp" line="138"/>
         <source>skipping assign of SI: %1 to run_id: %2; start in future, this run cannot have this siid</source>
-        <translation type="unfinished"></translation>
+        <translation>přeskakuji přiřazení SI čipu: %1 k run_id: %2; start v budoucnosti, toto vyčtení nemůže patřit uvedenému run záznamu</translation>
     </message>
     <message>
         <location filename="plugins/CardReader/src/cardreaderplugin.cpp" line="143"/>
         <source>Multiple reads of SI: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Opakované vyčtení SI čipu: %1</translation>
     </message>
     <message>
         <location filename="plugins/CardReader/src/cardreaderplugin.cpp" line="148"/>
         <source>Multiple reads of SI: %1 with different finish time, manual assign required</source>
-        <translation type="unfinished"></translation>
+        <translation>Opakované vyčtení SI čipu: %1 s rozdílným cílovým časem. Je potřeba provést manuální přiřazení.</translation>
     </message>
     <message>
         <location filename="plugins/CardReader/src/cardreaderplugin.cpp" line="154"/>
@@ -473,22 +473,22 @@ Pokud budete pokračovat, toto označení bude odebráno.</translation>
     <message>
         <location filename="plugins/CardReader/src/cardreaderwidget.cpp" line="371"/>
         <source>Readout</source>
-        <translation type="unfinished"></translation>
+        <translation>Vyčítání</translation>
     </message>
     <message>
         <location filename="plugins/CardReader/src/cardreaderwidget.cpp" line="372"/>
         <source>Readout mode - default</source>
-        <translation type="unfinished"></translation>
+        <translation>Mód vyčítání čipů – výchozí</translation>
     </message>
     <message>
         <location filename="plugins/CardReader/src/cardreaderwidget.cpp" line="373"/>
         <source>Edit on punch</source>
-        <translation type="unfinished">Upravit po oražení</translation>
+        <translation>Upravit po oražení</translation>
     </message>
     <message>
         <location filename="plugins/CardReader/src/cardreaderwidget.cpp" line="374"/>
         <source>Show Edit/Insert competitor dialog when SI Card is inserted into the reader station</source>
-        <translation type="unfinished"></translation>
+        <translation>Zobrazit formulář pro upravení nebo přidání závodníka po vložení SI čipu do vyčítací jednotky</translation>
     </message>
     <message>
         <location filename="plugins/CardReader/src/cardreaderwidget.cpp" line="445"/>
@@ -1112,7 +1112,7 @@ Pokud budete pokračovat, toto označení bude odebráno.</translation>
     <message>
         <location filename="plugins/Competitors/src/competitorwidget.cpp" line="373"/>
         <source>SQL error</source>
-        <translation type="unfinished"></translation>
+        <translation>SQL chyba</translation>
     </message>
 </context>
 <context>
@@ -2149,7 +2149,7 @@ Použij: Soubor --&gt; Importovat --&gt; Závod (*.qbe) pro konverzi dat do aktu
     <message>
         <location filename="plugins/Event/src/services/emmaclientwidget.ui" line="69"/>
         <source>File name base</source>
-        <translation type="unfinished"></translation>
+        <translation>Prefix názvu souboru</translation>
     </message>
     <message>
         <location filename="plugins/Event/src/services/emmaclientwidget.ui" line="78"/>
@@ -2160,13 +2160,13 @@ Použij: Soubor --&gt; Importovat --&gt; Závod (*.qbe) pro konverzi dat do aktu
         <location filename="plugins/Event/src/services/emmaclientwidget.ui" line="84"/>
         <location filename="plugins/Event/src/services/emmaclientwidget.ui" line="138"/>
         <source>Enable export start list</source>
-        <translation type="unfinished"></translation>
+        <translation>Povolit exportování startovní listiny</translation>
     </message>
     <message>
         <location filename="plugins/Event/src/services/emmaclientwidget.ui" line="91"/>
         <location filename="plugins/Event/src/services/emmaclientwidget.ui" line="145"/>
         <source>Enable export results</source>
-        <translation type="unfinished"></translation>
+        <translation>Povolit exportování výsledků</translation>
     </message>
     <message>
         <location filename="plugins/Event/src/services/emmaclientwidget.ui" line="113"/>
@@ -2183,7 +2183,7 @@ Použij: Soubor --&gt; Importovat --&gt; Závod (*.qbe) pro konverzi dat do aktu
     <message>
         <location filename="plugins/Event/src/services/emmaclientwidget.ui" line="132"/>
         <source>RACOM Text</source>
-        <translation type="unfinished"></translation>
+        <translation>RACOM</translation>
     </message>
     <message>
         <location filename="plugins/Event/src/services/emmaclientwidget.ui" line="167"/>
@@ -3527,22 +3527,22 @@ Použij: Soubor --&gt; Importovat --&gt; Závod (*.qbe) pro konverzi dat do aktu
     <message>
         <location filename="plugins/Runs/src/cardflagsdialog.ui" line="14"/>
         <source>Card flags dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Příznaky čipu</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/cardflagsdialog.ui" line="20"/>
         <source>Card rent requested</source>
-        <translation type="unfinished">Vyžádáno půjčení čipu</translation>
+        <translation>Vyžádáno půjčení čipu</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/cardflagsdialog.ui" line="27"/>
         <source>Card in rent cards table</source>
-        <translation type="unfinished"></translation>
+        <translation>Čip z tabulky čipů k zapůjčení</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/cardflagsdialog.ui" line="34"/>
         <source>Card returned</source>
-        <translation type="unfinished">Čip vrácen</translation>
+        <translation>Čip vrácen</translation>
     </message>
 </context>
 <context>
@@ -3596,42 +3596,42 @@ Použij: Soubor --&gt; Importovat --&gt; Závod (*.qbe) pro konverzi dat do aktu
     <message>
         <location filename="plugins/Runs/src/runflagsdialog.ui" line="14"/>
         <source>Run flags dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Příznaky závodníka</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/runflagsdialog.ui" line="20"/>
         <source>Disqualified</source>
-        <translation type="unfinished">Diskvalifikace</translation>
+        <translation>Diskvalifikace</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/runflagsdialog.ui" line="27"/>
         <source>Missed punch</source>
-        <translation type="unfinished"></translation>
+        <translation>Chybné ražení</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/runflagsdialog.ui" line="34"/>
         <source>Check time on SI card is to early</source>
-        <translation type="unfinished"></translation>
+        <translation>Předčasné provedení kontroly nulování SI čipu</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/runflagsdialog.ui" line="37"/>
         <source>Bad check</source>
-        <translation type="unfinished"></translation>
+        <translation>Předčasná kontrola nulování čipu</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/runflagsdialog.ui" line="44"/>
         <source>Did not start</source>
-        <translation type="unfinished"></translation>
+        <translation>Nestartoval</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/runflagsdialog.ui" line="51"/>
         <source>Did not finish</source>
-        <translation type="unfinished"></translation>
+        <translation>Nedokončil</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/runflagsdialog.ui" line="58"/>
         <source>Not competing</source>
-        <translation type="unfinished">Mimo soutěž</translation>
+        <translation>Mimo soutěž</translation>
     </message>
 </context>
 <context>
@@ -3863,12 +3863,12 @@ Použij: Soubor --&gt; Importovat --&gt; Závod (*.qbe) pro konverzi dat do aktu
     <message>
         <location filename="plugins/Runs/src/runsplugin.cpp" line="1980"/>
         <source>Overall results after stage %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Celkové výsledky po %1. etapě</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/runsplugin.cpp" line="2031"/>
         <source>Stage %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Etapa %1</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/runsplugin.cpp" line="2134"/>
@@ -4193,66 +4193,66 @@ Použij: Soubor --&gt; Importovat --&gt; Závod (*.qbe) pro konverzi dat do aktu
     <message>
         <location filename="plugins/Runs/src/runstablemodel.cpp" line="36"/>
         <source>Run flags</source>
-        <translation type="unfinished"></translation>
+        <translation>Příznaky závodníka</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/runstablemodel.cpp" line="37"/>
         <source>Card flags</source>
-        <translation type="unfinished"></translation>
+        <translation>Příznaky čipu</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/runstablemodel.cpp" line="78"/>
         <source>DIS</source>
         <comment>Disqualified</comment>
-        <translation type="unfinished"></translation>
+        <translation>DISK</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/runstablemodel.cpp" line="80"/>
         <source>MP</source>
         <comment>MisPunch</comment>
-        <translation type="unfinished"></translation>
+        <translation>CHR</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/runstablemodel.cpp" line="82"/>
         <source>BC</source>
         <comment>BadCheck</comment>
-        <translation type="unfinished"></translation>
+        <translation>PK</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/runstablemodel.cpp" line="84"/>
         <source>NC</source>
         <comment>NotCompeting</comment>
-        <translation type="unfinished">MS</translation>
+        <translation>MS</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/runstablemodel.cpp" line="86"/>
         <source>NS</source>
         <comment>DidNotStart</comment>
-        <translation type="unfinished"></translation>
+        <translation>NS</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/runstablemodel.cpp" line="88"/>
         <source>NF</source>
         <comment>DidNotFinish</comment>
-        <translation type="unfinished"></translation>
+        <translation>ND</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/runstablemodel.cpp" line="101"/>
         <source>CR</source>
         <comment>Card rent requested</comment>
-        <translation type="unfinished"></translation>
+        <translation>VP</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/runstablemodel.cpp" line="103"/>
         <source>CT</source>
         <comment>Card in lent cards table</comment>
-        <translation type="unfinished"></translation>
+        <translation>ČT</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/runstablemodel.cpp" line="105"/>
         <source>RET</source>
         <comment>Card returned</comment>
-        <translation type="unfinished"></translation>
+        <translation>ČV</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/runstablemodel.cpp" line="43"/>
