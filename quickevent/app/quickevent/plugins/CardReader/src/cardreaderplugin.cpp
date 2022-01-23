@@ -121,16 +121,9 @@ int CardReaderPlugin::findRunId(int si_id, int si_finish_time, QString *err_msg)
 		run_id = q.value("id").toInt();
 		int run_start = q.value("startTimeMs").toInt();
 		int run_finish = q.value("finishTimeMs").toInt();
-		if(is_relays) {
-			int run_leg = q.value("leg").toInt();
-			if(run_start == 0 && run_leg != 1) {
-				/// start time not set => this leg does not event start
-				qfInfo() << tr("skipping assign of SI: %1 to run_id: %2; start time not set, this leg does not event start").arg(si_id).arg(run_id);
-				continue;
-			}
-		}
 		if(si_finish_time == siut::SICard::INVALID_SI_TIME) {
 			/// No finnishTime given, cannot guess between runners with duplicate SI Card
+			/// used for radio punches
 			return run_id;
 		}
 		if(run_start > si_finish_time_msec) {
