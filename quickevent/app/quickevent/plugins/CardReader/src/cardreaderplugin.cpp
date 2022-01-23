@@ -121,16 +121,9 @@ int CardReaderPlugin::findRunId(int si_id, int si_finish_time, QString *err_msg)
 		run_id = q.value("id").toInt();
 		int run_start = q.value("startTimeMs").toInt();
 		int run_finish = q.value("finishTimeMs").toInt();
-		if(is_relays) {
-			int run_leg = q.value("leg").toInt();
-			if(run_start == 0 && run_leg != 1) {
-				/// start time not set => this leg does not event start
-				qfInfo() << tr("skipping assign of SI: %1 to run_id: %2; start time not set, this leg does not event start").arg(si_id).arg(run_id);
-				continue;
-			}
-		}
 		if(si_finish_time == siut::SICard::INVALID_SI_TIME) {
 			/// No finnishTime given, cannot guess between runners with duplicate SI Card
+			/// used for radio punches
 			return run_id;
 		}
 		if(run_start > si_finish_time_msec) {
@@ -444,13 +437,12 @@ void CardReaderPlugin::assignCardToRun(int card_id, int run_id)
 	processCardToRunAssignment(card_id, run_id);
 }
 
-void CardReaderPlugin::setStartTimeForNextLeg(int relay_id, int prev_leg, int prev_finish_time) {
+void CardReaderPlugin::setStartTime(int relay_id, int leg, int start_time) {
 	qf::core::sql::Query q;
-	q.exec("UPDATE runs SET startTimeMs=" + QString::number(prev_finish_time)
+	q.execThrow("UPDATE runs SET startTimeMs=" + QString::number(start_time)
 		   + " WHERE relayId=" + QString::number(relay_id)
-		   + " AND leg=" + QString::number(prev_leg+1)
-		   + " AND COALESCE(startTimeMs, 0)=0"
-		   , qf::core::Exception::Throw);
+		   + " AND leg=" + QString::number(leg)
+		   + " AND COALESCE(startTimeMs, 0)=0");
 }
 
 bool CardReaderPlugin::processCardToRunAssignment(int card_id, int run_id)
@@ -475,7 +467,7 @@ bool CardReaderPlugin::processCardToRunAssignment(int card_id, int run_id)
 			if(q.next()) {
 				int prev_finish_time = q.value(0).toInt();
 				if(prev_finish_time > 0) {
-					setStartTimeForNextLeg(relay_id, leg-1, prev_finish_time);
+					setStartTime(relay_id, leg, prev_finish_time);
 				}
 			}
 		}
@@ -498,9 +490,6 @@ bool CardReaderPlugin::processCardToRunAssignment(int card_id, int run_id)
 				processCardToRunAssignment(card_id, run_id);
 			}
 		}
-
-		/// set start time for next leg
-		setStartTimeForNextLeg(relay_id, leg, checked_card.finishTimeMs());
 	}
 	else {
 		quickevent::core::si::CheckedCard checked_card = checkCard(card_id, run_id);
