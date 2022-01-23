@@ -300,7 +300,7 @@ bool TableModel::setData(const QModelIndex &index, const QVariant &value, int ro
 	}
 	else if(role == Qt::CheckStateRole) {
 		//qfInfo() << __LINE__;
-		bool chk_val = (value.toInt() == Qt::Unchecked)? 0: 1;
+		bool chk_val = (value.toInt() != Qt::Unchecked);
 		ret = setValue(index.row(), index.column(), chk_val);
 		if(ret)
 			emit dataChanged(index, index);

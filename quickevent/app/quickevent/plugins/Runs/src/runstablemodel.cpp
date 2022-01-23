@@ -33,12 +33,13 @@ RunsTableModel::RunsTableModel(QObject *parent)
 	setColumn(col_runs_timeMs, ColumnDefinition("runs.timeMs", tr("Time")).setCastType(qMetaTypeId<quickevent::core::og::TimeMs>()));
 	setColumn(col_runs_finishTimeMs, ColumnDefinition("runs.finishTimeMs", tr("Finish")).setCastType(qMetaTypeId<quickevent::core::og::TimeMs>()));
 	setColumn(col_runs_penaltyTimeMs, ColumnDefinition("runs.penaltyTimeMs", tr("Penalty")).setCastType(qMetaTypeId<quickevent::core::og::TimeMs>()));
-	setColumn(col_runs_notCompeting, ColumnDefinition("runs.notCompeting", tr("NC")).setToolTip(tr("Not competing")));
-	setColumn(col_runs_cardRentRequested, ColumnDefinition("runs.cardLent", tr("RR")).setToolTip(tr("Card rent requested")));
-	setColumn(col_cardInLentTable, ColumnDefinition("cardInLentTable", tr("RT", "cardInLentTable")).setToolTip(tr("Card in rent table")));
-	setColumn(col_runs_cardReturned, ColumnDefinition("runs.cardReturned", tr("R")).setToolTip(tr("Card returned")));
-	setColumn(col_disqReason, ColumnDefinition("disqReason", tr("Error")).setToolTip(tr("Disqualification reason")).setReadOnly(true));
-	setColumn(col_runs_disqualified, ColumnDefinition("runs.disqualified", tr("DISQ")).setToolTip(tr("Disqualified")));
+	setColumn(col_runFlags, ColumnDefinition("runFlags", tr("Run flags")).setReadOnly(true));
+	setColumn(col_cardFlags, ColumnDefinition("runFlags", tr("Card flags")).setReadOnly(true));
+	//setColumn(col_runs_notCompeting, ColumnDefinition("runs.notCompeting", tr("NC")).setToolTip(tr("Not competing")));
+	//setColumn(col_runs_cardRentRequested, ColumnDefinition("runs.cardLent", tr("RR")).setToolTip(tr("Card rent requested")));
+	//setColumn(col_cardInLentTable, ColumnDefinition("cardInLentTable", tr("RT", "cardInLentTable")).setToolTip(tr("Card in rent table")));
+	//setColumn(col_runs_cardReturned, ColumnDefinition("runs.cardReturned", tr("R")).setToolTip(tr("Card returned")));
+	//setColumn(col_runs_disqualified, ColumnDefinition("runs.disqualified", tr("DISQ")).setToolTip(tr("Disqualified")));
 	setColumn(col_competitors_note, ColumnDefinition("competitors.note", tr("Note")));
 
 	connect(this, &RunsTableModel::dataChanged, this, &RunsTableModel::onDataChanged, Qt::QueuedConnection);
@@ -64,17 +65,46 @@ Qt::ItemFlags RunsTableModel::flags(const QModelIndex &index) const
 
 QVariant RunsTableModel::value(int row_ix, int column_ix) const
 {
-	if(column_ix == col_disqReason) {
+	if(column_ix == col_runFlags) {
 		qf::core::utils::TableRow row = tableRow(row_ix);
+		bool is_disqualified = row.value(QStringLiteral("runs.disqualified")).toBool();
 		bool mis_punch = row.value(QStringLiteral("runs.misPunch")).toBool();
 		bool bad_check = row.value(QStringLiteral("runs.badCheck")).toBool();
+		bool not_start = row.value(QStringLiteral("runs.notStart")).toBool();
+		bool not_finish = row.value(QStringLiteral("runs.notFinish")).toBool();
+		bool not_competing = row.value(QStringLiteral("runs.notCompeting")).toBool();
 		QStringList sl;
+		if(is_disqualified)
+			sl << tr("DIS", "Disqualified");
 		if(mis_punch)
-			sl << tr("MisPunch");
+			sl << tr("MP", "MisPunch");
 		if(bad_check)
-			sl << tr("BadCheck");
+			sl << tr("BC", "BadCheck");
+		if(not_competing)
+			sl << tr("NC", "NotCompeting");
+		if(not_start)
+			sl << tr("NS", "DidNotStart");
+		if(not_finish)
+			sl << tr("NF", "DidNotFinish");
 		if(sl.isEmpty())
-			return QStringLiteral(" ");
+			return QStringLiteral("");
+		else
+			return sl.join(',');
+	}
+	else if(column_ix == col_cardFlags) {
+		qf::core::utils::TableRow row = tableRow(row_ix);
+		bool card_rent_requested = row.value(QStringLiteral("runs.cardLent")).toBool();
+		bool card_returned = row.value(QStringLiteral("runs.cardReturned")).toBool();
+		bool card_in_lent_table = row.value(QStringLiteral("cardInLentTable")).toBool();
+		QStringList sl;
+		if(card_rent_requested)
+			sl << tr("CR", "Card rent requested");
+		if(card_in_lent_table)
+			sl << tr("CT", "Card in lent cards table");
+		if(card_returned)
+			sl << tr("RET", "Card returned");
+		if(sl.isEmpty())
+			return QStringLiteral("");
 		else
 			return sl.join(',');
 	}
@@ -97,7 +127,7 @@ bool RunsTableModel::setValue(int row_ix, int column_ix, const QVariant &val)
 				return false;
 			}
 		}
-		return Super::setValue(row_ix, column_ix, is_running? is_running: QVariant());
+		return Super::setValue(row_ix, column_ix, is_running);
 	}
 	if(column_ix == col_runs_finishTimeMs) {
 		QVariant start_ms = value(row_ix, col_runs_startTimeMs);

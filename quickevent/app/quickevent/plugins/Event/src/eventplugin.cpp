@@ -1039,9 +1039,16 @@ static QString copy_sql_table(const QString &table_name, const QSqlRecord &dest_
 			QString fld_name = fld.name();
 			//qfDebug() << "copy:" << fld_name << from_q.value(fld_name);
 			QVariant v;
-			if((fld_name.compare(QLatin1String("isRunning"), Qt::CaseInsensitive) == 0) && is_import_offrace) {
-				bool offrace = from_q.value(QStringLiteral("offRace")).toBool();
-				v = offrace? QVariant(): QVariant(true);
+			if((fld_name.compare(QLatin1String("isRunning"), Qt::CaseInsensitive) == 0)) {
+				if(is_import_offrace) {
+					bool offrace = from_q.value(QStringLiteral("offRace")).toBool();
+					v = offrace? QVariant(): QVariant(true);
+				}
+				else {
+					// since db ver 1.8.0
+					// isRunning cannot be NULL, convert NULL to false during import
+					v = from_q.value(fld_name).toBool();
+				}
 			}
 			else {
 				v = from_q.value(fld_name);
@@ -1154,7 +1161,7 @@ void EventPlugin::importEvent_qbe()
 	if(event_name.isEmpty())
 		return;
 	const std::regex psqlschema_regex("[A-Za-z][A-Za-z0-9_]*");
-	if(!std::regex_match(event_name.toStdString(), psqlschema_regex)) {
+	if(connectionType() == ConnectionType::SqlServer && !std::regex_match(event_name.toStdString(), psqlschema_regex)) {
 		qfd::MessageBox::showError(fwk, tr("PostgreSql schema must start with letter and it may contain letters, digits and underscores only."));
 		return;
 	}

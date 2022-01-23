@@ -73,7 +73,7 @@ Application *Application::instance(bool must_exist)
 
 int Application::dbVersion()
 {
-	return 10700;
+	return 10800;
 }
 
 QString Application::versionString() const

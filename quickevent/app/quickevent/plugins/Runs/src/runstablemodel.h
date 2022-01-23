@@ -27,18 +27,15 @@ public:
 		col_runs_finishTimeMs,
 		col_runs_penaltyTimeMs,
 		col_runs_timeMs,
-		col_runs_notCompeting,
-		col_runs_cardRentRequested,
-		col_cardInLentTable,
-		col_runs_cardReturned,
-		col_disqReason,
-		col_runs_disqualified,
+		col_runFlags,
+		col_cardFlags,
 		col_competitors_note,
-		col_COUNT
+		col_COUNT,
 	};
 
 	RunsTableModel(QObject *parent = nullptr);
 
+	int columnCount(const QModelIndex &) const override { return col_COUNT; }
 	QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
 	//bool setData(const QModelIndex &index, const QVariant &value, int role) Q_DECL_OVERRIDE;
 	Qt::ItemFlags flags(const QModelIndex &index) const Q_DECL_OVERRIDE;
