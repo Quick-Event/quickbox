@@ -498,9 +498,6 @@ bool CardReaderPlugin::processCardToRunAssignment(int card_id, int run_id)
 				processCardToRunAssignment(card_id, run_id);
 			}
 		}
-
-		/// set start time for next leg
-		setStartTimeForNextLeg(relay_id, leg, checked_card.finishTimeMs());
 	}
 	else {
 		quickevent::core::si::CheckedCard checked_card = checkCard(card_id, run_id);
