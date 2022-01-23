@@ -444,13 +444,12 @@ void CardReaderPlugin::assignCardToRun(int card_id, int run_id)
 	processCardToRunAssignment(card_id, run_id);
 }
 
-void CardReaderPlugin::setStartTimeForNextLeg(int relay_id, int prev_leg, int prev_finish_time) {
+void CardReaderPlugin::setStartTime(int relay_id, int leg, int start_time) {
 	qf::core::sql::Query q;
-	q.exec("UPDATE runs SET startTimeMs=" + QString::number(prev_finish_time)
+	q.execThrow("UPDATE runs SET startTimeMs=" + QString::number(start_time)
 		   + " WHERE relayId=" + QString::number(relay_id)
-		   + " AND leg=" + QString::number(prev_leg+1)
-		   + " AND COALESCE(startTimeMs, 0)=0"
-		   , qf::core::Exception::Throw);
+		   + " AND leg=" + QString::number(leg)
+		   + " AND COALESCE(startTimeMs, 0)=0");
 }
 
 bool CardReaderPlugin::processCardToRunAssignment(int card_id, int run_id)
@@ -475,7 +474,7 @@ bool CardReaderPlugin::processCardToRunAssignment(int card_id, int run_id)
 			if(q.next()) {
 				int prev_finish_time = q.value(0).toInt();
 				if(prev_finish_time > 0) {
-					setStartTimeForNextLeg(relay_id, leg-1, prev_finish_time);
+					setStartTime(relay_id, leg, prev_finish_time);
 				}
 			}
 		}
