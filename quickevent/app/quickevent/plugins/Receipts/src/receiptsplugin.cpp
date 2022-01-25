@@ -186,7 +186,10 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 	int course_id = checked_card.courseId();
 	int current_standings = 0;
 	int competitors_finished = 0;
-	QMap<int, int> best_laps; //< position->time
+	int best_time = 0;
+	QMap<int, int> best_laps; // position->time
+	QMap<int, int> lap_stand; // position->standing in lap
+	QMap<int, int> lap_stand_cummulative;  // position->cummulative standing after lap
 	{
 		qf::core::model::SqlTableModel model;
 		qf::core::sql::QueryBuilder qb;
@@ -205,87 +208,126 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 		model.setQuery(qb.toString());
 		model.reload();
 		if(model.rowCount() == 1) {
-			int leg = model.value(0, "runs.leg").toInt();
-			{
-				// find best laps for competitors class
-				qf::core::sql::QueryBuilder qb_minlaps;
-				if(is_relays) {
-					int class_id = model.value(0, "relays.classId").toInt();
-					qb_minlaps.select("runlaps.position, MIN(runlaps.lapTimeMs) AS minLapTimeMs")
-							.from("relays")
-							.joinRestricted("relays.id", "runs.relayId",
-											"relays.classId=" QF_IARG(class_id)
-											" AND runs.leg=" QF_IARG(leg),
-											qf::core::sql::QueryBuilder::INNER_JOIN)
-							.joinRestricted("runs.id", "runlaps.runId",
-											"runlaps.position > 0 AND runlaps.lapTimeMs > 0",
-											qf::core::sql::QueryBuilder::INNER_JOIN)
-							.groupBy("runlaps.position")
-							.orderBy("runlaps.position");
-				}
-				else {
-					int class_id = model.value(0, "competitors.classId").toInt();
-					qb_minlaps.select("runlaps.position, MIN(runlaps.lapTimeMs) AS minLapTimeMs")
-							.from("competitors")
-							.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId=" QF_IARG(current_stage_id) " AND competitors.classId=" QF_IARG(class_id), qf::core::sql::QueryBuilder::INNER_JOIN)
-							.joinRestricted("runs.id", "runlaps.runId", "runlaps.position > 0 AND runlaps.lapTimeMs > 0", qf::core::sql::QueryBuilder::INNER_JOIN)
-							.groupBy("runlaps.position")
-							.orderBy("runlaps.position");
-				}
-				QString qs = qb_minlaps.toString();
-				//qfInfo() << qs;
-				qf::core::sql::Query q;
-				q.exec(qs);
-				while(q.next()) {
-					int position = q.value("position").toInt();
-					if(position == 0) {
-						qfWarning() << "position == 0 in best runlaps";
-						continue;
+			qf::core::sql::Query run;
+			run.execThrow("SELECT runlaps.position, runlaps.code, runlaps.lapTimeMs FROM runlaps WHERE runId = " QF_IARG(run_id) " ORDER BY position");
+			while(run.next()) {
+				int pos = run.value("position").toInt();
+				int lapTimeMs = run.value("lapTimeMs").toInt();
+				{
+					// best lap times and position/place/standing in lap
+					qf::core::sql::QueryBuilder qb_laps;
+					qb_laps.select("MIN(runlaps.lapTimeMs) AS minLapTimeMs, SUM(CASE WHEN runlaps.lapTimeMs < " QF_IARG(lapTimeMs) " THEN 1 ELSE 0 END) as standingLap");
+					if(is_relays) {
+						int leg = model.value(0, "runs.leg").toInt();
+						int class_id = model.value(0, "relays.classId").toInt();
+						qb_laps.from("relays")
+							.join("relays.id", "runs.relayId", qf::core::sql::QueryBuilder::INNER_JOIN)
+							.where("relays.classId=" QF_IARG(class_id)
+								" AND runs.leg=" QF_IARG(leg));
 					}
-					int lap = q.value("minLapTimeMs").toInt();
-					if(lap == 0) {
-						qfWarning() << "minLapTimeMs == 0 in best runlaps";
-						continue;
+					else {
+						int class_id = model.value(0, "competitors.classId").toInt();
+						qb_laps.from("competitors")
+							.join("competitors.id", "runs.competitorId",qf::core::sql::QueryBuilder::INNER_JOIN)
+							.where("runs.stageId=" QF_IARG(current_stage_id)
+								" AND competitors.classId=" QF_IARG(class_id));
+
+
 					}
-					best_laps[position] = lap;
-					//qfInfo() << "bestlaps[" << position << "] =" << lap;
+					qb_laps.join("runs.id", "runlaps.runId", qf::core::sql::QueryBuilder::INNER_JOIN)
+						.where("runlaps.position > 0"
+							" AND runlaps.lapTimeMs > 0"
+							" AND runlaps.position=" QF_IARG(pos)
+							" AND NOT runs.disqualified"
+							" AND runs.isRunning"
+							" AND NOT runs.misPunch")
+						.groupBy("runlaps.position");
+					qf::core::sql::Query q_laps;
+					q_laps.execThrow(qb_laps.toString());
+					if (q_laps.next()) {
+						best_laps[pos] = q_laps.value("minLapTimeMs").toInt();
+						lap_stand[pos] = q_laps.value("standingLap").toInt() + 1;
+					}
+				}
+				{
+					// current position/place/standing after lap
+					qf::core::sql::Query q_run_curr_time;
+					q_run_curr_time.execThrow("SELECT SUM(lapTimeMs) as currTime FROM runlaps WHERE position <= " QF_IARG(pos) " AND runId = " QF_IARG(run_id) " GROUP BY runId" );
+					q_run_curr_time.next();
+					int run_curr_time = q_run_curr_time.value("currTime").toInt();
+
+					qf::core::sql::QueryBuilder qb_curr_times;
+					qb_curr_times.select("runs.id, SUM(runlaps.lapTimeMs) as currTime");
+					if(is_relays) {
+						int leg = model.value(0, "runs.leg").toInt();
+						int class_id = model.value(0, "relays.classId").toInt();
+						qb_curr_times.from("relays")
+							.join("relays.id", "runs.relayId", qf::core::sql::QueryBuilder::INNER_JOIN)
+							.where("relays.classId=" QF_IARG(class_id)
+								" AND runs.leg=" QF_IARG(leg));
+					}
+					else {
+						int class_id = model.value(0, "competitors.classId").toInt();
+						qb_curr_times.from("competitors")
+							.join("competitors.id", "runs.competitorId",qf::core::sql::QueryBuilder::INNER_JOIN)
+							.where("runs.stageId=" QF_IARG(current_stage_id)
+								" AND competitors.classId=" QF_IARG(class_id));
+
+
+					}
+					qb_curr_times.join("runs.id", "runlaps.runId", qf::core::sql::QueryBuilder::INNER_JOIN)
+						.where("runlaps.position > 0"
+							" AND runlaps.lapTimeMs > 0"
+							" AND runlaps.position<=" QF_IARG(pos)
+							" AND NOT runs.disqualified"
+							" AND runs.isRunning"
+							" AND NOT runs.misPunch")
+						.groupBy("runs.id");
+					qf::core::sql::Query q_curr_time;
+					q_curr_time.execThrow("SELECT COUNT(*) as currStanding FROM (" + qb_curr_times.toString() + ") WHERE currTime < " QF_IARG(run_curr_time));
+					if (q_curr_time.next()) {
+						lap_stand_cummulative[pos] = q_curr_time.value("currStanding").toInt() + 1;
+					}
 				}
 			}
-			if(checked_card.isOk()) {
-				// find current standings
-				qf::core::sql::QueryBuilder qb;
-				if(is_relays) {
-					int class_id = model.value(0, "relays.classId").toInt();
-					qb.select2("runs", "timeMs")
-							.select("runs.disqualified OR NOT runs.isRunning OR runs.misPunch AS dis")
-							.from("relays")
-							.joinRestricted("relays.id", "runs.relayId",
-											"relays.classId=" QF_IARG(class_id)
-											" AND runs.finishTimeMs > 0"
-											" AND runs.leg=" QF_IARG(leg),
-											qf::core::sql::QueryBuilder::INNER_JOIN)
-							.orderBy("misPunch, disqualified, isRunning, runs.timeMs");
+		}
+		if(checked_card.isOk()) {
+			// find current standings
+			qf::core::sql::QueryBuilder qb;
+			if(is_relays) {
+				int leg = model.value(0, "runs.leg").toInt();
+				int class_id = model.value(0, "relays.classId").toInt();
+				qb.select2("runs", "timeMs")
+						.select("runs.disqualified OR NOT runs.isRunning OR runs.misPunch AS dis")
+						.from("relays")
+						.joinRestricted("relays.id", "runs.relayId",
+										"relays.classId=" QF_IARG(class_id)
+										" AND runs.finishTimeMs > 0"
+										" AND runs.leg=" QF_IARG(leg),
+										qf::core::sql::QueryBuilder::INNER_JOIN)
+						.orderBy("misPunch, disqualified, isRunning, runs.timeMs");
+			}
+			else {
+				int class_id = model.value(0, "competitors.classId").toInt();
+				qb.select2("runs", "timeMs")
+						.select("runs.disqualified OR NOT runs.isRunning OR runs.misPunch AS dis")
+						.from("competitors")
+						.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId=" QF_IARG(current_stage_id) " AND competitors.classId=" QF_IARG(class_id), qf::core::sql::QueryBuilder::INNER_JOIN)
+						.where("runs.finishTimeMs > 0")
+						.orderBy("misPunch, disqualified, isRunning, runs.timeMs");
+			}
+			//qfInfo() << qb.toString();
+			auto q = qf::core::sql::Query::fromExec(qb.toString());
+			while (q.next()) {
+				bool dis = q.value("dis").toBool();
+				int time = q.value("timeMs").toInt();
+				if(!dis) {
+					if(time <= checked_card.timeMs())
+						current_standings++;
+					if(best_time == 0 || time < best_time)
+						best_time = time;
 				}
-				else {
-					int class_id = model.value(0, "competitors.classId").toInt();
-					qb.select2("runs", "timeMs")
-							.select("runs.disqualified OR NOT runs.isRunning OR runs.misPunch AS dis")
-							.from("competitors")
-							.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId=" QF_IARG(current_stage_id) " AND competitors.classId=" QF_IARG(class_id), qf::core::sql::QueryBuilder::INNER_JOIN)
-							.where("runs.finishTimeMs > 0")
-							.orderBy("misPunch, disqualified, isRunning, runs.timeMs");
-				}
-				//qfInfo() << qb.toString();
-				auto q = qf::core::sql::Query::fromExec(qb.toString());
-				while (q.next()) {
-					bool dis = q.value("dis").toBool();
-					int time = q.value("timeMs").toInt();
-					if(!dis) {
-						if(time <= checked_card.timeMs())
-							current_standings++;
-					}
-					competitors_finished++;
-				}
+				competitors_finished++;
 			}
 		}
 		qfu::TreeTable tt = model.toTreeTable();
@@ -325,9 +367,11 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 	{
 		qfu::TreeTable tt;
 		tt.appendColumn("position", QVariant::Int);
-		tt.appendColumn("code", QVariant::Int);
+		tt.appendColumn("code", QVariant::String);
 		tt.appendColumn("stpTimeMs", QVariant::Int);
 		tt.appendColumn("lapTimeMs", QVariant::Int);
+		tt.appendColumn("standLap", QVariant::String);
+		tt.appendColumn("standCummulative", QVariant::String);
 		tt.appendColumn("lossMs", QVariant::Int);
 		tt.appendColumn("distance", QVariant::Int);
 		QMapIterator<QString, QVariant> it(checked_card);
@@ -344,9 +388,11 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 			qf::core::utils::TreeTableRow tt_row = tt.row(ix);
 			++position;
 			int code = punch.code();
-			tt_row.setValue(QStringLiteral("position"), position);
-			tt_row.setValue(QStringLiteral("code"), code);
-			tt_row.setValue(QStringLiteral("stpTimeMs"), punch.stpTimeMs());
+			tt_row.setValue("position", position);
+			tt_row.setValue("code", QString::number(code).rightJustified(3, ' '));
+			tt_row.setValue("stpTimeMs", punch.stpTimeMs());
+			tt_row.setValue("standLap", QString::number(lap_stand[position]).rightJustified(2, ' '));
+			tt_row.setValue("standCummulative", QString::number(lap_stand_cummulative[position]).rightJustified(2, ' '));
 			int lap = punch.lapTimeMs();
 			tt_row.setValue("lapTimeMs", lap);
 			int best_lap = best_laps.value(position);
@@ -374,6 +420,7 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 		tt.setValue("currentStandings", current_standings);
 		tt.setValue("competitorsFinished", competitors_finished);
 		tt.setValue("timeMs", checked_card.timeMs());
+		tt.setValue("bestTime", best_time);
 		tt.setValue("isCardLent", is_card_lent);
 
 		qfDebug() << "card:\n" << tt.toString();
