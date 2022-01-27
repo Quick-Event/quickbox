@@ -34,11 +34,8 @@ Report {
 	height: 297
 	hinset: 0
 	vinset: 5
-
 	Frame {
 		width: "%"
-		hinset: 2
-		vinset: 2
 		border: Pen { basedOn: "blue05" }
 		Band {
 			id: bandCompetitor
@@ -54,13 +51,22 @@ Report {
 					visible: printLotteryTicket
 				}
 				Frame {
+					htmlExportAttributes: {"lpt_textAlign": "center", "lpt_textWidth": "%"}
+					vinset: 1
+					width: "%"
+					halign: Frame.AlignHCenter
+					Para {
+						textFn: function() { return "Quick Event - ver. " + bandCompetitor.data("appVersion"); }
+					}
+				}
+				Frame {
 					htmlExportAttributes: {"lpt_textAlign": "left", "lpt_borderTop": "=", "lpt_borderBottom": "-"}
 					width: "%"
 					fill: Brush { color: Color { def: "powderblue" } }
 					topBorder: Pen { basedOn: "black2" }
 					bottomBorder: Pen { basedOn: "black1" }
-					hinset: 1
 					vinset: 1
+					hinset: 2
 					Para {
 						textFn: function() {
 							var s = "";
@@ -78,8 +84,8 @@ Report {
 					}
 				}
 				Frame {
-					htmlExportAttributes: {"lpt_textStyle": "bold"}
-					hinset: 1
+					htmlExportAttributes: {"lpt_textStyle": "bold", "lpt_borderBottom": "-"}
+					hinset: 2
 					vinset: 1
 					textStyle: myStyle.textStyleBold
 					fill: Brush { color: Color { def: "khaki" } }
@@ -107,7 +113,7 @@ Report {
 							htmlExportAttributes: {"lpt_textWidth": "%"}
 							width: "%"
 							//textHAlign: Frame.AlignLeft
-							text: detailCompetitor.data(detailCompetitor.currentIndex, "classes.name") //"SI: " + detailCompetitor.data(detailCompetitor.currentIndex, "runs.siId")
+							text: detailCompetitor.data(detailCompetitor.currentIndex, "classes.name")
 						}
 						Para {
 							textFn: function() {
@@ -130,17 +136,19 @@ Report {
 			objectName: "band_card"
 			modelData: "card"
 			width: "%"
+			vinset: 1
 			Frame {
-				hinset: 1
 				width: "%"
+				hinset: 2
 				bottomBorder: Pen { basedOn: "black1" }
-				htmlExportAttributes: {"lpt_borderBottom": "="}
+				htmlExportAttributes: {"lpt_borderBottom": "=", "lpt_textWidth": "%"}
 				Frame {
 					width: "%"
 					layout: Frame.LayoutHorizontal
 					Para {
 						id: paraCheck
 						width: 12
+						htmlExportAttributes: {"lpt_textWidth": "7", "lpt_textAlign": "left"}
 						text: "Check:"
 					}
 					Para {
@@ -154,24 +162,28 @@ Report {
 						}
 					}
 					Para {
+						htmlExportAttributes: {"lpt_textWidth": "%"}
 						width: "%"
 					}
 					Cell {
 						width: paraCheck.width
+						htmlExportAttributes: {"lpt_textWidth": "7", "lpt_textAlign": "left"}
 						text: "SI:"
 					}
 					Para {
-						htmlExportAttributes: {"lpt_textWidth": "%", "lpt_textAlign": "right"}
+						htmlExportAttributes: {"lpt_textWidth": "9", "lpt_textAlign": "right"}
 						width: paraCheckTime.width
 						textHAlign: Frame.AlignLeft
 						textFn: function() { return bandCard.data("cardNumber"); }
 					}
 				}
 				Frame {
+					vinset: 1
 					htmlExportAttributes: {"lpt_textStyle": "underline2"}
 					width: "%"
 					layout: Frame.LayoutHorizontal
 					Para {
+						htmlExportAttributes: {"lpt_textWidth": "7", "lpt_textAlign": "left"}
 						width: paraCheck.width
 						text: "Start:"
 					}
@@ -185,10 +197,12 @@ Report {
 						}
 					}
 					Para {
+						htmlExportAttributes: {"lpt_textWidth": "%"}
 						width: "%"
 					}
 					Cell {
 						width: paraCheck.width
+						htmlExportAttributes: {"lpt_textWidth": "7", "lpt_textAlign": "left"}
 						text: "Finish:"
 					}
 					Para {
@@ -205,6 +219,7 @@ Report {
 			Detail {
 				id: dc
 				width: "%"
+				hinset: 2
 				layout: Frame.LayoutHorizontal
 				expandChildFrames: true
 				fill: {
@@ -216,63 +231,75 @@ Report {
 				topBorder: (dc.currentIndex < (dc.rowCount - 1))? null: myStyle.penBlack1
 				htmlExportAttributes: (dc.currentIndex < (dc.rowCount - 2))? ({}): {"lpt_textStyle": "underline2"};
 
-				Para {
-					omitEmptyText: true
-					textFn: function() {
-						var is_last_row = (dc.currentIndex == (dc.rowCount - 1));
-						cellPos.visible = !is_last_row;
-						cellCodeOpen.visible = !is_last_row;
-						cellCode.visible = !is_last_row;
-						cellCodeClose.visible = !is_last_row;
-						cellRunStatus.visible = is_last_row;
-						return "";
+				Frame {
+					// fake para, just to run code and set visibility of cardLentFrame
+					Para {
+						omitEmptyText: true
+						textFn: function() {
+							var is_last_row = (dc.currentIndex == (dc.rowCount - 1));
+							controlCodeFrame.visible = !is_last_row;
+							cellRunStatus.visible = is_last_row;
+							return "";
+						}
 					}
-				}
-				Para {
-					id: cellPos
-					htmlExportAttributes: {"lpt_textWidth": "4", "lpt_textAlign": "right"}
-					width: 4
-					textHAlign: Frame.AlignRight
-					text: {
-						var pos = dc.data(dc.currentIndex, "position");
-						if(pos && dc.currentIndex < (dc.rowCount - 1))
-							return pos;
-						return "";
-					}
-				}
-				Para {
-					id: cellCodeOpen
-					width: 2
-					text: " ("
-				}
-				Para {
-					id: cellCode
-					htmlExportAttributes: {"lpt_textWidth": "6", "lpt_textAlign": "center"}
-					width: 6
-					textHAlign: Frame.AlignHCenter
-					text: { return dc.data(dc.currentIndex, "code"); }
-					textStyle: (dc.currentIndex < (dc.rowCount - 1))? null: myStyle.textStyleBold;
-				}
-				Para {
-					id: cellCodeClose
-					width: 1
-					text: ")"
 				}
 
-				Para {
-					width:  10
+				Frame {
+					id: controlCodeFrame
+					layout: Frame.LayoutHorizontal
+					Para {
+						id: cellPos
+						htmlExportAttributes: {"lpt_textWidth": "2", "lpt_textAlign": "right"}
+						width: 4
+						textHAlign: Frame.AlignRight
+						text: {
+							var pos = dc.data(dc.currentIndex, "position");
+							if(pos && dc.currentIndex < (dc.rowCount - 1))
+								return pos;
+							return "";
+						}
+					}
+					Para {
+						id: cellCodeOpen
+						htmlExportAttributes: {"lpt_textWidth": "2"}
+						width: 2
+						text: " ("
+					}
+					Para {
+						id: cellCode
+						htmlExportAttributes: {"lpt_textWidth": "3", "lpt_textAlign": "center"}
+						width: 6
+						textHAlign: Frame.AlignHCenter
+						text: { return dc.data(dc.currentIndex, "code"); }
+					}
+					Para {
+						id: cellCodeClose
+						htmlExportAttributes: {"lpt_textWidth": "1"}
+						width: 1
+						text: ")"
+					}
+				}
+				Frame {
 					id: cellRunStatus
-					textHAlign: Frame.AlignHCenter
-					textFn: function() { return bandCard.data("isOk")? qsTr("OK"): qsTr("DISQ"); }
-					textStyle: (dc.currentIndex < (dc.rowCount - 1))? null: myStyle.textStyleBold;
+					width:  10
+					vinset: 1
+					halign: Frame.AlignHCenter
+					Para {
+						htmlExportAttributes: {"lpt_textWidth": "8", "lpt_textAlign": "center", "lpt_textStyle": "bold"}
+						textFn: function() { return bandCard.data("isOk")? qsTr("OK"): qsTr("DISQ"); }
+						textStyle: myStyle.textStyleBold;
+					}
 				}
 
+
+
 				Para {
+					htmlExportAttributes: {"lpt_textWidth": "%"}
 					width: "%"
 				}
 				Para {
 					id: cellStp
-					htmlExportAttributes: {"lpt_textWidth": "13", "lpt_textAlign": "right"}
+					htmlExportAttributes: (dc.currentIndex < (dc.rowCount - 1) && dc.data(dc.currentIndex, "standCummulative") !== 1)? {"lpt_textWidth": "7", "lpt_textAlign": "right"} : {"lpt_textWidth": "7", "lpt_textAlign": "right", "lpt_textStyle": "bold"}
 					width: (dc.currentIndex < (dc.rowCount - 1))? 12 : 14;
 					textHAlign: Frame.AlignRight
 					text: {
@@ -282,10 +309,12 @@ Report {
 						return qsTr("-----");
 					}
 					textStyle: (dc.currentIndex < (dc.rowCount - 1) && dc.data(dc.currentIndex, "standCummulative") !== 1)? null: myStyle.textStyleBold;
+					vinset: (dc.currentIndex < (dc.rowCount - 1)) ? 0 : 1
 				}
 
 				Para {
 					id: cellStandOpen
+					htmlExportAttributes: (dc.currentIndex < (dc.rowCount - 1) && dc.data(dc.currentIndex, "standCummulative") !== 1)? {"lpt_textWidth": "2"} : {"lpt_textWidth": "2", "lpt_textStyle": "bold"}
 					width: 2
 					textFn: function() {
 						var is_last_row = dc.currentIndex == (dc.rowCount - 1);
@@ -295,11 +324,12 @@ Report {
 						return  "";
 					}
 					textStyle: (dc.currentIndex < (dc.rowCount - 1) && dc.data(dc.currentIndex, "standCummulative") !== 1)? null: myStyle.textStyleBold;
+					vinset: (dc.currentIndex < (dc.rowCount - 1)) ? 0 : 1
 				}
 				Para {
 					id: cellStand
 					width: (dc.currentIndex < (dc.rowCount - 1))? 4 : 5;
-					htmlExportAttributes: {"lpt_textWidth": "4", "lpt_textAlign": "center"}
+					htmlExportAttributes: (dc.currentIndex < (dc.rowCount - 1) && dc.data(dc.currentIndex, "standCummulative") !== 1)? {"lpt_textWidth": "2", "lpt_textAlign": "center"} : {"lpt_textWidth": "2", "lpt_textAlign": "center", "lpt_textStyle": "bold"}
 					textHAlign: Frame.AlignHCenter
 					textFn: function() {
 						var msec = dc.data(dc.currentIndex, "lapTimeMs");
@@ -310,9 +340,11 @@ Report {
 						return "";
 					}
 					textStyle: (dc.currentIndex < (dc.rowCount - 1) && dc.data(dc.currentIndex, "standCummulative") !== 1)? null: myStyle.textStyleBold;
+					vinset: (dc.currentIndex < (dc.rowCount - 1)) ? 0 : 1
 				}
 				Para {
 					id: cellStandClose
+					htmlExportAttributes: (dc.currentIndex < (dc.rowCount - 1) && dc.data(dc.currentIndex, "standCummulative") !== 1)? {"lpt_textWidth": "1"} : {"lpt_textWidth": "1", "lpt_textStyle": "bold"}
 					width: 1
 					textFn: function() {
 						var is_last_row = dc.currentIndex == (dc.rowCount - 1);
@@ -322,14 +354,16 @@ Report {
 						return  "";
 					}
 					textStyle: (dc.currentIndex < (dc.rowCount - 1) && dc.data(dc.currentIndex, "standCummulative") !== 1)? null: myStyle.textStyleBold;
+					vinset: (dc.currentIndex < (dc.rowCount - 1)) ? 0 : 1
 				}
 
 				Para {
+					htmlExportAttributes: {"lpt_textWidth": "%"}
 					width: "%"
 				}
 				Para {
 					id: cellLap
-					htmlExportAttributes: {"lpt_textWidth": "10", "lpt_textAlign": "right"}
+					htmlExportAttributes: (dc.data(dc.currentIndex, "standLap") !== 1)? {"lpt_textWidth": "6", "lpt_textAlign": "right"} : {"lpt_textWidth": "6", "lpt_textAlign": "right", "lpt_textStyle": "bold"}
 					width: 10
 					textHAlign: Frame.AlignRight
 					textFn: function() {
@@ -342,6 +376,7 @@ Report {
 				}
 				Para {
 					id: cellLapStandOpen
+					htmlExportAttributes: (dc.data(dc.currentIndex, "standLap") !== 1)? {"lpt_textWidth": "2"} : {"lpt_textWidth": "2", "lpt_textStyle": "bold"}
 					width: 2
 					text: (dc.data(dc.currentIndex, "lapTimeMs") > 0) ? " (" : "";
 					textStyle: (dc.data(dc.currentIndex, "standLap") !== 1)? null: myStyle.textStyleBold;
@@ -349,7 +384,7 @@ Report {
 				Para {
 					id: cellLapStand
 					width: 4
-					htmlExportAttributes: {"lpt_textWidth": "4", "lpt_textAlign": "center"}
+					htmlExportAttributes: (dc.data(dc.currentIndex, "standLap") !== 1)? {"lpt_textWidth": "2", "lpt_textAlign": "center"} : {"lpt_textWidth": "2", "lpt_textAlign": "center", "lpt_textStyle": "bold"}
 					textHAlign: Frame.AlignHCenter
 					textFn: function() {
 						var msec = dc.data(dc.currentIndex, "lapTimeMs");
@@ -362,6 +397,7 @@ Report {
 				}
 				Para {
 					id: cellLapStandClose
+					htmlExportAttributes: (dc.data(dc.currentIndex, "standLap") !== 1)? {"lpt_textWidth": "1"} : {"lpt_textWidth": "1", "lpt_textStyle": "bold"}
 					width: 1
 					text: (dc.data(dc.currentIndex, "lapTimeMs") > 0) ? ")" : "";
 					textStyle: (dc.data(dc.currentIndex, "standLap") !== 1)? null: myStyle.textStyleBold;
@@ -369,9 +405,11 @@ Report {
 
 				Para {
 					width: "%"
+					htmlExportAttributes: {"lpt_textWidth": "%"}
 				}
 				Para {
 					width: 2
+					htmlExportAttributes: {"lpt_textWidth": "2"}
 					text: {
 						var msec = dc.data(dc.currentIndex, "lossMs");
 						if(msec > 0)
@@ -380,7 +418,7 @@ Report {
 					}
 				}
 				Para {
-					htmlExportAttributes: {"lpt_textWidth": "11", "lpt_textAlign": "right"}
+					htmlExportAttributes: {"lpt_textWidth": "5", "lpt_textAlign": "right"}
 					id: cellLoss
 					width: 9
 					textHAlign: Frame.AlignRight
@@ -410,36 +448,25 @@ Report {
 			}
 			Frame {
 				id: cardLentFrame
-				//visible: false
-				//vinset: 1
+				hinset: 2
 				htmlExportAttributes: {"lpt_borderBottom": "="}
 				fill: brushError
 				bottomBorder: Pen { basedOn: "black1" }
 				textStyle: myStyle.textStyleBold
 				Para {
-					htmlExportAttributes: {"lpt_textWidth": "%", "lpt_textAlign": "center"}
+					htmlExportAttributes: {"lpt_textWidth": "%", "lpt_textAlign": "center", "lpt_textStyle": "bold"}
 					width: "%"
 					textHAlign: Frame.AlignHCenter
 					text: qsTr("!!! RENTED CARD !!!");
 				}
 			}
 
-			Para {
-				//vinset: 1
-				hinset: 1
-				textFn: function() {
-					var bad_check = bandCard.data("isBadCheck");
-					if(bad_check) {
-						return qsTr("BAD CHECK !!!");
-					}
-					return "";
-				}
-			}
 			Frame {
 				id: performanceInfoFrame
+				htmlExportAttributes: {"lpt_textWidth": "%"}
 				width: "%"
-				//vinset: 1
-				hinset: 1
+				vinset: 1
+				hinset: 2
 				layout: Frame.LayoutVertical
 				Para {
 					textFn: function() {
@@ -467,7 +494,7 @@ Report {
 							//console.info(i, loss);
 							overall_loss += loss;
 						}
-						return qsTr("loss to superman =  ") + OGTime.msecToString_mmss(overall_loss);
+						return qsTr("loss to best splits =  ") + OGTime.msecToString_mmss(overall_loss);
 					}
 				}
 				Para {
@@ -481,8 +508,7 @@ Report {
 				}
 			}
 			Para {
-				//vinset: 1
-				hinset: 1
+				hinset: 2
 				textFn: function() {
 					var extra_codes = bandCard.data("extraCodes");
 					//console.warn("missing_codes:", JSON.stringify(missing_codes, null, 2));

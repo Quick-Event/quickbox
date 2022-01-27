@@ -359,6 +359,7 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 				tt.setValue(q.value("ckey").toString(), v);
 			}
 		}
+		tt.setValue("appVersion", QCoreApplication::applicationVersion());
 		tt.setValue("stageCount", getPlugin<EventPlugin>()->stageCount());
 		tt.setValue("currentStageId", getPlugin<EventPlugin>()->currentStageId());
 		qfDebug() << "competitor:\n" << tt.toString();
