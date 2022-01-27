@@ -1,13 +1,13 @@
 <RCC>
-    <qresource prefix="/quickevent/Receipts">
-        <file>images/feature.svg</file>
-        <file>images/graphic-printer.svg</file>
-        <file>images/character-printer.svg</file>
-        <file>qml/error.qml</file>
-        <file>qml/sicard.qml</file>
-        <file>qml/receipts/Classic.qml</file>
-        <file>qml/receipts/ClassicLottery.qml</file>
-        <file>qml/receipts/private/LotteryTicket.qml</file>
-        <file>qml/receipts/Complete (beta).qml</file>
-    </qresource>
+	<qresource prefix="/quickevent/Receipts">
+		<file>images/feature.svg</file>
+		<file>images/graphic-printer.svg</file>
+		<file>images/character-printer.svg</file>
+		<file>qml/error.qml</file>
+		<file>qml/sicard.qml</file>
+		<file>qml/receipts/Classic.qml</file>
+		<file>qml/receipts/ClassicLottery.qml</file>
+		<file>qml/receipts/private/LotteryTicket.qml</file>
+		<file>qml/receipts/Complete (beta).qml</file>
+    	</qresource>
 </RCC>

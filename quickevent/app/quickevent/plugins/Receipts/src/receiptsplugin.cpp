@@ -367,11 +367,11 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 	{
 		qfu::TreeTable tt;
 		tt.appendColumn("position", QVariant::Int);
-		tt.appendColumn("code", QVariant::String);
+		tt.appendColumn("code", QVariant::Int);
 		tt.appendColumn("stpTimeMs", QVariant::Int);
 		tt.appendColumn("lapTimeMs", QVariant::Int);
-		tt.appendColumn("standLap", QVariant::String);
-		tt.appendColumn("standCummulative", QVariant::String);
+		tt.appendColumn("standLap", QVariant::Int);
+		tt.appendColumn("standCummulative", QVariant::Int);
 		tt.appendColumn("lossMs", QVariant::Int);
 		tt.appendColumn("distance", QVariant::Int);
 		QMapIterator<QString, QVariant> it(checked_card);
@@ -389,10 +389,10 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 			++position;
 			int code = punch.code();
 			tt_row.setValue("position", position);
-			tt_row.setValue("code", QString::number(code).rightJustified(3, ' '));
+			tt_row.setValue("code", code);
 			tt_row.setValue("stpTimeMs", punch.stpTimeMs());
-			tt_row.setValue("standLap", QString::number(lap_stand[position]).rightJustified(2, ' '));
-			tt_row.setValue("standCummulative", QString::number(lap_stand_cummulative[position]).rightJustified(2, ' '));
+			tt_row.setValue("standLap", lap_stand[position]);
+			tt_row.setValue("standCummulative", lap_stand_cummulative[position]);
 			int lap = punch.lapTimeMs();
 			tt_row.setValue("lapTimeMs", lap);
 			int best_lap = best_laps.value(position);

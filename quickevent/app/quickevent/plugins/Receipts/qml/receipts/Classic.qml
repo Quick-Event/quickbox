@@ -12,7 +12,7 @@ Report {
 	property bool printLotteryTicket: false
 	//debugLevel: 1
 	styleSheet: StyleSheet {
-        basedOn: ReportStyleCommon {
+		basedOn: ReportStyleCommon {
 			id: myStyle
 		}
 		brushes: [
