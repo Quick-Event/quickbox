@@ -184,6 +184,8 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 	bool is_card_lent = getPlugin<CardReaderPlugin>()->isCardLent(card_id, read_card.finishTime(), run_id);
 	int current_stage_id = getPlugin<EventPlugin>()->stageIdForRun(run_id);
 	int course_id = checked_card.courseId();
+	int leg = 0;
+	int relay_num = 0;
 	int current_standings = 0;
 	int competitors_finished = 0;
 	int best_time = 0;
@@ -196,14 +198,21 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 		qb.select2("competitors", "*")
 				.select2("runs", "*")
 				.select2("classes", "name")
-				.select("COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName")
 				.from("runs")
 				.join("runs.competitorId", "competitors.id")
-				.join("competitors.classId", "classes.id")
 				.where("runs.id=" QF_IARG(run_id));
 		if(is_relays) {
 			qb.select2("relays", "*")
-					.join("runs.relayId", "relays.id");
+					.select("COALESCE(competitors.lastName, '') || ' '"
+						" || COALESCE(competitors.firstName, '') || ' ('"
+						" || COALESCE(relays.club, '') || ' '"
+						" || COALESCE(relays.name, '') || ')' AS competitorName")
+					.join("runs.relayId", "relays.id")
+					.join("relays.classId", "classes.id");
+		}
+		else {
+			qb.select("COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName")
+				.join("competitors.classId", "classes.id");
 		}
 		model.setQuery(qb.toString());
 		model.reload();
@@ -289,6 +298,10 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 						lap_stand_cummulative[pos] = q_curr_time.value("currStanding").toInt() + 1;
 					}
 				}
+			}
+			if(is_relays) {
+				leg = model.value(0, "runs.leg").toInt();
+				relay_num = model.value(0, "relays.number").toInt();
 			}
 		}
 		if(checked_card.isOk()) {
@@ -423,6 +436,10 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 		tt.setValue("timeMs", checked_card.timeMs());
 		tt.setValue("bestTime", best_time);
 		tt.setValue("isCardLent", is_card_lent);
+
+		tt.setValue("isRelay", is_relays);
+		tt.setValue("leg", leg);
+		tt.setValue("relayNumber", relay_num);
 
 		qfDebug() << "card:\n" << tt.toString();
 		ret["card"] = tt.toVariant();

@@ -34,6 +34,13 @@ Report {
 	height: 297
 	hinset: 0
 	vinset: 5
+	Para {
+		omitEmptyText: true
+		textFn: function() {
+			relayInfoFrame.visible = bandCard.data("isRelay");
+			return ""
+		}
+	}
 	Frame {
 		width: "%"
 		border: Pen { basedOn: "blue05" }
@@ -136,12 +143,43 @@ Report {
 			objectName: "band_card"
 			modelData: "card"
 			width: "%"
-			vinset: 1
 			Frame {
 				width: "%"
 				hinset: 2
+				vinset: 1
 				bottomBorder: Pen { basedOn: "black1" }
 				htmlExportAttributes: {"lpt_borderBottom": "=", "lpt_textWidth": "%"}
+				Frame {
+					id: relayInfoFrame
+					width: "%"
+					layout: Frame.LayoutHorizontal
+					Para {
+						width: 12
+						htmlExportAttributes: {"lpt_textWidth": "7", "lpt_textAlign": "left"}
+						text: "Relay:"
+					}
+					Para {
+						htmlExportAttributes: {"lpt_textWidth": "9", "lpt_textAlign": "right"}
+						width: 14
+						textHAlign: Frame.AlignLeft
+						textFn: function() { return bandCard.data("relayNumber"); }
+					}
+					Para {
+						htmlExportAttributes: {"lpt_textWidth": "%"}
+						width: "%"
+					}
+					Cell {
+						width: 12
+						htmlExportAttributes: {"lpt_textWidth": "7", "lpt_textAlign": "left"}
+						text: "Leg:"
+					}
+					Para {
+						htmlExportAttributes: {"lpt_textWidth": "9", "lpt_textAlign": "right"}
+						width:14
+						textHAlign: Frame.AlignLeft
+						textFn: function() { return bandCard.data("leg"); }
+					}
+				}
 				Frame {
 					width: "%"
 					layout: Frame.LayoutHorizontal
@@ -178,7 +216,6 @@ Report {
 					}
 				}
 				Frame {
-					vinset: 1
 					htmlExportAttributes: {"lpt_textStyle": "underline2"}
 					width: "%"
 					layout: Frame.LayoutHorizontal
