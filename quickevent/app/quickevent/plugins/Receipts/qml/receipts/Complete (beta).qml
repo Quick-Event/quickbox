@@ -113,7 +113,6 @@ Report {
 						}
 					}
 					Frame {
-						htmlExportAttributes: {"lpt_textStyle": "underline2"}
 						width: "%"
 						layout: Frame.LayoutHorizontal
 						Para {
@@ -216,7 +215,6 @@ Report {
 					}
 				}
 				Frame {
-					htmlExportAttributes: {"lpt_textStyle": "underline2"}
 					width: "%"
 					layout: Frame.LayoutHorizontal
 					Para {
@@ -266,7 +264,6 @@ Report {
 					return brushNone;
 				}
 				topBorder: (dc.currentIndex < (dc.rowCount - 1))? null: myStyle.penBlack1
-				htmlExportAttributes: (dc.currentIndex < (dc.rowCount - 2))? ({}): {"lpt_textStyle": "underline2"};
 
 				Frame {
 					// fake para, just to run code and set visibility of cardLentFrame
