@@ -209,14 +209,13 @@ void CardReaderWidget::onCustomContextMenuRequest(const QPoint & pos)
 	QAction a_show_card(tr("Show card data"), nullptr);
 	QAction a_print_card(tr("Print card data"), nullptr);
 	QAction a_sep2(nullptr); a_sep2.setSeparator(true);
-	QAction a_assign_runner(tr("Assign card to runner"), nullptr);
 	QAction a_recalculate_times(tr("Recalculate times in selected rows"), nullptr);
 	QList<QAction*> lst;
 	lst << &a_show_receipt << &a_print_receipt
 		<< &a_sep1
 		<< &a_show_card << &a_print_card
 		<< &a_sep2
-		<< &a_assign_runner << &a_recalculate_times;
+		<< m_actAssignCard << &a_recalculate_times;
 	QAction *a = QMenu::exec(lst, ui->tblCards->viewport()->mapToGlobal(pos));
 	if(a == &a_show_receipt) {
 		showSelectedReceipt();
@@ -231,9 +230,6 @@ void CardReaderWidget::onCustomContextMenuRequest(const QPoint & pos)
 	else if(a == &a_print_card) {
 		int card_id = ui->tblCards->tableRow().value("cards.id").toInt();
 		getPlugin<ReceiptsPlugin>()->printCard(card_id);
-	}
-	else if(a == &a_assign_runner) {
-		assignRunnerToSelectedCard();
 	}
 	else if(a == &a_recalculate_times) {
 		qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
@@ -455,6 +451,13 @@ void CardReaderWidget::createActions()
 		m_actSqlConnect = a;
 	}
 	*/
+	{
+		qf::qmlwidgets::Action *a = new qf::qmlwidgets::Action(tr("Assign card to runner\tCtrl + Enter"), this);
+		a->setShortcut(Qt::CTRL + Qt::Key_Return); // Qt::Key_Return is the main enter key, Qt::Key_Enter is on the numeric keyboard
+		addAction(a);
+		connect(a, &QAction::triggered, this, &CardReaderWidget::assignRunnerToSelectedCard);
+		m_actAssignCard = a;
+	}
 }
 
 void CardReaderWidget::openSettings()
@@ -749,7 +752,7 @@ void CardReaderWidget::assignRunnerToSelectedCard()
 	int card_id = ui->tblCards->tableRow().value("cards.id").toInt();
 	QF_ASSERT(card_id > 0, "Bad card id!", return);
 	auto *w = new Runs::FindRunnerWidget(getPlugin<EventPlugin>()->currentStageId());
-	w->setWindowTitle(tr("Find runner"));
+	w->setWindowTitle(tr("Assign card to runner"));
 	qfd::Dialog dlg(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this);
 	dlg.setPersistentSettingsId("dlgAssignRunnerToSelectedCard");
 	//dlg.setDefaultButton(QDialogButtonBox::Ok);

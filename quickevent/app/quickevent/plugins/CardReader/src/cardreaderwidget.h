@@ -115,6 +115,7 @@ private:
 	QLabel *m_lblCommInfo = nullptr;
 	qf::qmlwidgets::Action *m_actCommOpen = nullptr;
 	qf::qmlwidgets::Action *m_actSettings = nullptr;
+	qf::qmlwidgets::Action *m_actAssignCard = nullptr;
 	qf::core::model::SqlTableModel *m_cardsModel = nullptr;
 	QComboBox *m_cbxCardCheckers = nullptr;
 	QComboBox *m_cbxPunchMode = nullptr;
