@@ -108,7 +108,7 @@ Report {
 							textHAlign: Frame.AlignRight
 							text: {
 								var t = detailCompetitor.data(detailCompetitor.currentIndex, "competitors.registration");
-								return (t)? t: "NO_REG";
+								return (t)? t: qsTr("NO_REG");
 							}
 						}
 					}
@@ -155,7 +155,7 @@ Report {
 					Para {
 						width: 12
 						htmlExportAttributes: {"lpt_textWidth": "7", "lpt_textAlign": "left"}
-						text: "Relay:"
+						text: qsTr("Relay:")
 					}
 					Para {
 						htmlExportAttributes: {"lpt_textWidth": "9", "lpt_textAlign": "right"}
@@ -170,7 +170,7 @@ Report {
 					Cell {
 						width: 12
 						htmlExportAttributes: {"lpt_textWidth": "7", "lpt_textAlign": "left"}
-						text: "Leg:"
+						text: qsTr("Leg:")
 					}
 					Para {
 						htmlExportAttributes: {"lpt_textWidth": "9", "lpt_textAlign": "right"}
@@ -186,7 +186,7 @@ Report {
 						id: paraCheck
 						width: 12
 						htmlExportAttributes: {"lpt_textWidth": "7", "lpt_textAlign": "left"}
-						text: "Check:"
+						text: qsTr("Check:")
 					}
 					Para {
 						htmlExportAttributes: {"lpt_textWidth": "9", "lpt_textAlign": "right"}
@@ -205,7 +205,7 @@ Report {
 					Cell {
 						width: paraCheck.width
 						htmlExportAttributes: {"lpt_textWidth": "7", "lpt_textAlign": "left"}
-						text: "SI:"
+						text: qsTr("SI:")
 					}
 					Para {
 						htmlExportAttributes: {"lpt_textWidth": "9", "lpt_textAlign": "right"}
@@ -220,7 +220,7 @@ Report {
 					Para {
 						htmlExportAttributes: {"lpt_textWidth": "7", "lpt_textAlign": "left"}
 						width: paraCheck.width
-						text: "Start:"
+						text: qsTr("Start:")
 					}
 					Para {
 						htmlExportAttributes: {"lpt_textWidth": "9", "lpt_textAlign": "right"}
@@ -238,7 +238,7 @@ Report {
 					Cell {
 						width: paraCheck.width
 						htmlExportAttributes: {"lpt_textWidth": "7", "lpt_textAlign": "left"}
-						text: "Finish:"
+						text: qsTr("Finish:")
 					}
 					Para {
 						htmlExportAttributes: {"lpt_textWidth": "9", "lpt_textAlign": "right"}
