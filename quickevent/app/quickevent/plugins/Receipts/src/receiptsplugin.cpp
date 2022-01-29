@@ -217,11 +217,11 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 		model.setQuery(qb.toString());
 		model.reload();
 		if(model.rowCount() == 1) {
-			qf::core::sql::Query run;
-			run.execThrow("SELECT runlaps.position, runlaps.code, runlaps.lapTimeMs FROM runlaps WHERE runId = " QF_IARG(run_id) " ORDER BY position");
-			while(run.next()) {
-				int pos = run.value("position").toInt();
-				int lapTimeMs = run.value("lapTimeMs").toInt();
+			qf::core::sql::Query run_laps;
+			run_laps.execThrow("SELECT runlaps.position, runlaps.code, runlaps.lapTimeMs FROM runlaps WHERE runId = " QF_IARG(run_id) " ORDER BY position");
+			while(run_laps.next()) {
+				int pos = run_laps.value("position").toInt();
+				int lapTimeMs = run_laps.value("lapTimeMs").toInt();
 				{
 					// best lap times and position/place/standing in lap
 					qf::core::sql::QueryBuilder qb_laps;
