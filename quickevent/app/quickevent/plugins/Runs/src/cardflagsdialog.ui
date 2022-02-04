@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Card flags dialog</string>
+   <string>Card flags</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
