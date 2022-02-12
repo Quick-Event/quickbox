@@ -927,6 +927,7 @@ void RunsWidget::on_btDrawRemove_clicked()
 void RunsWidget::onCbxStageCurrentIndexChanged()
 {
 	getPlugin<RunsPlugin>()->setSelectedStageId(m_cbxStage->currentData().toInt());
+	reload();
 	qfInfo() << "selected stage:" << selectedStageId();
 }
 
