@@ -77,6 +77,7 @@ void TxtImporter::importCompetitorsCSOS()
 			QString note = line.mid(59).trimmed();
 			csv_rows << (QVariantList() << reg << class_name << si << last_name << QString() << lic << note);
 		}
+		qfLogScope("importCompetitorsCSOS");
 		qf::core::sql::Transaction transaction;
 		importParsedCsv(csv_rows);
 		transaction.commit();
@@ -134,6 +135,7 @@ void TxtImporter::importCompetitorsCSV()
 			QString note = sl.value(ColNote).trimmed();
 			csv_rows << (QVariantList() << reg << class_name << si << last_name << first_name << lic << note);
 		}
+		qfLogScope("importCompetitorsCSV");
 		qf::core::sql::Transaction transaction;
 		importParsedCsv(csv_rows);
 		transaction.commit();
@@ -161,6 +163,7 @@ void TxtImporter::importRankingCsv()
 		//reader.setLineComment('#');
 		enum {ColPos = 0, ColLastName, ColFirstName, ColRegistration, ColPoints, ColCoef};
 
+		qfLogScope("importRankingCsv");
 		qf::core::sql::Transaction transaction;
 		qf::core::sql::Query q;
 		q.prepare("UPDATE competitors SET ranking=:ranking WHERE registration=:registration", qf::core::Exception::Throw);

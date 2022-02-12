@@ -22,15 +22,15 @@
 #include <qf/core/log.h>
 
 #include <QQmlExtensionPlugin>
-#include <qqml.h>
+#include <QQmlEngine>
 
 class QmlPlugin : public QQmlExtensionPlugin
 {
-    Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QQmlExtensionInterface")
+	Q_OBJECT
+	Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QQmlExtensionInterface")
 public:
-    void registerTypes(const char *uri)
-    {
+	void registerTypes(const char *uri)
+	{
 		qfLogFuncFrame() << uri;
 		Q_ASSERT(uri == QLatin1String("qf.core"));
 
@@ -54,7 +54,7 @@ public:
 
 		qmlRegisterType<qf::core::network::NetworkAccessManager>(uri, 1, 0, "NetworkAccessManager");
 		qmlRegisterType<qf::core::network::NetworkReply>(uri, 1, 0, "NetworkReply");
-    }
+	}
 };
 
 #include "plugin.moc"

@@ -808,6 +808,7 @@ bool EventPlugin::createEvent(const QString &event_name, const QVariantMap &even
 		qfInfo().nospace() << create_script.join(";\n") << ';';
 		qfs::Query q(conn);
 		do {
+			qfLogScope("createEvent");
 			qfs::Transaction transaction(conn);
 			ok = run_sql_script(q, create_script);
 			if(!ok)
@@ -1105,6 +1106,7 @@ void EventPlugin::exportEvent_qbe()
 			qfd::MessageBox::showError(fwk, tr("Open Database Error: %1").arg(ex_conn.errorString()));
 			return;
 		}
+		//qfLogScope("exportEvent_qbe");
 		qfs::Transaction transaction(ex_conn);
 
 		DbSchema *db_schema = dbSchema();

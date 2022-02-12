@@ -152,7 +152,7 @@ void OrisImporter::syncRelaysEntries(int oris_id)
 	getTextAndProcess(url, this, [](const QByteArray &data) {
 		qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 		try {
-			//qfInfo() << data;
+			qfLogScope("syncRelaysEntries");
 			qf::core::sql::Transaction transaction;
 			qf::core::sql::Query q;
 
@@ -353,6 +353,7 @@ void OrisImporter::importEvent(int event_id)
 				return;
 
 			//QString event_name = getPlugin<EventPlugin>()->eventName();
+			qfLogScope("importEvent");
 			qf::core::sql::Transaction transaction;
 
 			int items_processed = 0;
@@ -683,6 +684,7 @@ void OrisImporter::importEventOrisEntries(int event_id)
 			dlg.setCentralWidget(w);
 			w->setHtmlText(html);
 			if(dlg.exec()) {
+				qfLogScope("syncRelaysEntries");
 				qf::core::sql::Transaction transaction;
 				//QMap<int, int> cid_sid_changes; // competitorId->siId
 				const auto SIID = QStringLiteral("siId");
@@ -746,6 +748,7 @@ void OrisImporter::importRegistrations()
 		}
 		fwk->showProgress(tr("Importing registrations"), 1, items_count);
 		try {
+			qfLogScope("importRegistrations");
 			qf::core::sql::Transaction transaction;
 			qf::core::sql::Query q;
 			q.exec("DELETE FROM registrations", qf::core::Exception::Throw);
@@ -803,6 +806,7 @@ void OrisImporter::importClubs()
 		}
 		fwk->showProgress(tr("Importing clubs"), 1, items_count);
 		try {
+			qfLogScope("importClubs");
 			qf::core::sql::Transaction transaction;
 			qf::core::sql::Query q;
 			q.exec("DELETE FROM clubs WHERE importId IS NOT NULL", qf::core::Exception::Throw);
