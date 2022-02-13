@@ -131,10 +131,10 @@ void OrisImporter::syncCurrentEventEntries()
 		qf::qmlwidgets::dialogs::MessageBox::showError(fwk, tr("Cannot find Oris import ID."));
 		return;
 	}
-	importEventOrisEntries(oris_id);
+	syncEventEntries(oris_id);
 }
 
-void OrisImporter::syncRelaysEntries(int oris_id)
+void OrisImporter::syncRelaysEntries(int event_id)
 {
 	/*
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
@@ -148,8 +148,8 @@ void OrisImporter::syncRelaysEntries(int oris_id)
 		return;
 	}
 	*/
-	QUrl url(QString("https://oris.orientacnisporty.cz/ExportPrihlasek?id=%1").arg(oris_id));
-	getTextAndProcess(url, this, [](const QByteArray &data) {
+	QUrl url(QString("https://oris.orientacnisporty.cz/ExportPrihlasek?id=%1").arg(event_id));
+	getTextAndProcess(url, this, [=](const QByteArray &data) {
 		qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 		try {
 			qfLogScope("syncRelaysEntries");
@@ -296,6 +296,7 @@ void OrisImporter::syncRelaysEntries(int oris_id)
 			q.execThrow("DELETE FROM relays WHERE importId=1");
 			transaction.commit();
 			qf::qmlwidgets::dialogs::MessageBox::showInfo(fwk, tr("Import finished successfully."));
+			emit syncEventEntriesSuccess();
 		}
 		catch (qf::core::Exception &e) {
 			qf::qmlwidgets::dialogs::MessageBox::showException(fwk, e);
@@ -311,8 +312,11 @@ void OrisImporter::chooseAndImport()
 	if(!dlg.exec())
 		return;
 	int event_id = dlg.eventId();
-	if(event_id > 0)
+	if(event_id > 0) {
+		connect(this, &OrisImporter::syncEventEntriesSuccess, this, &OrisImporter::importRegistrations);
+		connect(this, &OrisImporter::importRegistrationsSuccess, this, &OrisImporter::importClubs);
 		importEvent(event_id);
+	}
 }
 
 static QString jsonObjectToFullName(const QJsonObject &data, const QString &field_name)
@@ -380,9 +384,7 @@ void OrisImporter::importEvent(int event_id)
 		catch (qf::core::Exception &e) {
 			qf::qmlwidgets::dialogs::MessageBox::showException(fwk, e);
 		}
-		importEventOrisEntries(event_id);
-		importRegistrations();
-		importClubs();
+		syncEventEntries(event_id);
 	});
 }
 
@@ -442,14 +444,14 @@ const char KEY_RUNS[] = "runs";
 const char KEY_ORIG_RUNS[] = "origRuns";
 }
 
-void OrisImporter::importEventOrisEntries(int event_id)
+void OrisImporter::syncEventEntries(int event_id)
 {
 	if(getPlugin<EventPlugin>()->eventConfig()->isRelays()) {
 		syncRelaysEntries(event_id);
 		return;
 	}
 	QUrl url(QString("https://oris.orientacnisporty.cz/API/?format=json&method=getEventEntries&eventid=%1").arg(event_id));
-	getJsonAndProcess(url, this, [](const QJsonDocument &jsd) {
+	getJsonAndProcess(url, this, [=](const QJsonDocument &jsd) {
 		static const QString json_fn = "EventEntries";
 		saveJsonBackup(json_fn, jsd);
 		qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
@@ -684,7 +686,7 @@ void OrisImporter::importEventOrisEntries(int event_id)
 			dlg.setCentralWidget(w);
 			w->setHtmlText(html);
 			if(dlg.exec()) {
-				qfLogScope("syncRelaysEntries");
+				qfLogScope("importEventEntries");
 				qf::core::sql::Transaction transaction;
 				//QMap<int, int> cid_sid_changes; // competitorId->siId
 				const auto SIID = QStringLiteral("siId");
@@ -719,6 +721,7 @@ void OrisImporter::importEventOrisEntries(int event_id)
 			qDeleteAll(doc_lst);
 			getPlugin<EventPlugin>()->emitReloadDataRequest();
 			getPlugin<EventPlugin>()->emitDbEvent(Event::EventPlugin::DBEVENT_COMPETITOR_COUNTS_CHANGED);
+			emit syncEventEntriesSuccess();
 		}
 		catch (qf::core::Exception &e) {
 			qf::qmlwidgets::dialogs::MessageBox::showException(fwk, e);
@@ -736,7 +739,7 @@ void OrisImporter::importRegistrations()
 	if (!ok) return;
 
 	QUrl url(QString("https://oris.orientacnisporty.cz/API/?format=json&method=getRegistration&sport=%1&year=%2").arg(sport_id).arg(year));
-	getJsonAndProcess(url, this, [](const QJsonDocument &jsd) {
+	getJsonAndProcess(url, this, [=](const QJsonDocument &jsd) {
 		saveJsonBackup("Registrations", jsd);
 		qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 		QJsonObject data = jsd.object().value(QStringLiteral("Data")).toObject();
@@ -784,6 +787,7 @@ void OrisImporter::importRegistrations()
 			transaction.commit();
 			fwk->hideProgress();
 			getPlugin<EventPlugin>()->emitDbEvent(EventPlugin::DBEVENT_REGISTRATIONS_IMPORTED, QVariant(), true);
+			emit importRegistrationsSuccess();
 		}
 		catch (qf::core::Exception &e) {
 			qf::qmlwidgets::dialogs::MessageBox::showException(fwk, e);
@@ -794,7 +798,7 @@ void OrisImporter::importRegistrations()
 void OrisImporter::importClubs()
 {
 	QUrl url("https://oris.orientacnisporty.cz/API/?format=json&method=getCSOSClubList");
-	getJsonAndProcess(url, this, [](const QJsonDocument &jsd) {
+	getJsonAndProcess(url, this, [=](const QJsonDocument &jsd) {
 		saveJsonBackup("Clubs", jsd);
 		qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 		QJsonObject data = jsd.object().value(QStringLiteral("Data")).toObject();
@@ -826,6 +830,7 @@ void OrisImporter::importClubs()
 			}
 			transaction.commit();
 			fwk->hideProgress();
+			emit importClubsSuccess();
 		}
 		catch (qf::core::Exception &e) {
 			qf::qmlwidgets::dialogs::MessageBox::showException(fwk, e);

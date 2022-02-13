@@ -16,17 +16,22 @@ class OrisImporter : public QObject
 public:
 	explicit OrisImporter(QObject *parent = nullptr);
 
-	Q_INVOKABLE void chooseAndImport();
-	Q_INVOKABLE void syncCurrentEventEntries();
-	Q_INVOKABLE void syncRelaysEntries(int oris_id);
+	void chooseAndImport();
 	void importEvent(int event_id);
-	void importEventOrisEntries(int event_id);
-	Q_INVOKABLE void importRegistrations();
-	Q_INVOKABLE void importClubs();
+	void syncCurrentEventEntries();
+	void importRegistrations();
+	void importClubs();
 
 	static void saveJsonBackup(const QString &fn, const QJsonDocument &jsd);
 	void getJsonAndProcess(const QUrl &url, QObject *context, std::function<void (const QJsonDocument &data)> process_call_back);
 	void getTextAndProcess(const QUrl &url, QObject *context, std::function<void (const QByteArray &)> process_call_back);
+protected:
+	Q_SIGNAL void syncEventEntriesSuccess();
+	Q_SIGNAL void importRegistrationsSuccess();
+	Q_SIGNAL void importClubsSuccess();
+
+	void syncEventEntries(int event_id);
+	void syncRelaysEntries(int event_id);
 private:
 	qf::core::network::NetworkAccessManager *networkAccessManager();
 private:
