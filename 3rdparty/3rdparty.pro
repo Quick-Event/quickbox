@@ -2,4 +2,4 @@ TEMPLATE = subdirs
 CONFIG += ordered
 
 SUBDIRS += \
-    necrolog/libnecrolog \
+	necrolog/libnecrolog/libnecrolog-quickbox.pro \
