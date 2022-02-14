@@ -17,21 +17,17 @@ public:
 	explicit OrisImporter(QObject *parent = nullptr);
 
 	void chooseAndImport();
-	void importEvent(int event_id);
-	void syncCurrentEventEntries();
-	void importRegistrations();
-	void importClubs();
+	void importEvent(int event_id, std::function<void()> success_callback = nullptr);
+	void syncCurrentEventEntries(std::function<void()> success_callback = nullptr);
+	void importRegistrations(std::function<void()> success_callback = nullptr);
+	void importClubs(std::function<void()> success_callback = nullptr);
 
 	static void saveJsonBackup(const QString &fn, const QJsonDocument &jsd);
 	void getJsonAndProcess(const QUrl &url, QObject *context, std::function<void (const QJsonDocument &data)> process_call_back);
 	void getTextAndProcess(const QUrl &url, QObject *context, std::function<void (const QByteArray &)> process_call_back);
 protected:
-	Q_SIGNAL void syncEventEntriesSuccess();
-	Q_SIGNAL void importRegistrationsSuccess();
-	Q_SIGNAL void importClubsSuccess();
-
-	void syncEventEntries(int event_id);
-	void syncRelaysEntries(int event_id);
+	void syncEventEntries(int event_id, std::function<void()> success_callback);
+	void syncRelaysEntries(int event_id, std::function<void()> success_callback);
 private:
 	qf::core::network::NetworkAccessManager *networkAccessManager();
 private:
