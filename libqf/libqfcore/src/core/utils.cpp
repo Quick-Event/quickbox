@@ -169,43 +169,7 @@ QString Utils::removeJsonComments(const QString &json_str)
 	// http://blog.ostermiller.org/find-comment
 	QString ret = json_str;
 	ret.replace(QRegularExpression("/\\*(?:.|[\\n])*?\\*/"), QString());
-	QStringList lines = ret.split('\n');
-	for (int i = 0; i < lines.count(); ++i) {
-		QString &line = lines[i];
-		int slash_index = 0;
-		while (true) {
-			slash_index = line.indexOf("//", slash_index + 1);
-			if (slash_index == -1) {
-				break;
-			}
-			int quotes_in_line_begin = 0;
-			for (int j = 0; j < slash_index; ++j) {
-				if (line[j] == '"') {
-					++quotes_in_line_begin;
-				}
-			}
-			int quotes_in_line_end = 0;
-			for (int j = slash_index + 1; j < line.length(); ++j) {
-				if (line[j] == '"') {
-					++quotes_in_line_end;
-				}
-			}
-			if (!(quotes_in_line_begin % 2 && quotes_in_line_end >= 1)) {
-				line.truncate(slash_index);
-				while (line.endsWith(' ') || line.endsWith('\t')) {
-					line.chop(1);
-				}
-				if (line.isEmpty()) {
-					lines.removeAt(i--);
-				}
-				break;
-			}
-			else {
-				// single line comment mark (//) is probably in string, keep it
-			}
-		}
-	}
-	ret = lines.join('\n');
+	ret.replace(QRegularExpression("(?<!:)//.*[\\n]"), "\n");
 	return ret;
 }
 
