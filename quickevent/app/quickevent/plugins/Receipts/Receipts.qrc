@@ -8,5 +8,6 @@
 		<file>qml/receipts/Classic.qml</file>
 		<file>qml/receipts/ClassicLottery.qml</file>
 		<file>qml/receipts/private/LotteryTicket.qml</file>
-    </qresource>
+		<file>qml/receipts/Default.qml</file>
+    	</qresource>
 </RCC>
