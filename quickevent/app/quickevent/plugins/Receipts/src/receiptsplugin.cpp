@@ -293,7 +293,10 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 							" AND NOT runs.misPunch")
 						.groupBy("runs.id");
 					qf::core::sql::Query q_curr_time;
-					q_curr_time.execThrow("SELECT COUNT(*) as currStanding FROM (" + qb_curr_times.toString() + ") WHERE currTime < " QF_IARG(run_curr_time));
+					q_curr_time.execThrow(
+								"SELECT COUNT(*) as currStanding"
+								" FROM (" + qb_curr_times.toString() + ") AS foo"
+								" WHERE currTime < " QF_IARG(run_curr_time));
 					if (q_curr_time.next()) {
 						lap_stand_cummulative[pos] = q_curr_time.value("currStanding").toInt() + 1;
 					}

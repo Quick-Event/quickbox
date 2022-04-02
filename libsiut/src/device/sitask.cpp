@@ -6,7 +6,7 @@
 #include <QDateTime>
 #include <QTimer>
 
-#define logCardRead qfInfo
+#define logCardRead() qfCInfo("CardRead")
 
 namespace siut {
 
