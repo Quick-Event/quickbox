@@ -170,6 +170,7 @@ void ReportOptionsDialog::showEvent(QShowEvent *event)
 
 int ReportOptionsDialog::exec()
 {
+	resize(size().width(),minimumSize().height());
 	//ui->grpClassFilter->setVisible(isClassFilterVisible());
 	return Super::exec();
 }
