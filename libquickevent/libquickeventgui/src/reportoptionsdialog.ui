@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Print Report Options</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="spacing">
@@ -142,7 +142,7 @@
      <property name="title">
       <string>Result options</string>
      </property>
-	 <layout class="QHBoxLayout" name="horizontalLayout_41">
+     <layout class="QHBoxLayout" name="horizontalLayout_41">
       <item>
        <widget class="QLabel" name="label_9">
         <property name="text">
