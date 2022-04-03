@@ -76,17 +76,17 @@ You can later connect to a PostgreSQL database and import the event stored as _*
 
 #### Debian
 ```sh
-sudo apt install libpq-dev
+sudo apt install postgresql
 ```
 #### RHEL/CentOS/Fedora
 ```sh
-sudo yum install libpq
+sudo yum install postgresql
 ```
 ### Create a Postgres database
 QuickEvent needs a database named _quickevent_. Open `psql` shell: `[PostgreSQL home]\bin\psql -U postgres`, enter superuser password and type:
 ```sql
-CREATE USER quickevent_admin_user_name PASSWORD 'good_password';
-CREATE DATABASE quickevent OWNER quickevent_admin_user_name;
+CREATE USER quickevent_admin PASSWORD 'good password';
+CREATE DATABASE quickevent OWNER quickevent_admin;
 ```
 
 #### Enable database access from network
