@@ -417,7 +417,6 @@ void EventPlugin::editStage()
 	if(stage_id < 0)
 		return;
 	Event::StageWidget *w = new Event::StageWidget();
-	w->setWindowTitle(tr("Edit Stage"));
 	auto fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 	qfd::Dialog dlg(QDialogButtonBox::Save | QDialogButtonBox::Cancel, fwk);
 	dlg.setDefaultButton(QDialogButtonBox::Save);
@@ -754,6 +753,7 @@ bool EventPlugin::createEvent(const QString &event_name, const QVariantMap &even
 		qfd::Dialog dlg(fwk);
 		dlg.setButtons(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
 		EventDialogWidget *event_w = new EventDialogWidget();
+		event_w->setWindowTitle("Create event");
 		event_w->setEventId(event_id);
 		event_w->loadParams(new_params);
 		dlg.setCentralWidget(event_w);
@@ -855,6 +855,7 @@ void EventPlugin::editEvent()
 	qfd::Dialog dlg(fwk);
 	dlg.setButtons(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
 	EventDialogWidget *event_w = new EventDialogWidget();
+	event_w->setWindowTitle("Edit event");
 	event_w->setEventId(eventName());
 	event_w->setEventIdEditable(false);
 	event_w->loadParams(eventConfig()->value("event").toMap());

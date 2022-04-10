@@ -12,7 +12,7 @@ StageWidget::StageWidget(QWidget *parent) :
 	ui->setupUi(this);
 
 	setTitle(tr("Stage"));
-
+	setWindowTitle(tr("Edit Stage"));
 	dataController()->setDocument(new StageDocument(this));
 }
 
