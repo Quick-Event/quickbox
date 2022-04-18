@@ -849,7 +849,7 @@ bool RunsPlugin::exportResultsIofXml30Stage(int stage_id, const QString &file_na
 		QVariantList codes = course_def.codes();
 		//codes << course_def.finishCode(); IOFXML does not require finish lap time, can be coputed from finish time
 		int stpTime_0_ix = tt2.columnIndex(QStringLiteral("stpTime_0"));
-
+		int first_time = 0;
 		for(int j=0; j<tt2.rowCount(); j++) {
 			const qf::core::utils::TreeTableRow tt2_row = tt2.row(j);
 			//pos++;
@@ -864,13 +864,26 @@ bool RunsPlugin::exportResultsIofXml30Stage(int stage_id, const QString &file_na
 				 }
 			);
 
-			person_result.insert(person_result.count(),
-				QVariantList{"Organisation",
-					QVariantList{"ShortName",
-						tt2_row.value(QStringLiteral("clubs.abbr"))
+			auto club_abbr = tt2_row.value(QStringLiteral("clubs.abbr")).toString();
+			if (!club_abbr.isEmpty())
+			{
+				person_result.insert(person_result.count(),
+					QVariantList{"Organisation",
+						QVariantList{"ShortName", club_abbr},
+						QVariantList{"Name", tt2_row.value(QStringLiteral("clubs.name"))}
 					}
-				}
-			);
+				);
+			}
+			else
+			{
+				person_result.insert(person_result.count(),
+					QVariantList{"Organisation",
+						QVariantList{"ShortName",
+							tt2_row.value(QStringLiteral("competitors.registration")).toString().left(3)
+						}
+					}
+				);
+			}
 
 			QVariantList result{"Result"};
 			//int run_id = tt2_row.value(QStringLiteral("runs.id")).toInt();
@@ -883,6 +896,10 @@ bool RunsPlugin::exportResultsIofXml30Stage(int stage_id, const QString &file_na
 			result.insert(result.count(), QVariantList{"StartTime", datetime_to_string(stage_start_date_time.addMSecs(stime))});
 			result.insert(result.count(), QVariantList{"FinishTime", datetime_to_string(stage_start_date_time.addMSecs(ftime))});
 			result.insert(result.count(), QVariantList{"Time", time / 1000});
+			if (j == 0) // fill firstTime with time of first runner
+				first_time = time;
+			int time_behind = time - first_time;
+			result.insert(result.count(), QVariantList{"TimeBehind", time_behind / 1000});
 
 			static auto STAT_OK = QStringLiteral("OK");
 			QString competitor_status = STAT_OK;
@@ -917,6 +934,7 @@ bool RunsPlugin::exportResultsIofXml30Stage(int stage_id, const QString &file_na
 				result.insert(result.count(), split_time);
 				ix += 4;
 			}
+			result.insert(result.count(), QVariantList{"ControlCard", tt2_row.value(QStringLiteral("runs.siId"))});
 			person_result.insert(person_result.count(), result);
 			class_result.insert(class_result.count(), person_result);
 		}
@@ -2295,11 +2313,22 @@ bool RunsPlugin::exportStartListStageIofXml30(int stage_id, const QString &file_
 			append_list(xml_start, QVariantList{"ControlCard", tt2_row.value(QStringLiteral("runs.siId"))});
 			append_list(xml_person, person);
 			append_list(xml_person, xml_start);
-			append_list(xml_person, QVariantList{"Organisation",
-										QVariantList{"ShortName", tt2_row.value(QStringLiteral("clubs.abbr"))
-						}
-					}
+			auto club_abbr = tt2_row.value(QStringLiteral("clubs.abbr")).toString();
+			if (!club_abbr.isEmpty())
+			{
+				append_list(xml_person, QVariantList{"Organisation",
+											QVariantList{"ShortName", club_abbr},
+											QVariantList{"Name", tt2_row.value(QStringLiteral("clubs.name"))}
+										}
 				);
+			}
+			else
+			{
+				append_list(xml_person, QVariantList{"Organisation",
+											QVariantList{"ShortName", tt2_row.value(QStringLiteral("competitors.registration")).toString().left(3)}
+										}
+				);
+			}
 			append_list(class_start, xml_person);
 		}
 		append_list(xml_root, class_start);
