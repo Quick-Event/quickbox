@@ -2278,6 +2278,7 @@ void TableView::commitData(QWidget *editor)
 void TableView::filterByString(const QString &s)
 {
 	m_proxyModel->setRowFilterString(s);
+	refreshActions();
 }
 
 QString TableView::filterString() const
