@@ -1644,7 +1644,7 @@ void TableView::createActions()
 		a = new Action(tr("Paste"), this);
 		a->setIcon(style->icon("paste"));
 		a->setShortcut(QKeySequence(tr("Ctrl+V", "Paste rows")));
-		//a->setShortcutContext(Qt::WidgetShortcut);
+		a->setShortcutContext(Qt::WidgetShortcut);
 		a->setOid("paste");
 		m_actionGroups[PasteActions] << a->oid();
 		m_actions[a->oid()] = a;
