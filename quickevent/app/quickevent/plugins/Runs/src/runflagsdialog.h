@@ -21,6 +21,8 @@ public:
 	void load(RunsTableModel *model, int row);
 	void save();
 private:
+	void updateState();
+private:
 	Ui::RunFlagsDialog *ui;
 	RunsTableModel *m_model;
 	int m_row;

@@ -236,6 +236,11 @@ Schema {
 					defaultValue: false;
 					notNull: true
 				},
+				Field { name: 'disqualifiedByOrganizer'; type: Boolean { } // NotCompeting
+					defaultValue: false;
+					notNull: true
+					comment: "Competitor is disqualified by organizer for breaking rules, etc."
+				},
 				Field { name: 'notCompeting'; type: Boolean { } // NotCompeting
 					defaultValue: false;
 					notNull: true

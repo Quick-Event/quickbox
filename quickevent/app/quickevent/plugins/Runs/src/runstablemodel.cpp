@@ -68,6 +68,7 @@ QVariant RunsTableModel::value(int row_ix, int column_ix) const
 	if(column_ix == col_runFlags) {
 		qf::core::utils::TableRow row = tableRow(row_ix);
 		bool is_disqualified = row.value(QStringLiteral("runs.disqualified")).toBool();
+		bool is_disqualified_by_organizer = row.value(QStringLiteral("runs.disqualifiedByOrganizer")).toBool();
 		bool mis_punch = row.value(QStringLiteral("runs.misPunch")).toBool();
 		bool bad_check = row.value(QStringLiteral("runs.badCheck")).toBool();
 		bool not_start = row.value(QStringLiteral("runs.notStart")).toBool();
@@ -76,6 +77,8 @@ QVariant RunsTableModel::value(int row_ix, int column_ix) const
 		QStringList sl;
 		if(is_disqualified)
 			sl << tr("DIS", "Disqualified");
+		if(is_disqualified_by_organizer)
+			sl << tr("DO", "disqualifiedByOrganizer");
 		if(mis_punch)
 			sl << tr("MP", "MisPunch");
 		if(bad_check)
