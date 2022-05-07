@@ -427,15 +427,17 @@ QList< QList<int> > RunsWidget::runnersByClubSortedByCount(int stage_id, int cla
 QList<int> RunsWidget::runsForClass(int stage_id, int class_id, const QString &extra_where_condition, const QString &order_by)
 {
 	qfLogFuncFrame();
-	QList<int> ret = competitorsForClass(stage_id, class_id, extra_where_condition, order_by).values();
+	QList<int> ret;
+	for(const CompetitorForClass &cc : competitorsForClass(stage_id, class_id, extra_where_condition, order_by))
+		ret << cc.runId;
 	return ret;
 }
 
-QMap<int, int> RunsWidget::competitorsForClass(int stage_id, int class_id, const QString &extra_where_condition, const QString &order_by)
+QList<RunsWidget::CompetitorForClass> RunsWidget::competitorsForClass(int stage_id, int class_id, const QString &extra_where_condition, const QString &order_by)
 {
 	qfLogFuncFrame() << "stage:" << stage_id << "class:" << class_id;
 	bool is_relays = getPlugin<EventPlugin>()->eventConfig()->isRelays();
-	QMap<int, int> ret;
+	QList<RunsWidget::CompetitorForClass> ret;
 	qf::core::sql::QueryBuilder qb;
 	qb.select2("runs", "id, competitorId")
 			.from("competitors")
@@ -453,7 +455,7 @@ QMap<int, int> RunsWidget::competitorsForClass(int stage_id, int class_id, const
 	qfs::Query q;
 	q.exec(qb.toString(), qf::core::Exception::Throw);
 	while(q.next()) {
-		ret[q.value("competitorId").toInt()] = q.value("id").toInt();
+		ret << CompetitorForClass{ .competitorId = q.value("competitorId").toInt(), .runId = q.value("id").toInt() };
 	}
 	return ret;
 }
@@ -702,7 +704,9 @@ void RunsWidget::on_btDraw_clicked()
 			else if(draw_method == DrawMethod::Handicap) {
 				int stage_count = getPlugin<EventPlugin>()->eventConfig()->stageCount();
 				qf::core::utils::Table results = getPlugin<RunsPlugin>()->nstagesClassResultsTable(stage_count - 1, class_id);
-				QMap<int, int> competitor_to_run = competitorsForClass(stage_count, class_id);
+				QMap<int, int> competitor_to_run;
+				for(const auto &cc : competitorsForClass(stage_count, class_id))
+					competitor_to_run[cc.competitorId] = cc.runId;
 				//int n = 0;
 				for (int i = 0; i < results.rowCount(); ++i) {
 					qf::core::utils::TableRow r = results.row(i);
@@ -719,7 +723,9 @@ void RunsWidget::on_btDraw_clicked()
 				runners_draw_ids << competitor_to_run.values();
 			}
 			else if(draw_method == DrawMethod::StageReverseOrder) {
-				QMap<int, int> competitor_to_run = competitorsForClass(stage_id, class_id);
+				QMap<int, int> competitor_to_run;
+				for(const auto &cc : competitorsForClass(stage_id, class_id))
+					competitor_to_run[cc.competitorId] = cc.runId;
 				qf::core::sql::QueryBuilder qb1;
 				qb1.select2("runs", "competitorId")
 						//.select2("competitors", "lastName")

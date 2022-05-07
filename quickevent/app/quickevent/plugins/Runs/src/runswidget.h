@@ -67,7 +67,8 @@ private:
 	 */
 	QList< QList<int> > runnersByClubSortedByCount(int stage_id, int class_id, QMap<int, QString> &runner_id_to_club);
 	QList<int> runsForClass(int stage_id, int class_id, const QString &extra_where_condition = QString(), const QString &order_by = QString()); // QList<run_id>
-	QMap<int, int> competitorsForClass(int stage_id, int class_id, const QString &extra_where_condition = QString(), const QString &order_by = QString()); //competitor_id -> run_id
+	struct CompetitorForClass {int competitorId; int runId; };
+	QList<CompetitorForClass> competitorsForClass(int stage_id, int class_id, const QString &extra_where_condition = QString(), const QString &order_by = QString()); //competitor_id -> run_id
 
 	bool isLockedForDrawing(int class_id, int stage_id);
 	void saveLockedForDrawing(int class_id, int stage_id, bool is_locked, int start_last_min);
