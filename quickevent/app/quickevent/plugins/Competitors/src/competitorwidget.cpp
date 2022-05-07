@@ -36,25 +36,14 @@ using Event::EventPlugin;
 using Runs::RunsPlugin;
 
 namespace {
-/*
-class BadDataInputException : public std::runtime_error
-{
-public:
-	BadDataInputException(const QString &message) : std::runtime_error(""), m_message(message) {}
-	~BadDataInputException() Q_DECL_OVERRIDE {}
 
-	const QString& message() const {return m_message;}
-private:
-	QString m_message;
-};
-*/
-class RunsModel : public quickevent::core::og::SqlTableModel
+class CompetitorRunsModel : public quickevent::core::og::SqlTableModel
 {
 	Q_DECLARE_TR_FUNCTIONS(RunsModel)
 private:
 	using Super = quickevent::core::og::SqlTableModel;
 public:
-	RunsModel(QObject *parent = nullptr);
+	CompetitorRunsModel(QObject *parent = nullptr);
 
 	enum Columns {
 		col_runs_isRunning = 0,
@@ -73,12 +62,9 @@ public:
 		col_runs_cardReturned,
 		col_COUNT
 	};
-
-	QVariant value(int row_ix, int column_ix) const Q_DECL_OVERRIDE;
-	bool setValue(int row_ix, int column_ix, const QVariant &val) Q_DECL_OVERRIDE;
 };
 
-RunsModel::RunsModel(QObject *parent)
+CompetitorRunsModel::CompetitorRunsModel(QObject *parent)
 	: Super(parent)
 {
 	clearColumns(col_COUNT);
@@ -96,24 +82,6 @@ RunsModel::RunsModel(QObject *parent)
 	setColumn(col_runs_cardRentRequested, ColumnDefinition("runs.cardLent", tr("RR", "runs.cardLent")).setToolTip(tr("Card rent requested")));
 	setColumn(col_cardInLentTable, ColumnDefinition("cardInLentTable", tr("RT", "cardInLentTable")).setToolTip(tr("Card in rent table")));
 	setColumn(col_runs_cardReturned, ColumnDefinition("runs.cardReturned", tr("R", "runs.cardReturned")).setToolTip(tr("Card returned")));
-}
-
-QVariant RunsModel::value(int row_ix, int column_ix) const
-{
-	if(column_ix == col_runs_isRunning) {
-		bool is_running = Super::value(row_ix, column_ix).toBool();
-		return is_running;
-	}
-	return Super::value(row_ix, column_ix);
-}
-
-bool RunsModel::setValue(int row_ix, int column_ix, const QVariant &val)
-{
-	if(column_ix == col_runs_isRunning) {
-		bool is_running = val.toBool();
-		return Super::setValue(row_ix, column_ix, is_running? is_running: QVariant());
-	}
-	return Super::setValue(row_ix, column_ix, val);
 }
 
 }
@@ -147,15 +115,15 @@ CompetitorWidget::CompetitorWidget(QWidget *parent) :
 	connect(ui->edFind, &FindRegistrationEdit::registrationSelected, this, &CompetitorWidget::onRegistrationSelected);
 
 	dataController()->setDocument(new Competitors::CompetitorDocument(this));
-	m_runsModel = new RunsModel(this);
+	m_runsModel = new CompetitorRunsModel(this);
 	ui->tblRuns->setTableModel(m_runsModel);
 	ui->tblRuns->setPersistentSettingsId(ui->tblRuns->objectName());
 	ui->tblRuns->setInlineEditSaveStrategy(qf::qmlwidgets::TableView::OnManualSubmit);
 	ui->tblRuns->setItemDelegate(new quickevent::gui::og::ItemDelegate(ui->tblRuns));
 
-	ui->tblRuns->horizontalHeader()->setSectionHidden(RunsModel::col_relays_name, !is_relays);
-	ui->tblRuns->horizontalHeader()->setSectionHidden(RunsModel::col_runs_leg, !is_relays);
-	ui->tblRuns->horizontalHeader()->setSectionHidden(RunsModel::col_classes_name, !is_relays);
+	ui->tblRuns->horizontalHeader()->setSectionHidden(CompetitorRunsModel::col_relays_name, !is_relays);
+	ui->tblRuns->horizontalHeader()->setSectionHidden(CompetitorRunsModel::col_runs_leg, !is_relays);
+	ui->tblRuns->horizontalHeader()->setSectionHidden(CompetitorRunsModel::col_classes_name, !is_relays);
 	//ui->tblRuns->setContextMenuPolicy(Qt::CustomContextMenu);
 	//connect(ui->tblRuns, &qfw::TableView::customContextMenuRequested, this, &CompetitorWidget::onRunsTableCustomContextMenuRequest);
 
@@ -175,7 +143,7 @@ CompetitorWidget::CompetitorWidget(QWidget *parent) :
 	connect(ui->edSiId, qOverload<int>(&QSpinBox::valueChanged),[=](int new_si_number) // widget SIcard edit box
 	{
 		if(getPlugin<EventPlugin>()->stageCount() == 1 && m_runsModel->rowCount() == 1 ) {
-			m_runsModel->setValue(0, RunsModel::col_runs_siId, new_si_number); // update SI in runs model
+			m_runsModel->setValue(0, CompetitorRunsModel::col_runs_siId, new_si_number); // update SI in runs model
 			ui->tblRuns->reset(); // reload ui to see the change
 		}
 	});
