@@ -474,6 +474,7 @@ siut::DeviceDriver *CardReaderWidget::siDriver()
 		f_siDriver = new siut::DeviceDriver(this);
 		connect(commPort(), &siut::CommPort::readyRead, this, [this]() {
 			QByteArray ba = commPort()->readAll();
+			logDriverRawData(ba);
 			siDriver()->processData(ba);
 		});
 		connect(f_siDriver, &siut::DeviceDriver::dataToSend, commPort(), &siut::CommPort::sendData);
@@ -620,7 +621,7 @@ void CardReaderWidget::processSIMessage(const SIMessageData& msg_data)
 }
 */
 
-void CardReaderWidget::processDriverInfo (NecroLog::Level level, const QString& msg )
+void CardReaderWidget::processDriverInfo(NecroLog::Level level, const QString& msg)
 {
 	qf::core::utils::Settings settings;
 	if(settings.value(CardReader::CardReaderPlugin::SETTINGS_PREFIX + "/comm/debug/showRawComData").toBool()) {
@@ -630,7 +631,7 @@ void CardReaderWidget::processDriverInfo (NecroLog::Level level, const QString& 
 	appendLog(level, tr("DriverInfo: <%1> %2").arg(NecroLog::levelToString((NecroLog::Level)level)).arg(msg));
 }
 
-void CardReaderWidget::processDriverRawData(const QByteArray& data)
+void CardReaderWidget::logDriverRawData(const QByteArray& data)
 {
 	qf::core::utils::Settings settings;
 	//qInfo() << settings.value(CardReader::CardReaderPlugin::SETTINGS_PREFIX + "/comm/debug/showRawComData") << "data:" << data;
@@ -642,6 +643,10 @@ void CardReaderWidget::processDriverRawData(const QByteArray& data)
 
 void CardReaderWidget::processSICard(const siut::SICard &card)
 {
+	if(card.cardNumber() == 0) {
+		qfWarning() << "SIID == 0 was read!";
+		return;
+	}
 	appendLog(NecroLog::Level::Debug, card.toString());
 	appendLog(NecroLog::Level::Info, tr("card: %1").arg(card.cardNumber()));
 

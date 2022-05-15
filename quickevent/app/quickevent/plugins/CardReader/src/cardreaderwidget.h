@@ -74,7 +74,7 @@ public:
 private slots:
 	void appendLog(NecroLog::Level level, const QString &msg);
 	void processDriverInfo(NecroLog::Level level, const QString &msg);
-	void processDriverRawData(const QByteArray &data);
+	void logDriverRawData(const QByteArray &data);
 	void onOpenCommTriggered(bool checked);
 
 	void onSiTaskFinished(int task_type, QVariant result);
