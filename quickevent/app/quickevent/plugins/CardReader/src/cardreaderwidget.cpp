@@ -200,6 +200,59 @@ CardReaderWidget::CardReaderWidget(QWidget *parent)
 	*/
 }
 
+CardReaderWidget::~CardReaderWidget()
+{
+	delete ui;
+}
+
+void CardReaderWidget::onTestButtonClicked()
+{
+	const QByteArray data1 = QByteArray::fromHex(
+	"02e18300010001010101edededed55aa"
+	"000a6794f9950064090a0d0301c20c0f"
+	"a2f00c03a25d0c01a21effffffff0000"
+	"000020202020426f72696c2020202020"
+	"20202020202020202020546f6d617320"
+	"20202020202020202020202020202020"
+	"20202020202020202020202020202020"
+	"20202020202020202020202020202020"
+	"20202020202036ae03");
+	const QByteArray data2 = QByteArray::fromHex(
+	"02e1830001060c6ba4210c6ca4800c6d"
+	"a4d60c8aa57a0c7ea6710c7ba8840d78"
+	"00710d7301001d64016aeeeeeeeeeeee"
+	"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+	"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+	"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+	"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+	"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+	"eeeeeeeeeeeeb7e403");
+	const QByteArray data3 = QByteArray::fromHex(
+	"02e183000107eeeeeeeeeeeeeeeeeeee"
+	"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+	"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+	"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+	"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+	"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+	"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+	"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+	"eeeeeeeeeeee07ac03");
+	QList<QByteArray> lst{data1, data2, data3};
+	Q_ASSERT(m_buttonTest);
+	static int count = -1;
+	if(count < 0) {
+		++count;
+		m_buttonTest->setText("Send packet #" + QString::number(count));
+		return;
+	}
+	QByteArray ba = lst[count];
+	logDriverRawData(ba);
+	siDriver()->processData(ba);
+	count++;
+	count %= lst.size();
+	m_buttonTest->setText("Send packet #" + QString::number(count));
+}
+
 void CardReaderWidget::onCustomContextMenuRequest(const QPoint & pos)
 {
 	qfLogFuncFrame();
@@ -252,11 +305,6 @@ void CardReaderWidget::onCustomContextMenuRequest(const QPoint & pos)
 		}
 		fwk->hideProgress();
 	}
-}
-
-CardReaderWidget::~CardReaderWidget()
-{
-	delete ui;
 }
 
 void CardReaderWidget::settleDownInPartWidget(quickevent::gui::PartWidget *part_widget)
@@ -372,9 +420,18 @@ void CardReaderWidget::settleDownInPartWidget(quickevent::gui::PartWidget *part_
 	}
 	main_tb->addSeparator();
 	{
-		m_lblCommInfo = new QLabel();
+		m_lblCommInfo = new QLabel(tr("SI station not connected"));
 		main_tb->addWidget(m_lblCommInfo);
 	}
+#ifdef QT_DEBUG
+	{
+		main_tb->addSeparator();
+		m_buttonTest = new QPushButton("Test");
+		m_buttonTest->setObjectName("btTest");
+		connect(m_buttonTest, &QPushButton::clicked, this, &CardReaderWidget::onTestButtonClicked);
+		main_tb->addWidget(m_buttonTest);
+	}
+#endif
 	connect(getPlugin<EventPlugin>(), &Event::EventPlugin::dbEventNotify, this, &CardReaderWidget::onDbEventNotify, Qt::QueuedConnection);
 }
 

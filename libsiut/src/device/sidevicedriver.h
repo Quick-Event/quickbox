@@ -56,7 +56,7 @@ private:
 protected:
 	QByteArray f_rxData;
 	SIMessageData f_messageData;
-	SiTask *m_taskInProcess = nullptr;
+	SiTask *m_currentTask = nullptr;
 };
 
 }

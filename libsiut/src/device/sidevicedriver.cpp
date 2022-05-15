@@ -16,6 +16,8 @@
 #include <QSettings>
 #include <QSerialPortInfo>
 
+#define logCardRead() qfCInfo("CardRead")
+
 namespace siut {
 
 //=================================================
@@ -55,42 +57,45 @@ void DeviceDriver::processSIMessageData(const SIMessageData &data)
 {
 	qfLogFuncFrame();
 	qfDebug() << data.toString();
-	if(m_taskInProcess) {
-		m_taskInProcess->onSiMessageReceived(data);
+	if(m_currentTask) {
+		m_currentTask->onSiMessageReceived(data);
 		return;
 	}
 	SIMessageData::Command cmd = data.command();
 	switch(cmd) {
 	case SIMessageData::Command::SICardRemoved: {
-		qfInfo() << "SICardRemoved";
+		logCardRead() << "SICardRemoved";
 		break;
 	}
 	case SIMessageData::Command::SICard5Detected: {
-		qfInfo() << "SICard5Detected";
+		logCardRead() << "SICard5Detected";
 		setSiTask(new SiTaskReadCard5(false));
 		break;
 	}
 	case SIMessageData::Command::GetSICard5: {
+		logCardRead() << "GetSICard5";
 		setSiTask(new SiTaskReadCard5(true));
 		processSIMessageData(data);
 		break;
 	}
 	case SIMessageData::Command::SICard6Detected: {
-		qfInfo() << "SICard6Detected";
+		logCardRead() << "SICard6Detected";
 		setSiTask(new SiTaskReadCard6(false));
 		break;
 	}
 	case SIMessageData::Command::GetSICard6: {
+		logCardRead() << "GetSICard6";
 		setSiTask(new SiTaskReadCard6(true));
 		processSIMessageData(data);
 		break;
 	}
 	case SIMessageData::Command::SICard8Detected: {
-		qfInfo() << "SICard8AndHigherDetected";
+		logCardRead() << "SICard8AndHigherDetected";
 		setSiTask(new SiTaskReadCard8(false));
 		break;
 	}
 	case SIMessageData::Command::GetSICard8: {
+		logCardRead() << "GetSICard8AndHigher";
 		setSiTask(new SiTaskReadCard8(true));
 		processSIMessageData(data);
 		break;
@@ -187,23 +192,23 @@ void DeviceDriver::sendCommand(int cmd, const QByteArray& data)
 
 void DeviceDriver::setSiTask(SiTask *task)
 {
-	if(m_taskInProcess) {
+	if(m_currentTask) {
 		qfError() << "There is other command in progress already. It will be aborted and deleted.";
-		m_taskInProcess->abort();
+		m_currentTask->abort();
 	}
-	m_taskInProcess = task;
+	m_currentTask = task;
 	SiTask::Type task_type = task->type();
 	connect(task, &SiTask::sigSendCommand, this, &DeviceDriver::sendCommand);
 	connect(task, &SiTask::sigSendACK, this, &DeviceDriver::sendACK);
 	connect(task, &SiTask::aboutToFinish, this, [this]() {
-		this->m_taskInProcess = nullptr;
+		this->m_currentTask = nullptr;
 	});
 	connect(task, &SiTask::finished, this, [this, task_type](bool ok, QVariant result) {
 		if(ok) {
 			emit this->siTaskFinished(static_cast<int>(task_type), result);
 		}
 	});
-	m_taskInProcess->start();
+	m_currentTask->start();
 }
 
 void DeviceDriver::sendACK()

@@ -42,6 +42,7 @@ class QFile;
 class QComboBox;
 class QCheckBox;
 class QLabel;
+class QPushButton;
 
 class SIMessageTransmitPunch;
 class SIMessageData;
@@ -110,6 +111,8 @@ private:
 	void operatorAudioWakeUp();
 	void operatorAudioNotify();
 	int currentPunchMode();
+
+	void onTestButtonClicked();
 private:
 	Ui::CardReaderWidget *ui;
 	QLabel *m_lblCommInfo = nullptr;
@@ -119,6 +122,7 @@ private:
 	qf::core::model::SqlTableModel *m_cardsModel = nullptr;
 	QComboBox *m_cbxCardCheckers = nullptr;
 	QComboBox *m_cbxPunchMode = nullptr;
+	QPushButton *m_buttonTest = nullptr;
 	quickevent::gui::audio::Player *m_audioPlayer = nullptr;
 	siut::DeviceDriver *f_siDriver = nullptr;
 	siut::CommPort *m_commPort = nullptr;
