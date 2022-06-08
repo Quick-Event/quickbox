@@ -106,6 +106,7 @@ void GanttItem::load(int stage_id)
 				curr_slot_ix = slot_ix;
 				StartSlotData sd(stsllst.value(slot_ix).toMap());
 				slot_item->setData(sd);
+				slot_item->setStartOffset(cd.startTimeMin());
 			}
 		}
 		else {
