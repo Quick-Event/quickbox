@@ -113,10 +113,13 @@ void GanttItem::load(int stage_id)
 			if(cd.courseId() != curr_course_id) {
 				curr_course_id = cd.courseId();
 				slot_item = addStartSlotItem();
+				slot_item->setStartOffset(cd.startTimeMin());
 			}
 		}
-		auto *class_it = slot_item->addClassItem();
-		class_it->setData(cd);
+		if (slot_item) {
+			auto *class_it = slot_item->addClassItem();
+			class_it->setData(cd);
+		}
 	}
 	updateGeometry();
 	checkClassClash();
