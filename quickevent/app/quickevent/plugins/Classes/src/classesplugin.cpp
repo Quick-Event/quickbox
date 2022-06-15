@@ -72,14 +72,15 @@ void ClassesPlugin::dropClass(int class_id)
 	doc.drop();
 }
 
-void ClassesPlugin::createCourses(int stage_id, const QList<ImportCourseDef> &courses, const QList<quickevent::core::CodeDef> &codes)
+void ClassesPlugin::createCourses(int stage_id, const QList<ImportCourseDef> &courses, const QList<quickevent::core::CodeDef> &codes, bool delete_current)
 {
 	qfLogFuncFrame();
 	try {
 		bool is_relays = getPlugin<EventPlugin>()->eventConfig()->isRelays();
 		qf::core::sql::Transaction transaction(qf::core::sql::Connection::forName());
 		qf::core::sql::Query q;
-		deleteCourses(stage_id);
+		if (delete_current)
+			deleteCourses(stage_id);
 
 		QMap<int, quickevent::core::CodeDef> code_defs;
 		if(codes.empty()) {
