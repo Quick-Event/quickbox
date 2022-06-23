@@ -443,14 +443,18 @@ void EmmaClient::exportStartListRacomTxt()
 		lastId = id;
 		int si = q2.value("runs.siId").toInt();
 		int startTime = q2.value("runs.startTimeMs").toInt();
+		bool startTimeCardNull = q2.value("runs.startTimeMs").isNull();
 		int startTimeCard = q2.value("cards.startTime").toInt();
-		if (startTimeCard == 61166)
+		if (startTimeCard == 61166 || startTimeCardNull)
 			startTimeCard = 0;
 		QString name = q2.value("competitors.lastName").toString() + " " + q2.value("competitors.firstName").toString();
 		QString clas = q2.value("classes.name").toString();
 		clas.remove(" ");
+		if (clas.isEmpty())
+			continue;
 		QString reg = q2.value("competitors.registration").toString();
 		name = name.leftJustified(22,QChar(' '),true);
+		int firstCol = id;
 		if (is_relays)
 		{
 			int leg = q2.value("runs.leg").toInt();
@@ -460,13 +464,14 @@ void EmmaClient::exportStartListRacomTxt()
 			reg = reg.leftJustified(7,QChar(' '),true);
 			// EmmaClient uses for all relays start time of 1st leg
 			int rel_num =  q2.value("relays.number").toInt();
-			if (leg == 1 && rel_num != 0) {
+			if (leg == 1 && rel_num > 0) {
 				startTimesRelays.insert(rel_num,startTime);
-			} else if (rel_num != 0) {
+			} else if (rel_num > 0) {
 				auto it = startTimesRelays.find(rel_num);
 				if (it != startTimesRelays.end())
 					startTime = it.value();
 			}
+			firstCol = (rel_num > 0) ? rel_num : 10000+id; // when no number, use id with offset
 		}
 		else
 		{
@@ -475,9 +480,9 @@ void EmmaClient::exportStartListRacomTxt()
 		}
 
 		int msec = startTime;
-		if (startTimeCard != 0)
+		if (startTimeCard != 0 && !startTimeCardNull && !is_relays)
 		{
-			// has start in si card (P, T, HDR)
+			// has start in si card (P, T, HDR) & not used in relays
 			startTimeCard *= 1000; // msec
 			startTimeCard -= start00;
 			if (startTimeCard < 0) // 12h format
@@ -512,7 +517,7 @@ void EmmaClient::exportStartListRacomTxt()
 
 		if (id != 0) // filter bad data
 		{
-			QString s = QString("%1 %2 %3 %4 %5 %6").arg(id , 5, 10, QChar(' ')).arg(si, 8, 10, QChar(' ')).arg(clas).arg(reg).arg(name).arg(tm2);
+			QString s = QString("%1 %2 %3 %4 %5 %6").arg(firstCol , 5, 10, QChar(' ')).arg(si, 8, 10, QChar(' ')).arg(clas).arg(reg).arg(name).arg(tm2);
 			ts << s << "\n";
 		}
 	}
