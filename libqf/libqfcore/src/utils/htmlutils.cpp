@@ -129,7 +129,7 @@ QString HtmlUtils::fromHtmlList_helper(const QVariant &item, const QString &inde
 			QMapIterator<QString, QVariant> it(m);
 			while(it.hasNext()) {
 				it.next();
-				attrs_str += ' ' + it.key() + '=' + '"' + it.value().toString() + '"';
+				attrs_str += ' ' + it.key() + '=' + '"' + it.value().toString().toHtmlEscaped() + '"';
 			}
 			ix++;
 		}
@@ -154,7 +154,7 @@ QString HtmlUtils::fromHtmlList_helper(const QVariant &item, const QString &inde
 		}
 	}
 	else {
-		ret = item.toString();
+		ret = item.toString().toHtmlEscaped();
 	}
 	return ret;
 }
