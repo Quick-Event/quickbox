@@ -19,7 +19,6 @@ public:
 public:
 	String() : QString() {}
 	String(const QString &str) : QString(str) {}
-	String(const String &str) : QString(str) {}
 public:
 	/**
 	* python's like slice
