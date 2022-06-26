@@ -32,7 +32,7 @@ jobs:
         host: 'linux'
         
     - name: Get app version
-      run: | 
+      run: |
         echo "VERSION=`grep APP_VERSION quickevent/app/quickevent/src/appversion.h | cut -d\\" -f2`" >> $GITHUB_ENV
           
     - name: Get AppImageTool
@@ -59,7 +59,7 @@ jobs:
       
       
   build_windows:
-    runs-on: windows-latest
+    runs-on: windows-2019
     defaults:
       run:
         shell: bash
