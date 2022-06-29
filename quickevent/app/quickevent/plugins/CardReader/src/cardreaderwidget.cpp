@@ -848,7 +848,7 @@ void CardReaderWidget::assignRunnerToSelectedCard()
 								QMessageBox::Ok | QMessageBox::Cancel);
 				if (ret == QMessageBox::Cancel)
 					return;
-				QString qs = "UPDATE runs SET isRunning=1 WHERE competitorId=" QF_IARG(competitor_id) " AND stageId=" QF_IARG(stage_id);
+				QString qs = "UPDATE runs SET isRunning=true WHERE competitorId=" QF_IARG(competitor_id) " AND stageId=" QF_IARG(stage_id);
 				q.execThrow(qs);
 			}
 		}
