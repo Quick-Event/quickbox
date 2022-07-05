@@ -12,13 +12,13 @@ class ResultsExporterSettings : public Event::services::ServiceSettings
 	using Super = Event::services::ServiceSettings;
 
 public:
-	enum class OutputFormat {HtmlMulti = 0, CSOS, CSV, IofXml3, COUNT};
+	enum class OutputFormat {HtmlMulti = 0, CSOS, CSV, CSVMulti, IofXml3, COUNT};
 
 	QF_VARIANTMAP_FIELD(QString, e, setE, xportDir)
 	QF_VARIANTMAP_FIELD2(int, e, setE, xportIntervalSec, 0)
 	QF_VARIANTMAP_FIELD(QString, w, setW, henFinishedRunCmd)
 	QF_VARIANTMAP_FIELD2(int, o, setO, utputFormat, static_cast<int>(OutputFormat::HtmlMulti))
-
+	QF_VARIANTMAP_FIELD2(bool, e, setE, xportMultiFile, true)
 public:
 	ResultsExporterSettings(const QVariantMap &o = QVariantMap()) : Super(o) {}
 };
@@ -39,6 +39,7 @@ public:
 	static QString serviceName();
 
 	bool exportResults();
+	void whenFinishedRunCmd();
 private:
 	void onExportTimerTimeOut();
 	void init();
