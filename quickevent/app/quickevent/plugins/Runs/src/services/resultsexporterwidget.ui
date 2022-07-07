@@ -14,7 +14,10 @@
    <string>Results Exporter</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="5" column="0">
+   <item row="4" column="0" colspan="2">
+    <widget class="QLineEdit" name="edWhenFinishedRunCmd"/>
+   </item>
+   <item row="6" column="0">
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -27,37 +30,7 @@
      </property>
     </spacer>
    </item>
-   <item row="1" column="0">
-    <widget class="QLabel" name="label_2">
-     <property name="text">
-      <string>Export interval</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0" colspan="2">
-    <widget class="QLabel" name="label_3">
-     <property name="text">
-      <string>When finished, run cmd</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1">
-    <widget class="QSpinBox" name="edExportInterval">
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-     <property name="suffix">
-      <string> sec</string>
-     </property>
-     <property name="maximum">
-      <number>600</number>
-     </property>
-     <property name="singleStep">
-      <number>15</number>
-     </property>
-    </widget>
-   </item>
-   <item row="6" column="0" colspan="2">
+   <item row="7" column="0" colspan="2">
     <widget class="QFrame" name="frame">
      <property name="frameShape">
       <enum>QFrame::NoFrame</enum>
@@ -104,10 +77,26 @@
      </layout>
     </widget>
    </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="label">
+   <item row="1" column="1">
+    <widget class="QSpinBox" name="edExportInterval">
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="suffix">
+      <string> sec</string>
+     </property>
+     <property name="maximum">
+      <number>600</number>
+     </property>
+     <property name="singleStep">
+      <number>15</number>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="label_2">
      <property name="text">
-      <string>Export dir</string>
+      <string>Export interval</string>
      </property>
     </widget>
    </item>
@@ -125,8 +114,22 @@
      </item>
     </layout>
    </item>
-   <item row="4" column="0" colspan="2">
-    <widget class="QLineEdit" name="edWhenFinishedRunCmd"/>
+   <item row="0" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Export dir</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="QComboBox" name="lstOutputFormat"/>
+   </item>
+   <item row="3" column="0" colspan="2">
+    <widget class="QLabel" name="label_3">
+     <property name="text">
+      <string>When finished, run cmd</string>
+     </property>
+    </widget>
    </item>
    <item row="2" column="0">
     <widget class="QLabel" name="label_4">
@@ -135,8 +138,15 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="1">
-    <widget class="QComboBox" name="lstOutputFormat"/>
+   <item row="5" column="0">
+    <widget class="QLabel" name="label_5">
+     <property name="text">
+      <string>CSV separator</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="1">
+    <widget class="QLineEdit" name="edCsvSeparator"/>
    </item>
   </layout>
  </widget>
@@ -146,6 +156,7 @@
   <tabstop>edExportInterval</tabstop>
   <tabstop>lstOutputFormat</tabstop>
   <tabstop>edWhenFinishedRunCmd</tabstop>
+  <tabstop>edCsvSeparator</tabstop>
   <tabstop>btExportResults</tabstop>
  </tabstops>
  <resources/>
