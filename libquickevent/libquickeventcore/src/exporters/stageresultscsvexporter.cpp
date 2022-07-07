@@ -53,7 +53,7 @@ void StageResultsCsvExporter::exportClasses(bool single_file)
 	if (single_file) {
 		QFile f_csv(csv_dir.absolutePath() + '/' + sub_dir + '/' + "results.csv");
 		qfInfo() << "Generating:" << f_csv.fileName();
-		if (!f_csv.open(QFile::WriteOnly | QFile::Text))
+		if (!f_csv.open(QFile::WriteOnly))
 			qfError() << "Cannot open file" << f_csv.fileName() + "for writing.";
 		QTextStream csv(&f_csv);
 		csv.setCodec("UTF-8");
@@ -71,7 +71,7 @@ void StageResultsCsvExporter::exportClasses(bool single_file)
 			QString class_name = q.value("name").toString();
 			QFile f_csv(csv_dir.absolutePath() + '/' + sub_dir + '/' + normalizeClassName(class_name) + ".csv");
 			qfInfo() << "Generating:" << f_csv.fileName();
-			if (!f_csv.open(QFile::WriteOnly | QFile::Text))
+			if (!f_csv.open(QFile::WriteOnly))
 				qfError() << "Cannot open file" << f_csv.fileName() + "for writing.";
 			QTextStream csv(&f_csv);
 			csv.setCodec("UTF-8");
