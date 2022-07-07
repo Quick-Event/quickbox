@@ -7,6 +7,7 @@
 #include <qf/core/log.h>
 
 #include <QDir>
+#include <QTextStream>
 
 namespace quickevent {
 namespace core {
@@ -50,11 +51,11 @@ void StageResultsCsvExporter::exportClasses(bool single_file)
 	csv_dir.mkpath(sub_dir);
 
 	if (single_file) {
-		QFile fCSV(csv_dir.absolutePath() + '/' + sub_dir + '/' + "results.csv");
-		qfInfo() << "Generating:" << fCSV.fileName();
-		if (!fCSV.open(QFile::WriteOnly | QFile::Text))
-			qfError() << "Cannot open file" << fCSV.fileName() + "for writing.";
-		QTextStream csv(&fCSV);
+		QFile f_csv(csv_dir.absolutePath() + '/' + sub_dir + '/' + "results.csv");
+		qfInfo() << "Generating:" << f_csv.fileName();
+		if (!f_csv.open(QFile::WriteOnly | QFile::Text))
+			qfError() << "Cannot open file" << f_csv.fileName() + "for writing.";
+		QTextStream csv(&f_csv);
 		csv.setCodec("UTF-8");
 		exportCsvHeader(csv);
 		QSqlQuery q = execSql(qs);
@@ -68,11 +69,11 @@ void StageResultsCsvExporter::exportClasses(bool single_file)
 		while(q.next()) {
 			int class_id = q.value("id").toInt();
 			QString class_name = q.value("name").toString();
-			QFile fCSV(csv_dir.absolutePath() + '/' + sub_dir + '/' + normalizeClassName(class_name) + ".csv");
-			qfInfo() << "Generating:" << fCSV.fileName();
-			if (!fCSV.open(QFile::WriteOnly | QFile::Text))
-				qfError() << "Cannot open file" << fCSV.fileName() + "for writing.";
-			QTextStream csv(&fCSV);
+			QFile f_csv(csv_dir.absolutePath() + '/' + sub_dir + '/' + normalizeClassName(class_name) + ".csv");
+			qfInfo() << "Generating:" << f_csv.fileName();
+			if (!f_csv.open(QFile::WriteOnly | QFile::Text))
+				qfError() << "Cannot open file" << f_csv.fileName() + "for writing.";
+			QTextStream csv(&f_csv);
 			csv.setCodec("UTF-8");
 			exportCsvHeader(csv);
 			exportClass(class_id, csv);
@@ -140,12 +141,12 @@ void StageResultsCsvExporter::exportClass(int class_id, QTextStream &csv)
 				if (club.isEmpty())
 					club = q2.value("competitors.registration").toString().left(3);
 			}
-			csv << class_name << separator;
-			csv << spos << separator;
-			csv << q2.value("competitorName").toString() << separator;
-			csv << club << separator;
-			csv << q2.value("competitors.country").toString() << separator;
-			csv << stime << separator;
+			csv << class_name << m_separator;
+			csv << spos << m_separator;
+			csv << q2.value("competitorName").toString() << m_separator;
+			csv << club << m_separator;
+			csv << q2.value("competitors.country").toString() << m_separator;
+			csv << stime << m_separator;
 			csv << status;
 			csv << Qt::endl;
 		}
@@ -154,12 +155,12 @@ void StageResultsCsvExporter::exportClass(int class_id, QTextStream &csv)
 
 void StageResultsCsvExporter::exportCsvHeader(QTextStream &csv)
 {
-	csv << "Class" << separator;
-	csv << "Position" << separator;
-	csv << "Name" << separator;
-	csv << "Club" << separator;
-	csv << "Country" << separator;
-	csv << "Time" << separator;
+	csv << "Class" << m_separator;
+	csv << "Position" << m_separator;
+	csv << "Name" << m_separator;
+	csv << "Club" << m_separator;
+	csv << "Country" << m_separator;
+	csv << "Time" << m_separator;
 	csv << "Status";
 	csv << Qt::endl;
 }

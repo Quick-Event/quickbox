@@ -1,7 +1,9 @@
 #pragma once
 
 #include "fileexporter.h"
-#include <QTextStream>
+
+class QChar;
+class QTextStream;
 
 namespace quickevent {
 namespace core {
@@ -16,12 +18,13 @@ public:
 	StageResultsCsvExporter(QObject *parent = nullptr);
 	void generateCsvMulti();
 	void generateCsvSingle();
-	void setSeparator(QChar sep) { separator = sep;}
+	void setSeparator(QChar sep) { m_separator = sep;}
 protected:
 	void exportClasses(bool single_file);
 	void exportClass(int class_id, QTextStream &csv);
 	void exportCsvHeader(QTextStream &csv);
-	QChar separator = ';';
+private:
+	QChar m_separator = ';';
 };
 
 }}}
