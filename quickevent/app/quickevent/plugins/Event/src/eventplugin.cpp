@@ -1163,9 +1163,9 @@ void EventPlugin::importEvent_qbe()
 	event_name = QInputDialog::getText(fwk, tr("Query"), tr("Event will be imported as ID:"), QLineEdit::Normal, event_name).trimmed();
 	if(event_name.isEmpty())
 		return;
-	const std::regex psqlschema_regex("[A-Za-z][A-Za-z0-9_]*");
+	const std::regex psqlschema_regex("[a-z][a-z0-9_]*");
 	if(connectionType() == ConnectionType::SqlServer && !std::regex_match(event_name.toStdString(), psqlschema_regex)) {
-		qfd::MessageBox::showError(fwk, tr("PostgreSql schema must start with letter and it may contain letters, digits and underscores only."));
+		qfd::MessageBox::showError(fwk, tr("PostgreSQL schema must start with small letter and it may contain small letters, digits and underscores only."));
 		return;
 	}
 	QStringList existing_events = (connectionType() == ConnectionType::SingleFile)? existingFileEventNames(): existingSqlEventNames();

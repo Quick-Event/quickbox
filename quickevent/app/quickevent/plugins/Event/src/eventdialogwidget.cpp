@@ -10,7 +10,7 @@ EventDialogWidget::EventDialogWidget(QWidget *parent) :
 	setPersistentSettingsId("EventDialogWidget");
 	ui->setupUi(this);
 
-	QRegularExpression rx("[A-Za-z][a-z0-9_]*"); // postgres schema cannot start with digit
+	QRegularExpression rx("[a-z][a-z0-9_]*"); // PostgreSQL schema must start with small letter and it may contain small letters, digits and underscores only.
 	QValidator *validator = new QRegularExpressionValidator(rx, this);
 	ui->ed_eventId->setValidator(validator);
 }
