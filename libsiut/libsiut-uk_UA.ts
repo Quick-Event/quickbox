@@ -60,27 +60,27 @@
 <context>
     <name>siut::DeviceDriver</name>
     <message>
-        <location filename="src/device/sidevicedriver.cpp" line="119"/>
+        <location filename="src/device/sidevicedriver.cpp" line="124"/>
         <source>Garbage received, stripping %1 characters from beginning of buffer</source>
         <translation>Отримано Garbage, видалення %1 символів від початку буфера</translation>
     </message>
     <message>
-        <location filename="src/device/sidevicedriver.cpp" line="136"/>
+        <location filename="src/device/sidevicedriver.cpp" line="141"/>
         <source>NAK received</source>
         <translation>НАК отримано</translation>
     </message>
     <message>
-        <location filename="src/device/sidevicedriver.cpp" line="142"/>
+        <location filename="src/device/sidevicedriver.cpp" line="147"/>
         <source>Legacy protocol is not supported, switch station to extended one.</source>
         <translation>Старий протокол не підтримується, перемикніть станцію на розширену.</translation>
     </message>
     <message>
-        <location filename="src/device/sidevicedriver.cpp" line="149"/>
+        <location filename="src/device/sidevicedriver.cpp" line="154"/>
         <source>Valid message shall end with ETX or NAK, throwing data away</source>
         <translation>Дійсне повідомлення закінчується ETX або NAK, викидаючи дані</translation>
     </message>
     <message>
-        <location filename="src/device/sidevicedriver.cpp" line="165"/>
+        <location filename="src/device/sidevicedriver.cpp" line="170"/>
         <source>SIDeviceDriver::sendCommand() - ERROR Sending of EXT commands only is supported for sending.</source>
         <translation>SIDeviceDriver::sendCommand() - ПОМИЛКА: надсилання EXT команд підтримується тільки для надсилань</translation>
     </message>
