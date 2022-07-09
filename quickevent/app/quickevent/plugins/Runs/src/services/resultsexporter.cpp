@@ -83,7 +83,7 @@ bool ResultsExporter::exportResults()
 	else if(ss.outputFormat() == static_cast<int>(ResultsExporterSettings::OutputFormat::CSVMulti)) {
 		quickevent::core::exporters::StageResultsCsvExporter exp;
 		exp.setOutDir(ss.exportDir());
-		if (!ss.csvSeparator().isEmpty())
+		if (!ss.csvSeparator().isNull())
 			exp.setSeparator(ss.csvSeparator());
 		exp.generateCsvMulti();
 
@@ -93,7 +93,7 @@ bool ResultsExporter::exportResults()
 	else if(ss.outputFormat() == static_cast<int>(ResultsExporterSettings::OutputFormat::CSV)) {
 		quickevent::core::exporters::StageResultsCsvExporter exp;
 		exp.setOutDir(ss.exportDir());
-		if (!ss.csvSeparator().isEmpty())
+		if (!ss.csvSeparator().isNull())
 			exp.setSeparator(ss.csvSeparator());
 		exp.generateCsvSingle();
 

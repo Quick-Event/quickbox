@@ -34,7 +34,14 @@ ResultsExporterWidget::ResultsExporterWidget(QWidget *parent)
 		ui->edWhenFinishedRunCmd->setText(ss.whenFinishedRunCmd());
 		int of = ss.outputFormat();
 		ui->lstOutputFormat->setCurrentIndex(ui->lstOutputFormat->findData(of));
-		ui->edCsvSeparator->setText(ss.csvSeparator());
+		if (ss.csvSeparator() == QChar::Tabulation)
+			ui->rbCsvSeparatorTab->setChecked(true);
+		else
+		{
+			ui->rbCsvSeparatorChar->setChecked(true);
+			if (!ss.csvSeparator().isNull())
+				ui->edCsvSeparator->setText(ss.csvSeparator());
+		}
 	}
 
 	connect(ui->btChooseExportDir, &QPushButton::clicked, this, &ResultsExporterWidget::onBtChooseExportDirClicked);
@@ -77,7 +84,12 @@ bool ResultsExporterWidget::saveSettings()
 		ss.setWhenFinishedRunCmd(ui->edWhenFinishedRunCmd->text());
 		if(ui->lstOutputFormat->currentIndex() >= 0)
 			ss.setOutputFormat(ui->lstOutputFormat->itemData(ui->lstOutputFormat->currentIndex()).toInt());
-		ss.setCsvSeparator(ui->edCsvSeparator->text());
+		if (ui->rbCsvSeparatorTab->isChecked())
+			ss.setCsvSeparator(QChar::Tabulation);
+		else if (ui->edCsvSeparator->text().isEmpty())
+			ss.setCsvSeparator(QChar::Null);
+		else
+			ss.setCsvSeparator(ui->edCsvSeparator->text().at(0));
 		svc->setSettings(ss);
 		if(!dir.isEmpty()) {
 			if(!QDir().mkpath(dir))

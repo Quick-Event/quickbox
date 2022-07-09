@@ -146,7 +146,28 @@
     </widget>
    </item>
    <item row="5" column="1">
-    <widget class="QLineEdit" name="edCsvSeparator"/>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QRadioButton" name="rbCsvSeparatorChar">
+       <property name="text">
+        <string>Char :</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="edCsvSeparator"/>
+     </item>
+     <item>
+      <widget class="QRadioButton" name="rbCsvSeparatorTab">
+       <property name="text">
+        <string>Tabulator</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>
@@ -156,7 +177,9 @@
   <tabstop>edExportInterval</tabstop>
   <tabstop>lstOutputFormat</tabstop>
   <tabstop>edWhenFinishedRunCmd</tabstop>
+  <tabstop>rbCsvSeparatorChar</tabstop>
   <tabstop>edCsvSeparator</tabstop>
+  <tabstop>rbCsvSeparatorTab</tabstop>
   <tabstop>btExportResults</tabstop>
  </tabstops>
  <resources/>
