@@ -5,8 +5,8 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 
-#include "ui_dlgsettings.h"
-#include "dlgsettings.h"
+#include "ui_cardreadersettingspage.h"
+#include "cardreadersettingspage.h"
 #include "cardreaderwidget.h"
 #include "cardreaderplugin.h"
 
@@ -24,11 +24,13 @@
 //=================================================
 //             DlgSettings
 //=================================================
-DlgSettings::DlgSettings(QWidget *parent)
-	: QDialog(parent)
+CardReaderSettingsPage::CardReaderSettingsPage(QWidget *parent)
+	: Super(parent)
 {
-	ui = new Ui::DlgSettings;
+	ui = new Ui::CardReaderSettingsPage;
 	ui->setupUi(this);
+	m_persistentId = CardReader::CardReaderPlugin::SETTINGS_PREFIX;
+	m_caption = tr("Card reader");
 #if 0
 #if defined Q_OS_WIN
 	for(int i=1; i<10; i++)
@@ -38,29 +40,12 @@ DlgSettings::DlgSettings(QWidget *parent)
 		ui->lstDevice->addItem(QString("/dev/ttyUSB%1").arg(i));
 #endif
 #endif
-	{
-		QList<QSerialPortInfo> port_list = QSerialPortInfo::availablePorts();
-		for(auto port : port_list) {
-			//ui->lstDevice->addItem(QString("n:%1 l:%2").arg(port.portName()).arg(port.systemLocation()));
-			ui->lstDevice->addItem(port.systemLocation());
-		}
-
-	}
-	connect(ui->buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-	connect(ui->buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
-
 	load();
 }
 
-DlgSettings::~DlgSettings()
+CardReaderSettingsPage::~CardReaderSettingsPage()
 {
 	delete ui;
-}
-
-void DlgSettings::accept()
-{
-	save();
-	QDialog::accept();
 }
 
 static void load_combo_text(QComboBox *cbx, const QSettings &settings, const QString &key, bool init_current_index = true)
@@ -74,11 +59,20 @@ static void load_combo_text(QComboBox *cbx, const QSettings &settings, const QSt
 	}
 }
 
-void DlgSettings::load()
+void CardReaderSettingsPage::load()
 {
+	{
+		ui->lstDevice->clear();
+		QList<QSerialPortInfo> port_list = QSerialPortInfo::availablePorts();
+		for(auto port : port_list) {
+			//ui->lstDevice->addItem(QString("n:%1 l:%2").arg(port.portName()).arg(port.systemLocation()));
+			ui->lstDevice->addItem(port.systemLocation());
+		}
+
+	}
 	QSettings settings;
 	//settings.clear();
-	settings.beginGroup(CardReader::CardReaderPlugin::SETTINGS_PREFIX);
+	settings.beginGroup(persistentId());
 
 	settings.beginGroup("comm");
 	settings.beginGroup("connection");
@@ -91,16 +85,12 @@ void DlgSettings::load()
 	settings.beginGroup("debug");
 	ui->chkShowRawComData->setChecked(settings.value("showRawComData").toBool());
 	ui->chkDisableCRCCheck->setChecked(settings.value("disableCRCCheck").toBool());
-	settings.endGroup();
-	settings.endGroup();
-
-	settings.endGroup();
 }
 
-void DlgSettings::save()
+void CardReaderSettingsPage::save()
 {
 	QSettings settings;
-	settings.beginGroup(CardReader::CardReaderPlugin::SETTINGS_PREFIX);
+	settings.beginGroup(persistentId());
 
 	settings.beginGroup("comm");
 	settings.beginGroup("connection");

@@ -1,5 +1,4 @@
-#ifndef APPSTATUSBAR_H
-#define APPSTATUSBAR_H
+#pragma once
 
 #include <qf/core/utils.h>
 
@@ -7,6 +6,8 @@
 
 class QLabel;
 class QProgressBar;
+
+namespace Core {
 
 class AppStatusBar : public qf::qmlwidgets::StatusBar
 {
@@ -39,4 +40,5 @@ private:
 	int m_stageNo = 0;
 };
 
-#endif // APPSTATUSBAR_H
+}
+

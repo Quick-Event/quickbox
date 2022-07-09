@@ -18,10 +18,7 @@ namespace qf {
 namespace core { namespace model { class SqlTableModel; } }
 namespace qmlwidgets {
 class Action;
-namespace framework {
-class PartWidget;
-class Plugin;
-}
+namespace framework { class PartWidget; class Plugin; }
 }
 }
 
@@ -60,7 +57,6 @@ public:
 	explicit CardReaderWidget(QWidget *parent = 0);
 	~CardReaderWidget() Q_DECL_OVERRIDE;
 
-	//Q_SIGNAL void sendSICommand(int cmd, const QByteArray& data_params);
 	Q_SIGNAL void logRequest(NecroLog::Level level, const QString &msg);
 	void emitLogRequest(NecroLog::Level level, const QString &msg) {emit logRequest(level, msg);}
 
@@ -68,8 +64,6 @@ public:
 
 	Q_SLOT void reset();
 	Q_SLOT void reload();
-
-	//Q_SLOT void processSIMessage(const SIMessageData &msg);
 
 	void onDbEventNotify(const QString &domain, int connection_id, const QVariant &data);
 private slots:
@@ -86,7 +80,6 @@ private slots:
 	void importCards_SIReaderBackupMemoryCsv();
 private:
 	void createActions();
-	Q_SLOT void openSettings();
 
 	siut::DeviceDriver *siDriver();
 	siut::CommPort *commPort();
@@ -117,7 +110,6 @@ private:
 	Ui::CardReaderWidget *ui;
 	QLabel *m_lblCommInfo = nullptr;
 	qf::qmlwidgets::Action *m_actCommOpen = nullptr;
-	qf::qmlwidgets::Action *m_actSettings = nullptr;
 	qf::qmlwidgets::Action *m_actAssignCard = nullptr;
 	qf::core::model::SqlTableModel *m_cardsModel = nullptr;
 	QComboBox *m_cbxCardCheckers = nullptr;

@@ -68,9 +68,6 @@ void HtmlFileExporter::generateHtml()
 		setCurrentStage(curr_stage);
 	}
 
-	QVariantList html_body = QVariantList() << QStringLiteral("body");
-	html_body.insert(html_body.length(), QVariantList() << QStringLiteral("body"));
-
 	exportClasses();
 }
 

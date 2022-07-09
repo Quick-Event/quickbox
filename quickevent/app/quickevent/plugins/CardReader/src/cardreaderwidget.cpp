@@ -1,6 +1,6 @@
 #include "cardreaderwidget.h"
 #include "ui_cardreaderwidget.h"
-#include "dlgsettings.h"
+#include "cardreadersettingspage.h"
 
 #include "cardreaderplugin.h"
 #include "cardchecker.h"
@@ -189,15 +189,6 @@ CardReaderWidget::CardReaderWidget(QWidget *parent)
 	}
 	ui->tblCards->setContextMenuPolicy(Qt::CustomContextMenu);
 	connect(ui->tblCards, &qfw::TableView::customContextMenuRequested, this, &CardReaderWidget::onCustomContextMenuRequest);
-	/*
-	{
-		QTimer *t = new QTimer(this);
-		connect(t, &QTimer::timeout, [this]() {
-			qfInfo() << "CardReaderWidget visible:" << isVisible();
-		});
-		t->start(2000);
-	}
-	*/
 }
 
 CardReaderWidget::~CardReaderWidget()
@@ -314,7 +305,7 @@ void CardReaderWidget::settleDownInPartWidget(quickevent::gui::PartWidget *part_
 	{
 		qfw::Action *a_station = part_widget->menuBar()->actionForPath("station", true);
 		a_station->setText(tr("&Station"));
-		a_station->addActionInto(m_actSettings);
+		//a_station->addActionInto(m_actSettings);
 		//a_station->addActionInto(m_actCommOpen);
 		{
 			QAction *a = new QAction(tr("Station info"));
@@ -486,7 +477,6 @@ void CardReaderWidget::onDbEventNotify(const QString &domain, int connection_id,
 
 void CardReaderWidget::createActions()
 {
-	//QStyle *sty = style();
 	{
 		QIcon ico(":/quickevent/CardReader/images/comm");
 		qf::qmlwidgets::Action *a = new qf::qmlwidgets::Action(ico, tr("Open COM"), this);
@@ -495,33 +485,11 @@ void CardReaderWidget::createActions()
 		m_actCommOpen = a;
 	}
 	{
-		qf::qmlwidgets::Action *a = new qf::qmlwidgets::Action(tr("Card reader settings"), this);
-		connect(a, SIGNAL(triggered()), this, SLOT(openSettings()));
-		m_actSettings = a;
-	}
-	/*
-	{
-		QIcon ico(":/quickevent/CardReader/images/sql");
-		qf::qmlwidgets::Action *a = new qf::qmlwidgets::Action(ico, tr("Connect SQL"), this);
-		a->setCheckable(true);
-		connect(a, SIGNAL(triggered(bool)), this, SLOT(sqlConnect(bool)));
-		m_actSqlConnect = a;
-	}
-	*/
-	{
 		qf::qmlwidgets::Action *a = new qf::qmlwidgets::Action(tr("Assign card to runner\tCtrl + Enter"), this);
 		a->setShortcut(Qt::CTRL + Qt::Key_Return); // Qt::Key_Return is the main enter key, Qt::Key_Enter is on the numeric keyboard
 		addAction(a);
 		connect(a, &QAction::triggered, this, &CardReaderWidget::assignRunnerToSelectedCard);
 		m_actAssignCard = a;
-	}
-}
-
-void CardReaderWidget::openSettings()
-{
-	DlgSettings dlg(this);
-	if(dlg.exec()) {
-		//closeCardLog();
 	}
 }
 
@@ -646,37 +614,6 @@ void CardReaderWidget::onSiTaskFinished(int task_type, QVariant result)
 			processSIPunch(punch);
 	}
 }
-
-/*
-void CardReaderWidget::processSIMessage(const SIMessageData& msg_data)
-{
-	qfLogFuncFrame();
-	//appendLog(NecroLog::Level::Info, tr("processSIMessage command: %1 , type: %2").arg(SIMessageData::commandName(msg_data.command())).arg(msg_data.type()));
-	if(msg_data.type() == SIMessageData::MessageType::CardReadOut) {
-		SIMessageCardReadOut card(msg_data);
-		processSICard(card);
-	}
-	else if(msg_data.type() == SIMessageData::MessageType::CardEvent) {
-		appendLog(NecroLog::Level::Debug, msg_data.dump());
-		if(msg_data.command() == SIMessageData::Command::SICard5DetectedExt) {
-			emit sendSICommand((int)SIMessageData::Command::GetSICard5Ext, QByteArray());
-		}
-		else if(msg_data.command() == SIMessageData::Command::SICard6DetectedExt) {
-			emit sendSICommand((int)SIMessageData::Command::GetSICard6Ext, QByteArray("\x08", 1));
-		}
-		else if(msg_data.command() == SIMessageData::Command::SICard8AndHigherDetectedExt) {
-			emit sendSICommand((int)SIMessageData::Command::GetSICard8Ext, QByteArray("\x08", 1));
-		}
-	}
-	else if(msg_data.type() == SIMessageData::MessageType::Punch) {
-		SIMessageTransmitPunch rec(msg_data);
-		processSIPunch(rec);
-	}
-	else {
-		appendLog(NecroLog::Level::Debug, msg_data.dump());
-	}
-}
-*/
 
 void CardReaderWidget::processDriverInfo(NecroLog::Level level, const QString& msg)
 {

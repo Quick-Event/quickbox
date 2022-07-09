@@ -2,7 +2,11 @@
 #include "cardcheckerclassiccpp.h"
 #include "cardcheckerfreeordercpp.h"
 #include "cardreaderwidget.h"
+#include "cardreadersettingspage.h"
 #include "services/racomclient.h"
+
+#include "../../Core/src/coreplugin.h"
+#include "../../Core/src/widgets/settingsdialog.h"
 
 #include <quickevent/core/og/timems.h>
 #include <quickevent/core/si/punchrecord.h>
@@ -45,11 +49,11 @@ CardReaderPlugin::CardReaderPlugin(QObject *parent)
 	connect(this, &CardReaderPlugin::installed, this, &CardReaderPlugin::onInstalled);
 }
 
-QString CardReaderPlugin::settingsPrefix()
-{
-	static const QString s = CardReaderPlugin::SETTINGS_PREFIX;
-	return s;
-}
+//QString CardReaderPlugin::settingsPrefix()
+//{
+//	static const QString s = CardReaderPlugin::SETTINGS_PREFIX;
+//	return s;
+//}
 
 void CardReaderPlugin::onInstalled()
 {
@@ -60,6 +64,9 @@ void CardReaderPlugin::onInstalled()
 
 	services::RacomClient *racom_client = new services::RacomClient(this);
 	Event::services::Service::addService(racom_client);
+
+	auto core_plugin = getPlugin<Core::CorePlugin>();
+	core_plugin->settingsDialog()->addPage(new CardReaderSettingsPage());
 }
 
 QQmlListProperty<CardReader::CardChecker> CardReaderPlugin::cardCheckersListProperty()

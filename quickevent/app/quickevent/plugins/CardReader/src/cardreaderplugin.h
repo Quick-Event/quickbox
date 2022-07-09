@@ -36,7 +36,7 @@ public:
 	const QList<CardReader::CardChecker*>& cardCheckers() {return m_cardCheckers;}
 	CardReader::CardChecker* currentCardChecker();
 
-	Q_INVOKABLE QString settingsPrefix();
+	//Q_INVOKABLE QString settingsPrefix();
 
 	int currentStageId();
 	int cardIdToSiId(int card_id);
