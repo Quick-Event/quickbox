@@ -6,7 +6,7 @@
     <message>
         <location filename="src/reportoptionsdialog.ui" line="14"/>
         <source>Print Report Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Nastavení tisku</translation>
     </message>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="35"/>
