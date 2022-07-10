@@ -346,7 +346,7 @@ Vyčítat po oražení: {{ReadOutAfterPunch}}
     <message>
         <location filename="plugins/CardReader/src/cardreaderwidget.cpp" line="423"/>
         <source>SI station not connected</source>
-        <translation type="unfinished"></translation>
+        <translation>SI jednotka není připojena</translation>
     </message>
     <message>
         <location filename="plugins/CardReader/src/cardreaderwidget.cpp" line="492"/>
@@ -356,7 +356,7 @@ Vyčítat po oražení: {{ReadOutAfterPunch}}
     <message>
         <location filename="plugins/CardReader/src/cardreaderwidget.cpp" line="512"/>
         <source>Assign card to runner	Ctrl + Enter</source>
-        <translation type="unfinished"></translation>
+        <translation>Přiřadit čip závodníkovi	Ctrl + Enter</translation>
     </message>
     <message>
         <location filename="plugins/CardReader/src/cardreaderwidget.cpp" line="559"/>
@@ -892,7 +892,8 @@ Pokud budete pokračovat, toto označení bude odebráno.</translation>
         <location filename="plugins/Classes/src/classeswidget.cpp" line="313"/>
         <source>Classes without start interval won&apos;t be displayed.
 Consider setting &quot;Interval&quot; column for all classes before continuing.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kategorie bez nastaveného startovního intervalu nebudou zobrazeny.
+Zvažte nastavení intervalu pro všechny kategorie.</translation>
     </message>
     <message>
         <location filename="plugins/Classes/src/classeswidget.cpp" line="331"/>
@@ -1596,88 +1597,88 @@ Consider setting &quot;Interval&quot; column for all classes before continuing.<
     <message>
         <location filename="plugins/Receipts/qml/receipts/Default.qml" line="82"/>
         <source>E</source>
-        <translation type="unfinished">E</translation>
+        <translation>E</translation>
     </message>
     <message>
         <location filename="plugins/Receipts/qml/receipts/Default.qml" line="111"/>
         <source>NO_REG</source>
-        <translation type="unfinished"></translation>
+        <translation>Neregistrovaný</translation>
     </message>
     <message>
         <location filename="plugins/Receipts/qml/receipts/Default.qml" line="158"/>
         <source>Relay:</source>
-        <translation type="unfinished"></translation>
+        <translation>Štafeta:</translation>
     </message>
     <message>
         <location filename="plugins/Receipts/qml/receipts/Default.qml" line="173"/>
         <source>Leg:</source>
-        <translation type="unfinished"></translation>
+        <translation>Úsek:</translation>
     </message>
     <message>
         <location filename="plugins/Receipts/qml/receipts/Default.qml" line="189"/>
         <source>Check:</source>
-        <translation type="unfinished"></translation>
+        <translation>Check:</translation>
     </message>
     <message>
         <location filename="plugins/Receipts/qml/receipts/Default.qml" line="208"/>
         <source>SI:</source>
-        <translation type="unfinished"></translation>
+        <translation>SI:</translation>
     </message>
     <message>
         <location filename="plugins/Receipts/qml/receipts/Default.qml" line="223"/>
         <source>Start:</source>
-        <translation type="unfinished"></translation>
+        <translation>Start:</translation>
     </message>
     <message>
         <location filename="plugins/Receipts/qml/receipts/Default.qml" line="241"/>
         <source>Finish:</source>
-        <translation type="unfinished"></translation>
+        <translation>Cíl:</translation>
     </message>
     <message>
         <location filename="plugins/Receipts/qml/receipts/Default.qml" line="323"/>
         <source>OK</source>
-        <translation type="unfinished">OK</translation>
+        <translation>OK</translation>
     </message>
     <message>
         <location filename="plugins/Receipts/qml/receipts/Default.qml" line="323"/>
         <source>DISQ</source>
-        <translation type="unfinished">DISK</translation>
+        <translation>DISK</translation>
     </message>
     <message>
         <location filename="plugins/Receipts/qml/receipts/Default.qml" line="343"/>
         <location filename="plugins/Receipts/qml/receipts/Default.qml" line="407"/>
         <source>-----</source>
-        <translation type="unfinished">-----</translation>
+        <translation>-----</translation>
     </message>
     <message>
         <location filename="plugins/Receipts/qml/receipts/Default.qml" line="494"/>
         <source>!!! RENTED CARD !!!</source>
-        <translation type="unfinished">!!! ZAPŮJČENÝ ČIP !!!</translation>
+        <translation>!!! ZAPŮJČENÝ ČIP !!!</translation>
     </message>
     <message>
         <location filename="plugins/Receipts/qml/receipts/Default.qml" line="510"/>
         <source>current placement = </source>
-        <translation type="unfinished"></translation>
+        <translation>aktuální umístění = </translation>
     </message>
     <message>
         <location filename="plugins/Receipts/qml/receipts/Default.qml" line="518"/>
         <source>loss to leading runner = </source>
-        <translation type="unfinished"></translation>
+        <translation>ztráta na vedoucího závodníka = </translation>
     </message>
     <message>
         <location filename="plugins/Receipts/qml/receipts/Default.qml" line="531"/>
         <source>loss to best splits =  </source>
-        <translation type="unfinished"></translation>
+        <translation>ztráta na nejlepší mezičasy =  </translation>
     </message>
     <message>
         <location filename="plugins/Receipts/qml/receipts/Default.qml" line="539"/>
         <source>average pace = </source>
-        <translation type="unfinished"></translation>
+        <translation>průměrné tempo = </translation>
     </message>
     <message>
         <location filename="plugins/Receipts/qml/receipts/Default.qml" line="555"/>
         <source>extra punches = </source>
-        <translation type="unfinished"></translation>
+        <translation>navíc oraženo = </translation>
     </message>
 </context>
 <context>
@@ -2206,7 +2207,7 @@ Použij: Soubor --&gt; Importovat --&gt; Závod (*.qbe) pro konverzi dat do aktu
     <message>
         <location filename="plugins/Event/src/stagewidget.ui" line="50"/>
         <source>H:mm:ss</source>
-        <translation type="unfinished"></translation>
+        <translation>H:mm:ss</translation>
     </message>
     <message>
         <location filename="plugins/Event/src/stagewidget.cpp" line="14"/>
@@ -2216,7 +2217,7 @@ Použij: Soubor --&gt; Importovat --&gt; Závod (*.qbe) pro konverzi dat do aktu
     <message>
         <location filename="plugins/Event/src/stagewidget.cpp" line="15"/>
         <source>Edit Stage</source>
-        <translation type="unfinished">Upravit etapu</translation>
+        <translation>Upravit etapu</translation>
     </message>
 </context>
 <context>
@@ -2427,7 +2428,7 @@ Použij: Soubor --&gt; Importovat --&gt; Závod (*.qbe) pro konverzi dat do aktu
         <location filename="plugins/Event/src/eventdialogwidget.ui" line="232"/>
         <source>h:mm:ss</source>
         <oldsource>h:mm</oldsource>
-        <translation type="unfinished">h:mm</translation>
+        <translation>h:mm:ss</translation>
     </message>
     <message>
         <location filename="plugins/Event/src/eventdialogwidget.ui" line="246"/>
@@ -3629,23 +3630,23 @@ Použij: Soubor --&gt; Importovat --&gt; Závod (*.qbe) pro konverzi dat do aktu
         <location filename="plugins/Runs/src/cardflagsdialog.ui" line="14"/>
         <source>Card flags</source>
         <oldsource>Card flags dialog</oldsource>
-        <translation type="unfinished">Příznaky čipu</translation>
+        <translation>Příznaky čipu</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/cardflagsdialog.ui" line="20"/>
         <source>Card rented / rent requested</source>
         <oldsource>Card rent requested</oldsource>
-        <translation type="unfinished">Vyžádáno půjčení čipu</translation>
+        <translation>Půjčen čip / vyžádáno půjčení čipu</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/cardflagsdialog.ui" line="27"/>
         <source>Card exists in cards to rent table, see Competitors-&gt;Cards-&gt;Cards to rent</source>
-        <translation type="unfinished"></translation>
+        <translation>Čip je uveden v tabulce čipů k zapůjčení (Závodníci --&gt; Čipy --&gt; Čipy k zapůjčení)</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/cardflagsdialog.ui" line="30"/>
         <source>Card rented from rent table</source>
-        <translation type="unfinished"></translation>
+        <translation>Čip je uveden v tabulce čipů k zapůjčení</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/cardflagsdialog.ui" line="37"/>
@@ -3705,7 +3706,7 @@ Použij: Soubor --&gt; Importovat --&gt; Závod (*.qbe) pro konverzi dat do aktu
         <location filename="plugins/Runs/src/runflagsdialog.ui" line="14"/>
         <source>Run flags</source>
         <oldsource>Run flags dialog</oldsource>
-        <translation type="unfinished">Příznaky závodníka</translation>
+        <translation>Příznaky závodníka</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/runflagsdialog.ui" line="20"/>
@@ -3715,7 +3716,7 @@ Použij: Soubor --&gt; Importovat --&gt; Závod (*.qbe) pro konverzi dat do aktu
     <message>
         <location filename="plugins/Runs/src/runflagsdialog.ui" line="27"/>
         <source>Disqualified by organiser</source>
-        <translation type="unfinished"></translation>
+        <translation>Diskvalifikace organizátorem</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/runflagsdialog.ui" line="34"/>
@@ -4324,7 +4325,7 @@ Použij: Soubor --&gt; Importovat --&gt; Závod (*.qbe) pro konverzi dat do aktu
         <location filename="plugins/Runs/src/runstablemodel.cpp" line="81"/>
         <source>DO</source>
         <comment>disqualifiedByOrganizer</comment>
-        <translation type="unfinished"></translation>
+        <translation>DO</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/runstablemodel.cpp" line="83"/>
