@@ -405,7 +405,7 @@ QVariant RelaysWidget::startListByClassesTableData(const QString &class_filter)
 		}
 		tt.appendTable(i, tt2);
 	}
-	//qfInfo() << tt.toString();
+	// qfInfo() << tt.toString();
 	return tt.toVariant();
 }
 

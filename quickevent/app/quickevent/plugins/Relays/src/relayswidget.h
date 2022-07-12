@@ -55,6 +55,7 @@ private:
 	void print_results_overal_condensed();
 
 	void export_results_iofxml3();
+	void export_start_list_iofxml3();
 
 	//void printResults(const QString &settings_id, const QVariantMap &default_options);
 private:
