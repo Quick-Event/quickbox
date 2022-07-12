@@ -12,7 +12,6 @@
 #include <quickevent/gui/reportoptionsdialog.h>
 
 #include <quickevent/core/si/siid.h>
-#include <quickevent/core/utils.h>
 #include <quickevent/core/si/punchrecord.h>
 
 #include <qf/qmlwidgets/dialogs/dialog.h>
@@ -32,7 +31,6 @@
 #include <qf/core/sql/querybuilder.h>
 #include <qf/core/sql/transaction.h>
 #include <qf/core/assert.h>
-#include <qf/core/utils/htmlutils.h>
 #include <qf/core/utils/treetable.h>
 #include <QCheckBox>
 #include <QInputDialog>
@@ -56,11 +54,6 @@ using Runs::RunsPlugin;
 using Relays::RelaysPlugin;
 
 namespace {
-
-static QString datetime_to_string(const QDateTime &dt)
-{
-	return quickevent::core::Utils::dateTimeToIsoStringWithUtcOffset(dt);
-}
 
 enum Columns {
 	col_relays_id = 0,
@@ -342,73 +335,6 @@ void RelaysWidget::relays_assignNumbers()
 	reload();
 }
 
-QVariant RelaysWidget::startListByClassesTableData(const QString &class_filter)
-{
-	qfLogFuncFrame() << class_filter;
-	qf::core::model::SqlTableModel model;
-	qf::core::model::SqlTableModel model2;
-	{
-		qf::core::sql::QueryBuilder qb;
-		qb.select2("classes", "id, name")
-			.from("classes")
-			.orderBy("classes.name");//.limit(1);
-		if(!class_filter.isEmpty()) {
-			qb.where(class_filter);
-		}
-		model.setQueryBuilder(qb, true);
-	}
-	//console.info("currentStageTable query:", reportModel.effectiveQuery());
-	model.reload();
-	qf::core::utils::TreeTable tt = model.toTreeTable();
-	tt.setValue("event", getPlugin<EventPlugin>()->eventConfig()->value("event"));
-	tt.setValue("stageStart", getPlugin<EventPlugin>()->stageStartDateTime(1));
-	{
-		qf::core::sql::QueryBuilder qb;
-		qb.select2("relays", "id, name, number")
-				.select2("clubs", "name")
-				.select("clubs.abbr, clubs.name, COALESCE(relays.club, '') || ' ' || COALESCE(relays.name, '') AS relayName")
-				.from("relays")
-				.join("relays.club", "clubs.abbr")
-				.where("relays.classId={{class_id}}")
-				.orderBy("relays.number, relayName");
-		model.setQueryBuilder(qb, true);
-	}
-	{
-		qf::core::sql::QueryBuilder qb;
-		qb.select2("competitors", "registration")
-			.select("competitors.firstName, competitors.lastName, COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName")
-			.select2("runs", "leg, siId, startTimeMs")
-			.from("runs")
-			.join("runs.competitorId", "competitors.id")
-			.join("runs.relayId", "relays.id")
-			.where("runs.relayId={{relay_id}}")
-			.where("runs.isRunning")
-			.orderBy("runs.leg");
-		model2.setQueryBuilder(qb, true);
-	}
-	for(int i=0; i<tt.rowCount(); i++) {
-		int class_id = tt.row(i).value("classes.id").toInt();
-		//console.debug("class id:", class_id);
-		QVariantMap qm;
-		qm["class_id"] = class_id;
-		model.setQueryParameters(qm);
-		model.reload();
-		qf::core::utils::TreeTable tt2 = model.toTreeTable();
-		for (int j = 0; j < tt2.rowCount(); ++j) {
-			int relay_id = tt2.row(j).value("relays.id").toInt();
-			QVariantMap qm2;
-			qm2["relay_id"] = relay_id;
-			model2.setQueryParameters(qm2);
-			model2.reload();
-			qf::core::utils::TreeTable tt3 = model2.toTreeTable();
-			tt2.appendTable(j, tt3);
-		}
-		tt.appendTable(i, tt2);
-	}
-	//qfInfo() << tt.toString();
-	return tt.toVariant();
-}
-
 QVariant RelaysWidget::startListByClubsTableData()
 {
 	qfLogFuncFrame();
@@ -489,7 +415,7 @@ void RelaysWidget::print_start_list_classes()
 	if(!dlg.exec())
 		return;
 	QVariantMap props = dlg.reportProperties();
-	QVariant td = startListByClassesTableData(dlg.sqlWhereExpression());
+	QVariant td = getPlugin<RelaysPlugin>()->startListByClassesTableData(dlg.sqlWhereExpression());
 	qf::qmlwidgets::reports::ReportViewWidget::showReport(this,
 														  getPlugin<RelaysPlugin>()->qmlDir() + "/startList_classes.qml"
 														  , td
@@ -594,371 +520,35 @@ void RelaysWidget::print_results_overal_condensed()
 														  );
 }
 
-static void append_list(QVariantList &lst, const QVariantList &new_lst)
-{
-	lst.insert(lst.count(), new_lst);
-}
 
-void RelaysWidget::export_results_iofxml3()
-{
+void RelaysWidget::save_xml_file(QString str, QString fn) {
 	qfLogFuncFrame();
-	QString fn = getPlugin<EventPlugin>()->eventName() + ".results.iof30.xml";
 	QString ext = ".xml";
-	fn = qfd::FileDialog::getSaveFileName(this, tr("Save as %1").arg(ext.mid(1).toUpper()), fn, '*' + ext);
+	fn = qf::qmlwidgets::dialogs::FileDialog::getSaveFileName(this, tr("Save as %1").arg(ext.mid(1).toUpper()), fn, '*' + ext);
 	if(!fn.isEmpty()) {
 		if(!fn.endsWith(ext, Qt::CaseInsensitive))
 			fn += ext;
 	}
 	if(fn.isEmpty())
-		return;	
+		return;
 	QFile out_file(fn);
 	if(!out_file.open(QIODevice::WriteOnly)) {
 		qfError() << "Cannot open file" << out_file.fileName() << "for writing.";
 		return;
 	}
 
-	QDateTime start00 = getPlugin<EventPlugin>()->stageStartDateTime(1);
-	qfDebug() << "creating table";
-	//auto tt_classes = getPlugin<RelaysPlugin>()->nLegsResultsTable("classes.name='D105'", 999, 999999, false);
-	auto tt_classes = getPlugin<RelaysPlugin>()->nLegsResultsTable(QString(), 999, 999999, false);
-	QVariantList result_list{
-		"ResultList",
-		QVariantMap{
-			{"xmlns", "http://www.orienteering.org/datastandard/3.0"},
-			{"status", "Complete"},
-			{"iofVersion", "3.0"},
-			{"creator", "QuickEvent"},
-			{"createTime", datetime_to_string(QDateTime::currentDateTime())},
-		}
-	};
-	{
-		QVariantList event_lst{"Event"};
-		QVariantMap event = tt_classes.value("event").toMap();
-		event_lst.insert(event_lst.count(), QVariantList{"Id", QVariantMap{{"type", "ORIS"}}, event.value("importId")});
-		event_lst.insert(event_lst.count(), QVariantList{"Name", event.value("name")});
-		event_lst.insert(event_lst.count(), QVariantList{"StartTime",
-				   QVariantList{"Date", event.value("date")},
-				   QVariantList{"Time", event.value("time")}
-		});
-		event_lst.insert(event_lst.count(),
-			QVariantList{"Official",
-				QVariantMap{{"type", "director"}},
-				QVariantList{"Person",
-					QVariantList{"Name",
-						QVariantList{"Family", event.value("director").toString().section(' ', 1, 1)},
-						QVariantList{"Given", event.value("director").toString().section(' ', 0, 0)},
-					}
-				},
-			}
-		);
-		event_lst.insert(event_lst.count(),
-			QVariantList{"Official",
-				QVariantMap{{"type", "mainReferee"}},
-				QVariantList{"Person",
-					QVariantList{"Name",
-						QVariantList{"Family", event.value("mainReferee").toString().section(' ', 1, 1)},
-						QVariantList{"Given", event.value("mainReferee").toString().section(' ', 0, 0)},
-					}
-				},
-			}
-		);
-		result_list.insert(result_list.count(), event_lst);
-	}
-	for(int i=0; i<tt_classes.rowCount(); i++) {
-
-		QVariantList class_result{"ClassResult"};
-		const qf::core::utils::TreeTableRow tt_classes_row = tt_classes.row(i);
-		QF_TIME_SCOPE("exporting class: " + tt_classes_row.value(QStringLiteral("className")).toString());
-		append_list(class_result,
-			QVariantList{"Class",
-				QVariantList{"Name", tt_classes_row.value(QStringLiteral("className")) },
-			}
-		);
-		qf::core::utils::TreeTable tt_teams = tt_classes_row.table();
-		for(int j=0; j<tt_teams.rowCount(); j++) {
-			QVariantList team_result{"TeamResult"};
-			const qf::core::utils::TreeTableRow tt_teams_row = tt_teams.row(j);
-			QF_TIME_SCOPE("exporting team: " + tt_teams_row.value(QStringLiteral("name")).toString());
-			append_list(team_result,
-				QVariantList{"Name", tt_teams_row.value(QStringLiteral("name")) }
-			);
-			int relay_number = tt_teams_row.value(QStringLiteral("relayNumber")).toInt();
-			append_list(team_result,
-				QVariantList{"BibNumber", relay_number }
-			);
-
-			qf::core::utils::TreeTable tt_legs = tt_teams_row.table();
-			for (int k = 0; k < tt_legs.rowCount(); ++k) {
-				int leg = k + 1;
-				QF_TIME_SCOPE("exporting leg: " + QString::number(leg));
-				const qf::core::utils::TreeTableRow tt_leg_row = tt_legs.row(k);
-				QVariantList member_result{"TeamMemberResult"};
-				append_list(member_result,
-							QVariantList{"Person",
-								QVariantList{"Id", QVariantMap{{"type", "CZE"}}, tt_leg_row.value(QStringLiteral("registration"))},
-								QVariantList{"Name",
-								   QVariantList{"Family", tt_leg_row.value(QStringLiteral("lastName"))},
-								   QVariantList{"Given", tt_leg_row.value(QStringLiteral("firstName"))},
-								}
-							} );
-				QVariantList person_result{"Result"};
-				append_list(person_result, QVariantList{"Leg", k+1 } );
-				append_list(person_result, QVariantList{"BibNumber", QString::number(relay_number) + '.' + QString::number(k+1)});
-				int run_id = tt_leg_row.value(QStringLiteral("runId")).toInt();
-				int stime = 0, ftime = 0, time_msec = 0, siId = 0;
-				if(run_id > 0) {
-					qfs::QueryBuilder qb;
-					qb.select2("runs", "startTimeMs, finishTimeMs, timeMs, siId")
-							.from("runs").where("id=" + QString::number(run_id));
-					qfs::Query q;
-					q.execThrow(qb.toString());
-					if(q.next()) {
-						stime = q.value(0).toInt();
-						ftime = q.value(1).toInt();
-						time_msec = q.value(2).toInt();
-						siId = q.value(3).toInt();
-					}
-					else {
-						qfWarning() << "Cannot load run for id:" << run_id;
-					}
-				}
-				append_list(person_result, QVariantList{"StartTime", datetime_to_string(start00.addMSecs(stime))});
-				append_list(person_result, QVariantList{"FinishTime", datetime_to_string(start00.addMSecs(ftime))});
-				append_list(person_result, QVariantList{"Time", time_msec / 1000});
-				append_list(person_result, QVariantList{"TimeBehind", QVariantMap{{"type", "Leg"}},tt_leg_row.value(QStringLiteral("loss"))});
-				append_list(person_result, QVariantList{"Position", QVariantMap{{"type", "Leg"}}, tt_leg_row.value(QStringLiteral("pos"))});
-				// MISSING position course append_list(person_result, QVariantList{"Position", QVariantMap{{"type", "course"}}, tt_laps_row.value(QStringLiteral("pos"))});
-				append_list(person_result, QVariantList{"Status", tt_leg_row.value(QStringLiteral("status"))});
-				QVariantList overall_result{"OverallResult"};
-				{
-					append_list(overall_result, QVariantList{"Time", tt_leg_row.value(QStringLiteral("stime")).toInt() / 1000});
-					append_list(overall_result, QVariantList{"Position", tt_leg_row.value(QStringLiteral("spos"))});
-					append_list(overall_result, QVariantList{"Status", tt_leg_row.value(QStringLiteral("sstatus"))});
-					// MISSING TimeBehind
-				}
-				append_list(person_result, overall_result);
-				int course_id = getPlugin<RunsPlugin>()->courseForRelay(relay_number, leg);
-				{
-					QF_TIME_SCOPE("exporting course: " + QString::number(course_id));
-					QVariantList course{"Course"};
-					append_list(course, QVariantList{"Id", course_id});
-					{
-						qfs::QueryBuilder qb;
-						qb.select2("courses", "name, length, climb")
-								.from("courses").where("id=" + QString::number(course_id));
-						qfs::Query q;
-						q.execThrow(qb.toString());
-						if(q.next()) {
-							append_list(course, QVariantList{"Name", q.value(0)});
-							append_list(course, QVariantList{"Length", q.value(1)});
-							append_list(course, QVariantList{"Climb", q.value(2)});
-						}
-						else {
-							qfWarning() << "Cannot load course for id:" << course_id;
-						}
-					}
-					append_list(person_result, course);
-				}
-				{
-					QF_TIME_SCOPE("exporting laps");
-					qf::core::sql::QueryBuilder qb;
-					qb.select2("runlaps", "position, stpTimeMs")
-							.from("runlaps").where("runId=" + QString::number(run_id))
-							.where("code >= " + QString::number(quickevent::core::CodeDef::PUNCH_CODE_MIN))
-							.where("code <= " + QString::number(quickevent::core::CodeDef::PUNCH_CODE_MAX))
-							.orderBy("position") ;
-					//qfInfo() << qb.toString();
-					auto q = qf::core::sql::Query::fromExec(qb.toString());
-					quickevent::core::CourseDef csd = getPlugin<RunsPlugin>()->courseForCourseId(course_id);
-					QVariantList codes = csd.codes();
-					int sql_pos = -1;
-					for (int ix = 0; ix < codes.count(); ++ix) {
-						quickevent::core::CodeDef cd(codes[ix].toMap());
-						int pos = ix + 1;
-						if(sql_pos < 0) {
-							if(q.next()) {
-								sql_pos = q.value(0).toInt();
-							}
-						}
-						int time = 0;
-						if(pos == sql_pos) {
-							sql_pos = -1;
-							time = q.value(1).toInt();
-						}
-						QVariantList split{QStringLiteral("SplitTime")};
-						append_list(split, QVariantList{"ControlCode", cd.code()});
-						append_list(split, QVariantList{"Time", time / 1000});
-						append_list(person_result, split);
-					}
-				}
-				append_list(person_result, QVariantList{"ControlCard", siId});
-				append_list(member_result, person_result);
-				append_list(team_result, member_result);
-			}
-			append_list(class_result, team_result);
-		}
-		append_list(result_list, class_result);
-	}
-	qf::core::utils::HtmlUtils::FromXmlListOptions opts;
-	opts.setDocumentTitle(tr("Relays IOF-XML 3.0 results"));
-	QString str = qf::core::utils::HtmlUtils::fromXmlList(result_list, opts);
 	out_file.write(str.toUtf8());
 	qfInfo() << "exported:" << out_file.fileName();
 }
 
-void RelaysWidget::export_start_list_iofxml3()
-{
-	qfLogFuncFrame();
+
+void RelaysWidget::export_start_list_iofxml3() {
+
 	QString fn = getPlugin<EventPlugin>()->eventName() + ".startlist.iof30.xml";
-	QString ext = ".xml";
-	fn = qfd::FileDialog::getSaveFileName(this, tr("Save as %1").arg(ext.mid(1).toUpper()), fn, '*' + ext);
-	if(!fn.isEmpty()) {
-		if(!fn.endsWith(ext, Qt::CaseInsensitive))
-			fn += ext;
-	}
-	if(fn.isEmpty())
-		return;
-	QFile out_file(fn);
-	if(!out_file.open(QIODevice::WriteOnly)) {
-		qfError() << "Cannot open file" << out_file.fileName() << "for writing.";
-		return;
-	}
-
-
-	QDateTime start00 = getPlugin<EventPlugin>()->stageStartDateTime(1);
-	qfDebug() << "creating table";
-	//auto tt_classes = getPlugin<RelaysPlugin>()->nLegsResultsTable("classes.name='D105'", 999, 999999, false);
-	qf::core::utils::TreeTable tt_classes = startListByClassesTableData(QString());
-	QVariantList start_list{
-		"StartList",
-		QVariantMap{
-			{"xmlns", "http://www.orienteering.org/datastandard/3.0"},
-			{"status", "Complete"},
-			{"iofVersion", "3.0"},
-			{"creator", "QuickEvent"},
-			{"createTime", datetime_to_string(QDateTime::currentDateTime())},
-		}
-	};
-	{
-		QVariantList event_lst{"Event"};
-		QVariantMap event = tt_classes.value("event").toMap();
-		event_lst.insert(event_lst.count(), QVariantList{"Id", QVariantMap{{"type", "ORIS"}}, event.value("importId")});
-		event_lst.insert(event_lst.count(), QVariantList{"Name", event.value("name")});
-		event_lst.insert(event_lst.count(), QVariantList{"StartTime",
-				   QVariantList{"Date", event.value("date")},
-				   QVariantList{"Time", event.value("time")}
-		});
-		event_lst.insert(event_lst.count(),
-			QVariantList{"Official",
-				QVariantMap{{"type", "director"}},
-				QVariantList{"Person",
-					QVariantList{"Name",
-						QVariantList{"Family", event.value("director").toString().section(' ', 1, 1)},
-						QVariantList{"Given", event.value("director").toString().section(' ', 0, 0)},
-					}
-				},
-			}
-		);
-		event_lst.insert(event_lst.count(),
-			QVariantList{"Official",
-				QVariantMap{{"type", "mainReferee"}},
-				QVariantList{"Person",
-					QVariantList{"Name",
-						QVariantList{"Family", event.value("mainReferee").toString().section(' ', 1, 1)},
-						QVariantList{"Given", event.value("mainReferee").toString().section(' ', 0, 0)},
-					}
-				},
-			}
-		);
-		start_list.insert(start_list.count(), event_lst);
-	}
-	for(int i=0; i<tt_classes.rowCount(); i++) {
-		QVariantList class_start{"ClassStart"};
-		const qf::core::utils::TreeTableRow tt_classes_row = tt_classes.row(i);
-		QF_TIME_SCOPE("exporting class: " + tt_classes_row.value(QStringLiteral("classes.name")).toString());
-		append_list(class_start,
-			QVariantList{"Class",
-				QVariantList{"Name", tt_classes_row.value(QStringLiteral("classes.name")) },
-			}
-		);
-		qf::core::utils::TreeTable tt_teams = tt_classes_row.table();
-		for(int j=0; j<tt_teams.rowCount(); j++) {
-			QVariantList team_start{"TeamStart"};
-			const qf::core::utils::TreeTableRow tt_teams_row = tt_teams.row(j);
-			QF_TIME_SCOPE("exporting team: " + tt_teams_row.value(QStringLiteral("relayName")).toString());
-			append_list(team_start,
-				QVariantList{"Name", tt_teams_row.value(QStringLiteral("relayName")) }
-			);
-
-			append_list(team_start,
-				QVariantList{"Organisation",
-					QVariantList{"ShortName", tt_teams_row.value(QStringLiteral("abbr"))},
-					QVariantList{"Name", tt_teams_row.value(QStringLiteral("clubs.name"))}
-				}
-			);
-
-			int relay_number = tt_teams_row.value(QStringLiteral("relays.number")).toInt();
-			append_list(team_start,
-				QVariantList{"BibNumber", relay_number }
-			);
-
-			qf::core::utils::TreeTable tt_legs = tt_teams_row.table();
-			for (int k = 0; k < tt_legs.rowCount(); ++k) {
-				int leg = k + 1;
-				QF_TIME_SCOPE("exporting leg: " + QString::number(leg));
-				const qf::core::utils::TreeTableRow tt_leg_row = tt_legs.row(k);
-				QVariantList member_start{"TeamMemberStart"};
-				append_list(member_start,
-							QVariantList{"Person",
-								QVariantList{"Id", QVariantMap{{"type", "CZE"}}, tt_leg_row.value(QStringLiteral("registration"))},
-								QVariantList{"Name",
-								   QVariantList{"Family", tt_leg_row.value(QStringLiteral("lastName"))},
-								   QVariantList{"Given", tt_leg_row.value(QStringLiteral("firstName"))},
-								}
-							} );
-				QVariantList start{"Start"};
-				append_list(start, QVariantList{"Leg", k+1 } );
-				append_list(start, QVariantList{"BibNumber", QString::number(relay_number) + '.' + QString::number(k+1)});
-				append_list(start, QVariantList{"StartTime", datetime_to_string(start00.addMSecs(tt_leg_row.value(QStringLiteral("runs.startTimeMs")).toInt()))});
-				int course_id = getPlugin<RunsPlugin>()->courseForRelay(relay_number, leg);
-				{
-					QF_TIME_SCOPE("exporting course: " + QString::number(course_id));
-					QVariantList course{"Course"};
-					append_list(course, QVariantList{"Id", course_id});
-					{
-						qfs::QueryBuilder qb;
-						qb.select2("courses", "name, length, climb")
-								.from("courses").where("id=" + QString::number(course_id));
-						qfs::Query q;
-						q.execThrow(qb.toString());
-						if(q.next()) {
-							append_list(course, QVariantList{"Name", q.value(0)});
-							append_list(course, QVariantList{"Length", q.value(1)});
-							append_list(course, QVariantList{"Climb", q.value(2)});
-						}
-						else {
-							qfWarning() << "Cannot load course for id:" << course_id;
-						}
-					}
-					append_list(start, course);
-				}
-
-				QVariant siId = tt_leg_row.value(QStringLiteral("runs.siId"));
-				if (siId.toBool()) {
-					append_list(start, QVariantList{"ControlCard", siId.toInt()});
-				}
-				append_list(member_start, start);
-				append_list(team_start, member_start);
-			}
-			append_list(class_start, team_start);
-		}
-		append_list(start_list, class_start);
-	}
-	qf::core::utils::HtmlUtils::FromXmlListOptions opts;
-	opts.setDocumentTitle(tr("Relays IOF-XML 3.0 results"));
-	QString str = qf::core::utils::HtmlUtils::fromXmlList(start_list, opts);
-	out_file.write(str.toUtf8());
-	qfInfo() << "exported:" << out_file.fileName();
+	save_xml_file(getPlugin<RelaysPlugin>()->startListIofXml30(), fn);
 }
 
-
+void RelaysWidget::export_results_iofxml3() {
+	QString fn = getPlugin<EventPlugin>()->eventName() + ".results.iof30.xml";
+	save_xml_file(getPlugin<RelaysPlugin>()->resultsIofXml30(), fn);
+}
