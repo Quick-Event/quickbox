@@ -27,6 +27,8 @@ public:
 private slots:
 	void on_buttonBox_rejected();
 private:
+	SettingsPage* page(int page_index);
+private:
 	Ui::SettingsDialog *ui;
 	QButtonGroup *m_buttonGroup;
 };

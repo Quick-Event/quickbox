@@ -6,8 +6,10 @@
 #include <qf/core/log.h>
 
 #include <QButtonGroup>
+#include <QLabel>
 #include <QPushButton>
 #include <QTimer>
+//#include <QDebug>
 
 namespace Core {
 
@@ -19,14 +21,12 @@ SettingsDialog::SettingsDialog(QWidget *parent)
 	m_buttonGroup = new QButtonGroup(this);
 	connect(m_buttonGroup, &QButtonGroup::idToggled, this, [=](int page_index, bool checked) {
 		qfDebug() << "id toggled:" << page_index << checked;
-		auto *page = qobject_cast<SettingsPage*>(ui->stackedWidget->widget(page_index));
-		Q_ASSERT(page);
 		if(checked) {
 			ui->stackedWidget->setCurrentIndex(page_index);
-			page->load();
+			page(page_index)->load();
 		}
 		else {
-			page->save();
+			page(page_index)->save();
 		}
 	});
 }
@@ -39,11 +39,16 @@ SettingsDialog::~SettingsDialog()
 void SettingsDialog::on_buttonBox_rejected()
 {
 	if(int page_index = m_buttonGroup->checkedId(); page_index >= 0) {
-		auto *page = qobject_cast<SettingsPage*>(ui->stackedWidget->widget(page_index));
-		Q_ASSERT(page);
-		page->save();
+		page(page_index)->save();
 	}
 	accept();
+}
+
+SettingsPage *SettingsDialog::page(int page_index)
+{
+	auto *page = ui->stackedWidget->widget(page_index)->findChild<SettingsPage*>(QString(), Qt::FindDirectChildrenOnly);
+	Q_ASSERT(page);
+	return page;
 }
 
 void SettingsDialog::addPage(SettingsPage *page)
@@ -54,11 +59,21 @@ void SettingsDialog::addPage(SettingsPage *page)
 	Q_ASSERT(layout);
 	int page_index = m_buttonGroup->buttons().count();
 	auto *btn = new QPushButton(caption);
-	//btn->setAutoExclusive(true);
+	// set widget minimum width to show all buttons, default behavior is to srt width of widget
+	// according to width of first button added
+	ui->buttonsWidget->setMinimumWidth(std::max(ui->buttonsWidget->minimumWidth(), btn->sizeHint().width() + layout->margin() * 5));
 	btn->setCheckable(true);
 	layout->insertWidget(page_index, btn);
 	m_buttonGroup->addButton(btn, page_index);
-	ui->stackedWidget->addWidget(page);
+	auto *frame = new QFrame();
+	frame->setFrameStyle(QFrame::Box);
+	auto *label = new QLabel("  " + caption + ' ' + tr("settings"));
+	label->setObjectName("CaptionFrame"); // important for CSS
+	auto *ly = new QVBoxLayout(frame);
+	ly->setMargin(0);
+	ly->addWidget(label);
+	ly->addWidget(page);
+	ui->stackedWidget->addWidget(frame);
 	adjustSize();
 	if(page_index == 0) {
 		btn->click();
