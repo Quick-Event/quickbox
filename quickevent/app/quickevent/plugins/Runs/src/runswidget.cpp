@@ -317,7 +317,7 @@ void RunsWidget::settleDownInPartWidget(quickevent::gui::PartWidget *part_widget
 	}
 	{
 		m_cbxClasses = new qfw::ForeignKeyComboBox();
-		m_cbxClasses->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLength);
+		m_cbxClasses->setSizeAdjustPolicy(QComboBox::AdjustToContents);
 #if QT_VERSION >= QT_VERSION_CHECK(5, 11, 0)
 		m_cbxClasses->setMinimumWidth(fontMetrics().horizontalAdvance('X') * 15);
 #else

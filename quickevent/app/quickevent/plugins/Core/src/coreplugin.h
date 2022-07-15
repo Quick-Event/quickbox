@@ -23,7 +23,7 @@ public:
 
 	static const QString SETTINGS_PREFIX_APPLICATION_LOCALE_LANGUAGE();
 
-	void onInstalled();
+	void onInstalled();	
 private:
 	SettingsDialog *m_settingsDialog = nullptr;
 };

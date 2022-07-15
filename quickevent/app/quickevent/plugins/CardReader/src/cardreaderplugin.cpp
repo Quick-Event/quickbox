@@ -40,7 +40,7 @@ using Runs::RunsPlugin;
 
 namespace CardReader {
 
-const QLatin1String CardReaderPlugin::SETTINGS_PREFIX("plugins/CardReader");
+const QLatin1String CardReaderPlugin::SETTINGS_PREFIX("CardReader");
 //const int CardReaderPlugin::FINISH_PUNCH_POS = quickevent::core::CodeDef::FINISH_PUNCH_CODE;
 
 CardReaderPlugin::CardReaderPlugin(QObject *parent)

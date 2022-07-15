@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>CoreSettingsWidget</class>
- <widget class="QWidget" name="CoreSettingsWidget">
+ <class>Core::ReportsSettingsPage</class>
+ <widget class="QWidget" name="Core::ReportsSettingsPage">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -20,30 +20,9 @@
       <string>&amp;Custom reports directory</string>
      </property>
      <property name="buddy">
-      <cstring>edSelectCustomReportsDirectory</cstring>
+      <cstring>edCustomReportsDirectory</cstring>
      </property>
     </widget>
-   </item>
-   <item row="0" column="1">
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <property name="spacing">
-      <number>0</number>
-     </property>
-     <item>
-      <widget class="QLineEdit" name="edSelectCustomReportsDirectory">
-       <property name="clearButtonEnabled">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QToolButton" name="btSelectCustomReportsDirectory">
-       <property name="text">
-        <string>...</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
    </item>
    <item row="2" column="0">
     <spacer name="verticalSpacer">
@@ -58,10 +37,31 @@
      </property>
     </spacer>
    </item>
-   <item row="1" column="1">
-    <widget class="QPushButton" name="btExportReportDefinitions">
+   <item row="0" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <property name="spacing">
+      <number>0</number>
+     </property>
+     <item>
+      <widget class="QLineEdit" name="edCustomReportsDirectory">
+       <property name="clearButtonEnabled">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="btSelectCustomReportsDirectory">
+       <property name="text">
+        <string>...</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="0" column="2">
+    <widget class="QPushButton" name="btCreateCustomReportsDirectory">
      <property name="text">
-      <string>Export report definitions</string>
+      <string>Create</string>
      </property>
     </widget>
    </item>

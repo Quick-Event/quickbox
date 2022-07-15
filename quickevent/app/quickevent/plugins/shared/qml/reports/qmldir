@@ -1,4 +1,4 @@
-module quickevent.shared.qml
+module quickevent.shared.qml.reports
 
 ReportStyleCommon 1.0 ReportStyleCommon.qml
 Space 1.0 Space.qml

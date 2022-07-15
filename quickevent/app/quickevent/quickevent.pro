@@ -54,7 +54,8 @@ RC_FILE = $$PWD/app.rc
 
 QML_IMPORT_PATH += \
     $$PWD/plugins \
-    $$QF_PROJECT_TOP_BUILDDIR/lib/qml \
+	$$QF_PROJECT_TOP_BUILDDIR/lib/qml \
+	:/quickevent \
 
 
 win32:CONFIG(debug, debug|release):CONFIG += console

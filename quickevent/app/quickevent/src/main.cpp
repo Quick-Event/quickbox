@@ -16,7 +16,7 @@
 #include <QtQml>
 #include <QLocale>
 
-#include <iostream>
+//#include <iostream>
 
 NecroLog::MessageHandler old_message_handler;
 bool send_log_entry_recursion_lock = false;
@@ -40,16 +40,7 @@ void send_log_entry_handler(NecroLog::Level level, const NecroLog::LogContext &c
 	}
 	old_message_handler(level, context, msg);
 }
-/*
-void dump_resources()
-{
-	QDirIterator it(":/", QDirIterator::Subdirectories);
-	while (it.hasNext()) {
-		QString dir = it.next();
-		std::cout << dir.toStdString() << std::endl;
-	}
-}
-*/
+
 int main(int argc, char *argv[])
 {
 	//dump_resources();

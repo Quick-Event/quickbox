@@ -29,7 +29,7 @@ CardReaderSettingsPage::CardReaderSettingsPage(QWidget *parent)
 {
 	ui = new Ui::CardReaderSettingsPage;
 	ui->setupUi(this);
-	m_persistentId = CardReader::CardReaderPlugin::SETTINGS_PREFIX;
+	m_settingsDir = CardReader::CardReaderPlugin::SETTINGS_PREFIX;
 	m_caption = tr("Card reader");
 #if 0
 #if defined Q_OS_WIN
@@ -72,7 +72,7 @@ void CardReaderSettingsPage::load()
 	}
 	QSettings settings;
 	//settings.clear();
-	settings.beginGroup(persistentId());
+	settings.beginGroup(settingsDir());
 
 	settings.beginGroup("comm");
 	settings.beginGroup("connection");
@@ -90,7 +90,7 @@ void CardReaderSettingsPage::load()
 void CardReaderSettingsPage::save()
 {
 	QSettings settings;
-	settings.beginGroup(persistentId());
+	settings.beginGroup(settingsDir());
 
 	settings.beginGroup("comm");
 	settings.beginGroup("connection");

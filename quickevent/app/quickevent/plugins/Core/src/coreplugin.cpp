@@ -1,7 +1,7 @@
 #include "coreplugin.h"
 #include "widgets/appstatusbar.h"
 #include "widgets/settingsdialog.h"
-#include "widgets/coresettingspage.h"
+#include "widgets/reportssettingspage.h"
 
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/action.h>
@@ -47,7 +47,7 @@ void CorePlugin::onInstalled()
 	qff::MainWindow *fwk = qff::MainWindow::frameWork();
 	fwk->setStatusBar(new AppStatusBar());
 
-	settingsDialog()->addPage(new CoreSettingsPage());
+	settingsDialog()->addPage(new ReportsSettingsPage());
 
 	auto *a_file = fwk->menuBar()->actionForPath("file", true);
 	a_file->setText(tr("&File"));

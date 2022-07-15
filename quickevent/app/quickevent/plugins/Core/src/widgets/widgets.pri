@@ -1,18 +1,18 @@
 SOURCES += \
 	$$PWD/appstatusbar.cpp \
-	$$PWD/coresettingspage.cpp \
+	$$PWD/reportssettingspage.cpp \
 	$$PWD/settingsdialog.cpp \
 	$$PWD/settingspage.cpp
 
 
 HEADERS  += \
 	$$PWD/appstatusbar.h \
-	$$PWD/coresettingspage.h \
+	$$PWD/reportssettingspage.h \
 	$$PWD/settingsdialog.h \
 	$$PWD/settingspage.h
 
 FORMS += \
-	$$PWD/coresettingswidget.ui \
+	$$PWD/reportssettingspage.ui \
 	$$PWD/settingsdialog.ui
 
 OTHER_FILES += \

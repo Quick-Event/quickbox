@@ -17,7 +17,6 @@ namespace framework {
 class QFQMLWIDGETS_DECL_EXPORT Plugin : public QObject
 {
 	Q_OBJECT
-	QString m_featureId;
 public:
 	explicit Plugin(const QString &feature_id, QObject *parent = nullptr);
 	explicit Plugin(QObject *parent = nullptr);
@@ -25,11 +24,14 @@ public:
 
 	QString homeDir() const { return qf::qmlwidgets::framework::Application::instance()->pluginDataDir() + '/' +  featureId(); }
 	QString qmlDir() const { return homeDir() + "/qml"; }
+	QString qmlReportsDir() const { return qmlDir() + "/reports"; }
 	QString featureId() const { return m_featureId; }
 
 	QQmlEngine* qmlEngine();
 
 	Q_SIGNAL void installed();
+private:
+	QString m_featureId;
 };
 
 }}}

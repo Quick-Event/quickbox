@@ -8,6 +8,7 @@ class QButtonGroup;
 namespace Core {
 
 class SettingsPage;
+class ReportsSettingsPage;
 
 namespace Ui {
 class SettingsDialog;
@@ -23,9 +24,10 @@ public:
 
 	void addPage(SettingsPage *page);
 
-	Q_SIGNAL void callForPages(Core::SettingsDialog *settings_dialog);
+	QString findReportFile(const QString &feature_id, const QString &report_file_path) const;
 private slots:
 	void on_buttonBox_rejected();
+	ReportsSettingsPage *reportsSettingsPage() const;
 private:
 	SettingsPage* page(int page_index);
 private:

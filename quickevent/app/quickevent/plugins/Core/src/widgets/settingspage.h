@@ -12,14 +12,14 @@ class SettingsPage : public QWidget
 public:
 	explicit SettingsPage(QWidget *parent = nullptr);
 
-	QString caption() { return m_caption; }
-	QString persistentId() { return m_persistentId; }
+	QString caption() const { return m_caption; }
+	QString settingsDir() const { return m_settingsDir; }
 
 	virtual void load() = 0;
 	virtual void save() = 0;
 protected:
 	QString m_caption;
-	QString m_persistentId;
+	QString m_settingsDir;
 };
 
 } // namespace Core

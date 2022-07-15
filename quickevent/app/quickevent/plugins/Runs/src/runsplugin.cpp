@@ -26,6 +26,8 @@
 #include <qf/core/utils/table.h>
 #include <qf/core/utils/treetable.h>
 #include <qf/core/model/sqltablemodel.h>
+#include <plugins/Core/src/coreplugin.h>
+#include <plugins/Core/src/widgets/settingsdialog.h>
 #include <plugins/CardReader/src/cardreaderplugin.h>
 #include <plugins/Competitors/src/competitorsplugin.h>
 #include <plugins/Event/src/eventplugin.h>
@@ -1520,8 +1522,9 @@ void RunsPlugin::report_resultsClasses()
 		auto opts = dlg.optionsMap();
 		QVariantMap props;
 		props["options"] = opts;
+		QString rep_fn = getPlugin<Core::CorePlugin>()->settingsDialog()->findReportFile(featureId(), "results_stage.qml");
 		qf::qmlwidgets::reports::ReportViewWidget::showReport(fwk
-									, qmlDir() + "/results_stage.qml"
+									, rep_fn
 									, tt.toVariant()
 									, tr("Results by classes")
 									, "printResults"
