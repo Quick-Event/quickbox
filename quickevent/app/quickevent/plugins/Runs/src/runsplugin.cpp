@@ -2310,10 +2310,7 @@ bool RunsPlugin::exportStartListStageIofXml30(int stage_id, const QString &file_
 			//console.warn(stime_datetime.toJSON());
 			//stime_epoch_sec = start00_epoch_sec + stime_epoch_sec;
 			append_list(xml_start, QVariantList{"StartTime", stime_datetime.toUTC().toString(Qt::ISODateWithMs)});
-			QVariant siId = tt2_row.value(QStringLiteral("runs.siId"));
-			if (siId.toBool()) {
-				append_list(xml_start, QVariantList{"ControlCard", siId.toInt()});
-			}
+			append_list(xml_start, QVariantList{"ControlCard", tt2_row.value(QStringLiteral("runs.siId"))});
 			append_list(xml_person, person);
 			append_list(xml_person, xml_start);
 			auto club_abbr = tt2_row.value(QStringLiteral("clubs.abbr")).toString();
