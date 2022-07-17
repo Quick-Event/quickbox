@@ -10,7 +10,7 @@
 #include "cardreaderwidget.h"
 #include "cardreaderplugin.h"
 
-//#include "theapp.h"
+#include <qf/qmlwidgets/framework/mainwindow.h>
 
 #include <qf/core/log.h>
 
@@ -29,7 +29,8 @@ CardReaderSettingsPage::CardReaderSettingsPage(QWidget *parent)
 {
 	ui = new Ui::CardReaderSettingsPage;
 	ui->setupUi(this);
-	m_settingsDir = CardReader::CardReaderPlugin::SETTINGS_PREFIX;
+	auto *plugin = qf::qmlwidgets::framework::getPlugin<CardReader::CardReaderPlugin>();
+	m_settingsDir = plugin->settingsDir();
 	m_caption = tr("Card reader");
 #if 0
 #if defined Q_OS_WIN

@@ -1380,7 +1380,7 @@ void RunsPlugin::report_startListClasses()
 		QVariantMap props;
 		props["options"] = opts;
 		qf::qmlwidgets::reports::ReportViewWidget::showReport(fwk
-									, qmlDir() + "/startList_classes.qml"
+									, findReportFile("startList_classes.qml")
 									, tt.toVariant()
 									, tr("Start list by classes")
 									, "printStartList"
@@ -1407,7 +1407,7 @@ void RunsPlugin::report_startListClubs()
 		QVariantMap props;
 		props["options"] = opts;
 		qf::qmlwidgets::reports::ReportViewWidget::showReport(fwk
-									, qmlDir() + "/startList_clubs.qml"
+									, findReportFile("startList_clubs.qml")
 									, tt.toVariant()
 									, tr("Start list by clubs")
 									, "printStartList"
@@ -1432,7 +1432,7 @@ void RunsPlugin::report_startListStarters()
 		QVariantMap props;
 		props["options"] = opts;
 		qf::qmlwidgets::reports::ReportViewWidget::showReport(fwk
-									, qmlDir() + "/startList_starters.qml"
+									, findReportFile("startList_starters.qml")
 									, tt.toVariant()
 									, tr("Start list for starters")
 									, "printStartList"
@@ -1465,7 +1465,7 @@ void RunsPlugin::report_startListClassesNStages()
 		//qfDebug() << props;
 		//qfDebug() << "dlg.stagesCount():" << dlg.stagesCount() << opts.stagesCount();
 		qf::qmlwidgets::reports::ReportViewWidget::showReport(fwk
-									, qmlDir() + "/startList_classes_nstages.qml"
+									, findReportFile("startList_classes_nstages.qml")
 									, tt.toVariant()
 									, tr("Start list by classes for %n stage(s)", "", dlg.stagesCount())
 									, "printStartList"
@@ -1499,7 +1499,7 @@ void RunsPlugin::report_startListClubsNStages()
 		//props["reportTitle"] = "report_title";
 		//qfInfo() << props;
 		qf::qmlwidgets::reports::ReportViewWidget::showReport(fwk
-									, qmlDir() + "/startList_clubs_nstages.qml"
+									, findReportFile("startList_clubs_nstages.qml")
 									, tt.toVariant()
 									, tr("Start list by clubs for %n stage(s)", "", dlg.stagesCount())
 									, "printStartList"

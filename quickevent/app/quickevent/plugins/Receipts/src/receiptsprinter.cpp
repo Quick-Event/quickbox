@@ -36,9 +36,9 @@ ReceiptsPrinter::ReceiptsPrinter(const ReceiptsPrinterOptions &opts, QObject *pa
 {
 }
 
-bool ReceiptsPrinter::printReceipt(const QString &report_file_name, const QVariantMap &report_data)
+bool ReceiptsPrinter::printReceipt(const QString &report_file_name, const QVariantMap &report_data, int card_id)
 {
-	qfLogFuncFrame();
+	qfLogFuncFrame() << "card:" << card_id;
 	if(report_file_name.isEmpty()) {
 		qfError() << "Empty receipt path.";
 		return false;
@@ -75,7 +75,8 @@ bool ReceiptsPrinter::printReceipt(const QString &report_file_name, const QVaria
 	qf::qmlwidgets::reports::ReportProcessor rp(paint_device);
 	{
 		QF_TIME_SCOPE("setting report and data");
-		if(!rp.setReport(report_file_name))
+		auto *plugin = qf::qmlwidgets::framework::getPlugin<Receipts::ReceiptsPlugin>();
+		if(!rp.setReport(plugin->findReportFile(report_file_name)))
 			return false;
 		for(auto key : report_data.keys()) {
 			rp.setTableData(key, report_data.value(key));
@@ -133,7 +134,8 @@ bool ReceiptsPrinter::printReceipt(const QString &report_file_name, const QVaria
 					QCryptographicHash ch(QCryptographicHash::Sha1);
 					for(QByteArray ba : data_lines)
 						ch.addData(ba);
-					fn += '/' + QString::fromLatin1(ch.result().toHex().mid(0, 8)) + ".txt";
+					fn += '/' + QString::number(card_id) + '-'
+							+ QString::fromLatin1(ch.result().toHex().mid(0, 8)) + ".txt";
 					return save_file(fn);
 				}
 				return false;

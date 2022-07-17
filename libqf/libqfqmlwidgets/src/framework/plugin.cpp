@@ -41,7 +41,8 @@ QString Plugin::findReportFile(const QString &report_file_path) const
 	search_paths << qmlReportsDir();
 	for(const QString &dir : search_paths) {
 		auto fn = dir + '/' + report_file_path;
-		if(QFile::exists(fn))
+		QFileInfo fi(fn);
+		if(fi.isFile())
 			return fn;
 	}
 	qfError() << "Cannot find report file for feature id:" << m_featureId << "and file path:" << report_file_path;

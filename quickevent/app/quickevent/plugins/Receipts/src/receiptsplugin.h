@@ -28,8 +28,6 @@ private:
 public:
 	ReceiptsPlugin(QObject *parent = nullptr);
 
-	static const QLatin1String SETTINGS_PREFIX;
-
 	Q_INVOKABLE void previewCard(int card_id);
 	Q_INVOKABLE void previewReceipt(int card_id);
 	Q_INVOKABLE bool printReceipt(int card_id);

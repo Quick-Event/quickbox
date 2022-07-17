@@ -244,6 +244,12 @@ void CardReaderWidget::onTestButtonClicked()
 	m_buttonTest->setText("Send packet #" + QString::number(count));
 }
 
+QString CardReaderWidget::settingsDir() const
+{
+	auto *plugin = qf::qmlwidgets::framework::getPlugin<CardReader::CardReaderPlugin>();
+	return plugin->settingsDir();
+}
+
 void CardReaderWidget::onCustomContextMenuRequest(const QPoint & pos)
 {
 	qfLogFuncFrame();
@@ -542,7 +548,7 @@ void CardReaderWidget::onOpenCommTriggered(bool checked)
 	qfLogFuncFrame() << "checked:" << checked;
 	if(checked) {
 		QSettings settings;
-		settings.beginGroup(CardReader::CardReaderPlugin::SETTINGS_PREFIX);
+		settings.beginGroup(settingsDir());
 		settings.beginGroup("comm");
 		settings.beginGroup("connection");
 		QString device = settings.value("device", "").toString();
@@ -618,7 +624,8 @@ void CardReaderWidget::onSiTaskFinished(int task_type, QVariant result)
 void CardReaderWidget::processDriverInfo(NecroLog::Level level, const QString& msg)
 {
 	qf::core::utils::Settings settings;
-	if(settings.value(CardReader::CardReaderPlugin::SETTINGS_PREFIX + "/comm/debug/showRawComData").toBool()) {
+	settings.beginGroup(settingsDir());
+	if(settings.value("comm/debug/showRawComData").toBool()) {
 		if(level == NecroLog::Level::Debug)
 			level = NecroLog::Level::Info;
 	}
@@ -628,8 +635,8 @@ void CardReaderWidget::processDriverInfo(NecroLog::Level level, const QString& m
 void CardReaderWidget::logDriverRawData(const QByteArray& data)
 {
 	qf::core::utils::Settings settings;
-	//qInfo() << settings.value(CardReader::CardReaderPlugin::SETTINGS_PREFIX + "/comm/debug/showRawComData") << "data:" << data;
-	if(settings.value(CardReader::CardReaderPlugin::SETTINGS_PREFIX + "/comm/debug/showRawComData").toBool()) {
+	settings.beginGroup(settingsDir());
+	if(settings.value("comm/debug/showRawComData").toBool()) {
 		QString msg = siut::SIMessageData::dumpData(data, 16);
 		appendLog(NecroLog::Level::Info, tr("DriverRawData: %1").arg(msg));
 	}

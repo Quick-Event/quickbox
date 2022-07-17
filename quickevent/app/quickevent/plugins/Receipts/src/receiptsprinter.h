@@ -16,7 +16,7 @@ public:
 
 	const ReceiptsPrinterOptions& printerOptions() const {return m_printerOptions;}
 
-	bool printReceipt(const QString &report_file_name, const QVariantMap &report_data);
+	bool printReceipt(const QString &report_file_name, const QVariantMap &report_data, int card_id);
 private:
 	QList<QByteArray> createPrinterData(const QDomElement &body, const ReceiptsPrinterOptions &printer_options);
 	void createPrinterData_helper(const QDomElement &el, DirectPrintContext *print_context, const QString &text_encoding);

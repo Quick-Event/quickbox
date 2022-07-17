@@ -1,8 +1,10 @@
 #include "reportssettingspage.h"
 #include "ui_reportssettingspage.h"
+#include "../coreplugin.h"
 
 #include <qf/core/log.h>
 #include <qf/qmlwidgets/framework/plugin.h>
+#include <qf/qmlwidgets/framework/mainwindow.h>
 
 #include <QDirIterator>
 #include <QFileDialog>
@@ -15,7 +17,8 @@ ReportsSettingsPage::ReportsSettingsPage(QWidget *parent) :
 	Super(parent),
 	ui(new Ui::ReportsSettingsPage)
 {
-	m_settingsDir = "Core/reports";
+	auto *plugin = qf::qmlwidgets::framework::getPlugin<Core::CorePlugin>();
+	m_settingsDir = plugin->settingsDir() + "/reports";
 	m_caption = tr("Reports");
 	ui->setupUi(this);
 }

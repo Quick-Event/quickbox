@@ -46,8 +46,6 @@ using qf::qmlwidgets::framework::getPlugin;
 using Event::EventPlugin;
 using Receipts::ReceiptsPlugin;
 
-const char *ReceiptsWidget::SETTINGS_PREFIX = "plugins/Receipts";
-
 ReceiptsWidget::ReceiptsWidget(QWidget *parent) :
 	Super(parent),
 	ui(new Ui::ReceiptsWidget)
@@ -288,42 +286,27 @@ void ReceiptsWidget::markAsPrinted(int connection_id, int card_id)
 void ReceiptsWidget::loadReceptList()
 {
 	ui->lstReceipt->clear();
-	QString application_receipts_path = QCoreApplication::applicationDirPath() + "/quickevent-data/receipts";
-	QString cwd_receipts_path = QDir(".").absolutePath() + "/quickevent-data/receipts";
-	QVector<QString> receipts_paths = {
-		getPlugin<ReceiptsPlugin>()->qmlDir() + "/receipts",
-		application_receipts_path
-	};
-	if (application_receipts_path != cwd_receipts_path) {
-		receipts_paths.append(cwd_receipts_path);
-	}
-	for (QString& receipts_dir: receipts_paths)
-	{
-		qfInfo() << "looking for receipts in: " + receipts_dir;
-		QDirIterator it(receipts_dir, QStringList{"*.qml"}, QDir::Files | QDir::Readable);
-		while (it.hasNext()) {
-			it.next();
-			QFileInfo fi = it.fileInfo();
-			QString path = fi.filePath();
-			QString name = path.mid(receipts_dir.length() + 1);
-			name = name.mid(0, name.indexOf(".qml", Qt::CaseInsensitive));
-			qfInfo() << "receipt found: " << name << ", path: " << path;
-			ui->lstReceipt->addItem(name, path);
-		}
+	auto *this_plugin = getPlugin<ReceiptsPlugin>();
+	for(const auto &i : this_plugin->listReportFiles("receipts")) {
+		qfDebug() << i.reportName << i.reportFilePath;
+		ui->lstReceipt->addItem(i.reportName, i.reportFilePath);
 	}
 	ui->lstReceipt->setCurrentIndex(-1);
 	QString curr_path = getPlugin<ReceiptsPlugin>()->currentReceiptPath();
 	qfInfo() << "current receipt path:" << curr_path;
-	for (int i = 0; i < ui->lstReceipt->count(); ++i) {
-		if(ui->lstReceipt->itemData(i).toString() == curr_path) {
-			ui->lstReceipt->setCurrentIndex(i);
-			break;
+	if(!curr_path.isEmpty()) {
+		for (int i = 0; i < ui->lstReceipt->count(); ++i) {
+			if(ui->lstReceipt->itemData(i).toString() == curr_path) {
+				ui->lstReceipt->setCurrentIndex(i);
+				break;
+			}
 		}
 	}
 	if(ui->lstReceipt->currentIndex() < 0) {
 		ui->lstReceipt->setCurrentIndex(0);
-		getPlugin<ReceiptsPlugin>()->setCurrentReceiptPath(ui->lstReceipt->itemData(0).toString());
+		curr_path = ui->lstReceipt->itemData(0).toString();
 	}
+	getPlugin<ReceiptsPlugin>()->setCurrentReceiptPath(curr_path);
 }
 
 void ReceiptsWidget::updateReceiptsPrinterLabel()

@@ -40,8 +40,6 @@ public:
 	explicit ReceiptsWidget(QWidget *parent = 0);
 	~ReceiptsWidget() Q_DECL_OVERRIDE;
 
-	static const char *SETTINGS_PREFIX;
-
 	void settleDownInPartWidget(quickevent::gui::PartWidget *part_widget);
 
 	Q_SLOT void reset();
