@@ -70,7 +70,7 @@ void GanttItem::load(int stage_id)
 	qfs::Query q(qfs::Connection::forName());
 	qf::core::sql::QueryBuilder qb1;
 	qb1.select("competitors.classId")
-			.select("COUNT(*) AS runsCount")
+			.select("COUNT(runs.competitorId) AS runsCount")
 			.select("MIN(runs.startTimeMs) AS minStartTime")
 			.select("MAX(runs.startTimeMs) AS maxStartTime")
 			.from("competitors")
