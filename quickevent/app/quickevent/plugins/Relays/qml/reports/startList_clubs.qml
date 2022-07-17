@@ -1,12 +1,12 @@
 import qf.qmlreports 1.0
-import shared.qml 1.0
+import shared.qml.reports 1.0
 //import "qrc:/quickevent/core/js/ogtime.js" as OGTime
 
 Report {
 	id: root
 	objectName: "root"
 
-	property string reportTitle: qsTr("Start list by classes")
+	property string reportTitle: qsTr("Start list by clubs")
 	property bool isBreakAfterEachClass: false
 	property bool isColumnBreak: false
 	property bool isPrintStartNumbers: false
@@ -76,26 +76,21 @@ Report {
 						vinset: 1
 						layout: Frame.LayoutHorizontal
 						fill: Brush {color: Color {def: "khaki"} }
+						textStyle: myStyle.textStyleBold
+						Cell {
+							textFn: detail.dataFn("club");
+						}
 						Cell {
 							width: "%"
-							textFn: detail.dataFn("classes.name");
-							textStyle: myStyle.textStyleBold
+							textFn: detail.dataFn("name");
 						}
-						//Cell {
-						//	textFn: function() { return qsTr("length: ") + detail.rowData("courses.length");}
-						//}
 					}
-					//expandChildFrames: true
 					Band {
 						id: relayBand
 						width: "%"
-						//objectName: "relayBand"
-						//keepFirst: 3
-						//keepWithPrev: true
 						htmlExportAsTable: true
 						Detail {
 							id: relayDetail
-							//objectName: "runnersDetail"
 							width: "%"
 							layout: Frame.LayoutVertical
 							function dataFn(field_name) {return function() {return rowData(field_name);}}
@@ -110,8 +105,8 @@ Report {
 									width: "%"
 									textFn: function() {
 										return relayDetail.dataFn("relays.number")()
-												+ ' ' + relayDetail.dataFn("relayName")()
-												+ ' ' + relayDetail.dataFn("clubs.name")();
+												+ ' ' + relayDetail.dataFn("classes.name")()
+												+ ' ' + relayDetail.dataFn("relayName")();
 									}
 								}
 							}

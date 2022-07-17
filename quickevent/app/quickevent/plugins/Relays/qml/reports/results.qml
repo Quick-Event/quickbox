@@ -1,5 +1,5 @@
 import qf.qmlreports 1.0
-import shared.qml 1.0
+import shared.qml.reports 1.0
 import "qrc:/quickevent/core/js/ogtime.js" as OGTime
 
 Report {
@@ -148,9 +148,9 @@ Report {
 								width: "%"
 								layout: Frame.LayoutHorizontal
 								valign: Frame.AlignBottom
-								//bottomBorder: Pen { basedOn: "black1" }
+								bottomBorder: Pen { basedOn: "black1" }
 								//fill: Brush {color: Color {def: "khaki"} }
-								//textStyle: myStyle.textStyleBold
+								textStyle: myStyle.textStyleBold
 								Para {
 									width: 9
 									halign: Frame.AlignRight
@@ -169,6 +169,49 @@ Report {
 									width: 17
 									halign: Frame.AlignRight
 									textFn: function() {return root.ogLossToString(relayDetail.rowData("loss"))}
+								}
+							}
+							Band {
+								id: lapsBand
+								objectName: "lapsBand"
+								width: "%"
+								keepFirst: 10
+								keepWithPrev: true
+								htmlExportAsTable: true
+								Detail {
+									id: lapsDetail
+									//objectName: "runnersDetail"
+									width: "%"
+									layout: Frame.LayoutHorizontal
+									function dataFn(field_name) {return function() {return rowData(field_name);}}
+									Cell {
+										width: "%"
+										textFn: lapsDetail.dataFn("competitorName");
+									}
+									Para {
+										width: 16
+										textFn: lapsDetail.dataFn("registration");
+									}
+									Para {
+										width: 13
+										halign: Frame.AlignRight
+										textFn: function() {return root.ogTimeToString(lapsDetail.rowData("time"))}
+									}
+									Para {
+										width: 9
+										halign: Frame.AlignRight
+										textFn: function() {return root.posToStringBrackets(lapsDetail.rowData("pos"))}
+									}
+									Para {
+										width: 13
+										halign: Frame.AlignRight
+										textFn: function() {return root.ogSumTimeToString(lapsDetail.rowData("stime"))}
+									}
+									Para {
+										width: 9
+										halign: Frame.AlignRight
+										textFn: function() {return root.posToStringBrackets(lapsDetail.rowData("spos"))}
+									}
 								}
 							}
 						}

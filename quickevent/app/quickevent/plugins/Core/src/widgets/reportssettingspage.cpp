@@ -2,6 +2,7 @@
 #include "ui_reportssettingspage.h"
 
 #include <qf/core/log.h>
+#include <qf/qmlwidgets/framework/plugin.h>
 
 #include <QDirIterator>
 #include <QFileDialog>
@@ -98,7 +99,9 @@ void ReportsSettingsPage::save()
 {
 	QSettings settings;
 	settings.beginGroup(settingsDir());
-	settings.setValue(KEY_customReportsDirectory, ui->edCustomReportsDirectory->text().trimmed());
+	auto dir = ui->edCustomReportsDirectory->text().trimmed();
+	settings.setValue(KEY_customReportsDirectory, dir);
+	qf::qmlwidgets::framework::Plugin::setCustomReportsDir(dir);
 	//settings.setValue(KEY_exportReportDefinitionsDir, m_exportReportDefinitionsDir);
 }
 

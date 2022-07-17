@@ -1,7 +1,7 @@
 import QtQml 2.0
 import qf.core 1.0
 import qf.qmlreports 1.0
-import shared.qml 1.0
+import shared.qml.reports 1.0
 import "qrc:/quickevent/core/js/ogtime.js" as OGTime
 
 Report {

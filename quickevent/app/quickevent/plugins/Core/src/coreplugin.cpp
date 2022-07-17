@@ -47,7 +47,11 @@ void CorePlugin::onInstalled()
 	qff::MainWindow *fwk = qff::MainWindow::frameWork();
 	fwk->setStatusBar(new AppStatusBar());
 
-	settingsDialog()->addPage(new ReportsSettingsPage());
+	{
+		auto *page = new ReportsSettingsPage();
+		settingsDialog()->addPage(page);
+		setCustomReportsDir(page->customReportsDirectory());
+	}
 
 	auto *a_file = fwk->menuBar()->actionForPath("file", true);
 	a_file->setText(tr("&File"));

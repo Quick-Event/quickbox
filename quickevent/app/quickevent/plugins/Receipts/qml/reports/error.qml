@@ -1,6 +1,6 @@
 import QtQml 2.0
 import qf.qmlreports 1.0
-import shared.qml 1.0
+import shared.qml.reports 1.0
 
 Report {
 	id: root

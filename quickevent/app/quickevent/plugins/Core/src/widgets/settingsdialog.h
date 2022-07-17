@@ -23,8 +23,6 @@ public:
 	~SettingsDialog();
 
 	void addPage(SettingsPage *page);
-
-	QString findReportFile(const QString &feature_id, const QString &report_file_path) const;
 private slots:
 	void on_buttonBox_rejected();
 	ReportsSettingsPage *reportsSettingsPage() const;

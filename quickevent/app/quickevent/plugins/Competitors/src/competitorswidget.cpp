@@ -6,6 +6,8 @@
 
 #include "competitordocument.h"
 #include "competitorsplugin.h"
+#include "../../Core/src/coreplugin.h"
+#include "../../Core/src/widgets/settingsdialog.h"
 
 #include <quickevent/core/si/siid.h>
 #include <quickevent/core/si/punchrecord.h>
@@ -399,8 +401,9 @@ void CompetitorsWidget::report_competitorsStatistics()
 	//props["isBreakAfterEachClass"] = (opts.breakType() != (int)quickevent::gui::ReportOptionsDialog::BreakType::None);
 	//props["isColumnBreak"] = (opts.breakType() == (int)quickevent::gui::ReportOptionsDialog::BreakType::Column);
 	props["stageCount"] = stage_cnt;
+	QString rep_fn = getPlugin<CompetitorsPlugin>()->findReportFile("competitorsStatistics.qml");
 	qf::qmlwidgets::reports::ReportViewWidget::showReport(this
-								, getPlugin<CompetitorsPlugin>()->qmlDir() + "/competitorsStatistics.qml"
+								, rep_fn
 								, tt.toVariant()
 								, tr("Competitors statistics")
 								, "competitorsStatistics"

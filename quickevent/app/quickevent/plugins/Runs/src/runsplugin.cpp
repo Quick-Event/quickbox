@@ -5,10 +5,16 @@
 #include "eventstatisticswidget.h"
 #include "printawardsoptionsdialogwidget.h"
 #include "services/resultsexporter.h"
+#include "../../Core/src/coreplugin.h"
+#include "../../Core/src/widgets/settingsdialog.h"
+#include "../../CardReader/src/cardreaderplugin.h"
+#include "../../Competitors/src/competitorsplugin.h"
+#include "../../Event/src/eventplugin.h"
 
 #include <quickevent/core/codedef.h>
 #include <quickevent/core/utils.h>
 #include <quickevent/core/si/punchrecord.h>
+#include <quickevent/gui/partwidget.h>
 
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/framework/dockwidget.h>
@@ -26,12 +32,6 @@
 #include <qf/core/utils/table.h>
 #include <qf/core/utils/treetable.h>
 #include <qf/core/model/sqltablemodel.h>
-#include <plugins/Core/src/coreplugin.h>
-#include <plugins/Core/src/widgets/settingsdialog.h>
-#include <plugins/CardReader/src/cardreaderplugin.h>
-#include <plugins/Competitors/src/competitorsplugin.h>
-#include <plugins/Event/src/eventplugin.h>
-#include <quickevent/gui/partwidget.h>
 
 #include <QDesktopServices>
 #include <QFile>
@@ -768,7 +768,6 @@ QVariantMap RunsPlugin::printAwardsOptionsWithDialog(const QVariantMap &opts)
 	w->setPrintOptions(opts);
 	qf::qmlwidgets::dialogs::Dialog dlg(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, partWidget());
 	dlg.setCentralWidget(w);
-	w->init(qmlDir());
 	if(dlg.exec()) {
 		ret = w->printOptions();
 	}
@@ -1522,9 +1521,8 @@ void RunsPlugin::report_resultsClasses()
 		auto opts = dlg.optionsMap();
 		QVariantMap props;
 		props["options"] = opts;
-		QString rep_fn = getPlugin<Core::CorePlugin>()->settingsDialog()->findReportFile(featureId(), "results_stage.qml");
 		qf::qmlwidgets::reports::ReportViewWidget::showReport(fwk
-									, rep_fn
+									, findReportFile("results_stage.qml")
 									, tt.toVariant()
 									, tr("Results by classes")
 									, "printResults"
@@ -1550,7 +1548,7 @@ void RunsPlugin::report_resultsForSpeaker()
 		//props["stageCount"] = getPlugin<EventPlugin>()->eventConfig()->stageCount();
 		//props["stageNumber"] = selectedStageId();
 		qf::qmlwidgets::reports::ReportViewWidget::showReport(fwk
-									, qmlDir() + "/results_stageSpeaker.qml"
+									, findReportFile("results_stageSpeaker.qml")
 									, tt.toVariant()
 									, tr("Results by classes")
 									, "printResultsSpeaker"
@@ -1573,7 +1571,7 @@ void RunsPlugin::report_resultsAwards()
 	props["eventConfig"] = QVariant::fromValue(getPlugin<EventPlugin>()->eventConfig());
 	auto tt = stageResultsTable(opts.value("stageId").toInt(), QString(), opts.value("numPlaces").toInt());
 	qf::qmlwidgets::reports::ReportViewWidget::showReport(fwk
-								, rep_path
+								, findReportFile(rep_path)
 								, tt.toVariant()
 								, tr("Stage awards")
 								, "printResultsAwards"
@@ -1600,7 +1598,7 @@ void RunsPlugin::report_resultsNStages()
 	props["stagesCount"] = dlg.stagesCount();
 	props["options"] = opts;
 	qf::qmlwidgets::reports::ReportViewWidget::showReport(fwk
-								, qmlDir() + "/results_nstages.qml"
+								, findReportFile("results_nstages.qml")
 								, tt.toVariant()
 								, tr("Results after %n stage(s)", "", dlg.stagesCount())
 								, "printResultsNStages"
@@ -1626,7 +1624,7 @@ void RunsPlugin::report_resultsNStagesSpeaker()
 	QVariantMap props;
 	props["stagesCount"] = dlg.stagesCount();
 	qf::qmlwidgets::reports::ReportViewWidget::showReport(fwk
-								, qmlDir() + "/results_nstagesSpeaker.qml"
+								, findReportFile("results_nstagesSpeaker.qml")
 								, tt.toVariant()
 								, tr("Results after %n stage(s)", "", dlg.stagesCount())
 								, "printResultsNStagesWide"
@@ -1648,7 +1646,7 @@ void RunsPlugin::report_nStagesAwards()
 	props["eventConfig"] = QVariant::fromValue(getPlugin<EventPlugin>()->eventConfig());
 	auto tt = nstagesResultsTable(QString(), opts.value("stageId").toInt(), opts.value("numPlaces").toInt());
 	qf::qmlwidgets::reports::ReportViewWidget::showReport(fwk
-								, rep_path
+								, findReportFile(rep_path)
 								, tt.toVariant()
 								, tr("Awards after %1 stages").arg(opts.value("stageId").toInt())
 								, "printResultsAwardsNStages"

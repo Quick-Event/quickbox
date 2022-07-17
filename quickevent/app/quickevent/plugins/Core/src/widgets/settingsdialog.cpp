@@ -84,30 +84,6 @@ void SettingsDialog::addPage(SettingsPage *page)
 	}
 }
 
-QString SettingsDialog::findReportFile(const QString &feature_id, const QString &report_file_path) const
-{
-	QStringList search_paths;
-	auto *reports_page = findChild<ReportsSettingsPage*>();
-	Q_ASSERT(reports_page);
-	QString custom_dir = reports_page->customReportsDirectory();
-	if(!custom_dir.isEmpty()) {
-		search_paths << custom_dir + '/' + feature_id + "/qml/reports";
-	}
-	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	qf::qmlwidgets::framework::Plugin *plugin = fwk->plugin(feature_id, !qf::core::Exception::Throw);
-	if(plugin)
-		search_paths << plugin->qmlReportsDir();
-	else
-		qfError() << "Cannot find plugin for id:" << feature_id;
-	for(const QString &dir : search_paths) {
-		auto fn = dir + '/' + report_file_path;
-		if(QFile::exists(fn))
-			return fn;
-	}
-	qfError() << "Cannot find report file for feature id:" << feature_id << "and file path:" << report_file_path;
-	return {};
-}
-
 ReportsSettingsPage *SettingsDialog::reportsSettingsPage() const
 {
 	auto *page = findChild<ReportsSettingsPage*>();

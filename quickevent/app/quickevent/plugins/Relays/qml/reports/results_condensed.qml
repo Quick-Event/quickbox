@@ -1,16 +1,60 @@
 import qf.qmlreports 1.0
-import shared.qml 1.0
-//import "qrc:/quickevent/core/js/ogtime.js" as OGTime
+import shared.qml.reports 1.0
+import "qrc:/quickevent/core/js/ogtime.js" as OGTime
 
 Report {
 	id: root
 	objectName: "root"
 
-	property string reportTitle: qsTr("Start list by clubs")
+	property string reportTitle: qsTr("Results")
 	property bool isBreakAfterEachClass: false
 	property bool isColumnBreak: false
 	property bool isPrintStartNumbers: false
 	property var options
+
+	function ogTimeToString(time_ms)
+	{
+		//return "999.99";
+		if(time_ms === OGTime.DISQ_TIME_MSEC)
+			return qsTr("DISQ");
+		if(time_ms === OGTime.NOT_COMPETITING_TIME_MSEC)
+			return qsTr("NC");
+		if(time_ms === OGTime.NOT_FINISH_TIME_MSEC)
+			return qsTr("---");
+		return OGTime.msecToString_mmss(time_ms);
+	}
+
+	function ogSumTimeToString(time_ms)
+	{
+		//return "999.99";
+		if(time_ms)
+			return OGTime.msecToString_mmss(time_ms);
+		return "";
+	}
+
+	function ogLossToString(time_ms)
+	{
+		//return "999.99";
+		if(time_ms)
+			return '+' + OGTime.msecToString_mmss(time_ms);
+		return "";
+	}
+
+	function posToStringDot(pos)
+	{
+		//return "999.";
+		if(pos)
+			return pos + '.';
+		return '';
+	}
+
+	function posToStringBrackets(pos)
+	{
+		//return "(999)";
+		if(pos)
+			return '(' + pos + ')';
+		return '';
+	}
 
 	//debugLevel: 1
 	styleSheet: StyleSheet {
@@ -76,21 +120,26 @@ Report {
 						vinset: 1
 						layout: Frame.LayoutHorizontal
 						fill: Brush {color: Color {def: "khaki"} }
-						textStyle: myStyle.textStyleBold
-						Cell {
-							textFn: detail.dataFn("club");
-						}
 						Cell {
 							width: "%"
-							textFn: detail.dataFn("name");
+							textFn: detail.dataFn("className");
+							textStyle: myStyle.textStyleBold
 						}
+						//Cell {
+						//	textFn: function() { return qsTr("length: ") + detail.rowData("courses.length");}
+						//}
 					}
+					//expandChildFrames: true
 					Band {
 						id: relayBand
 						width: "%"
+						//objectName: "relayBand"
+						//keepFirst: 3
+						//keepWithPrev: true
 						htmlExportAsTable: true
 						Detail {
 							id: relayDetail
+							//objectName: "runnersDetail"
 							width: "%"
 							layout: Frame.LayoutVertical
 							function dataFn(field_name) {return function() {return rowData(field_name);}}
@@ -98,49 +147,28 @@ Report {
 							Frame {
 								width: "%"
 								layout: Frame.LayoutHorizontal
-								bottomBorder: Pen { basedOn: "black1" }
+								valign: Frame.AlignBottom
+								//bottomBorder: Pen { basedOn: "black1" }
 								//fill: Brush {color: Color {def: "khaki"} }
-								textStyle: myStyle.textStyleBold
+								//textStyle: myStyle.textStyleBold
+								Para {
+									width: 9
+									halign: Frame.AlignRight
+									textFn: function() {return root.posToStringDot(relayDetail.rowData("pos"))}
+								}
 								Cell {
 									width: "%"
-									textFn: function() {
-										return relayDetail.dataFn("relays.number")()
-												+ ' ' + relayDetail.dataFn("classes.name")()
-												+ ' ' + relayDetail.dataFn("relayName")();
-									}
+									textFn: function() { return relayDetail.rowData("name"); }
 								}
-							}
-							Band {
-								id: lapsBand
-								objectName: "lapsBand"
-								width: "%"
-								keepFirst: 10
-								keepWithPrev: true
-								htmlExportAsTable: true
-								Detail {
-									id: lapsDetail
-									//objectName: "runnersDetail"
-									width: "%"
-									layout: Frame.LayoutHorizontal
-									function dataFn(field_name) {return function() {return rowData(field_name);}}
-									Cell {
-										width: 15
-										halign: Frame.AlignRight
-										textFn: lapsDetail.dataFn("leg");
-									}
-									Cell {
-										width: "%"
-										textFn: lapsDetail.dataFn("competitorName");
-									}
-									Para {
-										width: 18
-										textFn: lapsDetail.dataFn("registration");
-									}
-									Cell {
-										width: 18
-										halign: Frame.AlignRight
-										textFn: lapsDetail.dataFn("runs.siId");
-									}
+								Para {
+									width: 15
+									halign: Frame.AlignRight
+									textFn: function() {return root.ogTimeToString(relayDetail.rowData("time"))}
+								}
+								Para {
+									width: 17
+									halign: Frame.AlignRight
+									textFn: function() {return root.ogLossToString(relayDetail.rowData("loss"))}
 								}
 							}
 						}
