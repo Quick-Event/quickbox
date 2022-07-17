@@ -42,7 +42,6 @@ private:
 
 	//void onDbEventNotify(const QString &domain, int connection_id, const QVariant &data);
 
-	QVariant startListByClassesTableData(const QString &class_filter);
 	QVariant startListByClubsTableData();
 
 	void relays_assignNumbers();
@@ -55,11 +54,13 @@ private:
 	void print_results_overal_condensed();
 
 	void export_results_iofxml3();
+	void export_start_list_iofxml3();
 
 	//void printResults(const QString &settings_id, const QVariantMap &default_options);
 private:
 	Ui::RelaysWidget *ui;
 	qf::core::model::SqlTableModel *m_tblModel;
 	qf::qmlwidgets::ForeignKeyComboBox *m_cbxClasses = nullptr;
+	void save_xml_file(QString str, QString fn);
 };
 

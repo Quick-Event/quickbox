@@ -14,6 +14,7 @@
 #include <qf/core/sql/query.h>
 #include <qf/core/sql/connection.h>
 #include <plugins/Runs/src/runsplugin.h>
+#include <plugins/Relays/src/relaysplugin.h>
 
 #include <QDir>
 #include <QFile>
@@ -28,6 +29,7 @@ namespace qfd = qf::qmlwidgets::dialogs;
 namespace qfs = qf::core::sql;
 using qf::qmlwidgets::framework::getPlugin;
 using Event::EventPlugin;
+using Relays::RelaysPlugin;
 using Runs::RunsPlugin;
 
 namespace Event {
@@ -187,7 +189,16 @@ void EmmaClient::exportResultsIofXml3()
 	QString export_dir = ss.exportDir();
 	QString file_name = export_dir + '/' + ss.fileNameBase() + ".results.xml";
 	int current_stage = getPlugin<EventPlugin>()->currentStageId();
-	getPlugin<RunsPlugin>()->exportResultsIofXml30Stage(current_stage, file_name);
+	bool is_relays = getPlugin<EventPlugin>()->eventConfig()->isRelays();
+	if (is_relays) {
+		QFile f(file_name);
+		if(f.open(QFile::WriteOnly)) {
+			f.write(getPlugin<RelaysPlugin>()->resultsIofXml30().toUtf8());
+		}
+	}
+	else {
+		getPlugin<RunsPlugin>()->exportResultsIofXml30Stage(current_stage, file_name);
+	}
 }
 
 void EmmaClient::exportStartListIofXml3()
@@ -198,7 +209,16 @@ void EmmaClient::exportStartListIofXml3()
 	QString export_dir = ss.exportDir();
 	QString file_name = export_dir + '/' + ss.fileNameBase() + ".startlist.xml";
 	int current_stage = getPlugin<EventPlugin>()->currentStageId();
-	getPlugin<RunsPlugin>()->exportStartListStageIofXml30(current_stage, file_name);
+	bool is_relays = getPlugin<EventPlugin>()->eventConfig()->isRelays();
+	if (is_relays) {
+		QFile f(file_name);
+		if(f.open(QFile::WriteOnly)) {
+			f.write(getPlugin<RelaysPlugin>()->startListIofXml30().toUtf8());
+		}
+	}
+	else {
+		getPlugin<RunsPlugin>()->exportStartListStageIofXml30(current_stage, file_name);
+	}
 }
 
 bool EmmaClient::createExportDir()
