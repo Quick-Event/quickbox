@@ -12,73 +12,18 @@ namespace core {
 namespace exporters {
 
 HtmlFileExporter::HtmlFileExporter(QObject *parent)
-	: QObject(parent)
+	: Super(parent)
 {
-}
-
-QVariantMap HtmlFileExporter::eventInfo()
-{
-	if(m_eventInfo.isEmpty()) {
-		QSqlQuery q = execSql("SELECT ckey, cvalue FROM config WHERE ckey LIKE 'event.%'");
-		while(q.next())
-			m_eventInfo[q.value(0).toString().mid(6)] = q.value(1);
-	}
-	return m_eventInfo;
-}
-
-qf::core::sql::Query HtmlFileExporter::execSql(const QString &query_str)
-{
-	QString qs = query_str;
-	qf::core::sql::Query q(sqlConnection());
-	if(!q.exec(qs)) {
-		QSqlError err = q.lastError();
-		qfError() << "SQL ERROR:" << err.text();
-		//qfError() << ("QUERY: "%q.lastQuery());
-		//::exit(-1);
-	}
-	return q;
 }
 
 void HtmlFileExporter::generateHtml()
 {
-	QDir html_dir(outDir());
-	if(!html_dir.exists()) {
-		qfInfo() << "creating HTML dir:" << outDir();
-		if(!QDir().mkpath(outDir())) {
-			qfError() << "Cannot create out dir:" << outDir();
-			return;
-		}
-		html_dir = QDir(outDir());
-		if(!html_dir.exists()) {
-			qfError() << "Author even doesn't know, how to use QDir API.";
-			return;
-		}
-	}
-	QVariantMap event_info = eventInfo();
-	//qfDebug() << event_info;
-	//QString event_name = event_info.value("name").toString();
-	//ui->lblHeadRight->setText(event_info.value("date").toString());
-	//int stage_cnt = event_info.value("stageCount").toInt();
-	int curr_stage = currentStage();
-	if(curr_stage == 0) {
-		curr_stage = event_info.value("currentStageId").toInt();
-		if(curr_stage == 0)
-			curr_stage = 1;
-		qfInfo() << "Setting stage to:" << curr_stage;
-		setCurrentStage(curr_stage);
-	}
-
+	prepareExport();
+	
 	QVariantList html_body = QVariantList() << QStringLiteral("body");
 	html_body.insert(html_body.length(), QVariantList() << QStringLiteral("body"));
 
 	exportClasses();
-}
-
-QString HtmlFileExporter::normalizeClassName(const QString class_name)
-{
-	QString ret = class_name;
-	ret.replace(' ', '-');
-	return QString::fromUtf8(qf::core::Collator::toAscii7(QLocale::Czech, ret, true));
 }
 
 void HtmlFileExporter::exportClasses()
