@@ -10,7 +10,7 @@ EventDialogWidget::EventDialogWidget(QWidget *parent) :
 	setPersistentSettingsId("EventDialogWidget");
 	ui->setupUi(this);
 
-	QRegularExpression rx("[A-Za-z][a-z0-9_]*"); // postgres schema cannot start with digit
+	QRegularExpression rx("[a-z][a-z0-9_]*"); // PostgreSQL schema must start with small letter and it may contain small letters, digits and underscores only.
 	QValidator *validator = new QRegularExpressionValidator(rx, this);
 	ui->ed_eventId->setValidator(validator);
 }
@@ -56,6 +56,8 @@ void EventDialogWidget::loadParams(const QVariantMap &params)
 	ui->ed_director->setText(params.value("director").toString());
 	ui->ed_handicapLength->setValue(params.value("handicapLength").toInt());
 	ui->cbxSportId->setCurrentIndex(params.value("sportId").toInt() - 1);
+	if(ui->cbxSportId->currentIndex() < 0)
+		ui->cbxSportId->setCurrentIndex(0);
 	ui->cbxDisciplineId->setCurrentIndex(params.value("disciplineId").toInt() - 1);
 	if(ui->cbxDisciplineId->currentIndex() < 0)
 		ui->cbxDisciplineId->setCurrentIndex(0);
@@ -76,8 +78,8 @@ QVariantMap EventDialogWidget::saveParams()
 	ret["mainReferee"] = ui->ed_mainReferee->text();
 	ret["director"] = ui->ed_director->text();
 	ret["handicapLength"] = ui->ed_handicapLength->value();
-	ret["sportId"] = ui->cbxSportId->currentIndex() + 1;
-	ret["disciplineId"] = (ui->cbxDisciplineId->currentIndex() < 0)? 1: ui->cbxDisciplineId->currentIndex() + 1;
+	ret["sportId"] = (ui->cbxSportId->currentIndex() <= 0) ? 1 : ui->cbxSportId->currentIndex() + 1;
+	ret["disciplineId"] = (ui->cbxDisciplineId->currentIndex() <= 0) ? 1 : ui->cbxDisciplineId->currentIndex() + 1;
 	ret["importId"] = ui->ed_importId->text().toInt();
 	ret["cardChechCheckTimeSec"] = ui->ed_cardChecCheckTimeSec->value();
 	return ret;

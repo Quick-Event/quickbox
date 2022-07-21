@@ -4,6 +4,7 @@
 
 #include <quickevent/core/si/checkedcard.h>
 #include <quickevent/core/exporters/stageresultshtmlexporter.h>
+#include <quickevent/core/exporters/stageresultscsvexporter.h>
 
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/dialogs/dialog.h>
@@ -76,34 +77,61 @@ bool ResultsExporter::exportResults()
 		exp.setOutDir(ss.exportDir());
 		exp.generateHtml();
 
-		QString cmd = ss.whenFinishedRunCmd();
-		if(!cmd.isEmpty()) {
-			qfInfo() << "Starting process:" << cmd;
-			QProcess *proc = new QProcess();
-			connect(proc, &QProcess::readyReadStandardOutput, [proc]() {
-				QByteArray ba = proc->readAllStandardOutput();
-				qfInfo() << "PROC stdout:" << ba;
-			});
-			connect(proc, &QProcess::readyReadStandardError, [proc]() {
-				QByteArray ba = proc->readAllStandardError();
-				qfWarning() << "PROC stderr:" << ba;
-			});
-			connect(proc, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished), [proc](int exit_code, QProcess::ExitStatus exit_status) {
-				if(exit_status == QProcess::ExitStatus::CrashExit)
-					qfError() << "PROC crashed";
-				else
-					qfInfo() << "PROC finished with exit code:" << exit_code;
-				proc->deleteLater();
-			});
+		whenFinishedRunCmd();
+		return true;
+	}
+	else if(ss.outputFormat() == static_cast<int>(ResultsExporterSettings::OutputFormat::CSVMulti)) {
+		quickevent::core::exporters::StageResultsCsvExporter exp;
+		exp.setOutDir(ss.exportDir());
+		if (!ss.csvSeparator().isNull())
+			exp.setSeparator(ss.csvSeparator());
+		exp.generateCsvMulti();
 
-			QStringList cmd_args = qf::core::Utils::parseProgramAndArgumentsList(cmd);
-			proc->start(cmd_args.value(0), cmd_args.mid(1));
-		}
+		whenFinishedRunCmd();
+		return true;
+	}
+	else if(ss.outputFormat() == static_cast<int>(ResultsExporterSettings::OutputFormat::CSV)) {
+		quickevent::core::exporters::StageResultsCsvExporter exp;
+		exp.setOutDir(ss.exportDir());
+		if (!ss.csvSeparator().isNull())
+			exp.setSeparator(ss.csvSeparator());
+		exp.generateCsvSingle();
+
+		whenFinishedRunCmd();
 		return true;
 	}
 	qfError() << "Unsupported output format:" << ss.outputFormat();
 	return false;
 }
+
+void ResultsExporter::whenFinishedRunCmd()
+{
+	ResultsExporterSettings ss = settings();
+	QString cmd = ss.whenFinishedRunCmd();
+	if(!cmd.isEmpty()) {
+		qfInfo() << "Starting process:" << cmd;
+		QProcess *proc = new QProcess();
+		connect(proc, &QProcess::readyReadStandardOutput, [proc]() {
+			QByteArray ba = proc->readAllStandardOutput();
+			qfInfo() << "PROC stdout:" << ba;
+		});
+		connect(proc, &QProcess::readyReadStandardError, [proc]() {
+			QByteArray ba = proc->readAllStandardError();
+			qfWarning() << "PROC stderr:" << ba;
+		});
+		connect(proc, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished), [proc](int exit_code, QProcess::ExitStatus exit_status) {
+			if(exit_status == QProcess::ExitStatus::CrashExit)
+				qfError() << "PROC crashed";
+			else
+				qfInfo() << "PROC finished with exit code:" << exit_code;
+			proc->deleteLater();
+		});
+
+		QStringList cmd_args = qf::core::Utils::parseProgramAndArgumentsList(cmd);
+		proc->start(cmd_args.value(0), cmd_args.mid(1));
+	}
+}
+
 
 void ResultsExporter::onExportTimerTimeOut()
 {

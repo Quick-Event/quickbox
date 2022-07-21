@@ -29,12 +29,12 @@ public:
 
 	qf::qmlwidgets::framework::PartWidget *partWidget() {return m_partWidget;}
 
-	Q_INVOKABLE QObject* createClassDocument(QObject *parent);
-	Q_INVOKABLE void createClass(const QString &class_name);
-	Q_INVOKABLE void dropClass(int class_id);
-	Q_INVOKABLE void createCourses(int stage_id, const QList<ImportCourseDef> &courses, const QList<quickevent::core::CodeDef> &codes);
-	Q_INVOKABLE void deleteCourses(int stage_id);
-	Q_INVOKABLE void gcCourses();
+	QObject* createClassDocument(QObject *parent);
+	void createClass(const QString &class_name);
+	void dropClass(int class_id);
+	void createCourses(int stage_id, const QList<ImportCourseDef> &courses, const QList<quickevent::core::CodeDef> &codes, bool delete_current);
+	void deleteCourses(int stage_id);
+	void gcCourses();
 
 	Q_SLOT void onInstalled();
 	Q_SIGNAL void nativeInstalled();
