@@ -40,26 +40,25 @@ Frame {
 		Para {
 			htmlExportAttributes: {"lpt_textStyle": "bold"}
 			textStyle: myStyle.textStyleBold
-			text: "NOVÉ podkolenky na OB";
+			text: "www.SUUNTOCZ.cz";
 		}
 		Frame { height: 2 }
 		Para {
-			textStyle: myStyle.textStyleBold
-			text: "Orienteering HEAVY DUTY";
-		}
-		Para {
-			halign: Frame.AlignHCenter
-			text: "Orienteering ULTRA LIGHT";
-		}
-		Para {
 			htmlExportAttributes: {"lpt_textStyle": "bold"}
-			halign: Frame.AlignHCenter
-			text: "Ponožky Lightspeed ZDARMA";
 			textStyle: myStyle.textStyleBold
+			text: "15% sleva pro závodníky.";
 		}
 		Para {
 			halign: Frame.AlignHCenter
-			text: "ke každému páru podkolenek";
+			text: "na libovolné GPS hodinky značky Suunto.";
+		}
+		Para {
+			halign: Frame.AlignHCenter
+			text: "Platí i na Suunto Ambit 3 Vertical za 2990,-";
+		}
+		Para {
+			halign: Frame.AlignHCenter
+			text: "Platí do 31.7.2022  i na zlevněné produkty.";
 		}
 		Para {
 			halign: Frame.AlignHCenter
