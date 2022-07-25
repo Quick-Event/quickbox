@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>518</width>
-    <height>478</height>
+    <height>438</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -33,6 +33,9 @@
            </property>
            <property name="wordWrap">
             <bool>false</bool>
+           </property>
+           <property name="buddy">
+            <cstring>lstDevice</cstring>
            </property>
           </widget>
          </item>
@@ -201,6 +204,19 @@
          </item>
         </layout>
        </widget>
+      </item>
+      <item>
+       <spacer name="verticalSpacer">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>
       </item>
      </layout>
     </widget>
