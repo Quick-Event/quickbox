@@ -9,10 +9,14 @@ if (NOT TARGET libnecrolog)
     add_subdirectory(3rdparty/necrolog)
 endif()
 
-find_package(Qt5 5.11 REQUIRED COMPONENTS Core)
+find_package(Qt5 5.11 REQUIRED COMPONENTS Core Widgets Gui Sql Qml Xml LinguistTools PrintSupport Svg)
 
 if(Qt5_FOUND)
     set(CMAKE_AUTOMOC ON)
+    set(CMAKE_AUTOUIC ON)
+    set(CMAKE_AUTORCC ON)
+
+    add_subdirectory(libqf)
 else()
-    message(STATUS "Qt5 not found")
+    message(FATAL_ERROR "Qt5 not found")
 endif()
