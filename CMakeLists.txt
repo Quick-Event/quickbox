@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.18.4)
-project(quickbox LANGUAGES CXX)
+project(quickbox LANGUAGES C CXX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 include(CTest)
@@ -9,7 +9,7 @@ if (NOT TARGET libnecrolog)
     add_subdirectory(3rdparty/necrolog)
 endif()
 
-find_package(Qt5 5.11 REQUIRED COMPONENTS Core Widgets Gui Sql Qml Xml LinguistTools PrintSupport Svg)
+find_package(Qt5 5.11 REQUIRED COMPONENTS Core Widgets Gui Sql Qml Xml LinguistTools PrintSupport Svg SerialPort)
 
 if(Qt5_FOUND)
     set(CMAKE_AUTOMOC ON)
@@ -17,6 +17,7 @@ if(Qt5_FOUND)
     set(CMAKE_AUTORCC ON)
 
     add_subdirectory(libqf)
+    add_subdirectory(libsiut)
 else()
     message(FATAL_ERROR "Qt5 not found")
 endif()
