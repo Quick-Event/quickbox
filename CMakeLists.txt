@@ -9,7 +9,7 @@ if (NOT TARGET libnecrolog)
     add_subdirectory(3rdparty/necrolog)
 endif()
 
-find_package(Qt5 REQUIRED COMPONENTS Core)
+find_package(Qt5 5.11 REQUIRED COMPONENTS Core)
 
 if(Qt5_FOUND)
     set(CMAKE_AUTOMOC ON)
