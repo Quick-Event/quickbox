@@ -5,8 +5,8 @@
     <name>quickevent::gui::ReportOptionsDialog</name>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="14"/>
-        <source>Dialog</source>
-        <translation>Діалог</translation>
+        <source>Print Report Options</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="35"/>

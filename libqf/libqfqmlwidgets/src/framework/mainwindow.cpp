@@ -334,31 +334,3 @@ qf::qmlwidgets::dialogs::QmlDialog *MainWindow::createQmlDialog(QWidget *parent)
 	//qe->setObjectOwnership(ret, QQmlEngine::JavaScriptOwnership);
 	return ret;
 }
-
-#if 0
-class TestObject : public QObject
-{
-	Q_OBJECT
-public:
-	TestObject(QObject *parent = nullptr) : QObject(parent)
-	{
-		static int cnt = 0;
-		setObjectName(QString("OBJ%1").arg(++cnt));
-		//QQmlEngine::setObjectOwnership(this, QQmlEngine::JavaScriptOwnership);
-		qfInfo() << "CREATE" << this << "ownersip:" << QQmlEngine::objectOwnership(this);
-	}
-	~TestObject()
-	{
-		qfInfo() << "DESTROY" << this << "ownersip:" << QQmlEngine::objectOwnership(this);
-	}
-	Q_INVOKABLE QObject* parent() {return QObject::parent();}
-};
-
-QObject *MainWindow::obj_testing()
-{
-	QObject *ret = new TestObject();
-	return ret;
-}
-
-//#include "mainwindow.moc"
-#endif

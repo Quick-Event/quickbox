@@ -21,7 +21,8 @@ ResultsExporterWidget::ResultsExporterWidget(QWidget *parent)
 
 	ui->lstOutputFormat->addItem(tr("HTML multi page"), static_cast<int>(ResultsExporterSettings::OutputFormat::HtmlMulti));
 	ui->lstOutputFormat->addItem(tr("CSOS fixed column sizes"), static_cast<int>(ResultsExporterSettings::OutputFormat::CSOS));
-	ui->lstOutputFormat->addItem(tr("CSV"), static_cast<int>(ResultsExporterSettings::OutputFormat::CSV));
+	ui->lstOutputFormat->addItem(tr("CSV one file"), static_cast<int>(ResultsExporterSettings::OutputFormat::CSV));
+	ui->lstOutputFormat->addItem(tr("CSV multi file (file per class)"), static_cast<int>(ResultsExporterSettings::OutputFormat::CSVMulti));
 	ui->lstOutputFormat->addItem(tr("IOF-XML 3.0"), static_cast<int>(ResultsExporterSettings::OutputFormat::IofXml3));
 	ui->lstOutputFormat->setCurrentIndex(-1);
 
@@ -33,6 +34,14 @@ ResultsExporterWidget::ResultsExporterWidget(QWidget *parent)
 		ui->edWhenFinishedRunCmd->setText(ss.whenFinishedRunCmd());
 		int of = ss.outputFormat();
 		ui->lstOutputFormat->setCurrentIndex(ui->lstOutputFormat->findData(of));
+		if (ss.csvSeparator() == QChar::Tabulation)
+			ui->rbCsvSeparatorTab->setChecked(true);
+		else
+		{
+			ui->rbCsvSeparatorChar->setChecked(true);
+			if (!ss.csvSeparator().isNull())
+				ui->edCsvSeparator->setText(ss.csvSeparator());
+		}
 	}
 
 	connect(ui->btChooseExportDir, &QPushButton::clicked, this, &ResultsExporterWidget::onBtChooseExportDirClicked);
@@ -75,6 +84,12 @@ bool ResultsExporterWidget::saveSettings()
 		ss.setWhenFinishedRunCmd(ui->edWhenFinishedRunCmd->text());
 		if(ui->lstOutputFormat->currentIndex() >= 0)
 			ss.setOutputFormat(ui->lstOutputFormat->itemData(ui->lstOutputFormat->currentIndex()).toInt());
+		if (ui->rbCsvSeparatorTab->isChecked())
+			ss.setCsvSeparator(QChar::Tabulation);
+		else if (ui->edCsvSeparator->text().isEmpty())
+			ss.setCsvSeparator(QChar::Null);
+		else
+			ss.setCsvSeparator(ui->edCsvSeparator->text().at(0));
 		svc->setSettings(ss);
 		if(!dir.isEmpty()) {
 			if(!QDir().mkpath(dir))

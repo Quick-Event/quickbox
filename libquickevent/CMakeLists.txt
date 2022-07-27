@@ -1,0 +1,2 @@
+add_subdirectory(libquickeventcore)
+add_subdirectory(libquickeventgui)
