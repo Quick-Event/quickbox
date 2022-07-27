@@ -15,6 +15,7 @@ public:
 	LogEntryMap() : QVariantMap() {}
 	LogEntryMap(NecroLog::Level level, const QString &category, const QString &message, const QString &file = QString(), int line = -1, const QString &function = QString());
 	LogEntryMap(const QVariantMap &m) : QVariantMap(m) {}
+	virtual ~LogEntryMap();
 public:
 	NecroLog::Level level() const;
 	LogEntryMap& setLevel(NecroLog::Level l);
