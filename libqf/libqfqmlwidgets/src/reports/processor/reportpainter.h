@@ -67,7 +67,7 @@ public:
 	void setLayout(qf::qmlwidgets::graphics::Layout ly) {if(layout() != ly) f_layoutSettings[LayoutSetting::Layout] = ly;}
 	Qt::Alignment alignment() const {return (Qt::Alignment)f_layoutSettings.value(LayoutSetting::Alignment, (int)(Qt::AlignLeft | Qt::AlignTop)).toInt();}
 	void setAlignment(ReportItemFrame::HAlignment hal, ReportItemFrame::VAlignment val) {
-		int al = hal | val;
+		int al = static_cast<int>(hal) | static_cast<int>(val);
 		if((int)alignment() != al)
 			f_layoutSettings[LayoutSetting::Alignment] = al;
 	}
