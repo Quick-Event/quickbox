@@ -34,6 +34,7 @@ void RunFlagsDialog::load(RunsTableModel *model, int row)
 	ui->cbxNotCompeting->setChecked(table_row.value(QStringLiteral("runs.notCompeting")).toBool());
 	ui->cbxNotStart->setChecked(table_row.value(QStringLiteral("runs.notStart")).toBool());
 	ui->cbxNotFinish->setChecked(table_row.value(QStringLiteral("runs.notFinish")).toBool());
+    ui->cbxOverTime->setChecked(table_row.value(QStringLiteral("runs.overTime")).toBool());
 }
 
 void RunFlagsDialog::save()
@@ -46,7 +47,8 @@ void RunFlagsDialog::save()
 	table_row.setValue(QStringLiteral("runs.notCompeting"), ui->cbxNotCompeting->isChecked());
 	table_row.setValue(QStringLiteral("runs.notStart"), ui->cbxNotStart->isChecked());
 	table_row.setValue(QStringLiteral("runs.notFinish"), ui->cbxNotFinish->isChecked());
-	m_model->postRow(m_row, qf::core::Exception::Throw);
+    table_row.setValue(QStringLiteral("runs.overTime"), ui->cbxOverTime->isChecked());
+    m_model->postRow(m_row, qf::core::Exception::Throw);
 }
 
 void RunFlagsDialog::updateState()

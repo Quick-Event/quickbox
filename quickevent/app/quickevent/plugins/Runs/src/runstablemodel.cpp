@@ -74,7 +74,8 @@ QVariant RunsTableModel::value(int row_ix, int column_ix) const
 		bool not_start = row.value(QStringLiteral("runs.notStart")).toBool();
 		bool not_finish = row.value(QStringLiteral("runs.notFinish")).toBool();
 		bool not_competing = row.value(QStringLiteral("runs.notCompeting")).toBool();
-		QStringList sl;
+        bool over_time = row.value(QStringLiteral("runs.overTime")).toBool();
+        QStringList sl;
 		if(is_disqualified)
 			sl << tr("DIS", "Disqualified");
 		if(is_disqualified_by_organizer)
@@ -89,7 +90,9 @@ QVariant RunsTableModel::value(int row_ix, int column_ix) const
 			sl << tr("NS", "DidNotStart");
 		if(not_finish)
 			sl << tr("NF", "DidNotFinish");
-		if(sl.isEmpty())
+        if(over_time)
+            sl << tr("OT", "OverTime");
+        if(sl.isEmpty())
 			return QStringLiteral("");
 		else
 			return sl.join(',');

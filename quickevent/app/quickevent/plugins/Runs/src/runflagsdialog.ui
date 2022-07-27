@@ -67,6 +67,13 @@
     </widget>
    </item>
    <item>
+    <widget class="QCheckBox" name="cbxOverTime">
+     <property name="text">
+      <string>Over time</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -93,10 +100,13 @@
  </widget>
  <tabstops>
   <tabstop>cbxDisqualified</tabstop>
+  <tabstop>cbxDisqualifiedByOrganizer</tabstop>
   <tabstop>cbxMisPunch</tabstop>
   <tabstop>cbxBadCheck</tabstop>
   <tabstop>cbxNotStart</tabstop>
   <tabstop>cbxNotFinish</tabstop>
+  <tabstop>cbxNotCompeting</tabstop>
+  <tabstop>cbxOverTime</tabstop>
  </tabstops>
  <resources/>
  <connections>
