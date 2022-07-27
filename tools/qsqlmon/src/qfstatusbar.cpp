@@ -84,7 +84,7 @@ void QFStatusBar::addLabel()
 	QF_ASSERT_EX(ly, "bad layout");
 	//ly->setMargin(0);
 	QLabel *lbl = new QLabel(QString());//::number(labels.count()));
-	lbl->setFrameStyle(QFrame::StyledPanel | QFrame::Plain);
+	lbl->setFrameStyle(static_cast<int>(QFrame::StyledPanel) | static_cast<int>(QFrame::Plain));
 	ly->insertWidget(labels.count(), lbl);
 	labels << lbl;
 	setProgressValue(-1);

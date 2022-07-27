@@ -67,7 +67,7 @@ ReportItem::PrintResult ReportItemPara::printMetaPaintChildren(ReportItemMetaPai
 			if(isTextWrap())
 				text_option.setWrapMode(QTextOption::WrapAtWordBoundaryOrAnywhere);
 			//alignment_flags |= Qt::TextWordWrap;
-			int al = textHAlign() | textVAlign();
+			int al = static_cast<int>(textHAlign()) | static_cast<int>(textVAlign());
 			Qt::Alignment alignment_flags = (Qt::Alignment)al;
 			text_option.setAlignment(alignment_flags);
 		}
