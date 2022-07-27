@@ -38,4 +38,10 @@ target_link_libraries(libqfcore PUBLIC libnecrolog Qt::Core Qt::Sql PRIVATE Qt::
 target_include_directories(libqfcore PUBLIC include)
 target_compile_definitions(libqfcore PRIVATE QFCORE_BUILD_DLL)
 
+if(WIN32)
+    # Need these for some WinAPI calls
+    target_compile_definitions(libqfcore PRIVATE UNICODE)
+    target_compile_definitions(libqfcore PRIVATE _UNICODE)
+endif()
+
 install(TARGETS libqfcore)
