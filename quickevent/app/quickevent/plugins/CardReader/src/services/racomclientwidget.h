@@ -23,6 +23,7 @@ private:
 	bool acceptDialogDone(int result) override;
 	RacomClient* service();
 	void saveSettings();
+	void onBtChooseTxtSplitsFileClicked();
 private:
 	Ui::RacomClientWidget *ui;
 };

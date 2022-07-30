@@ -298,6 +298,18 @@ int CardReaderPlugin::savePunchRecordToSql(const quickevent::core::si::PunchReco
 
 	int code = resolveAltCode(punch.code(), punch.stageid());
 
+	// check if punch isn't duplicate of existing saved punch
+	q.prepare(QStringLiteral("SELECT * FROM punches WHERE siId=:siId AND code=:code AND time=:time AND stageId=:stageId "), qf::core::Exception::Throw);
+	q.bindValue(QStringLiteral(":siId"), punch.siid());
+	q.bindValue(QStringLiteral(":code"), code);
+	q.bindValue(QStringLiteral(":time"), punch.time());
+	q.bindValue(QStringLiteral(":stageId"), punch.stageid());
+	if(q.exec()) {
+		if(q.next()) {
+			return 0;
+		}
+	}
+
 	q.prepare(QStringLiteral("INSERT INTO punches (siId, code, time, msec, runId, stageId, timeMs, runTimeMs)"
 							 " VALUES (:siId, :code, :time, :msec, :runId, :stageId, :timeMs, :runTimeMs)")
 							, qf::core::Exception::Throw);

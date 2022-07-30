@@ -4,6 +4,7 @@
 #include "../cardreaderplugin.h"
 
 #include <quickevent/core/si/checkedcard.h>
+#include <quickevent/core/codedef.h>
 
 //#include <siut/simessagedata.h>
 #include <siut/sidevicedriver.h>
@@ -18,6 +19,8 @@
 #include <qf/core/sql/connection.h>
 #include <plugins/Event/src/eventplugin.h>
 
+#include <QException>
+#include <QTimer>
 #include <QFile>
 #include <QSettings>
 #include <QStandardPaths>
@@ -132,6 +135,85 @@ void RacomClientSirxdConnection::onReadyRead()
 	}
 }
 
+RacomReadSplitFile::RacomReadSplitFile(QString fileName, int interval, int finishCode, QObject *parent)
+	: Super(parent)
+	, m_fileName(fileName)
+	, m_interval(interval)
+	, m_finishCode(finishCode)
+{
+	m_ReadTimer = new QTimer(this);
+	connect(m_ReadTimer, &QTimer::timeout, this, &RacomReadSplitFile::onTimerTimeOut);
+}
+
+RacomReadSplitFile::~RacomReadSplitFile()
+{
+	m_ReadTimer->stop();
+	QF_SAFE_DELETE(m_ReadTimer)
+}
+
+void RacomReadSplitFile::run()
+{
+	m_ReadTimer->start(m_interval*1000);
+}
+
+void RacomReadSplitFile::readAndProcessFile()
+{
+	QStringList text;
+	try {
+			QFile file(m_fileName);
+			if(file.open(QIODevice::ReadOnly|QIODevice::Text))
+			{
+				QTextStream stream(&file);
+
+				QString line;
+				do {
+					line = stream.readLine();
+					text << line;
+				} while(!line.isNull());
+			}
+			file.close();
+	}  catch (QException &e) {
+		qfWarning() << "Read split file fail :" << e.what();
+	}
+
+	QList <siut::SIPunch> punches;
+	if (text.size() > 0 && m_lastRowCount < text.size())
+	{
+		// parse punches from lines
+		for (int i = m_lastRowCount; i < text.size(); i++)
+		{
+			if (text[i].size() < 23)	// is not valid line
+				continue;
+
+			siut::SIPunch punch;
+			punch.setCardNumber(text[i].leftRef(8).toInt());
+			int code = text[i].midRef(9,4).toInt();
+			if (code == m_finishCode)
+				code = quickevent::core::CodeDef::FINISH_PUNCH_CODE;
+			punch.setCode(code);
+
+			QTime t = QTime::fromString(text[i].right(10),"hh:mm:ss.z");
+			int secs = QTime(0,0).secsTo(t);
+			int msecs = t.msec();
+			punch.setTime(secs);
+			punch.setMsec(msecs);
+			if (!punches.contains(punch))	// remove duplicate punches
+				punches.append(punch);
+		}
+		m_lastRowCount = text.size();
+
+		// add new punches
+		for (auto& punch : punches) {
+			getPlugin<CardReaderPlugin>()->emitSiTaskFinished((int)siut::SiTask::Type::Punch, punch);
+		}
+	}
+}
+
+void RacomReadSplitFile::onTimerTimeOut()
+{
+	readAndProcessFile();
+}
+
 RacomClient::RacomClient(QObject *parent)
 	: Super(RacomClient::serviceName(), parent)
 {
@@ -142,6 +224,8 @@ RacomClient::RacomClient(QObject *parent)
 void RacomClient::run()
 {
 	init();
+	if (m_racomSplitFile)
+		m_racomSplitFile->run();
 	Super::run();
 }
 
@@ -149,6 +233,9 @@ void RacomClient::stop()
 {
 	Super::stop();
 	QF_SAFE_DELETE(m_rawSIDataUdpSocket);
+	QF_SAFE_DELETE(m_sirxdDataServer)
+	QF_SAFE_DELETE(m_racomSirxdConnection)
+	QF_SAFE_DELETE(m_racomSplitFile)
 }
 
 QString RacomClient::serviceName()
@@ -211,6 +298,8 @@ void RacomClient::init()
 {
 	QF_SAFE_DELETE(m_rawSIDataUdpSocket)
 	QF_SAFE_DELETE(m_sirxdDataServer)
+	QF_SAFE_DELETE(m_racomSirxdConnection)
+	QF_SAFE_DELETE(m_racomSplitFile)
 	RacomClientSettings ss = settings();
 	//qfDebug() << ss;
 
@@ -242,10 +331,14 @@ void RacomClient::init()
 		else {
 			connect(m_sirxdDataServer, &QTcpServer::newConnection, [this](){
 				QTcpSocket *sock = m_sirxdDataServer->nextPendingConnection();
-				new RacomClientSirxdConnection(sock, m_sirxdDataServer);
+				m_racomSirxdConnection = new RacomClientSirxdConnection(sock, m_sirxdDataServer);
 			});
 		}
 		qfInfo() << "Sirxd TCP server listenning on port:" << ss.sirxdDataListenPort();
+	}
+
+	if (ss.isReadSplitFile()) {
+		m_racomSplitFile = new RacomReadSplitFile(ss.splitFileName(), ss.splitFileInterval(),ss.splitFileFinishCode(),this);
 	}
 }
 

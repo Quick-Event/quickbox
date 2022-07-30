@@ -6,6 +6,7 @@
 class QUdpSocket;
 class QTcpServer;
 class QTcpSocket;
+class QTimer;
 
 namespace siut { class DeviceDriver; }
 
@@ -20,9 +21,46 @@ class RacomClientSettings : public Event::services::ServiceSettings
 	QF_VARIANTMAP_FIELD(int, r, setR, awDataListenPort)
 	QF_VARIANTMAP_FIELD(bool, is, set, ListenSirxdData)
 	QF_VARIANTMAP_FIELD(int, s, setS, irxdDataListenPort)
+	QF_VARIANTMAP_FIELD(bool, is, set, ReadSplitFile)
+	QF_VARIANTMAP_FIELD(QString, s, setS, plitFileName)
+	QF_VARIANTMAP_FIELD2(int, s, setS, plitFileInterval,5)
+	QF_VARIANTMAP_FIELD2(int, s, setS, plitFileFinishCode,2)
 
 public:
 	RacomClientSettings(const QVariantMap &o = QVariantMap()) : Super(o) {}
+};
+
+class RacomClientSirxdConnection : public QObject
+{
+	Q_OBJECT
+
+	using Super = QObject;
+public:
+	RacomClientSirxdConnection(QTcpSocket *socket, QObject *parent);
+private:
+	void onReadyRead();
+private:
+	QTcpSocket *m_socket = nullptr;
+	QByteArray m_data;
+};
+
+class RacomReadSplitFile : public QObject
+{
+	Q_OBJECT
+
+	using Super = QObject;
+public:
+	RacomReadSplitFile(QString fileName, int interval, int finishCode, QObject *parent);
+	~RacomReadSplitFile();
+	void readAndProcessFile();
+	void run();
+private:
+	QString m_fileName;
+	int m_interval = 5;
+	int m_finishCode = 2;
+	int m_lastRowCount = 0;
+	QTimer *m_ReadTimer = nullptr;
+	void onTimerTimeOut();
 };
 
 class RacomClient : public Event::services::Service
@@ -48,20 +86,8 @@ private:
 	QUdpSocket *m_rawSIDataUdpSocket = nullptr;
 	QTcpServer *m_sirxdDataServer = nullptr;
 	siut::DeviceDriver *m_siDriver = nullptr;
-};
-
-class RacomClientSirxdConnection : public QObject
-{
-	Q_OBJECT
-
-	using Super = QObject;
-public:
-	RacomClientSirxdConnection(QTcpSocket *socket, QObject *parent);
-private:
-	void onReadyRead();
-private:
-	QTcpSocket *m_socket = nullptr;
-	QByteArray m_data;
+	RacomClientSirxdConnection* m_racomSirxdConnection = nullptr;
+	RacomReadSplitFile* m_racomSplitFile = nullptr;
 };
 
 }}
