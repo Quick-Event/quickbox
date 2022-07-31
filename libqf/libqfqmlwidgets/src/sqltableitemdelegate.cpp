@@ -41,7 +41,7 @@ QWidget *SqlTableItemDelegate::createEditor(QWidget *parent, const QStyleOptionV
 				QColor c = dbe.color();
 				if(c.isValid()) {
 					editor->setItemData(editor->count() - 1, c, Qt::BackgroundRole);
-					editor->setItemData(editor->count() - 1, qf::core::model::TableModel::contrastTextColor(c), Qt::TextColorRole);
+					editor->setItemData(editor->count() - 1, qf::core::model::TableModel::contrastTextColor(c), Qt::ForegroundRole);
 				}
 			}
 		}

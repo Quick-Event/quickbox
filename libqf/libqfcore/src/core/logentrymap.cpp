@@ -16,6 +16,8 @@ static const auto KEY_LINE = QStringLiteral("line");
 static const auto KEY_FUNCTION = QStringLiteral("function");
 static const auto KEY_TIME_STAMP = QStringLiteral("timestamp");
 
+LogEntryMap::~LogEntryMap() = default;
+
 LogEntryMap::LogEntryMap(NecroLog::Level level, const QString &category, const QString &message, const QString &file, int line, const QString &function)
 {
 	this->operator[](KEY_LEVEL) = (int)level;

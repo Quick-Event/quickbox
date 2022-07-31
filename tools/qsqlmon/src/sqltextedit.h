@@ -23,7 +23,7 @@ class SqlTextEditCompleter : public QCompleter
 
 class SqlTextEdit : public QTextEdit
 {
-	Q_OBJECT;
+	Q_OBJECT
 protected:
 	QCompleter *f_completer;
 	QAbstractItemModel *f_completionModel;
