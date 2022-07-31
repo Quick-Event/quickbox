@@ -1,6 +1,7 @@
 #include "receiptsplugin.h"
 #include "receiptswidget.h"
 #include "receiptsprinter.h"
+#include "../../Core/src/reportssettings.h"
 
 #include <quickevent/core/si/readcard.h>
 #include <quickevent/core/si/checkedcard.h>
@@ -50,31 +51,21 @@ void ReceiptsPlugin::onInstalled()
 	qff::initPluginWidget<ReceiptsWidget, PartWidget>(tr("Receipts"), featureId());
 }
 
-static const auto CURRENT_RECEIPT = QStringLiteral("currentReceipt");
-
 QString ReceiptsPlugin::currentReceiptPath()
 {
-	qf::core::utils::Settings settings;
-	settings.beginGroup(settingsDir());
-	QString s = settings.value(CURRENT_RECEIPT).toString().trimmed();
-	return s;
+	return ReportsSettings().currentReceipt();
 }
 
 void ReceiptsPlugin::setCurrentReceiptPath(const QString &path)
 {
-	qf::core::utils::Settings settings;
-	settings.beginGroup(settingsDir());
-	qfInfo() << "setting current receipt path to:" << settings.group() << CURRENT_RECEIPT << "--->" << path;
-	settings.setValue(CURRENT_RECEIPT, path);
+	ReportsSettings().setCurrentReceipt(path);
+	qfInfo() << "setting current receipt path to:" << path;
 }
-
-static const auto RECEIPTS_PRINTER = QStringLiteral("receiptsPrinter");
 
 ReceiptsPrinterOptions ReceiptsPlugin::receiptsPrinterOptions()
 {
-	qf::core::utils::Settings settings;
-	settings.beginGroup(settingsDir());
-	QString s = settings.value(RECEIPTS_PRINTER).toString();
+	ReportsSettings settings;
+	QString s = settings.receiptPrinterOptions();
 	return ReceiptsPrinterOptions::fromJson(s.toUtf8());
 }
 
@@ -82,9 +73,8 @@ void ReceiptsPlugin::setReceiptsPrinterOptions(const ReceiptsPrinterOptions &opt
 {
 	QByteArray ba = opts.toJson();
 	QString s = QString::fromUtf8(ba);
-	qf::core::utils::Settings settings;
-	settings.beginGroup(settingsDir());
-	settings.setValue(RECEIPTS_PRINTER, s);
+	ReportsSettings settings;
+	settings.setReceiptPrinterOptions(s);
 	QF_SAFE_DELETE(m_receiptsPrinter)
 }
 

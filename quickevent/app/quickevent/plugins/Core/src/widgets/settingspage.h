@@ -13,13 +13,12 @@ public:
 	explicit SettingsPage(QWidget *parent = nullptr);
 
 	QString caption() const { return m_caption; }
-	QString settingsDir() const { return m_settingsDir; }
 
 	virtual void load() = 0;
 	virtual void save() = 0;
 protected:
 	QString m_caption;
-	QString m_settingsDir;
+	//QString m_settingsDir;
 };
 
 } // namespace Core

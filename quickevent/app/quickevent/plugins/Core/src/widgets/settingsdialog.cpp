@@ -83,12 +83,12 @@ void SettingsDialog::addPage(SettingsPage *page)
 		btn->click();
 	}
 }
-
+/*
 ReportsSettingsPage *SettingsDialog::reportsSettingsPage() const
 {
 	auto *page = findChild<ReportsSettingsPage*>();
 	Q_ASSERT(page);
 	return page;
 }
-
+*/
 } // namespace Core

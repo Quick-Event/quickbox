@@ -1,6 +1,7 @@
 #include "cardreaderwidget.h"
 #include "ui_cardreaderwidget.h"
 #include "cardreadersettingspage.h"
+#include "cardreadersettings.h"
 
 #include "cardreaderplugin.h"
 #include "cardchecker.h"
@@ -242,12 +243,6 @@ void CardReaderWidget::onTestButtonClicked()
 	count++;
 	count %= lst.size();
 	m_buttonTest->setText("Send packet #" + QString::number(count));
-}
-
-QString CardReaderWidget::settingsDir() const
-{
-	auto *plugin = qf::qmlwidgets::framework::getPlugin<CardReader::CardReaderPlugin>();
-	return plugin->settingsDir();
 }
 
 void CardReaderWidget::onCustomContextMenuRequest(const QPoint & pos)
@@ -547,15 +542,12 @@ void CardReaderWidget::onOpenCommTriggered(bool checked)
 {
 	qfLogFuncFrame() << "checked:" << checked;
 	if(checked) {
-		QSettings settings;
-		settings.beginGroup(settingsDir());
-		settings.beginGroup("comm");
-		settings.beginGroup("connection");
-		QString device = settings.value("device", "").toString();
-		int baud_rate = settings.value("baudRate", 38400).toInt();
-		int data_bits = settings.value("dataBits", 8).toInt();
-		int stop_bits = settings.value("stopBits", 1).toInt();
-		QString parity = settings.value("parity", "none").toString();
+		CardReaderSettings settings;
+		QString device = settings.device();
+		int baud_rate = settings.baudRate();
+		int data_bits = settings.dataBits();
+		int stop_bits = settings.stopBits();
+		QString parity = settings.parity();
 		if(!commPort()->openComm(device, baud_rate, data_bits, parity, stop_bits > 1)) {
 			QSerialPort::SerialPortError error_type = commPort()->error();
 			QString error_msg = commPort()->errorString();
@@ -623,9 +615,8 @@ void CardReaderWidget::onSiTaskFinished(int task_type, QVariant result)
 
 void CardReaderWidget::processDriverInfo(NecroLog::Level level, const QString& msg)
 {
-	qf::core::utils::Settings settings;
-	settings.beginGroup(settingsDir());
-	if(settings.value("comm/debug/showRawComData").toBool()) {
+	CardReaderSettings settings;
+	if(settings.showRawComData()) {
 		if(level == NecroLog::Level::Debug)
 			level = NecroLog::Level::Info;
 	}
@@ -634,9 +625,8 @@ void CardReaderWidget::processDriverInfo(NecroLog::Level level, const QString& m
 
 void CardReaderWidget::logDriverRawData(const QByteArray& data)
 {
-	qf::core::utils::Settings settings;
-	settings.beginGroup(settingsDir());
-	if(settings.value("comm/debug/showRawComData").toBool()) {
+	CardReaderSettings settings;
+	if(settings.showRawComData()) {
 		QString msg = siut::SIMessageData::dumpData(data, 16);
 		appendLog(NecroLog::Level::Info, tr("DriverRawData: %1").arg(msg));
 	}

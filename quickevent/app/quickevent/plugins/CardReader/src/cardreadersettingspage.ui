@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>CardReaderSettingsPage</class>
- <widget class="QWidget" name="CardReaderSettingsPage">
+ <class>CardReader::CardReaderSettingsPage</class>
+ <widget class="QWidget" name="CardReader::CardReaderSettingsPage">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -176,6 +176,13 @@
            </property>
            <property name="editable">
             <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="1">
+          <widget class="QPushButton" name="btTestConnection">
+           <property name="text">
+            <string>Test connection</string>
            </property>
           </widget>
          </item>

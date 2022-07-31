@@ -2,6 +2,7 @@ message(including $$PWD)
 
 HEADERS += \
     $$PWD/cardcheckerfreeordercpp.h \
+	$$PWD/cardreadersettings.h \
 	$$PWD/cardreadersettingspage.h \
     $$PWD/cardreaderwidget.h \
     $$PWD/cardreaderplugin.h \
@@ -10,6 +11,7 @@ HEADERS += \
 
 SOURCES += \
     $$PWD/cardcheckerfreeordercpp.cpp \
+	$$PWD/cardreadersettings.cpp \
 	$$PWD/cardreadersettingspage.cpp \
     $$PWD/cardreaderwidget.cpp \
     $$PWD/cardreaderplugin.cpp \

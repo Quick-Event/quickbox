@@ -9,6 +9,7 @@
 #include "cardreadersettingspage.h"
 #include "cardreaderwidget.h"
 #include "cardreaderplugin.h"
+#include "cardreadersettings.h"
 
 #include <qf/qmlwidgets/framework/mainwindow.h>
 
@@ -21,6 +22,8 @@
 #include <QLineEdit>
 #include <QSerialPortInfo>
 
+namespace CardReader {
+
 //=================================================
 //             DlgSettings
 //=================================================
@@ -29,8 +32,6 @@ CardReaderSettingsPage::CardReaderSettingsPage(QWidget *parent)
 {
 	ui = new Ui::CardReaderSettingsPage;
 	ui->setupUi(this);
-	auto *plugin = qf::qmlwidgets::framework::getPlugin<CardReader::CardReaderPlugin>();
-	m_settingsDir = plugin->settingsDir();
 	m_caption = tr("Card reader");
 #if 0
 #if defined Q_OS_WIN
@@ -49,14 +50,19 @@ CardReaderSettingsPage::~CardReaderSettingsPage()
 	delete ui;
 }
 
-static void load_combo_text(QComboBox *cbx, const QSettings &settings, const QString &key, bool init_current_index = true)
+static void load_combo_text(QComboBox *cbx, const QVariant &val, bool init_current_index = true)
 {
-	QVariant v = settings.value(key);
-	int ix = cbx->findText(v.toString());
-	if(ix >= 0) cbx->setCurrentIndex(ix);
+	int ix = cbx->findText(val.toString());
+	if(ix >= 0) {
+		cbx->setCurrentIndex(ix);
+	}
 	else {
-		if(init_current_index) { cbx->setCurrentIndex(0); }
-		else if(cbx->isEditable()) cbx->lineEdit()->setText(v.toString());
+		if(init_current_index) {
+			cbx->setCurrentIndex(0);
+		}
+		else if(cbx->isEditable()) {
+			cbx->lineEdit()->setText(val.toString());
+		}
 	}
 }
 
@@ -71,42 +77,43 @@ void CardReaderSettingsPage::load()
 		}
 
 	}
-	QSettings settings;
-	//settings.clear();
-	settings.beginGroup(settingsDir());
-
-	settings.beginGroup("comm");
-	settings.beginGroup("connection");
-	load_combo_text(ui->lstDevice, settings, "device", false);
-	load_combo_text(ui->lstBaudRate, settings, "baudRate");
-	load_combo_text(ui->lstDataBits, settings, "dataBits");
-	load_combo_text(ui->lstStopBits, settings, "stopBits");
-	load_combo_text(ui->lstParity, settings, "parity");
-	settings.endGroup();
-	settings.beginGroup("debug");
-	ui->chkShowRawComData->setChecked(settings.value("showRawComData").toBool());
-	ui->chkDisableCRCCheck->setChecked(settings.value("disableCRCCheck").toBool());
+	CardReaderSettings settings;
+	load_combo_text(ui->lstDevice, settings.device(), false);
+	load_combo_text(ui->lstBaudRate, settings.baudRate());
+	load_combo_text(ui->lstDataBits, settings.dataBits());
+	load_combo_text(ui->lstStopBits, settings.stopBits());
+	load_combo_text(ui->lstParity, settings.parity());
+	ui->chkShowRawComData->setChecked(settings.showRawComData());
+	ui->chkDisableCRCCheck->setChecked(settings.disableCRCCheck());
 }
 
 void CardReaderSettingsPage::save()
 {
-	QSettings settings;
-	settings.beginGroup(settingsDir());
-
-	settings.beginGroup("comm");
-	settings.beginGroup("connection");
-	settings.setValue("device", ui->lstDevice->currentText());
-	settings.setValue("baudRate", ui->lstBaudRate->currentText());
-	settings.setValue("dataBits", ui->lstDataBits->currentText());
-	settings.setValue("stopBits", ui->lstStopBits->currentText());
-	settings.setValue("parity", ui->lstParity->currentText());
-	settings.endGroup();
-	settings.beginGroup("debug");
-	settings.setValue("showRawComData", ui->chkShowRawComData->isChecked());
-	settings.setValue("disableCRCCheck", ui->chkDisableCRCCheck->isChecked());
-	settings.endGroup();
-	settings.endGroup();
-
-	settings.endGroup();
+	CardReaderSettings settings;
+	settings.setDevice(ui->lstDevice->currentText());
+	settings.setBaudRate(ui->lstBaudRate->currentText().toInt());
+	settings.setDataBits(ui->lstDataBits->currentText().toInt());
+	settings.setStopBits(ui->lstStopBits->currentText().toInt());
+	settings.setParity(ui->lstParity->currentText());
+	settings.setShowRawComData(ui->chkShowRawComData->isChecked());
+	settings.setDisableCRCCheck(ui->chkDisableCRCCheck->isChecked());
 }
 
+
+void CardReaderSettingsPage::on_btTestConnection_clicked()
+{
+	/*
+	QSettings settings;
+	settings.beginGroup(settingsDir());
+	settings.beginGroup("comm");
+	settings.beginGroup("connection");
+	QString device = settings.value("device", "").toString();
+	int baud_rate = settings.value("baudRate", 38400).toInt();
+	int data_bits = settings.value("dataBits", 8).toInt();
+	int stop_bits = settings.value("stopBits", 1).toInt();
+	QString parity = settings.value("parity", "none").toString();
+	if(!commPort()->openComm(device, baud_rate, data_bits, parity, stop_bits > 1)) {
+	*/
+}
+
+}

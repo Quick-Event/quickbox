@@ -106,8 +106,6 @@ private:
 	int currentPunchMode();
 
 	void onTestButtonClicked();
-
-	QString settingsDir() const;
 private:
 	Ui::CardReaderWidget *ui;
 	QLabel *m_lblCommInfo = nullptr;

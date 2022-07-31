@@ -1,6 +1,7 @@
 #include "reportssettingspage.h"
 #include "ui_reportssettingspage.h"
 #include "../coreplugin.h"
+#include "../reportssettings.h"
 
 #include <qf/core/log.h>
 #include <qf/qmlwidgets/framework/plugin.h>
@@ -17,8 +18,8 @@ ReportsSettingsPage::ReportsSettingsPage(QWidget *parent) :
 	Super(parent),
 	ui(new Ui::ReportsSettingsPage)
 {
-	auto *plugin = qf::qmlwidgets::framework::getPlugin<Core::CorePlugin>();
-	m_settingsDir = plugin->settingsDir() + "/reports";
+	//auto *plugin = qf::qmlwidgets::framework::getPlugin<Core::CorePlugin>();
+	//m_settingsDir = plugin->settingsDir() + "/reports";
 	m_caption = tr("Reports");
 	ui->setupUi(this);
 }
@@ -100,19 +101,16 @@ void ReportsSettingsPage::load()
 
 void ReportsSettingsPage::save()
 {
-	QSettings settings;
-	settings.beginGroup(settingsDir());
+	ReportsSettings settings;
 	auto dir = ui->edCustomReportsDirectory->text().trimmed();
-	settings.setValue(KEY_customReportsDirectory, dir);
+	settings.setCustomReportsDirectory(dir);
 	qf::qmlwidgets::framework::Plugin::setCustomReportsDir(dir);
-	//settings.setValue(KEY_exportReportDefinitionsDir, m_exportReportDefinitionsDir);
 }
 
 QString ReportsSettingsPage::customReportsDirectory() const
 {
-	QSettings settings;
-	settings.beginGroup(settingsDir());
-	return settings.value(KEY_customReportsDirectory).toString();
+	ReportsSettings settings;
+	return settings.customReportsDirectory();
 }
 
 }

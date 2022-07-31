@@ -10,10 +10,11 @@
 
 #include "../../Core/src/widgets/settingspage.h"
 
+namespace CardReader {
+
 namespace Ui {class CardReaderSettingsPage;};
 
-class CardReaderWidget;
-
+//class CardReaderWidget;
 
 class  CardReaderSettingsPage : public Core::SettingsPage
 {
@@ -28,8 +29,9 @@ protected:
 public:
 	CardReaderSettingsPage(QWidget *parent = nullptr);
 	virtual ~CardReaderSettingsPage();
-private:
+private slots:
+	void on_btTestConnection_clicked();
 };
-
+}
 #endif // CARDREADERSETTINGSPAGE_H
 
