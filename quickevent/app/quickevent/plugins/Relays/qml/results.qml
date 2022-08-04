@@ -17,10 +17,14 @@ Report {
 		//return "999.99";
 		if(time_ms === OGTime.DISQ_TIME_MSEC)
 			return qsTr("DISQ");
+		if(time_ms === OGTime.MISPUNCH_TIME_MSEC)
+			return qsTr("MP");
 		if(time_ms === OGTime.NOT_COMPETITING_TIME_MSEC)
 			return qsTr("NC");
 		if(time_ms === OGTime.NOT_FINISH_TIME_MSEC)
-			return qsTr("---");
+			return qsTr("DNF");
+		if(time_ms === OGTime.NOT_START_TIME_MSEC)
+			return qsTr("DNS");
 		return OGTime.msecToString_mmss(time_ms);
 	}
 

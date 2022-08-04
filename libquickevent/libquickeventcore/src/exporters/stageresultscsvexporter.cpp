@@ -1,6 +1,7 @@
 #include "stageresultscsvexporter.h"
 
 #include "../og/timems.h"
+#include "../resultstatus.h"
 
 #include <qf/core/sql/query.h>
 #include <qf/core/sql/querybuilder.h>
@@ -116,17 +117,10 @@ void StageResultsCsvExporter::exportClass(int class_id, QTextStream &csv)
 		QString spos; // keep last number when same time
 		while(q2.next()) {
 			pos++;
-			bool disq = q2.value(QStringLiteral("disqualified")).toBool();
-			bool nc = q2.value(QStringLiteral("notCompeting")).toBool();
-			bool has_pos = !disq && !nc;
-			QString status = tr("OK");
-			if(nc)
-				status = tr("NC");
-			if(disq)
-				status = tr("DISQ");
+			quickevent::core::ResultStatus result_status(q2);
 			int time_ms = q2.value(QStringLiteral("timeMs")).toInt();
 			QString stime = og::TimeMs(time_ms).toString('.');
-			if(has_pos) {
+			if(result_status.isOk()) {
 				if(time_ms != prev_time_ms)
 					spos = QString::number(pos);
 			}
@@ -147,7 +141,7 @@ void StageResultsCsvExporter::exportClass(int class_id, QTextStream &csv)
 			csv << club << m_separator;
 			csv << q2.value("competitors.country").toString() << m_separator;
 			csv << stime << m_separator;
-			csv << status;
+			csv << result_status.statusResultExport();
 			csv << Qt::endl;
 		}
 	}

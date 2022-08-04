@@ -9,6 +9,7 @@
 #include <quickevent/core/codedef.h>
 #include <quickevent/core/utils.h>
 #include <quickevent/core/si/punchrecord.h>
+#include <quickevent/core/resultstatus.h>
 
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/framework/dockwidget.h>
@@ -901,25 +902,14 @@ bool RunsPlugin::exportResultsIofXml30Stage(int stage_id, const QString &file_na
 			int time_behind = time - first_time;
 			result.insert(result.count(), QVariantList{"TimeBehind", time_behind / 1000});
 
-			static auto STAT_OK = QStringLiteral("OK");
-			QString competitor_status = STAT_OK;
-			if (!ftime) {
-				 competitor_status = "DidNotFinish";
-			}
-			else if (tt2_row.value(QStringLiteral("disqualified")).toBool()) {
-				if (tt2_row.value(QStringLiteral("misPunch")).toBool())
-					competitor_status = "MissingPunch";
-				else
-					competitor_status = "Disqualified";
-			}
-			else if (tt2_row.value(QStringLiteral("notCompeting")).toBool())
-				competitor_status = "NotCompeting";
-			if (competitor_status == STAT_OK) {
+			quickevent::core::ResultStatus result_status(tt2_row);
+
+			if (result_status.isOk()) {
 				// The position in the result list for the person that the result belongs to.
 				// This element should only be present when the Status element is set to OK.
 				result.insert(result.count(), QVariantList{"Position", tt2_row.value(QStringLiteral("npos"))});
 			}
-			result.insert(result.count(), QVariantList{"Status", competitor_status});
+			result.insert(result.count(), QVariantList{"Status", result_status.statusXml()});
 			int ix = stpTime_0_ix;
 			for(const QVariant &v : codes) {
 				quickevent::core::CodeDef cd(v.toMap());
