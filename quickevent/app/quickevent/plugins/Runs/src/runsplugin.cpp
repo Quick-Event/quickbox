@@ -927,10 +927,11 @@ bool RunsPlugin::exportResultsIofXml30Stage(int stage_id, const QString &file_na
 				QVariantList split_time{
 					QStringLiteral("SplitTime"),
 					QVariantList{QStringLiteral("ControlCode"), cd.code() },
-					QVariantList{QStringLiteral("Time"), stp_time / 1000 },
 				};
 				if(stp_time == 0)
 					split_time.insert(1, QVariantMap{ {QStringLiteral("status"), QStringLiteral("Missing")} });
+				else
+					split_time.insert(split_time.count(), QVariantList{QStringLiteral("Time"), stp_time / 1000});
 				result.insert(result.count(), split_time);
 				ix += 4;
 			}
