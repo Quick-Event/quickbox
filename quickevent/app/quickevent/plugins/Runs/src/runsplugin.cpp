@@ -1710,13 +1710,18 @@ void RunsPlugin::export_startListClassesHtml()
 			append_list(table, ltr);
 		}
 		qf::core::utils::TreeTable tt2 = tt1.row(i).table();
-		QVariantList trr{"tr",
-				  QVariantList{"th", tr("St. Num")},
-				  QVariantList{"th", tr("Name")},
-				  QVariantList{"th", tr("Registration")},
-				  QVariantList{"th", tr("SI")},
-				  QVariantList{"th", QVariantMap{{"colspan", "3"}}, tr("Start")}
-				};
+		bool show_start_number = false;
+		for(int j=0; j<tt2.rowCount(); j++) {
+			if (tt2.row(j).value(QStringLiteral("startNumber")).toInt() > 0)
+				show_start_number = true;
+		}
+		QVariantList trr{"tr"};
+		if (show_start_number)
+			append_list(trr, QVariantList{"th", tr("St. Num")});
+		append_list(trr, QVariantList{"th", tr("Name")});
+		append_list(trr,QVariantList{"th", tr("Registration")});
+		append_list(trr,QVariantList{"th", tr("SI")});
+		append_list(trr,QVariantList{"th", QVariantMap{{"colspan", "3"}}, tr("Start")});
 		append_list(table, trr);
 		for(int j=0; j<tt2.rowCount(); j++) {
 			qf::core::utils::TreeTableRow tt2_row = tt2.row(j);
@@ -1725,7 +1730,7 @@ void RunsPlugin::export_startListClassesHtml()
 				trr << QVariantMap{{"class", "odd"}};
 			if (tt2_row.value(QStringLiteral("startNumber")).toInt() > 0)
 				append_list(trr, QVariantList{"td", tt2_row.value(QStringLiteral("startNumber"))});
-			else
+			else if (show_start_number)
 				append_list(trr, QVariantList{"td", ""});
 			append_list(trr, QVariantList{"td", tt2_row.value(QStringLiteral("competitorName"))});
 			append_list(trr, QVariantList{"td", tt2_row.value(QStringLiteral("registration"))});
@@ -1804,14 +1809,19 @@ void RunsPlugin::export_startListClubsHtml()
 			append_list(table, ltr);
 		}
 		qf::core::utils::TreeTable tt2 = tt1_row.table();
-		QVariantList trr{"tr",
-				QVariantList{"th", tr("St. Num")},
-				QVariantList{"th", tr("Class")},
-				QVariantList{"th", tr("Name")},
-				QVariantList{"th", tr("Registration")},
-				QVariantList{"th", tr("SI")},
-				QVariantList{"th", QVariantMap{{"colspan", "3"}}, tr("Start")}
-			};
+		bool show_start_number = false;
+		for(int j=0; j<tt2.rowCount(); j++) {
+			if (tt2.row(j).value(QStringLiteral("startNumber")).toInt() > 0)
+				show_start_number = true;
+		}
+		QVariantList trr{"tr"};
+		if (show_start_number)
+			append_list(trr, QVariantList{"th", tr("St. Num")});
+		append_list(trr, QVariantList{"th", tr("Class")});
+		append_list(trr, QVariantList{"th", tr("Name")});
+		append_list(trr,QVariantList{"th", tr("Registration")});
+		append_list(trr,QVariantList{"th", tr("SI")});
+		append_list(trr,QVariantList{"th", QVariantMap{{"colspan", "3"}}, tr("Start")});
 		append_list(table, trr);
 		for(int j=0; j<tt2.rowCount(); j++) {
 			qf::core::utils::TreeTableRow tt2_row = tt2.row(j);
@@ -1820,7 +1830,7 @@ void RunsPlugin::export_startListClubsHtml()
 				trr << QVariantMap{{"class", "odd"}};
 			if (tt2_row.value(QStringLiteral("startNumber")).toInt() > 0)
 				append_list(trr, QVariantList{"td", tt2_row.value(QStringLiteral("startNumber"))});
-			else
+			else if (show_start_number)
 				append_list(trr, QVariantList{"td", ""});
 			append_list(trr, QVariantList{"td", tt2_row.value(QStringLiteral("classes.name"))});
 			append_list(trr, QVariantList{"td", tt2_row.value(QStringLiteral("competitorName"))});
