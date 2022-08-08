@@ -26,6 +26,7 @@ private:
 	bool saveSettings();
 private:
 	Ui::OResultsClientWidget *ui;
+	bool acceptDialogDone(int result);
 };
 
 }}

@@ -37,6 +37,15 @@ OResultsClientWidget::~OResultsClientWidget()
 	delete ui;
 }
 
+bool OResultsClientWidget::acceptDialogDone(int result)
+{
+	if(result == QDialog::Accepted) {
+		if(!saveSettings()) {
+			return false;
+		}
+	}
+	return true;
+}
 
 OResultsClient *OResultsClientWidget::service()
 {
