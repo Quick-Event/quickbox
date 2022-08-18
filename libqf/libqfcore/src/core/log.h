@@ -86,4 +86,3 @@ inline NecroLog operator<<(NecroLog log, const QRectF &r) {
 	return log.operator<<(s.arg(r.x()).arg(r.y())
 	                      .arg(r.width()).arg(r.height()).toStdString());
 }
-Q_DECLARE_METATYPE(NecroLog::Level)
