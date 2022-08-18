@@ -5,7 +5,9 @@
 #include "../core/utils.h"
 
 class QTextStream;
+#if QT_VERSION_MAJOR < 6
 class QStringList;
+#endif
 
 namespace qf {
 namespace core {
