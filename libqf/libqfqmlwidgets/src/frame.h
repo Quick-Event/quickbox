@@ -2,6 +2,7 @@
 #define QF_QMLWIDGETS_FRAME_H
 
 #include "qmlwidgetsglobal.h"
+#include "layouttypeproperties.h"
 
 #include <qf/core/utils.h>
 
@@ -12,8 +13,6 @@ class QBoxLayout;
 
 namespace qf {
 namespace qmlwidgets {
-
-class LayoutTypeProperties;
 
 class QFQMLWIDGETS_DECL_EXPORT Frame : public QFrame
 {
