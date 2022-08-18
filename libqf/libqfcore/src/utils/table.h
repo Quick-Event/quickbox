@@ -7,7 +7,6 @@
 
 #include <QString>
 #include <QVariantMap>
-#include <QRegExp>
 #include <QVector>
 #include <QBitArray>
 
