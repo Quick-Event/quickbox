@@ -728,7 +728,7 @@ void ReportViewWidget::setupPainter(ReportPainter *p)
 #if QT_VERSION < QT_VERSION_CHECK(5, 13, 0)
 	m_painterInverseMatrix = p->matrix().inverted();
 #else
-	m_painterInverseMatrix = p->worldTransform().toAffine().inverted();
+	m_painterInverseMatrix = p->worldTransform().inverted();
 #endif
 }
 
