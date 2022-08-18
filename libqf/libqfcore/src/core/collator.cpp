@@ -2,6 +2,7 @@
 #include "log.h"
 
 #include <QString>
+#include <QStringRef>
 
 using namespace qf::core;
 /*

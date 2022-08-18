@@ -10,6 +10,7 @@
 #include <QSqlQuery>
 #include <QSqlDriver>
 #include <QTextStream>
+#include <QIODevice>
 
 #define QFCATALOG_MYSQL_VERSION_MAJOR 5
 
