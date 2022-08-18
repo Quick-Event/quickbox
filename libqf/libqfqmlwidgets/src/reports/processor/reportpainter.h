@@ -19,6 +19,7 @@
 #include <QObject>
 #include <QPainter>
 #include <QPrinter>
+#include <QRegExp>
 
 namespace qf {
 namespace qmlwidgets {

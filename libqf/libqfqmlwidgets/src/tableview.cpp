@@ -41,6 +41,7 @@
 #include <QInputDialog>
 #include <QFileDialog>
 #include <QPainter>
+#include <QStringRef>
 #include <QToolButton>
 #include <QTextStream>
 //#define QF_TIMESCOPE_ENABLED

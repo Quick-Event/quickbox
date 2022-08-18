@@ -35,6 +35,9 @@ add_library(libqfcore SHARED
     )
 
 target_link_libraries(libqfcore PUBLIC libnecrolog Qt::Core Qt::Sql PRIVATE Qt::Gui Qt::Qml Qt::Xml libnecrolog)
+if(USE_QT6)
+    target_link_libraries(libqfcore PUBLIC Qt::Core5Compat)
+endif()
 target_include_directories(libqfcore PUBLIC include)
 target_compile_definitions(libqfcore PRIVATE QFCORE_BUILD_DLL)
 
