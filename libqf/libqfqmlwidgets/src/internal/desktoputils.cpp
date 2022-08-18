@@ -1,7 +1,9 @@
 #include "desktoputils.h"
 
 #include <QApplication>
+#if QT_VERSION_MAJOR < 6
 #include <QDesktopWidget>
+#endif
 #include <QScreen>
 
 namespace qf {
