@@ -20,17 +20,29 @@ add_executable(qsqlmon
     src/theapp.cpp
     )
 
-qt5_add_translation(QM_FILES
-    qsqlmon-cs_CZ.ts
-    qsqlmon-fr_FR.ts
-    qsqlmon-nb_NO.ts
-    qsqlmon-nl_BE.ts
-    qsqlmon-pl_PL.ts
-    qsqlmon-ru_RU.ts
-    qsqlmon-uk_UA.ts
-    )
+if(USE_QT6)
+    qt6_add_translations(qsqlmon TS_FILES
+        qsqlmon-cs_CZ.ts
+        qsqlmon-fr_FR.ts
+        qsqlmon-nb_NO.ts
+        qsqlmon-nl_BE.ts
+        qsqlmon-pl_PL.ts
+        qsqlmon-ru_RU.ts
+        qsqlmon-uk_UA.ts
+        )
+else()
+    qt5_add_translation(QM_FILES
+        qsqlmon-cs_CZ.ts
+        qsqlmon-fr_FR.ts
+        qsqlmon-nb_NO.ts
+        qsqlmon-nl_BE.ts
+        qsqlmon-pl_PL.ts
+        qsqlmon-ru_RU.ts
+        qsqlmon-uk_UA.ts
+        )
+    target_sources(qsqlmon PRIVATE ${QM_FILES})
+endif()
 
-target_sources(qsqlmon PRIVATE ${QM_FILES})
 target_link_libraries(qsqlmon PRIVATE libqfqmlwidgets)
 target_include_directories(qsqlmon PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
 

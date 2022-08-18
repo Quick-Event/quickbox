@@ -91,17 +91,29 @@ add_library(libqfqmlwidgets SHARED
     images/flat/flat.qrc
     )
 
-qt5_add_translation(QM_FILES
-    libqfqmlwidgets-cs_CZ.ts
-    libqfqmlwidgets-fr_FR.ts
-    libqfqmlwidgets-nb_NO.ts
-    libqfqmlwidgets-nl_BE.ts
-    libqfqmlwidgets-pl_PL.ts
-    libqfqmlwidgets-ru_RU.ts
-    libqfqmlwidgets-uk_UA.ts
-    )
+if(USE_QT6)
+    qt6_add_translations(libqfqmlwidgets TS_FILES
+        libqfqmlwidgets-cs_CZ.ts
+        libqfqmlwidgets-fr_FR.ts
+        libqfqmlwidgets-nb_NO.ts
+        libqfqmlwidgets-nl_BE.ts
+        libqfqmlwidgets-pl_PL.ts
+        libqfqmlwidgets-ru_RU.ts
+        libqfqmlwidgets-uk_UA.ts
+        )
+else()
+    qt5_add_translation(QM_FILES
+        libqfqmlwidgets-cs_CZ.ts
+        libqfqmlwidgets-fr_FR.ts
+        libqfqmlwidgets-nb_NO.ts
+        libqfqmlwidgets-nl_BE.ts
+        libqfqmlwidgets-pl_PL.ts
+        libqfqmlwidgets-ru_RU.ts
+        libqfqmlwidgets-uk_UA.ts
+        )
 
-target_sources(libqfqmlwidgets PRIVATE ${QM_FILES})
+    target_sources(libqfqmlwidgets PRIVATE ${QM_FILES})
+endif()
 
 target_link_libraries(libqfqmlwidgets PUBLIC Qt::Svg Qt::PrintSupport Qt::Sql Qt::Qml Qt::Widgets Qt::Xml libqfcore)
 target_include_directories(libqfqmlwidgets PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
