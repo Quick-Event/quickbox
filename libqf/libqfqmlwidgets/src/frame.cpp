@@ -81,7 +81,7 @@ void Frame::addWidgetFunction(QQmlListProperty<QWidget> *list_property, QWidget 
 	}
 }    
 
-QWidget * Frame::widgetAtFunction(QQmlListProperty<QWidget> *list_property, int index)
+QWidget * Frame::widgetAtFunction(QQmlListProperty<QWidget> *list_property, WidgetIndexType index)
 {
 	Frame *that = static_cast<Frame*>(list_property->object);
 	return that->at(index);
@@ -94,7 +94,7 @@ void Frame::removeAllWidgetsFunction(QQmlListProperty<QWidget> *list_property)
 	that->removeAll();
 }
 
-int Frame::countWidgetsFunction(QQmlListProperty<QWidget> *list_property)
+Frame::WidgetIndexType Frame::countWidgetsFunction(QQmlListProperty<QWidget> *list_property)
 {
 	Frame *that = static_cast<Frame*>(list_property->object);
 	return that->count();

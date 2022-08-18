@@ -62,7 +62,7 @@ void Splitter::addWidgetFunction(QQmlListProperty<QWidget> *list_property, QWidg
 	}
 }
 
-QWidget * Splitter::widgetAtFunction(QQmlListProperty<QWidget> *list_property, int index)
+QWidget * Splitter::widgetAtFunction(QQmlListProperty<QWidget> *list_property, WidgetIndexType index)
 {
 	Splitter *that = static_cast<Splitter*>(list_property->object);
 	return that->widget(index);
@@ -75,7 +75,7 @@ void Splitter::removeAllWidgetsFunction(QQmlListProperty<QWidget> *list_property
 	QList<QWidget*> lst = that->findChildren<QWidget*>();
 	qDeleteAll(lst);}
 
-int Splitter::countWidgetsFunction(QQmlListProperty<QWidget> *list_property)
+Splitter::WidgetIndexType Splitter::countWidgetsFunction(QQmlListProperty<QWidget> *list_property)
 {
 	Splitter *that = static_cast<Splitter*>(list_property->object);
 	return that->count();
