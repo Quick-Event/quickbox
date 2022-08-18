@@ -71,6 +71,7 @@ return m_headerLength;
 
 bool WavFile::readHeader()
 {
+#if QT_VERSION_MAJOR < 6
 	seek(0);
 	CombinedHeader header;
 	bool result = read(reinterpret_cast<char *>(&header), sizeof(CombinedHeader)) == sizeof(CombinedHeader);
@@ -115,6 +116,9 @@ bool WavFile::readHeader()
 	}
 	m_headerLength = pos();
 	return result;
+#else
+	return false;
+#endif
 }
 
 }}}
