@@ -179,7 +179,7 @@ void ReportItemFrame::addItemFunction(QQmlListProperty<ReportItem> *list_propert
 	}
 }
 
-ReportItem *ReportItemFrame::itemAtFunction(QQmlListProperty<ReportItem> *list_property, int index)
+ReportItem *ReportItemFrame::itemAtFunction(QQmlListProperty<ReportItem> *list_property, WidgetIndexType index)
 {
 	ReportItemFrame *that = static_cast<ReportItemFrame*>(list_property->object);
 	return that->m_items.value(index);
@@ -192,7 +192,7 @@ void ReportItemFrame::removeAllItemsFunction(QQmlListProperty<ReportItem> *list_
 	that->m_items.clear();
 }
 
-int ReportItemFrame::countItemsFunction(QQmlListProperty<ReportItem> *list_property)
+ReportItemFrame::WidgetIndexType ReportItemFrame::countItemsFunction(QQmlListProperty<ReportItem> *list_property)
 {
 	ReportItemFrame *that = static_cast<ReportItemFrame*>(list_property->object);
 	return that->itemCount();

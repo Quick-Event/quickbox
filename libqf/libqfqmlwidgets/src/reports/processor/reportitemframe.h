@@ -186,10 +186,15 @@ public:
 
 	QString toString(int indent = 2, int indent_offset = 0) Q_DECL_OVERRIDE;
 private:
+#if QT_VERSION_MAJOR < 6
+	using WidgetIndexType = int;
+#else
+	using WidgetIndexType = long long;
+#endif
 	static void addItemFunction(QQmlListProperty<ReportItem> *list_property, ReportItem *item);
-	static ReportItem* itemAtFunction(QQmlListProperty<ReportItem> *list_property, int index);
+	static ReportItem* itemAtFunction(QQmlListProperty<ReportItem> *list_property, WidgetIndexType index);
 	static void removeAllItemsFunction(QQmlListProperty<ReportItem> *list_property);
-	static int countItemsFunction(QQmlListProperty<ReportItem> *list_property);
+	static WidgetIndexType countItemsFunction(QQmlListProperty<ReportItem> *list_property);
 protected:
 	virtual int itemsToPrintCount() {return itemCount();}
 	virtual ReportItem* itemToPrintAt(int ix) {return itemAt(ix);}
