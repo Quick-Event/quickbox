@@ -245,7 +245,7 @@ void Frame::createLayout(LayoutType layout_type)
 		new_ly = new_box_ly = new QVBoxLayout();
 		break;
 	}
-	new_ly->setMargin(DefaultLayoutMargin);
+	new_ly->setContentsMargins(DefaultLayoutMargin, DefaultLayoutMargin, DefaultLayoutMargin, DefaultLayoutMargin);
 	//setFrameShape(QFrame::Box);
 	if(new_box_ly) {
 		LayoutTypeProperties *props = layoutTypeProperties();
