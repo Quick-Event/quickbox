@@ -1181,7 +1181,12 @@ void ReportViewWidget::file_export_html()
 			return;
 		}
 		QTextStream out(&f);
+#if QT_VERSION_MAJOR >= 6
+		out.setEncoding(QStringConverter::encodingForName("UTF-8").value());
+#else
 		out.setCodec("UTF-8");
+#endif
+
 		out << s;
 	}
 }

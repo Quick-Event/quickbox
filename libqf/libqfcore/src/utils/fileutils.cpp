@@ -189,7 +189,12 @@ QUrl FileUtils::saveText(const QString & text, const QString & filename_with_pat
 		QFile f(filename_with_path);
 		if(f.open(QIODevice::WriteOnly)) {
 			QTextStream ts(&f);
+#if QT_VERSION_MAJOR >= 6
+			ts.setEncoding(QStringConverter::encodingForName(codec_name).value());
+#else
 			ts.setCodec(codec_name);
+#endif
+
 			ts << text;
 			f.close();
 			QDir d(dir);

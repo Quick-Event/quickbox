@@ -993,7 +993,11 @@ void TableView::exportCSV_helper(const QVariant &export_options)
 		qf::core::utils::Table::TextExportOptions text_export_opts(export_opts);
 
 		QTextStream ts(&f);
+#if QT_VERSION_MAJOR >= 6
+		ts.setEncoding(QStringConverter::encodingForName(text_export_opts.codecName().toLatin1().constData()).value());
+#else
 		ts.setCodec(text_export_opts.codecName().toLatin1().constData());
+#endif
 
 		QVector<int> exported_columns;
 		for(auto v : export_opts.value("columns").toList())
