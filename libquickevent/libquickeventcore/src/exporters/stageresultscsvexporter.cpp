@@ -57,7 +57,11 @@ void StageResultsCsvExporter::exportClasses(bool single_file)
 		if (!f_csv.open(QFile::WriteOnly))
 			qfError() << "Cannot open file" << f_csv.fileName() + "for writing.";
 		QTextStream csv(&f_csv);
+#if QT_VERSION_MAJOR >= 6
+		csv.setEncoding(QStringConverter::encodingForName("UTF-8").value());
+#else
 		csv.setCodec("UTF-8");
+#endif
 		exportCsvHeader(csv);
 		QSqlQuery q = execSql(qs);
 		while(q.next()) {
@@ -75,7 +79,11 @@ void StageResultsCsvExporter::exportClasses(bool single_file)
 			if (!f_csv.open(QFile::WriteOnly))
 				qfError() << "Cannot open file" << f_csv.fileName() + "for writing.";
 			QTextStream csv(&f_csv);
+#if QT_VERSION_MAJOR >= 6
+			csv.setEncoding(QStringConverter::encodingForName("UTF-8").value());
+#else
 			csv.setCodec("UTF-8");
+#endif
 			exportCsvHeader(csv);
 			exportClass(class_id, csv);
 		}

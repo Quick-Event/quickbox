@@ -734,7 +734,11 @@ void MainWindow::executeSqlScript()
 		QFile f(s);
 		if(f.open(QFile::ReadOnly)) {
 			QTextStream in(&f);
+#if QT_VERSION_MAJOR >= 6
+			in.setEncoding(QStringConverter::encodingForName("UTF-8").value());
+#else
 			in.setCodec("UTF-8");
+#endif
 			s = in.readAll();
 			executeSqlLines(s);
 		}

@@ -34,6 +34,15 @@ void PreviewDialog::setFile(const QString& file_name, const QString &codec_name)
 	qfLogFuncFrame() << file_name << codec_name;
 	QFile f(file_name);
 	if(f.open(QFile::ReadOnly)) {
+		QTextStream ts(&f);
+#if QT_VERSION_MAJOR >= 6
+		auto encoding = QStringConverter::encodingForName(codec_name.isEmpty() ? "utf-8" : codec_name.toLatin1());
+		if(!encoding) {
+			MessageBox::showError(this, tr("Cannot load text codec '%1'.").arg(codec_name));
+			return;
+		}
+		ts.setEncoding(encoding.value());
+#else
 		QTextCodec *tc;
 		if(codec_name.isEmpty())
 			tc = QTextCodec::codecForName("utf-8");
@@ -43,8 +52,8 @@ void PreviewDialog::setFile(const QString& file_name, const QString &codec_name)
 			MessageBox::showError(this, tr("Cannot load text codec '%1'.").arg(codec_name));
 			return;
 		}
-		QTextStream ts(&f);
 		ts.setCodec(tc);
+#endif
 		QString s = ts.readAll();
 		setText(s, file_name);
 	}
