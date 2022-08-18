@@ -369,7 +369,7 @@ ReportViewWidget::ReportViewWidget(QWidget *parent)
 	m_scrollArea->setWidget(m_painterWidget);
 	QBoxLayout *ly = new QVBoxLayout(this);
 	ly->setSpacing(0);
-	ly->setMargin(0);
+	ly->setContentsMargins(0, 0, 0, 0);
 	ly->addWidget(m_scrollArea);
 	ly->addWidget(statusBar());
 

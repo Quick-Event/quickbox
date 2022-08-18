@@ -26,7 +26,7 @@ PartWidget::PartWidget(const QString &feature_id, QWidget *parent)
 	m_centralFrame->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
 	m_centralFrame->setLayoutType(Frame::LayoutVertical);
 	QBoxLayout *ly = new QVBoxLayout(this);
-	ly->setMargin(0);
+	ly->setContentsMargins(0, 0, 0, 0);
 	ly->setSpacing(1);
 	ly->addWidget(m_captionFrame);
 	qfDebug() << "\t adding:" << m_centralFrame << "to layout:" << ly;
@@ -106,7 +106,7 @@ qf::qmlwidgets::ToolBar *PartWidget::toolBar(const QString &name, bool create_if
 		ly->insertWidget(ix, frm);
 
 		m_toolBarsLayout = new QHBoxLayout(frm);
-		m_toolBarsLayout->setMargin(0);
+		m_toolBarsLayout->setContentsMargins(0, 0, 0, 0);
 		m_toolBarsLayout->setSpacing(1);
 		m_toolBarsLayout->addStretch();
 	}

@@ -20,7 +20,7 @@ StackedCentralWidget::StackedCentralWidget(MainWindow *parent) :
 	qfLogFuncFrame();
 	m_centralWidget = new QStackedWidget(this);
 	QBoxLayout *ly = new QVBoxLayout(this);
-	ly->setMargin(0);
+	ly->setContentsMargins(0, 0, 0, 0);
 	//qfDebug() << "\t adding:" << m_centralFrame << "to layout:" << ly;
 	ly->addWidget(m_centralWidget);
 	setLayout(ly);
