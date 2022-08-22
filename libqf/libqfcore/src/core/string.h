@@ -27,7 +27,7 @@ public:
 	*/
 	String slice(int start, int end = std::numeric_limits<int>::max()) const;
 
-	int pos(QChar what_char, QChar quote = 0) const;
+	int pos(QChar what_char, QChar quote = QChar(0)) const;
 	QChar value(int ix) const;
 
 	//! Split string and optionaly trim splitted parts
@@ -35,7 +35,7 @@ public:
 	/// if fs contain n \a sep chars FStringList will contain n+1 strings.
 	/// Empty string produce empty string list
 	/// @param trim_parts trim strings and remove quotes in  list after parsing
-	QStringList splitAndTrim(QChar sep = '\t', QChar quote = 0, bool trim_parts = TrimParts, SplitBehavior keep_empty_parts = SplitBehavior::SkipEmptyParts) const;
+	QStringList splitAndTrim(QChar sep = '\t', QChar quote = QChar(0), bool trim_parts = TrimParts, SplitBehavior keep_empty_parts = SplitBehavior::SkipEmptyParts) const;
 
 	//! finds matching bracket, if string don't start with opening bracket, the outermost closing bracket in the string is found..
 	/// @return -1 if the opening or matching bracket is not found. String length if no brackets are found.

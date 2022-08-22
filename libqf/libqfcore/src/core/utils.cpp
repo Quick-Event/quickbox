@@ -5,6 +5,7 @@
 #include <QSet>
 #include <QDate>
 #include <QRegularExpression>
+#include <QRegExp> // Get rid of this
 
 namespace qf {
 namespace core {

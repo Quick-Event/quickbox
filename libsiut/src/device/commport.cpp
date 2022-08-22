@@ -102,7 +102,7 @@ void CommPort::setDataBitsAsInt(int data_bits)
 	case 6: db = Data6; break;
 	case 7: db = Data7; break;
 	case 8: db = Data8; break;
-	default: db = UnknownDataBits; break;
+	default: throw std::runtime_error("Unknown data bits"); break;
 	}
 	setDataBits(db);
 }

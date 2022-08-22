@@ -124,11 +124,13 @@ void TimeMs::registerQVariantFunctions()
 	static bool registered = false;
 	if(!registered) {
 		registered = true;
+#if QT_VERSION_MAJOR < 6
 		{
 			bool ok = QMetaType::registerComparators<TimeMs>();
 			if(!ok)
 				qfError() << "Error registering comparators for quickevent::core::og::TimeMs!";
 		}
+#endif
 		{
 			bool ok = QMetaType::registerConverter<TimeMs, int>([](const TimeMs &t) -> int {return t.msec();});
 			if(!ok)

@@ -9,6 +9,7 @@
 
 #include <qf/core/log.h>
 
+#include <QRegularExpression>
 #include <QTextEdit>
 
 QFSqlSyntaxHighlighter::QFSqlSyntaxHighlighter(QTextEdit *parent)
@@ -39,7 +40,7 @@ void QFSqlSyntaxHighlighter::highlightBlock(const QString &_text)
 	commentFormat.setForeground(Qt::darkCyan);
 	QString patt_comment = "^--";
 
-	QRegExp expression(patt_comment);
+	QRegularExpression expression(patt_comment);
 	int index = text.indexOf(expression);
 	if(index == 0) {
 		setFormat(0, text.length(), commentFormat);

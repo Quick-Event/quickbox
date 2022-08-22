@@ -10,6 +10,7 @@
 #include <qf/core/model/logtablemodel.h>
 
 #include <QSortFilterProxyModel>
+#include <QActionGroup>
 #include <QDateTime>
 #include <QClipboard>
 #include <QKeyEvent>

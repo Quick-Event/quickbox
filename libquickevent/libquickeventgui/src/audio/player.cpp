@@ -5,7 +5,9 @@
 #include <qf/core/utils.h>
 
 #include <QCoreApplication>
+#if QT_VERSION_MAJOR < 6
 #include <QAudioDeviceInfo>
+#endif
 #include <QAudioFormat>
 #include <QAudioOutput>
 #include <QString>
@@ -37,6 +39,7 @@ void Player::playAlert(AlertKind kind)
 
 void Player::playFile(const QString &file)
 {
+#if QT_VERSION_MAJOR < 6
 	if (m_audioOutput) {
 		m_audioOutput->stop();
 	}
@@ -51,6 +54,7 @@ void Player::playFile(const QString &file)
 	QF_SAFE_DELETE(m_audioOutput);
 
 	QAudioDeviceInfo info(QAudioDeviceInfo::defaultOutputDevice());
+
 	if (!info.isFormatSupported(m_wavFile->fileFormat())) {
 		qfWarning() << "Raw audio format not supported by backend, cannot play audio.";
 		return;
@@ -74,6 +78,7 @@ void Player::playFile(const QString &file)
 	});
 
 	m_audioOutput->start(m_wavFile);
+#endif
 }
 
 }}}
