@@ -42,10 +42,8 @@ OResultsClient::OResultsClient(QObject *parent)
 	connect(m_exportTimer, &QTimer::timeout, this, &OResultsClient::onExportTimerTimeOut);
 	connect(this, &OResultsClient::statusChanged, [this](Status status) {
 		if(status == Status::Running) {
-			if(settings().exportIntervalSec() > 0) {
-				onExportTimerTimeOut();
-				m_exportTimer->start();
-			}
+			onExportTimerTimeOut();
+			m_exportTimer->start();
 		}
 		else {
 			m_exportTimer->stop();
@@ -94,14 +92,8 @@ qf::qmlwidgets::framework::DialogWidget *OResultsClient::createDetailWidget()
 void OResultsClient::init()
 {
 	OResultsClientSettings ss = settings();
-	if(ss.exportIntervalSec() > 0) {
-		m_exportTimer->setInterval(ss.exportIntervalSec() * 1000);
-	}
-	else {
-		m_exportTimer->stop();
-	}
+	m_exportTimer->setInterval(ss.exportIntervalSec() * 1000);
 }
-
 
 void OResultsClient::onExportTimerTimeOut()
 {
