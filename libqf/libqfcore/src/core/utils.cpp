@@ -5,7 +5,6 @@
 #include <QSet>
 #include <QDate>
 #include <QRegularExpression>
-#include <QRegExp> // Get rid of this
 
 namespace qf {
 namespace core {
@@ -134,13 +133,12 @@ int Utils::findCaption(const QString &caption_format, int from_ix, QString *capt
 QSet<QString> Utils::findCaptions(const QString &caption_format)
 {
 	QSet<QString> ret;
-	QRegExp rx;
+	QRegularExpression rx;
 	rx.setPattern("\\{\\{([A-Za-z][A-Za-z0-9]*(\\.[A-Za-z][A-Za-z0-9]*)*)\\}\\}");
-	rx.setPatternSyntax(QRegExp::RegExp);
-	int ix = 0;
-	while((ix = rx.indexIn(caption_format, ix)) != -1) {
-		ret << rx.cap(1);
-		ix += rx.matchedLength();
+	auto match_iterator = rx.globalMatch(caption_format);
+	while (match_iterator.hasNext()) {
+		auto match = match_iterator.next();
+		ret << match.captured(1);
 	}
 	return ret;
 }

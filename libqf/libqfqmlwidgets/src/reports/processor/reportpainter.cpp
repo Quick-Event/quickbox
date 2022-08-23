@@ -26,7 +26,7 @@ using namespace qf::qmlwidgets::reports;
 const QString ReportItemMetaPaint::pageCountReportSubstitution = "@{n}";
 //const QString ReportItemMetaPaint::checkOnReportSubstitution = "@{check:1}";
 const QString ReportItemMetaPaint::checkReportSubstitution = "@{check:${STATE}}";
-const QRegExp ReportItemMetaPaint::checkReportSubstitutionRegExp = QRegExp("@\\{check:(\\d)\\}");
+const QRegularExpression ReportItemMetaPaint::checkReportSubstitutionRegExp = QRegularExpression(QRegularExpression::anchoredPattern("@\\{check:(\\d)\\}"));
 
 ReportItemMetaPaint::ReportItemMetaPaint()
 	: Super(nullptr)
@@ -643,9 +643,9 @@ void ReportItemMetaPaintCheck::paint(ReportPainter * painter, unsigned mode)
 	QFontMetricsF font_metrics = QFontMetricsF(painter->font(), painter->device());
 
 	//qfInfo() << "paint" << text;
-	QRegExp rx = ReportItemMetaPaint::checkReportSubstitutionRegExp;
-	if(rx.exactMatch(text)) {
-		bool check_on = rx.capturedTexts().value(1) == "1";
+	QRegularExpression rx = ReportItemMetaPaint::checkReportSubstitutionRegExp;
+	if(auto match = rx.match(text); match.hasMatch()) {
+		bool check_on = match.capturedTexts().value(1) == "1";
 		/// V tabulkach by jako check OFF slo netisknout vubec nic,
 		/// ale na ostatnich mistech repotu je to zavadejici .
 

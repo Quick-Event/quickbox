@@ -8,7 +8,6 @@
 #include <QFile>
 #include <QUrl>
 #include <QTextEdit>
-#include <QTextCodec>
 #include <QTextStream>
 
 using namespace qf::qmlwidgets::dialogs;
