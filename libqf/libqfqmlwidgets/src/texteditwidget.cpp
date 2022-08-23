@@ -13,7 +13,6 @@
 
 #include <QPrintDialog>
 #include <QPrinter>
-#include <QTextCodec>
 #include <QStyle>
 #include <QTextStream>
 

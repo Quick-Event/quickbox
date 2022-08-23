@@ -6,7 +6,6 @@
 #include "../sql/dbenum.h"
 #include "../sql/dbenumcache.h"
 
-#include <QRegExp>
 #include <QSqlError>
 #include <QSqlRecord>
 #include <QSqlIndex>

@@ -9,8 +9,6 @@
 #include <QLocale>
 #include <QSharedDataPointer>
 
-class QStringRef;
-
 namespace qf {
 namespace core {
 
@@ -43,7 +41,6 @@ public:
 	QF_SHARED_CLASS_FIELD_RW(QLocale::Language, l, setL, anguage)
 
 	int compare(const QString &s1, const QString &s2) const;
-	int compare(const QStringRef &s1, const QStringRef &s2) const;
 
 	static QByteArray toAscii7(QLocale::Language lang, const QString &s, bool to_lower);
 	static QChar removePunctuation(QLocale::Language language, QChar c);

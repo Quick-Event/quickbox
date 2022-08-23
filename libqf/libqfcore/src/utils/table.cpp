@@ -7,7 +7,6 @@
 #include "../core/utils.h"
 #include "../core/string.h"
 
-#include <QTextCodec>
 #include <QStringBuilder>
 #include <QDate>
 #include <QDomElement>
