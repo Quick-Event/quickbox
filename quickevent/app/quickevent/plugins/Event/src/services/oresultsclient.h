@@ -45,6 +45,7 @@ private:
 	QTimer *m_exportTimer = nullptr;
 	QNetworkAccessManager *m_networkManager = nullptr;
 	void sendFile(QString name, QString request_path, QString file);
+	const QString API_URL = "https://api.oresults.eu";
 };
 
 }}

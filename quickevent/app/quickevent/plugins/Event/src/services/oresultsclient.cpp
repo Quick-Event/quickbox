@@ -32,8 +32,6 @@ using Runs::RunsPlugin;
 namespace Event {
 namespace services {
 
-const QString API_URL = "https://api.oresults.eu";
-
 OResultsClient::OResultsClient(QObject *parent)
 	: Super(OResultsClient::serviceName(), parent)
 {
