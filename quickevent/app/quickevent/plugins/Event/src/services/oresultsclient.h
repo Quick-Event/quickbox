@@ -5,9 +5,8 @@
 
 #include "service.h"
 
-#include <QNetworkAccessManager>
-
 class QTimer;
+class QNetworkAccessManager;
 
 namespace Event {
 namespace services {
