@@ -102,7 +102,7 @@ QString ConnectionSettings::singleWorkingDir()
 {
 	QString dir = value(EVENT + '/' + DATA_STORAGE + '/' + SINGLE_FILE + '/' + WORKING_DIR).toString();
 	if(dir.isEmpty()) {
-		dir = QStandardPaths::writableLocation(QStandardPaths::DataLocation);
+		dir = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
 		qfInfo() << "data loc:" << dir;
 	}
 	return dir;

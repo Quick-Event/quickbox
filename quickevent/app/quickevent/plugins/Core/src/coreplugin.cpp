@@ -12,6 +12,7 @@
 #include <QProcess>
 #include <QMessageBox>
 #include <QSettings>
+#include <QActionGroup>
 
 namespace qfw = qf::qmlwidgets;
 namespace qff = qf::qmlwidgets::framework;

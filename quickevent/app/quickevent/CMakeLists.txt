@@ -101,18 +101,31 @@ add_executable(quickevent
     plugins/Relays/Relays.qrc
     plugins/Runs/Runs.qrc
     plugins/CardReader/CardReader.qrc
-    app.rc
+	quickevent.rc
     )
 
-qt5_add_translation(QM_FILES
-    quickevent-cs_CZ.ts
-    quickevent-fr_FR.ts
-    quickevent-nb_NO.ts
-    quickevent-nl_BE.ts
-    quickevent-pl_PL.ts
-    quickevent-ru_RU.ts
-    quickevent-uk_UA.ts
-    )
+if(USE_QT6)
+	qt6_add_translations(quickevent TS_FILES
+		quickevent-cs_CZ.ts
+		quickevent-fr_FR.ts
+		quickevent-nb_NO.ts
+		quickevent-nl_BE.ts
+		quickevent-pl_PL.ts
+		quickevent-ru_RU.ts
+		quickevent-uk_UA.ts
+		)
+else()
+	qt5_add_translation(QM_FILES
+		quickevent-cs_CZ.ts
+		quickevent-fr_FR.ts
+		quickevent-nb_NO.ts
+		quickevent-nl_BE.ts
+		quickevent-pl_PL.ts
+		quickevent-ru_RU.ts
+		quickevent-uk_UA.ts
+		)
+	target_sources(quickshow PRIVATE ${QM_FILES})
+endif()
 
 target_sources(quickevent PRIVATE ${QM_FILES})
 target_include_directories(quickevent PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})

@@ -23,7 +23,11 @@ void ServicesWidget::reload()
 	ly->addWidget(m_centralWidget);
 
 	QVBoxLayout *ly2 = new QVBoxLayout(m_centralWidget);
+#if QT_VERSION_MAJOR >= 6
+	ly2->setContentsMargins({});
+#else
 	ly2->setMargin(0);
+#endif
 	ly->setSpacing(0);
 
 	for (int i = 0; i < Service::serviceCount(); ++i) {
