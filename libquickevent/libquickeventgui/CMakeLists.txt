@@ -23,5 +23,6 @@ qt5_add_translation(QM_FILES
 target_sources(libquickeventgui PRIVATE ${QM_FILES})
 target_compile_definitions(libquickeventgui PRIVATE QUICKEVENTGUI_BUILD_DLL)
 target_link_libraries(libquickeventgui PUBLIC Qt::Core Qt::Multimedia libquickeventcore libqfqmlwidgets)
+target_include_directories(libquickeventgui PUBLIC include)
 
 install(TARGETS libquickeventgui)
