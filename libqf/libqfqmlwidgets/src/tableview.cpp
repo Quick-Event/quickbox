@@ -41,7 +41,6 @@
 #include <QInputDialog>
 #include <QFileDialog>
 #include <QPainter>
-#include <QStringRef>
 #include <QToolButton>
 #include <QTextStream>
 //#define QF_TIMESCOPE_ENABLED
@@ -1287,11 +1286,10 @@ void TableView::seek(const QString &prefix_str)
 			QString data_str = model()->data(ix, Qt::DisplayRole).toString();//.mid(0, prefix_str.length()).toLower();
 			/// QTBUG-37689 QCollator allways sorts case sensitive
 			/// workarounded by own implementation of qf::core::Collator
-			QStringRef ps(&prefix_str);
-			QStringRef ds(&data_str, 0, qMin(prefix_str.length(), data_str.length()));
+			QString ds = data_str.left(qMin(prefix_str.length(), data_str.length()));
 			//QString ps = prefix_str.toLower();
 			//QString ds = data_str.mid(0, ps.length()).toLower();
-			int cmp = sort_collator.compare(ps, ds);
+			int cmp = sort_collator.compare(prefix_str, ds);
 			//qfInfo() << ps << "cmp" << ds << "->" << cmp;
 			if(cmp <= 0) {
 				setCurrentIndex(ix);

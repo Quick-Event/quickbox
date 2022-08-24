@@ -149,9 +149,9 @@ ReportItem::PrintResult ReportItemPara::printHtml(HTMLElement & out)
 	QDomElement el_div = out.ownerDocument().createElement("div");
 	QDomElement el_p = out.ownerDocument().createElement("p");
 	QString text = paraText();
-	QRegExp rx = ReportItemMetaPaint::checkReportSubstitutionRegExp;
-	if(rx.exactMatch(text)) {
-		bool check_on = rx.capturedTexts().value(1) == "1";
+	QRegularExpression rx = ReportItemMetaPaint::checkReportSubstitutionRegExp;
+	if(auto match = rx.match(text); match.hasMatch()) {
+		bool check_on = match.capturedTexts().value(1) == "1";
 		text = (check_on)? "X": QString();
 	}
 	setElementText(el_p, text);

@@ -76,8 +76,8 @@ ReportItem::PrintResult ReportItemPara::printMetaPaintChildren(ReportItemMetaPai
 		device_bounding_rect = qmlwidgets::graphics::mm2device(bounding_rect, processor()->paintDevice());
 
 		bool render_check_mark = false;
-		QRegExp rx = ReportItemMetaPaint::checkReportSubstitutionRegExp;
-		if(rx.exactMatch(text_to_layout)) {
+		QRegularExpression rx = ReportItemMetaPaint::checkReportSubstitutionRegExp;
+		if(auto match = rx.match(text_to_layout); match.hasMatch()) {
 			//bool check_on = rx.capturedTexts().value(1) == "1";
 			device_bounding_rect = font_metrics.boundingRect('X');
 			render_check_mark = true;

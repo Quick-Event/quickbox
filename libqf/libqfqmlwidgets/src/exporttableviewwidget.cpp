@@ -5,7 +5,6 @@
 #include <qf/core/utils/table.h>
 
 #include <QMenu>
-#include <QTextCodec>
 
 namespace qf {
 namespace qmlwidgets {
@@ -17,8 +16,7 @@ ExportTableViewWidget::ExportTableViewWidget(QTableView *table_view, QWidget *pa
 {
 	ui->setupUi(this);
 
-	foreach(QByteArray ba, QTextCodec::availableCodecs())
-		ui->lstCodec->addItem(ba);
+	ui->lstCodec->addItem("UTF-8");
 	ui->lstCodec->setCurrentText(QStringLiteral("UTF-8"));
 
 	ui->tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);

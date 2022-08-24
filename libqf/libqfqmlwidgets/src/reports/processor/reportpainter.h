@@ -19,7 +19,6 @@
 #include <QObject>
 #include <QPainter>
 #include <QPrinter>
-#include <QRegExp>
 
 namespace qf {
 namespace qmlwidgets {
@@ -41,7 +40,7 @@ public:
 	enum PaintMode {PaintBorder=1, PaintFill=2, PaintAll=3};
 	//! string v reportu, ktery se vymeni za celkovy pocet stranek v reportu.
 	static const QString pageCountReportSubstitution;
-	static const QRegExp checkReportSubstitutionRegExp;
+	static const QRegularExpression checkReportSubstitutionRegExp;
 	static const QString checkReportSubstitution;
 	//static const QString checkOffReportSubstitution;
 	typedef qf::qmlwidgets::graphics::Rect Rect;

@@ -6,7 +6,6 @@
 
 #include <QFileDialog>
 #include <QVariant>
-#include <QTextCodec>
 
 //#define QF_NO_TRASH_OUTPUT
 	
