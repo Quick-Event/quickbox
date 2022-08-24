@@ -63,7 +63,7 @@ CONFIG(debug, debug|release): unix: QMAKE_LFLAGS += -rdynamic
 RESOURCES += \
     $$PWD/images/images.qrc \
 
-RC_FILE = $$PWD/app.rc
+RC_FILE = $$PWD/quickevent.rc
 
 include ($$QF_PROJECT_TOP_SRCDIR/appdatafiles.pri)
 
