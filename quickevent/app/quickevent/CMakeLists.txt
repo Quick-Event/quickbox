@@ -129,6 +129,9 @@ endif()
 
 target_sources(quickevent PRIVATE ${QM_FILES})
 target_include_directories(quickevent PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(quickevent PUBLIC libquickeventcore libquickeventgui libqfqmlwidgets libsiut)
+target_link_libraries(quickevent PRIVATE libquickeventcore libquickeventgui libqfqmlwidgets libsiut)
+if(USE_QT6)
+	target_link_libraries(quickevent PRIVATE Qt6::Core5Compat)
+endif()
 
 install(TARGETS quickevent)

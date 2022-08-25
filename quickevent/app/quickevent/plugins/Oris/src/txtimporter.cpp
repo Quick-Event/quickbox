@@ -61,7 +61,11 @@ void TxtImporter::importCompetitorsCSOS()
 			QF_EXCEPTION(tr("Cannot open file '%1' for reading.").arg(fn));
 		QList<QVariantList> csv_rows;
 		QTextStream stream(&f);
+#if QT_VERSION_MAJOR >= 6
+		stream.setEncoding(QStringConverter::System);
+#else
 		stream.setCodec("windows-1250");
+#endif
 		QString line;
 		while (stream.readLineInto(&line)) {
 			if(line.isEmpty())
@@ -117,7 +121,9 @@ void TxtImporter::importCompetitorsCSV()
 			QF_EXCEPTION(tr("Cannot open file '%1' for reading.").arg(fn));
 		QList<QVariantList> csv_rows;
 		QTextStream ts(&f);
+#if QT_VERSION_MAJOR < 6
 		ts.setCodec("utf-8");
+#endif
 		qf::core::utils::CSVReader reader(&ts);
 		reader.setSeparator(',');
 		reader.setLineComment('#');

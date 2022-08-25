@@ -59,7 +59,9 @@ int main(int argc, char *argv[])
 
 	QSettings::setDefaultFormat(QSettings::IniFormat);
 
+#if QT_VERSION_MAJOR < 6
 	QApplication::setAttribute(Qt::AA_DisableWindowContextHelpButton);
+#endif
 
 	//qfError() << "QFLog(ERROR) test OK.";// << QVariant::typeToName(QVariant::Int) << QVariant::typeToName(QVariant::String);
 	//qfWarning() << "QFLog(WARNING) test OK.";

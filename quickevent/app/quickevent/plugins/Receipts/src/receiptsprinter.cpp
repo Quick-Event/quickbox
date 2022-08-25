@@ -12,8 +12,9 @@
 #include <QPrinter>
 #include <QPrinterInfo>
 #include <QTcpSocket>
-#include <QTextCodec>
 #include <QUdpSocket>
+#include <QFile>
+#include <QTextCodec>
 
 //#define QF_TIMESCOPE_ENABLED
 #include <qf/core/utils/fileutils.h>

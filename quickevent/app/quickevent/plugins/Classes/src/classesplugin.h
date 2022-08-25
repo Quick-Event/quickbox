@@ -1,6 +1,10 @@
 #ifndef CLASSES_CLASSESPLUGIN_H
 #define CLASSES_CLASSESPLUGIN_H
 
+#include "importcoursedef.h"
+
+#include <quickevent/core/codedef.h>
+
 #include <qf/qmlwidgets/framework/plugin.h>
 
 #include <qf/core/utils.h>
@@ -14,7 +18,7 @@ namespace framework { class PartWidget; }
 
 namespace quickevent { namespace core { class CodeDef; }}
 
-class ImportCourseDef;
+//class ImportCourseDef;
 
 namespace Classes {
 

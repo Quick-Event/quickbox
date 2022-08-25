@@ -15,10 +15,10 @@ if (NOT TARGET libnecrolog)
 endif()
 
 if(USE_QT6)
-    find_package(Qt6 REQUIRED COMPONENTS Core Widgets Gui Sql Qml Xml LinguistTools PrintSupport Svg SerialPort Multimedia Network)
+	find_package(Qt6 REQUIRED COMPONENTS Core Widgets Gui Sql Qml Xml LinguistTools PrintSupport Svg SerialPort Multimedia Network Core5Compat)
     set(Qt_FOUND ${Qt6_FOUND})
 else()
-    find_package(Qt5 5.11 REQUIRED COMPONENTS Core Widgets Gui Sql Qml Xml LinguistTools PrintSupport Svg SerialPort Multimedia Network)
+	find_package(Qt5 REQUIRED COMPONENTS Core Widgets Gui Sql Qml Xml LinguistTools PrintSupport Svg SerialPort Multimedia Network)
     set(Qt_FOUND ${Qt5_FOUND})
 endif()
 

@@ -166,7 +166,11 @@ void OrisImporter::syncRelaysEntries(int event_id, std::function<void ()> succes
 				class_ids[q.value(1).toString()] = q.value(0).toInt();
 
 			QTextStream ts(data);
-			ts.setCodec("cp1250");
+#if QT_VERSION_MAJOR >= 6
+		ts.setEncoding(QStringConverter::System);
+#else
+		ts.setCodec("cp1250");
+#endif
 			enum E1 {
 				Club = 4,
 				RelayPos = 3,

@@ -60,7 +60,11 @@ public:
 		Q_UNUSED(option)
 		Q_UNUSED(index)
 		auto *editor = new QComboBox(parent);
+#if QT_VERSION_MAJOR >= 6
+		QMultiMapIterator<QString, int> it(m_courseNameToId);
+#else
 		QMapIterator<QString, int> it(m_courseNameToId);
+#endif
 		while(it.hasNext()) {
 			it.next();
 			editor->addItem(it.key(), it.value());

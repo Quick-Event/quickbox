@@ -988,7 +988,11 @@ bool RunsPlugin::exportResultsCsosStage(int stage_id, const QString &file_name)
 		return false;
 	}
 	QTextStream ts(&f);
-	ts.setCodec("CP1250");
+#if QT_VERSION_MAJOR >= 6
+		ts.setEncoding(QStringConverter::System);
+#else
+		ts.setCodec("cp1250");
+#endif
 	writeCSOSHeader(ts);
 
 	qfs::QueryBuilder qb;
@@ -1035,7 +1039,11 @@ bool RunsPlugin::exportResultsCsosOverall(int stage_count, const QString &file_n
 		return false;
 	}
 	QTextStream ts(&f);
-	ts.setCodec("CP1250");
+#if QT_VERSION_MAJOR >= 6
+		ts.setEncoding(QStringConverter::System);
+#else
+		ts.setCodec("cp1250");
+#endif
 	writeCSOSHeader(ts);
 
 	qfs::Query q;
