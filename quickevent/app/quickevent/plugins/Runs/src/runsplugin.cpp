@@ -773,14 +773,8 @@ QVariantMap RunsPlugin::printAwardsOptionsWithDialog(const QVariantMap &opts)
 	return ret;
 }
 
-bool RunsPlugin::exportResultsIofXml30Stage(int stage_id, const QString &file_name)
+QString RunsPlugin::resultsIofXml30Stage(int stage_id)
 {
-	QFile f(file_name);
-	if(!f.open(QIODevice::WriteOnly)) {
-		qfError() << "Cannot open file" << f.fileName() << "for writing.";
-		return false;
-	}
-
 	QDateTime stage_start_date_time = getPlugin<EventPlugin>()->stageStartDateTime(stage_id);//.toTimeSpec(Qt::OffsetFromUTC);
 	//qfInfo() << stage_start_date_time << datetime_to_string(stage_start_date_time);
 	qf::core::utils::TreeTable tt1 = stageResultsTable(stage_id, QString(), 0, false, true);
@@ -944,7 +938,17 @@ bool RunsPlugin::exportResultsIofXml30Stage(int stage_id, const QString &file_na
 
 	qf::core::utils::HtmlUtils::FromXmlListOptions opts;
 	opts.setDocumentTitle(tr("E%1 IOF XML stage results").arg(tt1.value("stageId").toString()));
-	QString str = qf::core::utils::HtmlUtils::fromXmlList(result_list, opts);
+	return qf::core::utils::HtmlUtils::fromXmlList(result_list, opts);
+}
+
+bool RunsPlugin::exportResultsIofXml30Stage(int stage_id, const QString &file_name)
+{
+	QFile f(file_name);
+	if(!f.open(QIODevice::WriteOnly)) {
+		qfError() << "Cannot open file" << f.fileName() << "for writing.";
+		return false;
+	}
+	QString str = resultsIofXml30Stage(stage_id);
 	f.write(str.toUtf8());
 	qfInfo() << "exported:" << file_name;
 	return true;
@@ -2258,7 +2262,7 @@ void RunsPlugin::exportResultsHtmlStageWithLaps(const QString &laps_file_name, c
 	}
 }
 
-bool RunsPlugin::exportStartListStageIofXml30(int stage_id, const QString &file_name)
+QString RunsPlugin::startListStageIofXml30(int stage_id)
 {
 	QDateTime start00_datetime = getPlugin<EventPlugin>()->stageStartDateTime(stage_id);
 	//console.info("start00_datetime:", start00_datetime, typeof start00_datetime)
@@ -2349,14 +2353,20 @@ bool RunsPlugin::exportStartListStageIofXml30(int stage_id, const QString &file_
 	}
 	qf::core::utils::HtmlUtils::FromXmlListOptions opts;
 	opts.setDocumentTitle(tr("E%1 IOF XML stage results").arg(tt1.value("stageId").toString()));
-	QString str = qf::core::utils::HtmlUtils::fromXmlList(xml_root, opts);
+	return qf::core::utils::HtmlUtils::fromXmlList(xml_root, opts);
+}
+
+bool RunsPlugin::exportStartListStageIofXml30(int stage_id, const QString &file_name)
+{
 	QFile f(file_name);
-	if(f.open(QFile::WriteOnly)) {
-		f.write(str.toUtf8());
-		qfInfo() << "exported:" << file_name;
-		return true;
+	if(!f.open(QIODevice::WriteOnly)) {
+		qfError() << "Cannot open file" << f.fileName() << "for writing.";
+		return false;
 	}
-	return false;
+	QString str = startListStageIofXml30(stage_id);
+	f.write(str.toUtf8());
+	qfInfo() << "exported:" << file_name;
+	return true;
 }
 
 void RunsPlugin::addStartTimeTextToClass(qf::core::utils::TreeTable &tt2, const qint64 start00_epoch_sec, const quickevent::gui::ReportOptionsDialog::StartTimeFormat start_time_format)

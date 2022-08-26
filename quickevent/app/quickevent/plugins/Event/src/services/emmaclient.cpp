@@ -190,14 +190,14 @@ void EmmaClient::exportResultsIofXml3()
 	QString file_name = export_dir + '/' + ss.fileNameBase() + ".results.xml";
 	int current_stage = getPlugin<EventPlugin>()->currentStageId();
 	bool is_relays = getPlugin<EventPlugin>()->eventConfig()->isRelays();
-	if (is_relays) {
-		QFile f(file_name);
-		if(f.open(QFile::WriteOnly)) {
-			f.write(getPlugin<RelaysPlugin>()->resultsIofXml30().toUtf8());
-		}
-	}
-	else {
-		getPlugin<RunsPlugin>()->exportResultsIofXml30Stage(current_stage, file_name);
+
+	QString str = is_relays
+			? getPlugin<RelaysPlugin>()->resultsIofXml30()
+			: getPlugin<RunsPlugin>()->resultsIofXml30Stage(current_stage);
+
+	QFile f(file_name);
+	if(f.open(QFile::WriteOnly)) {
+		f.write(str.toUtf8());
 	}
 }
 
@@ -210,14 +210,14 @@ void EmmaClient::exportStartListIofXml3()
 	QString file_name = export_dir + '/' + ss.fileNameBase() + ".startlist.xml";
 	int current_stage = getPlugin<EventPlugin>()->currentStageId();
 	bool is_relays = getPlugin<EventPlugin>()->eventConfig()->isRelays();
-	if (is_relays) {
-		QFile f(file_name);
-		if(f.open(QFile::WriteOnly)) {
-			f.write(getPlugin<RelaysPlugin>()->startListIofXml30().toUtf8());
-		}
-	}
-	else {
-		getPlugin<RunsPlugin>()->exportStartListStageIofXml30(current_stage, file_name);
+
+	QString str = is_relays
+			? getPlugin<RelaysPlugin>()->startListIofXml30()
+			: getPlugin<RunsPlugin>()->startListStageIofXml30(current_stage);
+
+	QFile f(file_name);
+	if(f.open(QFile::WriteOnly)) {
+		f.write(str.toUtf8());
 	}
 }
 
