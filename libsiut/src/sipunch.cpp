@@ -24,12 +24,14 @@ SIPunch::SIPunch(const QByteArray &card_data, int ix)
 	bit 3...1 - day of week, 000 = Sunday, 110 = Saturday
 	bit 5...4 - week counter 0…3, relative
 	bit 7...6 - control station code number high
-	(...1023) (reserved)
+	(...511)
 	punching time PTH, PTL - 12h binary
 	*/
 	setTime((uint16_t)getUnsigned(card_data, ix + 2, 2));
-	setCode((uint8_t)card_data[ix + 1]);
 	uint8_t pdt = (uint8_t)card_data[ix];
+	uint16_t code_complete = ((pdt & 0x60) >> 6) << 8;
+	code_complete += (uint8_t)card_data[ix + 1];
+	setCode(code_complete);
 	setPmFlag(pdt & 1);
 	setDayOfWeek((pdt & 0x0e) >> 1);
 	setWeekCnt((pdt & 0x30) >> 4);
