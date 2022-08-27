@@ -11,6 +11,8 @@
 #include "cardreaderplugin.h"
 #include "cardreadersettings.h"
 
+#include <siut/commport.h>
+
 #include <qf/qmlwidgets/framework/mainwindow.h>
 
 #include <qf/core/log.h>
@@ -21,6 +23,7 @@
 #include <QFileDialog>
 #include <QLineEdit>
 #include <QSerialPortInfo>
+#include <QMessageBox>
 
 namespace CardReader {
 
@@ -102,18 +105,20 @@ void CardReaderSettingsPage::save()
 
 void CardReaderSettingsPage::on_btTestConnection_clicked()
 {
-	/*
-	QSettings settings;
-	settings.beginGroup(settingsDir());
-	settings.beginGroup("comm");
-	settings.beginGroup("connection");
-	QString device = settings.value("device", "").toString();
-	int baud_rate = settings.value("baudRate", 38400).toInt();
-	int data_bits = settings.value("dataBits", 8).toInt();
-	int stop_bits = settings.value("stopBits", 1).toInt();
-	QString parity = settings.value("parity", "none").toString();
-	if(!commPort()->openComm(device, baud_rate, data_bits, parity, stop_bits > 1)) {
-	*/
+	CardReaderSettings settings;
+	QString device = settings.device();
+	int baud_rate = settings.baudRate();
+	int data_bits = settings.dataBits();
+	int stop_bits = settings.stopBits();
+	QString parity = settings.parity();
+	siut::CommPort comport;
+	if(comport.openComm(device, baud_rate, data_bits, parity, stop_bits > 1)) {
+		QMessageBox::warning(this, tr("Message"), tr("Open serial port %1 success.").arg(device));
+	}
+	else {
+		QString error_msg = comport.errorToUserHint();
+		QMessageBox::warning(this, tr("Warning"), tr("Error open device %1 - %2").arg(device).arg(error_msg));
+	}
 }
 
 }

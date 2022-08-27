@@ -15,13 +15,13 @@
   </property>
   <layout class="QVBoxLayout">
    <item>
-    <widget class="QGroupBox" name="groupBox">
+    <widget class="QGroupBox" name="groupBox1">
      <property name="title">
       <string>Reader</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
-       <widget class="QGroupBox" name="groupBox">
+       <widget class="QGroupBox" name="groupBox2">
         <property name="title">
          <string>Connection</string>
         </property>
@@ -190,7 +190,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QGroupBox" name="groupBox_2">
+       <widget class="QGroupBox" name="groupBox3">
         <property name="title">
          <string>Debugging</string>
         </property>

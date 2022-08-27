@@ -82,6 +82,36 @@ void CommPort::sendData(const QByteArray &data)
 		qfError() << "send data error!";
 }
 
+QString CommPort::errorToUserHint() const
+{
+	QSerialPort::SerialPortError error_type = error();
+	QString error_msg = errorString();
+	if(error_type == QSerialPort::PermissionError) {
+		error_msg.append("\n\n")
+			 .append(tr(""
+					"possible solution:\n"
+					"Wait at least 10 seconds and then try again."
+					""));
+	}
+	if(error_type == QSerialPort::DeviceNotFoundError) {
+		error_msg.append("\n\n");
+		QList<QSerialPortInfo> port_list = QSerialPortInfo::availablePorts();
+		if(port_list.isEmpty()) {
+			error_msg.append(tr("There are no ports available."));
+		}
+		else {
+			error_msg.append(tr(""
+						"Selected port %1 is not available.\n"
+						"List of accessible ports:\n\n"
+						"").arg(portName()));
+			for(auto port : port_list) {
+				error_msg.append(QChar(0x2022)).append(" ").append(port.systemLocation()).append("\n");
+			}
+		}
+	}
+	return error_msg;
+}
+
 void CommPort::emitCommInfo ( NecroLog::Level level, const QString& msg )
 {
 	//qfLog(level) << msg;
