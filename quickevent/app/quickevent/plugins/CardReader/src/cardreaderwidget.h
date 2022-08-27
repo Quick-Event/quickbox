@@ -1,6 +1,8 @@
 #ifndef CARDREADERWIDGET_H
 #define CARDREADERWIDGET_H
 
+#include "cardreadersettings.h"
+
 #include <siut/sitask.h>
 
 #include <qf/core/exception.h>
@@ -52,7 +54,6 @@ class CardReaderWidget : public QFrame
 	Q_OBJECT
 private:
 	typedef QFrame Super;
-	enum PunchMode { Readout, EditOnPunch };
 public:
 	explicit CardReaderWidget(QWidget *parent = 0);
 	~CardReaderWidget() Q_DECL_OVERRIDE;
@@ -93,8 +94,6 @@ private:
 
 	void updateTableView(int card_id);
 
-	Q_SLOT void onCbxCardCheckersActivated(int ix);
-
 	void onCustomContextMenuRequest(const QPoint &pos);
 	void showSelectedReceipt();
 	void showSelectedCard();
@@ -103,7 +102,7 @@ private:
 	quickevent::gui::audio::Player* audioPlayer();
 	void operatorAudioWakeUp();
 	void operatorAudioNotify();
-	int currentPunchMode();
+	CardReaderSettings::ReaderMode currentReaderMode() const;
 
 	void onTestButtonClicked();
 private:
@@ -112,8 +111,6 @@ private:
 	qf::qmlwidgets::Action *m_actCommOpen = nullptr;
 	qf::qmlwidgets::Action *m_actAssignCard = nullptr;
 	qf::core::model::SqlTableModel *m_cardsModel = nullptr;
-	QComboBox *m_cbxCardCheckers = nullptr;
-	QComboBox *m_cbxPunchMode = nullptr;
 	QPushButton *m_buttonTest = nullptr;
 	quickevent::gui::audio::Player *m_audioPlayer = nullptr;
 	siut::DeviceDriver *f_siDriver = nullptr;

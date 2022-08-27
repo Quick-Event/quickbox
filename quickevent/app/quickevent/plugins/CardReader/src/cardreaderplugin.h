@@ -20,8 +20,8 @@ class CheckedCard;
 class CardReaderPlugin : public qf::qmlwidgets::framework::Plugin
 {
 	Q_OBJECT
-	Q_PROPERTY(QQmlListProperty<CardReader::CardChecker> cardCheckers READ cardCheckersListProperty)
-	Q_PROPERTY(int currentCardCheckerIndex READ currentCardCheckerIndex WRITE setCurrentCardCheckerIndex NOTIFY currentCardCheckerIndexChanged)
+	//Q_PROPERTY(QQmlListProperty<CardReader::CardChecker> cardCheckers READ cardCheckersListProperty)
+	//Q_PROPERTY(int currentCardCheckerIndex READ currentCardCheckerIndex WRITE setCurrentCardCheckerIndex NOTIFY currentCardCheckerIndexChanged)
 private:
 	typedef qf::qmlwidgets::framework::Plugin Super;
 public:
@@ -30,7 +30,7 @@ public:
 	//static const int FINISH_PUNCH_CODE;
 	//static const int FINISH_PUNCH_POS;
 
-	QF_PROPERTY_IMPL2(int, c, C, urrentCardCheckerIndex, -1)
+	//QF_PROPERTY_IMPL2(int, c, C, urrentCardCheckerIndex, 0)
 
 	const QList<CardReader::CardChecker*>& cardCheckers() {return m_cardCheckers;}
 	CardReader::CardChecker* currentCardChecker();

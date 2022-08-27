@@ -5,9 +5,10 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 
-#include "ui_cardreadersettingspage.h"
 #include "cardreadersettingspage.h"
-#include "cardreaderwidget.h"
+#include "ui_cardreadersettingspage.h"
+#include "cardchecker.h"
+//#include "cardreaderwidget.h"
 #include "cardreaderplugin.h"
 #include "cardreadersettings.h"
 
@@ -88,6 +89,37 @@ void CardReaderSettingsPage::load()
 	load_combo_text(ui->lstParity, settings.parity());
 	ui->chkShowRawComData->setChecked(settings.showRawComData());
 	ui->chkDisableCRCCheck->setChecked(settings.disableCRCCheck());
+
+	{
+		auto *cbx = ui->cbxCardCheckType;
+		for(auto *checker : qf::qmlwidgets::framework::getPlugin<CardReaderPlugin>()->cardCheckers()) {
+			cbx->addItem(checker->caption(), checker->nameId());
+		}
+		for (int i = 0; i < cbx->count(); ++i) {
+			if(cbx->itemData(i).toString() == settings.cardCheckType()) {
+				cbx->setCurrentIndex(i);
+				break;
+			}
+		}
+		if(settings.cardCheckType().isEmpty())
+			settings.setCardCheckType(cbx->currentData().toString());
+	}
+	{
+		auto *cbx = ui->cbxReaderMode;
+		cbx->addItem(tr("Readout"), "Readout");
+		cbx->setItemData(0, CardReaderSettings::ReaderMode::Readout, Qt::UserRole + 1);
+		cbx->setItemData(0, tr("Readout mode - default"), Qt::ToolTipRole);
+		cbx->addItem(tr("Edit on punch"), "EditOnPunch");
+		cbx->setItemData(0, CardReaderSettings::ReaderMode::EditOnPunch, Qt::UserRole + 1);
+		cbx->setItemData(1, tr("Show Edit/Insert competitor dialog when SI Card is inserted into the reader station"), Qt::ToolTipRole);
+		cbx->setCurrentIndex(-1);
+		for (int i = 0; i < cbx->count(); ++i) {
+			if(cbx->itemData(i).toString() == settings.readerMode()) {
+				cbx->setCurrentIndex(i);
+				break;
+			}
+		}
+	}
 }
 
 void CardReaderSettingsPage::save()
@@ -100,6 +132,9 @@ void CardReaderSettingsPage::save()
 	settings.setParity(ui->lstParity->currentText());
 	settings.setShowRawComData(ui->chkShowRawComData->isChecked());
 	settings.setDisableCRCCheck(ui->chkDisableCRCCheck->isChecked());
+
+	settings.setCardCheckType(ui->cbxCardCheckType->currentText());
+	settings.setReaderMode(ui->cbxReaderMode->currentData().toString());
 }
 
 

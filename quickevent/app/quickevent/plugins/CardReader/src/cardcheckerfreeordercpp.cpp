@@ -12,6 +12,7 @@ namespace CardReader {
 CardCheckerFreeOrderCpp::CardCheckerFreeOrderCpp(QObject *parent)
 	: Super(parent)
 {
+	setObjectName("FreeOrder");
 	setCaption(tr("Free order race"));
 }
 

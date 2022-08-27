@@ -12,6 +12,7 @@ namespace CardReader {
 CardCheckerClassicCpp::CardCheckerClassicCpp(QObject *parent)
 	: Super(parent)
 {
+	setObjectName("Classic");
 	setCaption(tr("Classic race"));
 }
 

@@ -79,9 +79,13 @@ QQmlListProperty<CardReader::CardChecker> CardReaderPlugin::cardCheckersListProp
 
 CardChecker *CardReaderPlugin::currentCardChecker()
 {
-	auto ret = m_cardCheckers.value(currentCardCheckerIndex());
-	QF_ASSERT(ret != nullptr, QString("No card checker for index %1 installed").arg(currentCardCheckerIndex()), return nullptr);
-	return ret;
+	CardReaderSettings settings;
+	for (int i = 0; i < m_cardCheckers.count(); ++i) {
+		if(m_cardCheckers[i]->nameId() == settings.cardCheckType())
+			return m_cardCheckers[i];
+	}
+	QF_ASSERT(false, QString("No card checker for name '%1' installed").arg(settings.cardCheckType()), return nullptr);
+	return nullptr;
 }
 
 int CardReaderPlugin::currentStageId()

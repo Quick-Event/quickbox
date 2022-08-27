@@ -1,10 +1,8 @@
 #include "cardreaderwidget.h"
 #include "ui_cardreaderwidget.h"
-#include "cardreadersettingspage.h"
 #include "cardreadersettings.h"
 
 #include "cardreaderplugin.h"
-#include "cardchecker.h"
 #include "cardreaderplugin.h"
 
 #include <quickevent/gui/og/itemdelegate.h>
@@ -389,32 +387,14 @@ void CardReaderWidget::settleDownInPartWidget(quickevent::gui::PartWidget *part_
 	qfw::ToolBar *main_tb = part_widget->toolBar("main", true);
 	main_tb->addAction(m_actCommOpen);
 	{
-		QLabel *lbl = new QLabel(tr(" Check type "));
-		main_tb->addWidget(lbl);
-		m_cbxCardCheckers = new QComboBox();
-		for(auto checker : getPlugin<CardReaderPlugin>()->cardCheckers()) {
-			m_cbxCardCheckers->addItem(checker->caption());
-		}
-		main_tb->addWidget(m_cbxCardCheckers);
-		connect(m_cbxCardCheckers, SIGNAL(activated(int)), this, SLOT(onCbxCardCheckersActivated(int)));
-		onCbxCardCheckersActivated(m_cbxCardCheckers->currentIndex());
-	}
-	main_tb->addSeparator();
-	{
-		QLabel *lbl = new QLabel(tr(" Reader mode "));
-		main_tb->addWidget(lbl);
-		m_cbxPunchMode = new QComboBox();
-		m_cbxPunchMode->addItem(tr("Readout"), PunchMode::Readout);
-		m_cbxPunchMode->setItemData(0, tr("Readout mode - default"), Qt::ToolTipRole);
-		m_cbxPunchMode->addItem(tr("Edit on punch"), PunchMode::EditOnPunch);
-		m_cbxPunchMode->setItemData(1, tr("Show Edit/Insert competitor dialog when SI Card is inserted into the reader station"), Qt::ToolTipRole);
-		main_tb->addWidget(m_cbxPunchMode);
-	}
-	main_tb->addSeparator();
-	{
 		m_lblCommInfo = new QLabel(tr("SI station not connected"));
 		main_tb->addWidget(m_lblCommInfo);
 	}
+	//{
+	//	CardReaderSettings s;
+	//	auto *lbl = new QLabel(s.cardCheckType());
+	//	main_tb->addWidget(lbl);
+	//}
 #ifdef QT_DEBUG
 	{
 		main_tb->addSeparator();
@@ -617,7 +597,7 @@ void CardReaderWidget::processSICard(const siut::SICard &card)
 	appendLog(NecroLog::Level::Debug, card.toString());
 	appendLog(NecroLog::Level::Info, tr("card: %1").arg(card.cardNumber()));
 
-	if(currentPunchMode() == PunchMode::EditOnPunch) {
+	if(currentReaderMode() == CardReaderSettings::ReaderMode::EditOnPunch) {
 		getPlugin<CompetitorsPlugin>()->editCompetitorOnPunch(card.cardNumber());
 		return;
 	}
@@ -671,7 +651,7 @@ void CardReaderWidget::processSIPunch(const siut::SIPunch &rec)
 {
 	appendLog(NecroLog::Level::Info, tr("punch: %1 %2").arg(rec.cardNumber()).arg(rec.code()));
 	quickevent::core::si::PunchRecord punch(rec);
-	if(currentPunchMode() == PunchMode::Readout) {
+	if(currentReaderMode() == CardReaderSettings::ReaderMode::Readout) {
 		int run_id = getPlugin<CardReaderPlugin>()->findRunId(rec.cardNumber(), siut::SICard::INVALID_SI_TIME);
 		if(run_id == 0)
 			appendLog(NecroLog::Level::Error, tr("Cannot find run for punch record SI: %1").arg(rec.cardNumber()));
@@ -697,11 +677,6 @@ void CardReaderWidget::updateTableView(int card_id)
 		return;
 	}
 	ui->tblCards->updateRow(0);
-}
-
-void CardReaderWidget::onCbxCardCheckersActivated(int ix)
-{
-	getPlugin<CardReaderPlugin>()->setCurrentCardCheckerIndex(ix);
 }
 
 void CardReaderWidget::showSelectedReceipt()
@@ -794,9 +769,10 @@ void CardReaderWidget::operatorAudioNotify()
 	audioPlayer()->playAlert(quickevent::gui::audio::Player::AlertKind::OperatorNotify);
 }
 
-int CardReaderWidget::currentPunchMode()
+CardReaderSettings::ReaderMode CardReaderWidget::currentReaderMode() const
 {
-	return m_cbxPunchMode->currentData().toInt();
+	CardReaderSettings s;
+	return s.readerModeEnum();
 }
 
 static int msecToSISec(int msec)

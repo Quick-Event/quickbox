@@ -23,6 +23,8 @@ public:
 public:
 	explicit CardChecker(QObject *parent = nullptr);
 
+	QString nameId() const { return objectName(); }
+
 	QF_PROPERTY_IMPL(QString, c, C, aption)
 
 	Q_INVOKABLE int fixTimeWrapAM(int time1_msec, int time2_msec);
