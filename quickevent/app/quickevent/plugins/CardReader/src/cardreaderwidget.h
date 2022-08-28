@@ -107,8 +107,6 @@ private:
 	void onTestButtonClicked();
 private:
 	Ui::CardReaderWidget *ui;
-	QLabel *m_lblCommInfo = nullptr;
-	qf::qmlwidgets::Action *m_actCommOpen = nullptr;
 	qf::qmlwidgets::Action *m_actAssignCard = nullptr;
 	qf::core::model::SqlTableModel *m_cardsModel = nullptr;
 	QPushButton *m_buttonTest = nullptr;

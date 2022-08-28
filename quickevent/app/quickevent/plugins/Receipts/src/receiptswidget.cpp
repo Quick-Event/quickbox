@@ -4,6 +4,7 @@
 #include "receiptsprinter.h"
 #include "receiptsprinteroptions.h"
 #include "receiptsplugin.h"
+#include "receiptssettings.h"
 
 #include <quickevent/gui/og/itemdelegate.h>
 
@@ -84,16 +85,8 @@ ReceiptsWidget::ReceiptsWidget(QWidget *parent) :
 		m_cardsModel = m;
 	}
 
-	ui->lstNotFound->addItem(tr("Error info"), 0);
-	ui->lstNotFound->addItem(tr("Receipt without name"), 1);
-	ui->lstNotFound->setCurrentIndex(0);
-
 	ui->tblCards->setContextMenuPolicy(Qt::CustomContextMenu);
 	connect(ui->tblCards, &qfw::TableView::customContextMenuRequested, this, &ReceiptsWidget::onCustomContextMenuRequest);
-
-	connect(ui->lstReceipt, static_cast<void (QComboBox::*)(int)>(&QComboBox::activated), [this](int ix) {
-		getPlugin<ReceiptsPlugin>()->setCurrentReceiptPath(ui->lstReceipt->itemData(ix).toString());
-	});
 
 	QTimer::singleShot(0, this, &ReceiptsWidget::lazyInit);
 }
@@ -105,8 +98,6 @@ ReceiptsWidget::~ReceiptsWidget()
 
 void ReceiptsWidget::lazyInit()
 {
-	loadReceptList();
-	updateReceiptsPrinterLabel();
 }
 
 void ReceiptsWidget::settleDownInPartWidget(quickevent::gui::PartWidget *part_widget)
@@ -196,11 +187,12 @@ void ReceiptsWidget::printNewCards()
 	int connection_id = currentConnectionId();
 	QF_ASSERT(connection_id > 0, "Cannot get SQL connection id", return);
 	int current_stage = currentStageId();
+	ReceiptsSettings settings;
 	qf::core::sql::Query q;
 	QString qs = "SELECT id FROM cards"
 			" WHERE printerConnectionId IS NULL"
 			" AND stageId=" QF_IARG(current_stage);
-	if(ui->chkThisReaderOnly->isChecked()) {
+	if(settings.isThisReaderOnly()) {
 		qs += " AND readerConnectionId=" QF_IARG(connection_id);
 	}
 	qs += " ORDER BY id DESC";
@@ -261,9 +253,9 @@ bool ReceiptsWidget::printReceipt(int card_id)
 			int run_id = q.value(0).toInt();
 			if(run_id > 0)
 				ok = getPlugin<ReceiptsPlugin>()->printReceipt(card_id);
-			else
-			{
-				if (ui->lstNotFound->currentIndex() == 0)
+			else {
+				ReceiptsSettings settings;
+				if (settings.whenRunnerNotFoundPrintEnum() == ReceiptsSettings::WhenRunnerNotFoundPrint::ErrorInfo)
 					ok = getPlugin<ReceiptsPlugin>()->printError(card_id);
 				else
 					ok = getPlugin<ReceiptsPlugin>()->printCard(card_id);
@@ -283,55 +275,10 @@ void ReceiptsWidget::markAsPrinted(int connection_id, int card_id)
 	q.execThrow(qs);
 }
 
-void ReceiptsWidget::loadReceptList()
-{
-	ui->lstReceipt->clear();
-	auto *this_plugin = getPlugin<ReceiptsPlugin>();
-	for(const auto &i : this_plugin->listReportFiles("receipts")) {
-		qfDebug() << i.reportName << i.reportFilePath;
-		ui->lstReceipt->addItem(i.reportName, i.reportFilePath);
-	}
-	ui->lstReceipt->setCurrentIndex(-1);
-	QString curr_path = getPlugin<ReceiptsPlugin>()->currentReceiptPath();
-	qfInfo() << "current receipt path:" << curr_path;
-	if(!curr_path.isEmpty()) {
-		for (int i = 0; i < ui->lstReceipt->count(); ++i) {
-			if(ui->lstReceipt->itemData(i).toString() == curr_path) {
-				ui->lstReceipt->setCurrentIndex(i);
-				break;
-			}
-		}
-	}
-	if(ui->lstReceipt->currentIndex() < 0) {
-		ui->lstReceipt->setCurrentIndex(0);
-		curr_path = ui->lstReceipt->itemData(0).toString();
-	}
-	getPlugin<ReceiptsPlugin>()->setCurrentReceiptPath(curr_path);
-}
-
-void ReceiptsWidget::updateReceiptsPrinterLabel()
-{
-	const auto &opts = getPlugin<ReceiptsPlugin>()->receiptsPrinter()->printerOptions();
-	ui->btPrinterOptions->setText(opts.printerCaption());
-	if(opts.printerType() == (int)ReceiptsPrinterOptions::PrinterType::GraphicPrinter)
-		ui->btPrinterOptions->setIcon(QIcon(":/quickevent/Receipts/images/graphic-printer.svg"));
-	else
-		ui->btPrinterOptions->setIcon(QIcon(":/quickevent/Receipts/images/character-printer.svg"));
-}
-
-void ReceiptsWidget::on_btPrinterOptions_clicked()
-{
-	ReceiptsPrinterOptionsDialog dlg(this);
-	dlg.setPrinterOptions(getPlugin<ReceiptsPlugin>()->receiptsPrinter()->printerOptions());
-	if(dlg.exec()) {
-		getPlugin<ReceiptsPlugin>()->setReceiptsPrinterOptions(dlg.printerOptions());
-		updateReceiptsPrinterLabel();
-	}
-}
-
 bool ReceiptsWidget::isAutoPrintEnabled()
 {
-	return ui->chkAutoPrint->isChecked();
+	ReceiptsSettings settings;
+	return settings.isAutoPrint();
 }
 
 int ReceiptsWidget::currentConnectionId()
@@ -339,6 +286,8 @@ int ReceiptsWidget::currentConnectionId()
 	return qf::core::sql::Connection::forName().connectionId();
 }
 
-bool ReceiptsWidget::thisReaderOnly() {
-	return ui->chkThisReaderOnly->isChecked();
+bool ReceiptsWidget::thisReaderOnly()
+{
+	ReceiptsSettings settings;
+	return settings.isThisReaderOnly();
 }

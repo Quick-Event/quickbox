@@ -173,6 +173,20 @@ CardReaderWidget::CardReaderWidget(QWidget *parent)
 
 	createActions();
 
+	{
+		ui->btComPort->setToolTip(tr("Open COM to connect SI reader"));
+		connect(ui->btComPort, &QPushButton::toggled, this, &CardReaderWidget::onOpenCommTriggered);
+	}
+	ui->lblConnectionInfo->setText(tr("SI station not connected"));
+#ifdef QT_DEBUG
+	{
+		ui->btTest->setObjectName("btTest");
+		connect(m_buttonTest, &QPushButton::clicked, this, &CardReaderWidget::onTestButtonClicked);
+	}
+#else
+	ui->btTest->hide();
+#endif
+
 	connect(getPlugin<CardReaderPlugin>(), &CardReader::CardReaderPlugin::siTaskFinished, this, &CardReaderWidget::onSiTaskFinished);
 	{
 		ui->tblCardsTB->setTableView(ui->tblCards);
@@ -384,26 +398,6 @@ void CardReaderWidget::settleDownInPartWidget(quickevent::gui::PartWidget *part_
 			a_tools->addActionInto(a);
 		}
 	}
-	qfw::ToolBar *main_tb = part_widget->toolBar("main", true);
-	main_tb->addAction(m_actCommOpen);
-	{
-		m_lblCommInfo = new QLabel(tr("SI station not connected"));
-		main_tb->addWidget(m_lblCommInfo);
-	}
-	//{
-	//	CardReaderSettings s;
-	//	auto *lbl = new QLabel(s.cardCheckType());
-	//	main_tb->addWidget(lbl);
-	//}
-#ifdef QT_DEBUG
-	{
-		main_tb->addSeparator();
-		m_buttonTest = new QPushButton("Test");
-		m_buttonTest->setObjectName("btTest");
-		connect(m_buttonTest, &QPushButton::clicked, this, &CardReaderWidget::onTestButtonClicked);
-		main_tb->addWidget(m_buttonTest);
-	}
-#endif
 	connect(getPlugin<EventPlugin>(), &Event::EventPlugin::dbEventNotify, this, &CardReaderWidget::onDbEventNotify, Qt::QueuedConnection);
 }
 
@@ -459,13 +453,6 @@ void CardReaderWidget::onDbEventNotify(const QString &domain, int connection_id,
 void CardReaderWidget::createActions()
 {
 	{
-		QIcon ico(":/quickevent/CardReader/images/comm");
-		qf::qmlwidgets::Action *a = new qf::qmlwidgets::Action(ico, tr("Open COM"), this);
-		a->setCheckable(true);
-		connect(a, SIGNAL(triggered(bool)), this, SLOT(onOpenCommTriggered(bool)));
-		m_actCommOpen = a;
-	}
-	{
 		qf::qmlwidgets::Action *a = new qf::qmlwidgets::Action(tr("Assign card to runner\tCtrl + Enter"), this);
 		a->setShortcut(Qt::CTRL + Qt::Key_Return); // Qt::Key_Return is the main enter key, Qt::Key_Enter is on the numeric keyboard
 		addAction(a);
@@ -505,16 +492,16 @@ void CardReaderWidget::onComOpenChanged(bool comm_is_open)
 		siut::SiTaskSetDirectRemoteMode *cmd = new siut::SiTaskSetDirectRemoteMode(siut::SiTaskSetDirectRemoteMode::Mode::Direct);
 		connect(cmd, &siut::SiTaskSetDirectRemoteMode::finished, this, [this](bool ok) {
 			if(ok) {
-				m_lblCommInfo->setText(tr("Connected to %1 in direct mode.").arg(this->commPort()->portName()));
+				ui->lblConnectionInfo->setText(tr("Connected to %1 in direct mode.").arg(this->commPort()->portName()));
 			}
 			else {
-				m_lblCommInfo->setText(tr("Error set SI station to direct mode."));
+				ui->lblConnectionInfo->setText(tr("Error set SI station to direct mode."));
 			}
 		});
 		siDriver()->setSiTask(cmd);
 	}
 	else {
-		m_lblCommInfo->setText(QString());
+		ui->lblConnectionInfo->setText(tr("SI station not connected"));
 	}
 }
 
@@ -572,7 +559,7 @@ void CardReaderWidget::onSiTaskFinished(int task_type, QVariant result)
 void CardReaderWidget::processDriverInfo(NecroLog::Level level, const QString& msg)
 {
 	CardReaderSettings settings;
-	if(settings.showRawComData()) {
+	if(settings.isShowRawComData()) {
 		if(level == NecroLog::Level::Debug)
 			level = NecroLog::Level::Info;
 	}
@@ -582,7 +569,7 @@ void CardReaderWidget::processDriverInfo(NecroLog::Level level, const QString& m
 void CardReaderWidget::logDriverRawData(const QByteArray& data)
 {
 	CardReaderSettings settings;
-	if(settings.showRawComData()) {
+	if(settings.isShowRawComData()) {
 		QString msg = siut::SIMessageData::dumpData(data, 16);
 		appendLog(NecroLog::Level::Info, tr("DriverRawData: %1").arg(msg));
 	}

@@ -9,8 +9,7 @@ public:
 	ReportsSettings() : Core::Settings("plugin/Core/reports") {}
 
 	SETTINGS_FIELD(QString, c, setC, ustomReportsDirectory, "customReportsDirectory", {});
-	SETTINGS_FIELD(QString, c, setC, urrentReceipt, "currentReceipt", {});
-	SETTINGS_FIELD(QString, r, setR, eceiptPrinterOptions, "receiptPrinterOptions", {});
+	//SETTINGS_FIELD(QString, c, setC, urrentReceipt, "currentReceipt", {});
 };
 
 #endif // REPORTSSETTINGS_H

@@ -6,7 +6,7 @@
 class CardReaderSettings : public Core::Settings
 {
 public:
-	enum ReaderMode { Readout = 0, EditOnPunch };
+	enum class ReaderMode { Readout, EditOnPunch };
 public:
 	CardReaderSettings() : Core::Settings("plugin/CardReader") {}
 
@@ -15,10 +15,10 @@ public:
 	SETTINGS_FIELD(int, d, setD, ataBits, "comm/connection/dataBits", 8);
 	SETTINGS_FIELD(int, s, setS, topBits, "comm/connection/stopBits", 1);
 	SETTINGS_FIELD(QString, p, setP, arity, "comm/connection/parity", "None");
-	SETTINGS_FIELD(bool, s, setS, howRawComData, "comm/debug/showRawComData", false);
-	SETTINGS_FIELD(bool, d, setD, isableCRCCheck, "comm/debug/disableCRCCheck", false);
-	SETTINGS_FIELD(QString, c, setC, ardCheckType, "cardCheckType", "Classic");
-	SETTINGS_FIELD(QString, r, setR, eaderMode, "readerMode", "Readout");
+	SETTINGS_FIELD(bool, isS, setS, howRawComData, "comm/debug/showRawComData", false);
+	SETTINGS_FIELD(bool, isD, setD, isableCRCCheck, "comm/debug/disableCRCCheck", false);
+	SETTINGS_FIELD1(QString, c, setC, ardCheckType, "Classic");
+	SETTINGS_FIELD1(QString, r, setR, eaderMode, "Readout");
 
 	ReaderMode readerModeEnum() const;
 };

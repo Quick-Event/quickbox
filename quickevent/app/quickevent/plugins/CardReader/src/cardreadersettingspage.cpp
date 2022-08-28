@@ -18,19 +18,13 @@
 
 #include <qf/core/log.h>
 
-#include <QSettings>
-#include <QSqlDatabase>
-#include <QDir>
-#include <QFileDialog>
 #include <QLineEdit>
 #include <QSerialPortInfo>
 #include <QMessageBox>
+#include <QTimer>
 
 namespace CardReader {
 
-//=================================================
-//             DlgSettings
-//=================================================
 CardReaderSettingsPage::CardReaderSettingsPage(QWidget *parent)
 	: Super(parent)
 {
@@ -46,7 +40,7 @@ CardReaderSettingsPage::CardReaderSettingsPage(QWidget *parent)
 		ui->lstDevice->addItem(QString("/dev/ttyUSB%1").arg(i));
 #endif
 #endif
-	load();
+	QTimer::singleShot(0, this, &CardReaderSettingsPage::load);
 }
 
 CardReaderSettingsPage::~CardReaderSettingsPage()
@@ -87,8 +81,8 @@ void CardReaderSettingsPage::load()
 	load_combo_text(ui->lstDataBits, settings.dataBits());
 	load_combo_text(ui->lstStopBits, settings.stopBits());
 	load_combo_text(ui->lstParity, settings.parity());
-	ui->chkShowRawComData->setChecked(settings.showRawComData());
-	ui->chkDisableCRCCheck->setChecked(settings.disableCRCCheck());
+	ui->chkShowRawComData->setChecked(settings.isShowRawComData());
+	ui->chkDisableCRCCheck->setChecked(settings.isDisableCRCCheck());
 
 	{
 		auto *cbx = ui->cbxCardCheckType;
@@ -107,10 +101,10 @@ void CardReaderSettingsPage::load()
 	{
 		auto *cbx = ui->cbxReaderMode;
 		cbx->addItem(tr("Readout"), "Readout");
-		cbx->setItemData(0, CardReaderSettings::ReaderMode::Readout, Qt::UserRole + 1);
+		//cbx->setItemData(0, CardReaderSettings::ReaderMode::Readout, Qt::UserRole + 1);
 		cbx->setItemData(0, tr("Readout mode - default"), Qt::ToolTipRole);
 		cbx->addItem(tr("Edit on punch"), "EditOnPunch");
-		cbx->setItemData(0, CardReaderSettings::ReaderMode::EditOnPunch, Qt::UserRole + 1);
+		//cbx->setItemData(0, CardReaderSettings::ReaderMode::EditOnPunch, Qt::UserRole + 1);
 		cbx->setItemData(1, tr("Show Edit/Insert competitor dialog when SI Card is inserted into the reader station"), Qt::ToolTipRole);
 		cbx->setCurrentIndex(-1);
 		for (int i = 0; i < cbx->count(); ++i) {
@@ -152,7 +146,7 @@ void CardReaderSettingsPage::on_btTestConnection_clicked()
 	}
 	else {
 		QString error_msg = comport.errorToUserHint();
-		QMessageBox::warning(this, tr("Warning"), tr("Error open device %1 - %2").arg(device).arg(error_msg));
+		QMessageBox::warning(this, tr("Warning"), tr("Error open device %1 - %2").arg(device, error_msg));
 	}
 }
 

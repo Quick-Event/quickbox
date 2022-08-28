@@ -12,14 +12,14 @@ class ReceiptsPrinterOptions;
 class ReceiptsPrinterOptionsDialog : public QDialog
 {
 	Q_OBJECT
-
 public:
 	explicit ReceiptsPrinterOptionsDialog(QWidget *parent = 0);
 	~ReceiptsPrinterOptionsDialog();
 
-	void setPrinterOptions(const ReceiptsPrinterOptions &opts);
-	ReceiptsPrinterOptions printerOptions();
+	void accept();
 private:
+	void load();
+	void save();
 	void loadPrinters();
 private:
 	Ui::ReceiptsPrinterOptionsDialog *ui;

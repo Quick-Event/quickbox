@@ -46,9 +46,6 @@ public:
 	Q_SLOT void reload();
 	bool isAutoPrintEnabled();
 
-private slots:
-	void on_btPrinterOptions_clicked();
-
 private:
 	Q_SLOT void on_btPrintNew_clicked();
 	void onCustomContextMenuRequest(const QPoint &pos);
@@ -63,8 +60,6 @@ private:
 	void markAsPrinted(int connection_id, int card_id);
 
 	void lazyInit();
-	void loadReceptList();
-	void updateReceiptsPrinterLabel();
 
 	void createActions();
 	int currentStageId();

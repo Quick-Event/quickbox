@@ -1,6 +1,5 @@
-#ifndef RECEIPTSPRINTEROPTIONS_H
-#define RECEIPTSPRINTEROPTIONS_H
-
+#pragma once
+#if 0
 #include <qf/core/utils.h>
 
 #include <QVariantMap>
