@@ -13,12 +13,15 @@ namespace Core {
 class Settings
 {
 public:
-	Settings(const QString &settings_dir);
+	Settings(const QString &settings_prefix);
 protected:
 	QVariant value(const QString &key, const QVariant &default_value = QVariant()) const;
 	void setValue(const QString &key, const QVariant &value);
 private:
-	QSettings m_settings;
+	QSettings* appSettingsSingleton() const;
+	QString fullPath(const QString &path) const;
+private:
+	QString m_settingsPrefix;
 };
 
 } // namespace Core
