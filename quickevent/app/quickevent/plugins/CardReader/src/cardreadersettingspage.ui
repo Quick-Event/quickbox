@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>518</width>
-    <height>438</height>
+    <height>515</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -193,7 +193,7 @@
       <item row="6" column="1">
        <widget class="QFrame" name="frame3">
         <property name="frameShape">
-         <enum>QFrame::Box</enum>
+         <enum>QFrame::NoFrame</enum>
         </property>
         <layout class="QGridLayout" name="gridLayout">
          <item row="0" column="0">
@@ -272,6 +272,12 @@
   <tabstop>lstBaudRate</tabstop>
   <tabstop>lstDataBits</tabstop>
   <tabstop>lstStopBits</tabstop>
+  <tabstop>lstParity</tabstop>
+  <tabstop>btTestConnection</tabstop>
+  <tabstop>chkShowRawComData</tabstop>
+  <tabstop>chkDisableCRCCheck</tabstop>
+  <tabstop>cbxCardCheckType</tabstop>
+  <tabstop>cbxReaderMode</tabstop>
  </tabstops>
  <resources/>
  <connections/>

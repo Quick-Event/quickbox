@@ -22,6 +22,8 @@ ReceiptsSettingsPage::ReceiptsSettingsPage(QWidget *parent)
 	ui->cbxWhenRunnerNotFound->addItem(tr("Receipt without name"), "ReceiptWithoutName");
 	ui->cbxWhenRunnerNotFound->setCurrentIndex(0);
 
+	connect(ui->btPrinterOptions, &QAbstractButton::clicked, this, &ReceiptsSettingsPage::onPrinterOptionsClicked);
+
 	loadReceptList();
 
 	QTimer::singleShot(0, this, &ReceiptsSettingsPage::load);
@@ -65,6 +67,7 @@ void ReceiptsSettingsPage::load()
 			settings.setWhenRunnerNotFoundPrint(cbx->currentData().toString());
 		}
 	}
+	updateReceiptsPrinterLabel();
 }
 
 void ReceiptsSettingsPage::save()
