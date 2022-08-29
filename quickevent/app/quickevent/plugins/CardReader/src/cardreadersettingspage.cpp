@@ -141,37 +141,12 @@ void CardReaderSettingsPage::on_btTestConnection_clicked()
 	int stop_bits = settings.stopBits();
 	QString parity = settings.parity();
 	siut::CommPort comport;
-	QStringList err_list;
-	connect(&comport, &QSerialPort::errorOccurred, this, [&err_list](QSerialPort::SerialPortError error) {
-		QString s;
-		switch(error) {
-		case QSerialPort::NoError: break;
-		case QSerialPort::DeviceNotFoundError: s = "DeviceNotFoundError"; break;
-		case QSerialPort::PermissionError: s = "PermissionError"; break;
-		case QSerialPort::OpenError: s = "OpenError"; break;
-		case QSerialPort::ParityError: s = "ParityError"; break;
-		case QSerialPort::FramingError: s = "FramingError"; break;
-		case QSerialPort::BreakConditionError: s = "BreakConditionError"; break;
-		case QSerialPort::WriteError: s = "WriteError"; break;
-		case QSerialPort::ReadError: s = "ReadError"; break;
-		case QSerialPort::ResourceError: s = "ResourceError"; break;
-		case QSerialPort::UnsupportedOperationError: s = "UnsupportedOperationError"; break;
-		case QSerialPort::UnknownError: s = "UnknownError"; break;
-		case QSerialPort::TimeoutError: s = "TimeoutError"; break;
-		case QSerialPort::NotOpenError: s = "NotOpenError"; break;
-		}
-		if(!s.isEmpty())
-			err_list << s;
-	});
 	if(comport.openComm(device, baud_rate, data_bits, parity, stop_bits > 1)) {
-		auto msg = tr("Open serial port %1 success.").arg(device);
-		if(!err_list.isEmpty())
-			msg += "\n\nError: " + err_list.join(',');
-		QMessageBox::information(this, tr("Message"), msg);
+		QMessageBox::warning(this, tr("Message"), tr("Open serial port %1 success.").arg(device));
 	}
 	else {
 		QString error_msg = comport.errorToUserHint();
-		QMessageBox::warning(this, tr("Warning"), tr("Error open device %1 - %2\n\nError: %3").arg(device, error_msg, err_list.join(',')));
+		QMessageBox::warning(this, tr("Warning"), tr("Error open device %1 - %2").arg(device, error_msg));
 	}
 }
 
