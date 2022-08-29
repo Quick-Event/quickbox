@@ -42,17 +42,6 @@ EmmaClient::EmmaClient(QObject *parent)
 
 	m_exportTimer = new QTimer(this);
 	connect(m_exportTimer, &QTimer::timeout, this, &EmmaClient::onExportTimerTimeOut);
-	connect(this, &EmmaClient::statusChanged, [this](Status status) {
-		if(status == Status::Running) {
-			if(settings().exportIntervalSec() > 0) {
-				onExportTimerTimeOut();
-				m_exportTimer->start();
-			}
-		}
-		else {
-			m_exportTimer->stop();
-		}
-	});
 	connect(this, &EmmaClient::settingsChanged, this, &EmmaClient::init, Qt::QueuedConnection);
 
 }
@@ -60,6 +49,20 @@ EmmaClient::EmmaClient(QObject *parent)
 QString EmmaClient::serviceName()
 {
 	return QStringLiteral("EmmaClient");
+}
+
+void EmmaClient::run() {
+	Super::run();
+	// run once immediately without waiting for first timer expiration
+	if(settings().exportIntervalSec() > 0) {
+		onExportTimerTimeOut();
+	}
+	m_exportTimer->start();
+}
+
+void EmmaClient::stop() {
+	Super::stop();
+	m_exportTimer->stop();
 }
 
 void EmmaClient::exportRadioCodesRacomTxt()
@@ -293,9 +296,6 @@ void EmmaClient::init()
 	if(ss.exportIntervalSec() > 0) {
 		m_exportTimer->setInterval(ss.exportIntervalSec() * 1000);
 	}
-	else {
-		m_exportTimer->stop();
-	}
 }
 
 bool EmmaClient::preExport()
@@ -310,9 +310,6 @@ bool EmmaClient::preExport()
 
 void EmmaClient::onExportTimerTimeOut()
 {
-	if(status() != Status::Running)
-		return;
-
 	if (!preExport())
 		return;
 

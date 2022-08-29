@@ -29,8 +29,8 @@ class OResultsClient : public Service
 public:
 	OResultsClient(QObject *parent);
 
-	//void run() override;
-	//void stop() override;
+	void run() override;
+	void stop() override;
 	OResultsClientSettings settings() const {return OResultsClientSettings(m_settings);}
 
 	static QString serviceName();
