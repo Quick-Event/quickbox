@@ -60,7 +60,7 @@ private:
 	Mode m_mode;
 };
 
-class QFCORE_DECL_EXPORT SiStationConfig : public QVariantMap
+class SIUT_DECL_EXPORT SiStationConfig : public QVariantMap
 {
 	Q_DECLARE_TR_FUNCTIONS(SiStationConfig)
 
