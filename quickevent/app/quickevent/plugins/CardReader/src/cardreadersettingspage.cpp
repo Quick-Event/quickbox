@@ -32,15 +32,22 @@ CardReaderSettingsPage::CardReaderSettingsPage(QWidget *parent)
 	ui = new Ui::CardReaderSettingsPage;
 	ui->setupUi(this);
 	m_caption = tr("Card reader");
-#if 0
-#if defined Q_OS_WIN
-	for(int i=1; i<10; i++)
-		ui->lstDevice->addItem(QString("\\COM%1").arg(i));
-#elif defined Q_OS_UNIX
-	for(int i=0; i<4; i++)
-		ui->lstDevice->addItem(QString("/dev/ttyUSB%1").arg(i));
-#endif
-#endif
+	{
+		auto *cbx = ui->cbxCardCheckType;
+		for(auto *checker : qf::qmlwidgets::framework::getPlugin<CardReaderPlugin>()->cardCheckers()) {
+			cbx->addItem(checker->caption(), checker->nameId());
+		}
+	}
+	{
+		auto *cbx = ui->cbxReaderMode;
+		cbx->addItem(tr("Readout"), "Readout");
+		//cbx->setItemData(0, CardReaderSettings::ReaderMode::Readout, Qt::UserRole + 1);
+		cbx->setItemData(0, tr("Readout mode - default"), Qt::ToolTipRole);
+		cbx->addItem(tr("Edit on punch"), "EditOnPunch");
+		//cbx->setItemData(0, CardReaderSettings::ReaderMode::EditOnPunch, Qt::UserRole + 1);
+		cbx->setItemData(1, tr("Show Edit/Insert competitor dialog when SI Card is inserted into the reader station"), Qt::ToolTipRole);
+	}
+
 	QTimer::singleShot(0, this, &CardReaderSettingsPage::load);
 }
 
@@ -87,32 +94,30 @@ void CardReaderSettingsPage::load()
 
 	{
 		auto *cbx = ui->cbxCardCheckType;
-		for(auto *checker : qf::qmlwidgets::framework::getPlugin<CardReaderPlugin>()->cardCheckers()) {
-			cbx->addItem(checker->caption(), checker->nameId());
-		}
+		cbx->setCurrentIndex(-1);
 		for (int i = 0; i < cbx->count(); ++i) {
 			if(cbx->itemData(i).toString() == settings.cardCheckType()) {
 				cbx->setCurrentIndex(i);
 				break;
 			}
 		}
-		if(settings.cardCheckType().isEmpty())
+		if(cbx->currentIndex() < 0) {
+			cbx->setCurrentIndex(0);
 			settings.setCardCheckType(cbx->currentData().toString());
+		}
 	}
 	{
 		auto *cbx = ui->cbxReaderMode;
-		cbx->addItem(tr("Readout"), "Readout");
-		//cbx->setItemData(0, CardReaderSettings::ReaderMode::Readout, Qt::UserRole + 1);
-		cbx->setItemData(0, tr("Readout mode - default"), Qt::ToolTipRole);
-		cbx->addItem(tr("Edit on punch"), "EditOnPunch");
-		//cbx->setItemData(0, CardReaderSettings::ReaderMode::EditOnPunch, Qt::UserRole + 1);
-		cbx->setItemData(1, tr("Show Edit/Insert competitor dialog when SI Card is inserted into the reader station"), Qt::ToolTipRole);
-		cbx->setCurrentIndex(-1);
 		for (int i = 0; i < cbx->count(); ++i) {
+			cbx->setCurrentIndex(-1);
 			if(cbx->itemData(i).toString() == settings.readerMode()) {
 				cbx->setCurrentIndex(i);
 				break;
 			}
+		}
+		if(cbx->currentIndex() < 0) {
+			cbx->setCurrentIndex(0);
+			settings.setReaderMode(cbx->currentData().toString());
 		}
 	}
 }
@@ -128,7 +133,7 @@ void CardReaderSettingsPage::save()
 	settings.setShowRawComData(ui->chkShowRawComData->isChecked());
 	settings.setDisableCRCCheck(ui->chkDisableCRCCheck->isChecked());
 
-	settings.setCardCheckType(ui->cbxCardCheckType->currentText());
+	settings.setCardCheckType(ui->cbxCardCheckType->currentData().toString());
 	settings.setReaderMode(ui->cbxReaderMode->currentData().toString());
 }
 

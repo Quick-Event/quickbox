@@ -36,8 +36,7 @@ public:
 		QString reportFilePath;
 
 		bool operator==(const ReportFileInfo &o) const {
-			return reportName == o.reportName
-					&& reportFilePath == o.reportFilePath;
+			return reportName == o.reportName && reportFilePath == o.reportFilePath;
 		}
 	};
 	QList<ReportFileInfo> listReportFiles(const QString &report_dir) const;
