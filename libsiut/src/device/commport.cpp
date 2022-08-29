@@ -27,7 +27,8 @@ CommPort::~CommPort()
 bool CommPort::openComm(const QString &_device, int _baudrate, int _data_bits, const QString &_parity_str, bool two_stop_bits)
 {
 	qfLogFuncFrame();
-	close();
+	if(isOpen())
+		close();
 	QString device = _device;
 	{
 		qfDebug() << "Port enumeration";
