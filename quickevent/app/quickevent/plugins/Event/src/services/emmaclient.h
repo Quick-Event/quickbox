@@ -30,8 +30,8 @@ class EmmaClient : public Service
 public:
 	EmmaClient(QObject *parent);
 
-	//void run() override;
-	//void stop() override;
+	void run() override;
+	void stop() override;
 	EmmaClientSettings settings() const {return EmmaClientSettings(m_settings);}
 
 	static QString serviceName();

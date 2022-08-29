@@ -38,15 +38,6 @@ OResultsClient::OResultsClient(QObject *parent)
 	m_networkManager = new QNetworkAccessManager(this);
 	m_exportTimer = new QTimer(this);
 	connect(m_exportTimer, &QTimer::timeout, this, &OResultsClient::onExportTimerTimeOut);
-	connect(this, &OResultsClient::statusChanged, [this](Status status) {
-		if(status == Status::Running) {
-			onExportTimerTimeOut();
-			m_exportTimer->start();
-		}
-		else {
-			m_exportTimer->stop();
-		}
-	});
 	connect(this, &OResultsClient::settingsChanged, this, &OResultsClient::init, Qt::QueuedConnection);
 
 }
@@ -54,6 +45,17 @@ OResultsClient::OResultsClient(QObject *parent)
 QString OResultsClient::serviceName()
 {
 	return QStringLiteral("OResults");
+}
+
+void OResultsClient::run() {
+	Super::run();
+	onExportTimerTimeOut();
+	m_exportTimer->start();
+}
+
+void OResultsClient::stop() {
+	Super::stop();
+	m_exportTimer->stop();
 }
 
 void OResultsClient::exportResultsIofXml3()
@@ -95,9 +97,6 @@ void OResultsClient::init()
 
 void OResultsClient::onExportTimerTimeOut()
 {
-	if(status() != Status::Running)
-		return;
-
 	exportResultsIofXml3();
 }
 

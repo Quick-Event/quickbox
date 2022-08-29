@@ -32,17 +32,6 @@ ResultsExporter::ResultsExporter(QObject *parent)
 {
 	m_exportTimer = new QTimer(this);
 	connect(m_exportTimer, &QTimer::timeout, this, &ResultsExporter::onExportTimerTimeOut);
-	connect(this, &ResultsExporter::statusChanged, [this](Status status) {
-		if(status == Status::Running) {
-			if(settings().exportIntervalSec() > 0) {
-				onExportTimerTimeOut();
-				m_exportTimer->start();
-			}
-		}
-		else {
-			m_exportTimer->stop();
-		}
-	});
 	connect(this, &ResultsExporter::settingsChanged, this, &ResultsExporter::init, Qt::QueuedConnection);
 
 }
@@ -50,6 +39,20 @@ ResultsExporter::ResultsExporter(QObject *parent)
 QString ResultsExporter::serviceName()
 {
 	return QStringLiteral("ResultsExporter");
+}
+
+void ResultsExporter::run() {
+	Super::run();
+	// run once immediately without waiting for first timer expiration
+	if(settings().exportIntervalSec() > 0) {
+		onExportTimerTimeOut();
+	}
+	m_exportTimer->start();
+}
+
+void ResultsExporter::stop() {
+	Super::stop();
+	m_exportTimer->stop();
 }
 
 bool ResultsExporter::exportResults()
@@ -135,8 +138,6 @@ void ResultsExporter::whenFinishedRunCmd()
 
 void ResultsExporter::onExportTimerTimeOut()
 {
-	if(status() != Status::Running)
-		return;
 	if(!exportResults())
 		stop();
 }
