@@ -13,6 +13,7 @@
 #include "cardreadersettings.h"
 
 #include <siut/commport.h>
+#include <siut/sidevicedriver.h>
 
 #include <qf/qmlwidgets/framework/mainwindow.h>
 
@@ -140,13 +141,34 @@ void CardReaderSettingsPage::on_btTestConnection_clicked()
 	int data_bits = settings.dataBits();
 	int stop_bits = settings.stopBits();
 	QString parity = settings.parity();
-	siut::CommPort comport;
-	if(comport.openComm(device, baud_rate, data_bits, parity, stop_bits > 1)) {
+	auto *comport = new siut::CommPort();
+	if(comport->openComm(device, baud_rate, data_bits, parity, stop_bits > 1)) {
 		QMessageBox::warning(this, tr("Message"), tr("Open serial port %1 success.").arg(device));
+		auto *sidriver = new siut::DeviceDriver();
+		connect(comport, &siut::CommPort::readyRead, this, [comport, sidriver]() {
+			QByteArray ba = comport->readAll();
+			sidriver->processData(ba);
+		});
+		connect(sidriver, &siut::DeviceDriver::dataToSend, comport, &siut::CommPort::sendData);
+		siut::SiTaskStationConfig *cmd = new siut::SiTaskStationConfig();
+		connect(cmd, &siut::SiTaskStationConfig::finished, this, [this, comport, sidriver](bool ok, QVariant result) {
+			if(ok) {
+				siut::SiStationConfig cfg(result.toMap());
+				QString msg = cfg.toString();
+				QMessageBox::information(this, tr("Information"), tr("SI reader config:%1").arg(msg));
+			}
+			else {
+				QMessageBox::warning(this, tr("Warning"), tr("Device %1 is not SI reader").arg(comport->portName()));
+			}
+			sidriver->deleteLater();
+			comport->deleteLater();
+		}, Qt::QueuedConnection);
+		sidriver->setSiTask(cmd);
 	}
 	else {
-		QString error_msg = comport.errorToUserHint();
+		QString error_msg = comport->errorToUserHint();
 		QMessageBox::warning(this, tr("Warning"), tr("Error open device %1 - %2").arg(device, error_msg));
+		delete comport;
 	}
 }
 

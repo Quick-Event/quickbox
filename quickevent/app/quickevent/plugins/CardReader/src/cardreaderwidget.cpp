@@ -329,20 +329,7 @@ void CardReaderWidget::settleDownInPartWidget(quickevent::gui::PartWidget *part_
 				connect(cmd, &siut::SiTaskStationConfig::finished, this, [this](bool ok, QVariant result) {
 					if(ok) {
 						siut::SiStationConfig cfg(result.toMap());
-						QString msg = tr(""
-										 "Station number: {{StationNumber}}\n"
-										 "Extended mode: {{ExtendedMode}}\n"
-										 "Auto send: {{AutoSend}}\n"
-										 "Handshake: {{HandShake}}\n"
-										 "Password access: {{PasswordAccess}}\n"
-										 "Read out after punch: {{ReadOutAfterPunch}}\n"
-										 "");
-						msg.replace("{{StationNumber}}", QString::number(cfg.stationNumber()));
-						msg.replace("{{ExtendedMode}}", (cfg.flags() & (unsigned)siut::SiStationConfig::Flag::ExtendedMode)? tr("True"): tr("False"));
-						msg.replace("{{AutoSend}}", (cfg.flags() & (unsigned)siut::SiStationConfig::Flag::AutoSend)? tr("True"): tr("False"));
-						msg.replace("{{HandShake}}", (cfg.flags() & (unsigned)siut::SiStationConfig::Flag::HandShake)? tr("True"): tr("False"));
-						msg.replace("{{PasswordAccess}}", (cfg.flags() & (unsigned)siut::SiStationConfig::Flag::PasswordAccess)? tr("True"): tr("False"));
-						msg.replace("{{ReadOutAfterPunch}}", (cfg.flags() & (unsigned)siut::SiStationConfig::Flag::ReadOutAfterPunch)? tr("True"): tr("False"));
+						QString msg = cfg.toString();
 						qf::qmlwidgets::dialogs::MessageBox::showInfo(this, msg);
 					}
 				}, Qt::QueuedConnection);
