@@ -71,6 +71,7 @@ QList<Plugin::ReportFileInfo> Plugin::listReportFiles(const QString &report_dir)
 			}
 		}
 	}
+	std::sort(report_files.begin(), report_files.end(), [](const ReportFileInfo &a, const ReportFileInfo &b) { return a.reportName < b.reportName; });
 	return report_files;
 }
 
