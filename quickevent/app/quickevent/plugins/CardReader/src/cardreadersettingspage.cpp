@@ -22,6 +22,7 @@
 #include <QLineEdit>
 #include <QSerialPortInfo>
 #include <QMessageBox>
+#include <QProgressDialog>
 #include <QTimer>
 
 namespace CardReader {
@@ -148,7 +149,10 @@ void CardReaderSettingsPage::on_btTestConnection_clicked()
 	QString parity = settings.parity();
 	auto *comport = new siut::CommPort();
 	if(comport->openComm(device, baud_rate, data_bits, parity, stop_bits > 1)) {
-		QMessageBox::warning(this, tr("Message"), tr("Open serial port %1 success.").arg(device));
+		auto *progress = new QProgressDialog(tr("Loading SI station info ..."), tr("Cancel"), 0, 0, this);
+		progress->setWindowModality(Qt::WindowModal);
+		progress->setMinimumDuration(0);
+		progress->setValue(0);
 		auto *sidriver = new siut::DeviceDriver();
 		connect(comport, &siut::CommPort::readyRead, this, [comport, sidriver]() {
 			QByteArray ba = comport->readAll();
@@ -156,7 +160,7 @@ void CardReaderSettingsPage::on_btTestConnection_clicked()
 		});
 		connect(sidriver, &siut::DeviceDriver::dataToSend, comport, &siut::CommPort::sendData);
 		siut::SiTaskStationConfig *cmd = new siut::SiTaskStationConfig();
-		connect(cmd, &siut::SiTaskStationConfig::finished, this, [this, comport, sidriver](bool ok, QVariant result) {
+		connect(cmd, &siut::SiTaskStationConfig::finished, this, [this, comport, sidriver, progress](bool ok, QVariant result) {
 			if(ok) {
 				siut::SiStationConfig cfg(result.toMap());
 				QString msg = cfg.toString();
@@ -165,10 +169,17 @@ void CardReaderSettingsPage::on_btTestConnection_clicked()
 			else {
 				QMessageBox::warning(this, tr("Warning"), tr("Device %1 is not SI reader").arg(comport->portName()));
 			}
+			progress->deleteLater();
 			sidriver->deleteLater();
 			comport->deleteLater();
 		}, Qt::QueuedConnection);
 		sidriver->setSiTask(cmd);
+		auto *timer = new QTimer(progress);
+		connect(timer, &QTimer::timeout, progress, [progress, cmd]() {
+			if(progress->wasCanceled())
+				cmd->abort();
+		});
+		timer->start(500);
 	}
 	else {
 		QString error_msg = comport->errorToUserHint();
