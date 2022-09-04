@@ -717,7 +717,10 @@ QString RelaysPlugin::resultsIofXml30()
 						}
 						QVariantList split{QStringLiteral("SplitTime")};
 						append_list(split, QVariantList{"ControlCode", cd.code()});
-						append_list(split, QVariantList{"Time", time / 1000});
+						if(time == 0)
+							split.insert(1, QVariantMap{ {QStringLiteral("status"), QStringLiteral("Missing")} });
+						else
+							append_list(split, QVariantList{"Time", time / 1000});
 						append_list(person_result, split);
 					}
 				}
