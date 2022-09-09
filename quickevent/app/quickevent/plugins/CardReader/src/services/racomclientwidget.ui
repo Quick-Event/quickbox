@@ -80,7 +80,7 @@
    <item>
     <widget class="QGroupBox" name="gbReadSplitsFile">
      <property name="title">
-      <string>Read Text Splits File (format &quot;rawsplits&quot;, used by Racom &amp; Bluebox)</string>
+      <string>Read Text Splits File (format &quot;rawsplits&quot; from Racom)</string>
      </property>
      <property name="checkable">
       <bool>true</bool>
