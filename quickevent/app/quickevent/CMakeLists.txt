@@ -58,9 +58,11 @@ add_executable(quickevent
     plugins/Oris/src/txtimporter.cpp
     plugins/Receipts/src/receiptsplugin.cpp
     plugins/Receipts/src/receiptsprinter.cpp
-    plugins/Receipts/src/receiptsprinteroptions.cpp
+    #plugins/Receipts/src/receiptsprinteroptions.cpp
     plugins/Receipts/src/receiptsprinteroptionsdialog.cpp
     plugins/Receipts/src/receiptswidget.cpp
+    plugins/Receipts/src/receiptssettings.cpp
+    plugins/Receipts/src/receiptssettingspage.cpp
     plugins/Relays/src/addlegdialogwidget.cpp
     plugins/Relays/src/relaydocument.cpp
     plugins/Relays/src/relaysplugin.cpp

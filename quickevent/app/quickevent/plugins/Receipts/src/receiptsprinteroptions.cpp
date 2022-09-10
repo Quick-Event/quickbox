@@ -1,4 +1,5 @@
 #include "receiptsprinteroptions.h"
+#if 0
 
 #include <qf/core/log.h>
 
@@ -52,5 +53,5 @@ QByteArray ReceiptsPrinterOptions::toJson() const
 	QJsonDocument jsd = QJsonDocument::fromVariant(*this);
 	return jsd.toJson(QJsonDocument::Compact);
 }
-
+#endif
 

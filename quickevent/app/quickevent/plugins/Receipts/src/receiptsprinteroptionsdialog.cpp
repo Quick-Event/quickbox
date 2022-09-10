@@ -1,6 +1,6 @@
 #include "receiptsprinteroptionsdialog.h"
 #include "ui_receiptsprinteroptionsdialog.h"
-#include "receiptsprinteroptions.h"
+#include "receiptssettings.h"
 
 #include <QPrinterInfo>
 #include <QPushButton>
@@ -38,12 +38,18 @@ ReceiptsPrinterOptionsDialog::ReceiptsPrinterOptionsDialog(QWidget *parent) :
 		}
 	});
 
-	loadPrinters();
+	load();
 }
 
 ReceiptsPrinterOptionsDialog::~ReceiptsPrinterOptionsDialog()
 {
 	delete ui;
+}
+
+void ReceiptsPrinterOptionsDialog::accept()
+{
+	save();
+	QDialog::accept();
 }
 
 void ReceiptsPrinterOptionsDialog::loadPrinters()
@@ -53,65 +59,66 @@ void ReceiptsPrinterOptionsDialog::loadPrinters()
 	ui->cbxGraphicPrinter->setCurrentText(def);
 }
 
-void ReceiptsPrinterOptionsDialog::setPrinterOptions(const ReceiptsPrinterOptions &opts)
+void ReceiptsPrinterOptionsDialog::load()
 {
-	if(opts.printerType() == ReceiptsPrinterOptions::PrinterType::GraphicPrinter) {
+	loadPrinters();
+	ReceiptsSettings settings;
+	if(settings.printerTypeEnum() == ReceiptsSettings::PrinterType::GraphicPrinter) {
 		this->ui->stackedWidget->setCurrentIndex(TabGraphicsPrinter);
 		ui->btGraphicsPrinter->setChecked(true);
-		ui->cbxGraphicPrinter->setCurrentText(opts.graphicsPrinterName());
+		ui->cbxGraphicPrinter->setCurrentText(settings.graphicsPrinterName());
 	}
 	else {
 		this->ui->stackedWidget->setCurrentIndex(TabTextPrinter);
 		ui->btCharacterPrinter->setChecked(true);
-		ui->cbxCharacterPrinterDevice->setCurrentText(opts.characterPrinterDevice());
-		ui->edCharacterPrinterDirectory->setText(opts.characterPrinterDirectory());
-		ui->cbxCharacterPrinterModel->setCurrentText(opts.characterPrinterModel());
-		ui->edCharacterPrinterLineLength->setValue(opts.characterPrinterLineLength());
-		ui->chkCharacterPrinterGenerateControlCodes->setChecked(opts.isCharacterPrinterGenerateControlCodes());
-		ui->edCharacterPrinterUrl->setText(opts.characterPrinterUrl());
-		ui->chkCharacterPrinterUdpProtocol->setChecked(opts.isCharacterPrinterUdpProtocol());
-		ui->cbxCharacterPrinterCodec->setCurrentText(opts.characterPrinterCodec());
-		switch(opts.characterPrinterType()) {
-			case ReceiptsPrinterOptions::CharacterPrinteType::LPT:
+		ui->cbxCharacterPrinterDevice->setCurrentText(settings.characterPrinterDevice());
+		ui->edCharacterPrinterDirectory->setText(settings.characterPrinterDirectory());
+		ui->cbxCharacterPrinterModel->setCurrentText(settings.characterPrinterModel());
+		ui->edCharacterPrinterLineLength->setValue(settings.characterPrinterLineLength());
+		ui->chkCharacterPrinterGenerateControlCodes->setChecked(settings.isCharacterPrinterGenerateControlCodes());
+		ui->edCharacterPrinterUrl->setText(settings.characterPrinterUrl());
+		ui->chkCharacterPrinterUdpProtocol->setChecked(settings.isCharacterPrinterUdpProtocol());
+		ui->cbxCharacterPrinterCodec->setCurrentText(settings.characterPrinterCodec());
+		switch(settings.characterPrinterTypeEnum()) {
+			case ReceiptsSettings::CharacterPrinteType::LPT:
 				ui->btCharacterPrinterLPT->setChecked(true);
 				break;
-			case ReceiptsPrinterOptions::CharacterPrinteType::Directory:
+			case ReceiptsSettings::CharacterPrinteType::Directory:
 				ui->btCharacterPrinterDirectory->setChecked(true);
 				break;
-			case ReceiptsPrinterOptions::CharacterPrinteType::Network:
+			case ReceiptsSettings::CharacterPrinteType::Network:
 				ui->btCharacterPrinterNetwork->setChecked(true);
 				break;
 		}
 	}
 }
 
-ReceiptsPrinterOptions ReceiptsPrinterOptionsDialog::printerOptions()
+void ReceiptsPrinterOptionsDialog::save()
 {
-	ReceiptsPrinterOptions ret;
+	ReceiptsSettings settings;
 	if(ui->btGraphicsPrinter->isChecked()) {
-		ret.setPrinterType((int)ReceiptsPrinterOptions::PrinterType::GraphicPrinter);
-		ret.setGraphicsPrinterName(ui->cbxGraphicPrinter->currentText());
+		settings.setPrinterType(ReceiptsSettings::printerTypeToString(ReceiptsSettings::PrinterType::GraphicPrinter));
+		settings.setGraphicsPrinterName(ui->cbxGraphicPrinter->currentText());
 	}
 	else {
-		ret.setPrinterType((int)ReceiptsPrinterOptions::PrinterType::CharacterPrinter);
-		ret.setCharacterPrinterDevice(ui->cbxCharacterPrinterDevice->currentText());
-		ret.setCharacterPrinterDirectory(ui->edCharacterPrinterDirectory->text());
-		ret.setCharacterPrinterModel(ui->cbxCharacterPrinterModel->currentText());
-		ret.setCharacterPrinterLineLength(ui->edCharacterPrinterLineLength->value());
-		ret.setCharacterPrinterGenerateControlCodes(ui->chkCharacterPrinterGenerateControlCodes->isChecked());
-		ret.setCharacterPrinterUrl(ui->edCharacterPrinterUrl->text());
-		ret.setCharacterPrinterUdpProtocol(ui->chkCharacterPrinterUdpProtocol->isChecked());
-		ret.setCharacterPrinterCodec(ui->cbxCharacterPrinterCodec->currentText());
+		settings.setPrinterType(ReceiptsSettings::printerTypeToString(ReceiptsSettings::PrinterType::CharacterPrinter));
+		settings.setCharacterPrinterDevice(ui->cbxCharacterPrinterDevice->currentText());
+		settings.setCharacterPrinterDirectory(ui->edCharacterPrinterDirectory->text());
+		settings.setCharacterPrinterModel(ui->cbxCharacterPrinterModel->currentText());
+		settings.setCharacterPrinterLineLength(ui->edCharacterPrinterLineLength->value());
+		settings.setCharacterPrinterGenerateControlCodes(ui->chkCharacterPrinterGenerateControlCodes->isChecked());
+		settings.setCharacterPrinterUrl(ui->edCharacterPrinterUrl->text());
+		settings.setCharacterPrinterUdpProtocol(ui->chkCharacterPrinterUdpProtocol->isChecked());
+		settings.setCharacterPrinterCodec(ui->cbxCharacterPrinterCodec->currentText());
 		if(ui->btCharacterPrinterLPT->isChecked()) {
-			ret.setCharacterPrinterType(ReceiptsPrinterOptions::CharacterPrinteType::LPT);
+			settings.setCharacterPrinterType(ReceiptsSettings::characterPrinterTypeToString(ReceiptsSettings::CharacterPrinteType::LPT));
 		}
 		else if(ui->btCharacterPrinterDirectory->isChecked()) {
-			ret.setCharacterPrinterType(ReceiptsPrinterOptions::CharacterPrinteType::Directory);
+			settings.setCharacterPrinterType(ReceiptsSettings::characterPrinterTypeToString(ReceiptsSettings::CharacterPrinteType::Directory));
 		}
 		else {
-			ret.setCharacterPrinterType(ReceiptsPrinterOptions::CharacterPrinteType::Network);
+			settings.setCharacterPrinterType(ReceiptsSettings::characterPrinterTypeToString(ReceiptsSettings::CharacterPrinteType::Network));
 		}
 	}
-	return ret;
 }
 

@@ -6,6 +6,8 @@
 
 #include "competitordocument.h"
 #include "competitorsplugin.h"
+#include "../../Core/src/coreplugin.h"
+#include "../../Core/src/widgets/settingsdialog.h"
 
 #include <quickevent/core/si/siid.h>
 #include <quickevent/core/si/punchrecord.h>
@@ -66,7 +68,7 @@ CompetitorsWidget::CompetitorsWidget(QWidget *parent) :
 	m->addColumn("competitorName", tr("Name"));
 	m->addColumn("registration", tr("Reg"));
 	m->addColumn("siId", tr("SI")).setReadOnly(true).setCastType(qMetaTypeId<quickevent::core::si::SiId>());
-	m->addColumn("ranking", tr("Ranking"));
+	m->addColumn("ranking", tr("Ranking pos")).setToolTip("Runner's position in CZ ranking.");
 	m->addColumn("note", tr("Note"));
 	ui->tblCompetitors->setTableModel(m);
 	m_competitorsModel = m;
@@ -100,7 +102,7 @@ void CompetitorsWidget::settleDownInPartWidget(quickevent::gui::PartWidget *part
 		}
 		{
 			m_cbxClasses = new qfw::ForeignKeyComboBox();
-			m_cbxClasses->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLength);
+			m_cbxClasses->setSizeAdjustPolicy(QComboBox::AdjustToContents);
 #if QT_VERSION >= QT_VERSION_CHECK(5, 11, 0)
 			m_cbxClasses->setMinimumWidth(fontMetrics().horizontalAdvance('X') * 15);
 #else
@@ -399,8 +401,9 @@ void CompetitorsWidget::report_competitorsStatistics()
 	//props["isBreakAfterEachClass"] = (opts.breakType() != (int)quickevent::gui::ReportOptionsDialog::BreakType::None);
 	//props["isColumnBreak"] = (opts.breakType() == (int)quickevent::gui::ReportOptionsDialog::BreakType::Column);
 	props["stageCount"] = stage_cnt;
+	QString rep_fn = getPlugin<CompetitorsPlugin>()->findReportFile("competitorsStatistics.qml");
 	qf::qmlwidgets::reports::ReportViewWidget::showReport(this
-								, getPlugin<CompetitorsPlugin>()->qmlDir() + "/competitorsStatistics.qml"
+								, rep_fn
 								, tt.toVariant()
 								, tr("Competitors statistics")
 								, "competitorsStatistics"

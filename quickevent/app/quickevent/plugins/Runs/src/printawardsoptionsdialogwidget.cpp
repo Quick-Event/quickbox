@@ -1,5 +1,8 @@
 #include "printawardsoptionsdialogwidget.h"
 #include "ui_printawardsoptionsdialogwidget.h"
+#include "runsplugin.h"
+
+#include <qf/qmlwidgets/framework/mainwindow.h>
 
 #include <qf/core/log.h>
 
@@ -12,29 +15,17 @@ PrintAwardsOptionsDialogWidget::PrintAwardsOptionsDialogWidget(QWidget *parent)
 	setPersistentSettingsId(objectName());
 	ui->setupUi(this);
 	ui->edNumPlaces->setValue(3);
+
+	auto *runs_plugin = qf::qmlwidgets::framework::getPlugin<Runs::RunsPlugin>();
+	for(const auto &i : runs_plugin->listReportFiles("awards")) {
+		qfDebug() << i.reportName << i.reportFilePath;
+		ui->edReportPath->addItem(i.reportName, i.reportFilePath);
+	}
 }
 
 PrintAwardsOptionsDialogWidget::~PrintAwardsOptionsDialogWidget()
 {
 	delete ui;
-}
-
-void PrintAwardsOptionsDialogWidget::init(const QString &plugin_qml_files)
-{
-	qfLogFuncFrame() << "plugin qml files:" << plugin_qml_files;
-
-	QDirIterator it(plugin_qml_files + "/awards", QDirIterator::Subdirectories);
-	while (it.hasNext()) {
-		it.next();
-		QFileInfo fi = it.fileInfo();
-		if(fi.isFile()) {
-			QString fn = fi.fileName();
-			if(fn.endsWith(QLatin1String(".qml"), Qt::CaseInsensitive)) {
-				fn = fn.mid(0, fn.length() - 4);
-				ui->edReportPath->addItem(fn, fi.canonicalFilePath());
-			}
-		}
-	}
 }
 
 QVariantMap PrintAwardsOptionsDialogWidget::printOptions() const
@@ -44,6 +35,7 @@ QVariantMap PrintAwardsOptionsDialogWidget::printOptions() const
 		ret["numPlaces"] = ui->edNumPlaces->value();
 		ret["stageId"] = ui->edStageNumber->value();
 		ret["reportPath"] = ui->edReportPath->currentData().toString();
+		qfDebug() << "reportPath:" << ui->edReportPath->currentData().toString();
 	}
 	return ret;
 }

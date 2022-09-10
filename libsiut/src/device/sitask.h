@@ -60,8 +60,10 @@ private:
 	Mode m_mode;
 };
 
-class QFCORE_DECL_EXPORT SiStationConfig : public QVariantMap
+class SIUT_DECL_EXPORT SiStationConfig : public QVariantMap
 {
+	Q_DECLARE_TR_FUNCTIONS(SiStationConfig)
+
 	QF_VARIANTMAP_FIELD2(int, s, setS, tationNumber, 0)
 	QF_VARIANTMAP_FIELD2(unsigned, f, setF, lags, 0)
 
@@ -74,6 +76,7 @@ public:
 				   ReadOutAfterPunch = 1 << 7,
 	};
 	SiStationConfig(const QVariantMap &m = QVariantMap()) : QVariantMap(m) {}
+	QString toString() const;
 };
 
 class SIUT_DECL_EXPORT SiTaskStationConfig : public SiTask

@@ -65,7 +65,7 @@ public:
 	QF_PROPERTY_BOOL_IMPL(s, S, uppressPrintout)
 
 private:
-		void updateResolvedDataSource();
+	void updateResolvedDataSource();
 protected:
 	//--virtual bool childrenSynced();
 	//--virtual void syncChildren();
