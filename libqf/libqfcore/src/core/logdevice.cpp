@@ -357,7 +357,7 @@ void LogDevice::setCategoriesTresholds(const QStringList &tresholds)
 		}
 		else {
 			int match_cnt = 0;
-			for(const QString def_cat : definedCategories()) {
+			for(const QString &def_cat : definedCategories()) {
 				bool match = (def_cat.compare(category, Qt::CaseInsensitive) == 0);
 				if(!match) {
 					//printf("\t def_cat %s\n", qPrintable(def_cat));
