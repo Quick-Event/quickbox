@@ -197,7 +197,7 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
 			}
 		}
 	}
-	else if(role == Qt::TextColorRole) {
+	else if(role == Qt::ForegroundRole) {
 		int type = columnType(index.column());
 		if(type == QVariant::ByteArray)
 			return QColor(Qt::blue);
@@ -206,7 +206,7 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
 		}
 		ret = QVariant();
 	}
-	else if (role == Qt::BackgroundColorRole) {
+	else if (role == Qt::BackgroundRole) {
 		/// delegate does it
 	}
 	else if (role == Qt::CheckStateRole) {
