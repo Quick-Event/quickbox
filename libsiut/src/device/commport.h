@@ -35,6 +35,8 @@ public:
 	void sendData(const QByteArray &data);
 
 	Q_SIGNAL void commInfo(NecroLog::Level level, const QString &msg);
+
+	QString errorToUserHint() const;
 protected:
 	virtual void emitCommInfo(NecroLog::Level level, const QString &msg);
 

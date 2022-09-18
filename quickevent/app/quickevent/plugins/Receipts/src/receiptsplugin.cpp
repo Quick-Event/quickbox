@@ -1,6 +1,10 @@
 #include "receiptsplugin.h"
 #include "receiptswidget.h"
 #include "receiptsprinter.h"
+#include "receiptssettings.h"
+#include "receiptssettingspage.h"
+#include "../../Core/src/coreplugin.h"
+#include "../../Core/src/widgets/settingsdialog.h"
 
 #include <quickevent/core/si/readcard.h>
 #include <quickevent/core/si/checkedcard.h>
@@ -39,8 +43,6 @@ using CardReader::CardReaderPlugin;
 
 namespace Receipts {
 
-const QLatin1String ReceiptsPlugin::SETTINGS_PREFIX("plugins/Receipts");
-
 ReceiptsPlugin::ReceiptsPlugin(QObject *parent)
 	: Super("Receipts", parent)
 {
@@ -50,51 +52,14 @@ ReceiptsPlugin::ReceiptsPlugin(QObject *parent)
 void ReceiptsPlugin::onInstalled()
 {
 	qff::initPluginWidget<ReceiptsWidget, PartWidget>(tr("Receipts"), featureId());
-}
-
-QString ReceiptsPlugin::currentReceiptPath()
-{
-	QString printer_options_key = ReceiptsPlugin::SETTINGS_PREFIX;
-	printer_options_key += "receipts/current";
-	qf::core::utils::Settings settings;
-	QString s = settings.value(printer_options_key).toString().trimmed();
-	return s;
-}
-
-void ReceiptsPlugin::setCurrentReceiptPath(const QString &path)
-{
-	QString printer_options_key = ReceiptsPlugin::SETTINGS_PREFIX;
-	printer_options_key += "receipts/current";
-	qf::core::utils::Settings settings;
-	qfInfo() << "setting current receipt path to:" << path;
-	settings.setValue(printer_options_key, path);
-}
-
-ReceiptsPrinterOptions ReceiptsPlugin::receiptsPrinterOptions()
-{
-	QString printer_options_key = ReceiptsPlugin::SETTINGS_PREFIX;
-	printer_options_key += "receiptsPrinter";
-	qf::core::utils::Settings settings;
-	QString s = settings.value(printer_options_key).toString();
-	return ReceiptsPrinterOptions::fromJson(s.toUtf8());
-}
-
-void ReceiptsPlugin::setReceiptsPrinterOptions(const ReceiptsPrinterOptions &opts)
-{
-	QString printer_options_key = ReceiptsPlugin::SETTINGS_PREFIX;
-	printer_options_key += "receiptsPrinter";
-	qf::core::utils::Settings settings;
-	QByteArray ba = opts.toJson();
-	QString s = QString::fromUtf8(ba);
-	settings.setValue(printer_options_key, s);
-
-	QF_SAFE_DELETE(m_receiptsPrinter)
+	auto core_plugin = qf::qmlwidgets::framework::getPlugin<Core::CorePlugin>();
+	core_plugin->settingsDialog()->addPage(new ReceiptsSettingsPage());
 }
 
 ReceiptsPrinter *ReceiptsPlugin::receiptsPrinter()
 {
 	if(!m_receiptsPrinter) {
-		m_receiptsPrinter = new ReceiptsPrinter(receiptsPrinterOptions(), this);
+		m_receiptsPrinter = new ReceiptsPrinter(this);
 	}
 	return m_receiptsPrinter;
 }
@@ -457,7 +422,7 @@ void ReceiptsPlugin::previewCard(int card_id)
 	auto *w = new qf::qmlwidgets::reports::ReportViewWidget();
 	w->setPersistentSettingsId("cardPreview");
 	w->setWindowTitle(tr("Card"));
-	w->setReport(qmlDir() + "/sicard.qml");
+	w->setReport(findReportFile("sicard.qml"));
 	QVariantMap dt = readCardTablesData(card_id);
 	for(auto key : dt.keys())
 		w->setTableData(key, dt.value(key));
@@ -467,30 +432,13 @@ void ReceiptsPlugin::previewCard(int card_id)
 	dlg.exec();
 }
 
-void ReceiptsPlugin::previewReceipt(int card_id)
-{
-	previewReceipt(card_id, currentReceiptPath());
-}
-
-bool ReceiptsPlugin::printReceipt(int card_id)
-{
-	QF_TIME_SCOPE("ReceiptsPlugin::printReceipt()");
-	try {
-		return printReceipt(card_id, currentReceiptPath());
-	}
-	catch(const qf::core::Exception &e) {
-		qfError() << e.toString();
-	}
-	return false;
-}
-
 bool ReceiptsPlugin::printCard(int card_id)
 {
 	qfLogFuncFrame() << "card id:" << card_id;
 	QF_TIME_SCOPE("ReceiptsPlugin::printCard()");
 	try {
 		QVariantMap dt = readCardTablesData(card_id);
-		return receiptsPrinter()->printReceipt(qmlDir() + "/sicard.qml", dt);
+		return receiptsPrinter()->printReceipt("sicard.qml", dt, card_id);
 	}
 	catch(const qf::core::Exception &e) {
 		qfError() << e.toString();
@@ -504,7 +452,7 @@ bool ReceiptsPlugin::printError(int card_id)
 	QF_TIME_SCOPE("ReceiptsPlugin::printError()");
 	try {
 		QVariantMap dt = readCardTablesData(card_id);
-		return receiptsPrinter()->printReceipt(qmlDir() + "/error.qml", dt);
+		return receiptsPrinter()->printReceipt("error.qml", dt, card_id);
 	}
 		catch(const qf::core::Exception &e) {
 		qfError() << e.toString();
@@ -512,14 +460,15 @@ bool ReceiptsPlugin::printError(int card_id)
 	return false;
 }
 
-void ReceiptsPlugin::previewReceipt(int card_id, const QString &receipt_path)
+void ReceiptsPlugin::previewReceipt(int card_id)
 {
 	qfLogFuncFrame() << "card id:" << card_id;
 	//qfInfo() << "previewReceipe_classic, card id:" << card_id;
+	ReceiptsSettings settings;
 	auto *w = new qf::qmlwidgets::reports::ReportViewWidget();
 	w->setPersistentSettingsId("cardPreview");
 	w->setWindowTitle(tr("Receipt"));
-	w->setReport(receipt_path);
+	w->setReport(findReportFile(settings.receiptPath()));
 	QVariantMap dt = receiptTablesData(card_id);
 	for(auto key : dt.keys())
 		w->setTableData(key, dt.value(key));
@@ -529,11 +478,19 @@ void ReceiptsPlugin::previewReceipt(int card_id, const QString &receipt_path)
 	dlg.exec();
 }
 
-bool ReceiptsPlugin::printReceipt(int card_id, const QString &receipt_path)
+bool ReceiptsPlugin::printReceipt(int card_id)
 {
 	qfLogFuncFrame() << "card id:" << card_id;
-	QVariantMap dt = receiptTablesData(card_id);
-	return receiptsPrinter()->printReceipt(receipt_path, dt);
+	QF_TIME_SCOPE("ReceiptsPlugin::printReceipt()");
+	try {
+		ReceiptsSettings settings;
+		QVariantMap dt = receiptTablesData(card_id);
+		return receiptsPrinter()->printReceipt(settings.receiptPath(), dt, card_id);
+	}
+	catch(const qf::core::Exception &e) {
+		qfError() << e.toString();
+	}
+	return false;
 }
 
 bool ReceiptsPlugin::isAutoPrintEnabled()

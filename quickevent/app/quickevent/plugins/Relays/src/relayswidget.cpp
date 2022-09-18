@@ -416,8 +416,8 @@ void RelaysWidget::print_start_list_classes()
 		return;
 	QVariantMap props = dlg.reportProperties();
 	QVariant td = getPlugin<RelaysPlugin>()->startListByClassesTableData(dlg.sqlWhereExpression());
-	qf::qmlwidgets::reports::ReportViewWidget::showReport(this,
-														  getPlugin<RelaysPlugin>()->qmlDir() + "/startList_classes.qml"
+	qf::qmlwidgets::reports::ReportViewWidget::showReport(this
+														  , getPlugin<RelaysPlugin>()->findReportFile("startList_classes.qml")
 														  , td
 														  , tr("Start list by classes")
 														  , "printStartList"
@@ -436,7 +436,7 @@ void RelaysWidget::print_start_list_clubs()
 	QVariantMap props = dlg.reportProperties();
 	QVariant td = startListByClubsTableData();
 	qf::qmlwidgets::reports::ReportViewWidget::showReport(this,
-														  getPlugin<RelaysPlugin>()->qmlDir() + "/startList_clubs.qml"
+														  getPlugin<RelaysPlugin>()->findReportFile("startList_clubs.qml")
 														  , td
 														  , tr("Start list by clubs")
 														  , "printStartList"
@@ -464,7 +464,7 @@ void RelaysWidget::print_results_nlegs()
 	qfDebug() << "opts.resultNumPlaces:" << opts.resultNumPlaces();
 	auto td = getPlugin<RelaysPlugin>()->nLegsResultsTable(dlg.sqlWhereExpression(), opts.legsCount(), opts.resultNumPlaces(), opts.isResultExcludeDisq());
 	qf::qmlwidgets::reports::ReportViewWidget::showReport(this,
-														  getPlugin<RelaysPlugin>()->qmlDir() + "/results.qml"
+														  getPlugin<RelaysPlugin>()->findReportFile("results.qml")
 														  , td.toVariant()
 														  , tr("Results")
 														  , "relaysResults"
@@ -488,7 +488,7 @@ void RelaysWidget::print_results_overal()
 	qfDebug() << "opts.resultNumPlaces:" << opts.resultNumPlaces();
 	auto td = getPlugin<RelaysPlugin>()->nLegsResultsTable(dlg.sqlWhereExpression(), 999, opts.resultNumPlaces(), opts.isResultExcludeDisq());
 	qf::qmlwidgets::reports::ReportViewWidget::showReport(this,
-														  getPlugin<RelaysPlugin>()->qmlDir() + "/results.qml"
+														  getPlugin<RelaysPlugin>()->findReportFile("results.qml")
 														  , td.toVariant()
 														  , tr("Results")
 														  , "relaysResults"
@@ -512,7 +512,7 @@ void RelaysWidget::print_results_overal_condensed()
 	qfDebug() << "opts.resultNumPlaces:" << opts.resultNumPlaces();
 	auto td = getPlugin<RelaysPlugin>()->nLegsResultsTable(dlg.sqlWhereExpression(), 999, opts.resultNumPlaces(), opts.isResultExcludeDisq());
 	qf::qmlwidgets::reports::ReportViewWidget::showReport(this,
-														  getPlugin<RelaysPlugin>()->qmlDir() + "/results_condensed.qml"
+														  getPlugin<RelaysPlugin>()->findReportFile("results_condensed.qml")
 														  , td.toVariant()
 														  , tr("Results")
 														  , "relaysResults"

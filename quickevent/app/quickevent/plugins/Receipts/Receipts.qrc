@@ -3,11 +3,11 @@
 		<file>images/feature.svg</file>
 		<file>images/graphic-printer.svg</file>
 		<file>images/character-printer.svg</file>
-		<file>qml/error.qml</file>
-		<file>qml/sicard.qml</file>
-		<file>qml/receipts/Classic.qml</file>
-		<file>qml/receipts/ClassicLottery.qml</file>
-		<file>qml/receipts/private/LotteryTicket.qml</file>
-		<file>qml/receipts/Default.qml</file>
+		<file>qml/reports/error.qml</file>
+		<file>qml/reports/sicard.qml</file>
+		<file>qml/reports/receipts/Classic.qml</file>
+		<file>qml/reports/receipts/ClassicLottery.qml</file>
+		<file>qml/reports/receipts/private/LotteryTicket.qml</file>
+		<file>qml/reports/receipts/Default.qml</file>
     	</qresource>
 </RCC>

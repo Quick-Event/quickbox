@@ -43,7 +43,6 @@ class QFQMLWIDGETS_DECL_EXPORT MainWindow : public QMainWindow, public IPersiste
 	Q_PROPERTY(qf::qmlwidgets::StatusBar* statusBar READ statusBar)
 	Q_PROPERTY(QString persistentSettingsId READ persistentSettingsId WRITE setPersistentSettingsId)
 	Q_PROPERTY(QString uiLanguageName READ uiLanguageName WRITE setUiLanguageName NOTIFY uiLanguageNameChanged)
-	PluginList m_loadedPlugins;
 private:
 	typedef QMainWindow Super;
 public:
@@ -57,6 +56,8 @@ public:
 public:
 	void registerPlugin(qf::qmlwidgets::framework::Plugin *plugin);
 	virtual void loadPlugins();
+	QList<qf::qmlwidgets::framework::Plugin*> installedPlugins();
+
 	/// framework API
 	Q_INVOKABLE void setPersistentSettingDomains(const QString &organization_domain, const QString &organization_name, const QString &application_name = QString());
 
@@ -101,11 +102,10 @@ protected:
 private:
 	Q_SLOT void savePersistentSettings();
 private:
+	PluginList m_loadedPlugins;
 	PluginLoader *m_pluginLoader = nullptr;
 	QMap<QString, qf::qmlwidgets::ToolBar*> m_toolBars;
 	static MainWindow *self;
-public:
-	QList<qf::qmlwidgets::framework::Plugin*> installedPlugins();
 };
 
 template<typename T>

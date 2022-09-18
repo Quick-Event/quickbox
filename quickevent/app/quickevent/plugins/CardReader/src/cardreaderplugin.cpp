@@ -2,7 +2,11 @@
 #include "cardcheckerclassiccpp.h"
 #include "cardcheckerfreeordercpp.h"
 #include "cardreaderwidget.h"
+#include "cardreadersettingspage.h"
 #include "services/racomclient.h"
+
+#include "../../Core/src/coreplugin.h"
+#include "../../Core/src/widgets/settingsdialog.h"
 
 #include <quickevent/core/og/timems.h>
 #include <quickevent/core/si/punchrecord.h>
@@ -36,20 +40,17 @@ using Runs::RunsPlugin;
 
 namespace CardReader {
 
-const QLatin1String CardReaderPlugin::SETTINGS_PREFIX("plugins/CardReader");
-//const int CardReaderPlugin::FINISH_PUNCH_POS = quickevent::core::CodeDef::FINISH_PUNCH_CODE;
-
 CardReaderPlugin::CardReaderPlugin(QObject *parent)
 	: Super("CardReader", parent)
 {
 	connect(this, &CardReaderPlugin::installed, this, &CardReaderPlugin::onInstalled);
 }
 
-QString CardReaderPlugin::settingsPrefix()
-{
-	static const QString s = CardReaderPlugin::SETTINGS_PREFIX;
-	return s;
-}
+//QString CardReaderPlugin::settingsPrefix()
+//{
+//	static const QString s = CardReaderPlugin::SETTINGS_PREFIX;
+//	return s;
+//}
 
 void CardReaderPlugin::onInstalled()
 {
@@ -60,6 +61,9 @@ void CardReaderPlugin::onInstalled()
 
 	services::RacomClient *racom_client = new services::RacomClient(this);
 	Event::services::Service::addService(racom_client);
+
+	auto core_plugin = getPlugin<Core::CorePlugin>();
+	core_plugin->settingsDialog()->addPage(new CardReaderSettingsPage());
 }
 
 QQmlListProperty<CardReader::CardChecker> CardReaderPlugin::cardCheckersListProperty()
@@ -75,9 +79,13 @@ QQmlListProperty<CardReader::CardChecker> CardReaderPlugin::cardCheckersListProp
 
 CardChecker *CardReaderPlugin::currentCardChecker()
 {
-	auto ret = m_cardCheckers.value(currentCardCheckerIndex());
-	QF_ASSERT(ret != nullptr, QString("No card checker for index %1 installed").arg(currentCardCheckerIndex()), return nullptr);
-	return ret;
+	CardReaderSettings settings;
+	for (int i = 0; i < m_cardCheckers.count(); ++i) {
+		if(m_cardCheckers[i]->nameId() == settings.cardCheckType())
+			return m_cardCheckers[i];
+	}
+	QF_ASSERT(false, QString("No card checker for name '%1' installed").arg(settings.cardCheckType()), return nullptr);
+	return nullptr;
 }
 
 int CardReaderPlugin::currentStageId()
