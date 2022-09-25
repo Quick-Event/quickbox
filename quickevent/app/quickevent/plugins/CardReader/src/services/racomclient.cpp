@@ -141,19 +141,19 @@ RacomReadSplitFile::RacomReadSplitFile(QString fileName, int interval, int finis
 	, m_interval(interval)
 	, m_finishCode(finishCode)
 {
-	m_ReadTimer = new QTimer(this);
-	connect(m_ReadTimer, &QTimer::timeout, this, &RacomReadSplitFile::onTimerTimeOut);
+	m_readTimer = new QTimer(this);
+	connect(m_readTimer, &QTimer::timeout, this, &RacomReadSplitFile::readAndProcessFile);
 }
 
 RacomReadSplitFile::~RacomReadSplitFile()
 {
-	m_ReadTimer->stop();
-	QF_SAFE_DELETE(m_ReadTimer)
+	m_readTimer->stop();
+	QF_SAFE_DELETE(m_readTimer)
 }
 
 void RacomReadSplitFile::run()
 {
-	m_ReadTimer->start(m_interval*1000);
+	m_readTimer->start(m_interval*1000);
 }
 
 void RacomReadSplitFile::readAndProcessFile()
@@ -207,11 +207,6 @@ void RacomReadSplitFile::readAndProcessFile()
 			getPlugin<CardReaderPlugin>()->emitSiTaskFinished((int)siut::SiTask::Type::Punch, punch);
 		}
 	}
-}
-
-void RacomReadSplitFile::onTimerTimeOut()
-{
-	readAndProcessFile();
 }
 
 RacomClient::RacomClient(QObject *parent)

@@ -59,8 +59,7 @@ private:
 	int m_interval = 5;
 	int m_finishCode = 2;
 	int m_lastRowCount = 0;
-	QTimer *m_ReadTimer = nullptr;
-	void onTimerTimeOut();
+	QTimer *m_readTimer = nullptr;
 };
 
 class RacomClient : public Event::services::Service
