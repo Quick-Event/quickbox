@@ -32,6 +32,8 @@ class ResultsExporter : public Event::services::Service
 public:
 	ResultsExporter(QObject *parent);
 
+	void run() override;
+	void stop() override;
 	void loadSettings() override;
 	ResultsExporterSettings settings() const {return ResultsExporterSettings(m_settings);}
 

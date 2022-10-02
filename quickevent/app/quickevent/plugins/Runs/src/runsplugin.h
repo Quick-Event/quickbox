@@ -108,6 +108,8 @@ public:
 	QString export_resultsHtmlStage(bool with_laps = false);
 	void export_resultsHtmlStageWithLaps();
 	void export_resultsHtmlNStages();
+	QString startListStageIofXml30(int stage_id);
+	QString resultsIofXml30Stage(int stage_id);
 private:
 	Q_SLOT void onInstalled();
 

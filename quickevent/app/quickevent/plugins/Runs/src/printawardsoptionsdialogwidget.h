@@ -18,8 +18,6 @@ public:
 	explicit PrintAwardsOptionsDialogWidget(QWidget *parent = 0);
 	~PrintAwardsOptionsDialogWidget();
 
-	void init(const QString &plugin_qml_files);
-
 	QVariantMap printOptions() const;
 	void setPrintOptions(const QVariantMap &opts);
 private:

@@ -40,16 +40,11 @@ public:
 	explicit ReceiptsWidget(QWidget *parent = 0);
 	~ReceiptsWidget() Q_DECL_OVERRIDE;
 
-	static const char *SETTINGS_PREFIX;
-
 	void settleDownInPartWidget(quickevent::gui::PartWidget *part_widget);
 
 	Q_SLOT void reset();
 	Q_SLOT void reload();
 	bool isAutoPrintEnabled();
-
-private slots:
-	void on_btPrinterOptions_clicked();
 
 private:
 	Q_SLOT void on_btPrintNew_clicked();
@@ -65,8 +60,6 @@ private:
 	void markAsPrinted(int connection_id, int card_id);
 
 	void lazyInit();
-	void loadReceptList();
-	void updateReceiptsPrinterLabel();
 
 	void createActions();
 	int currentStageId();

@@ -138,6 +138,11 @@ void ReportItemImage::updateResolvedDataSource()
 	if(!m_resolvedDataSource.isEmpty()) {
 		if(m_resolvedDataSource.startsWith("./") || m_resolvedDataSource.startsWith("../")) {
 			m_resolvedDataSource = qfu::FileUtils::joinPath(qfu::FileUtils::path(processor()->reportUrl().toString()), m_resolvedDataSource);
+			static const auto FILE_SCHEME = QStringLiteral("file:");
+			if(m_resolvedDataSource.startsWith(FILE_SCHEME)) {
+				// path like file:/path/to/file.svg is not recognized by QSvgRenderer
+				m_resolvedDataSource = m_resolvedDataSource.mid(FILE_SCHEME.length());
+			}
 		}
 		/*--
 		m_resolvedDataSource = processor()->searchDirs()->findFile(m_resolvedDataSource);

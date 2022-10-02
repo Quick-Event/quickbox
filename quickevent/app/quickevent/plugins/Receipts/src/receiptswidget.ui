@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>949</width>
+    <width>969</width>
     <height>612</height>
    </rect>
   </property>
@@ -35,29 +35,15 @@
       <number>7</number>
      </property>
      <item>
-      <widget class="QPushButton" name="btPrintNew">
-       <property name="text">
-        <string>Print new</string>
+      <widget class="qf::qmlwidgets::TableViewToolBar" name="tblPrintJobsTB" native="true">
+       <property name="enabled">
+        <bool>true</bool>
        </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QCheckBox" name="chkAutoPrint">
-       <property name="toolTip">
-        <string>Automatically print receipt when the card is read.</string>
-       </property>
-       <property name="text">
-        <string>Auto print</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QCheckBox" name="chkThisReaderOnly">
-       <property name="toolTip">
-        <string>Print only cards read on this application card reader.</string>
-       </property>
-       <property name="text">
-        <string>This reader only</string>
+       <property name="minimumSize">
+        <size>
+         <width>10</width>
+         <height>0</height>
+        </size>
        </property>
       </widget>
      </item>
@@ -75,47 +61,13 @@
       </spacer>
      </item>
      <item>
-      <widget class="QLabel" name="label_3">
+      <widget class="QPushButton" name="btPrintNew">
        <property name="text">
-        <string>When runner is not found, print</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QComboBox" name="lstNotFound"/>
-     </item>
-     <item>
-      <widget class="QLabel" name="label_2">
-       <property name="text">
-        <string>Receipt</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QComboBox" name="lstReceipt"/>
-     </item>
-     <item>
-      <widget class="QLabel" name="label">
-       <property name="text">
-        <string>Printer</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="btPrinterOptions">
-       <property name="text">
-        <string>Printer options</string>
+        <string>Print new</string>
        </property>
       </widget>
      </item>
     </layout>
-   </item>
-   <item>
-    <widget class="qf::qmlwidgets::TableViewToolBar" name="tblPrintJobsTB" native="true">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-    </widget>
    </item>
    <item>
     <widget class="qf::qmlwidgets::TableView" name="tblCards"/>
@@ -137,11 +89,6 @@
  </customwidgets>
  <tabstops>
   <tabstop>tblCards</tabstop>
-  <tabstop>btPrintNew</tabstop>
-  <tabstop>chkAutoPrint</tabstop>
-  <tabstop>chkThisReaderOnly</tabstop>
-  <tabstop>lstReceipt</tabstop>
-  <tabstop>btPrinterOptions</tabstop>
  </tabstops>
  <resources/>
  <connections/>

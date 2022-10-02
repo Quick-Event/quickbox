@@ -1,5 +1,7 @@
 #include "coreplugin.h"
 #include "widgets/appstatusbar.h"
+#include "widgets/settingsdialog.h"
+#include "widgets/reportssettingspage.h"
 
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/action.h>
@@ -26,6 +28,14 @@ CorePlugin::CorePlugin(QObject *parent)
 	connect(this, &Plugin::installed, this, &CorePlugin::onInstalled);//, Qt::QueuedConnection);
 }
 
+SettingsDialog *CorePlugin::settingsDialog()
+{
+	if(!m_settingsDialog) {
+		m_settingsDialog = new SettingsDialog(nullptr);
+	}
+	return m_settingsDialog;
+}
+
 const QString CorePlugin::SETTINGS_PREFIX_APPLICATION_LOCALE_LANGUAGE()
 {
 	static const auto s = QStringLiteral("application/locale/language");
@@ -37,6 +47,12 @@ void CorePlugin::onInstalled()
 	qff::MainWindow *fwk = qff::MainWindow::frameWork();
 	fwk->setStatusBar(new AppStatusBar());
 
+	{
+		auto *page = new ReportsSettingsPage();
+		settingsDialog()->addPage(page);
+		setCustomReportsDir(page->customReportsDirectory());
+	}
+
 	auto *a_file = fwk->menuBar()->actionForPath("file", true);
 	a_file->setText(tr("&File"));
 
@@ -46,6 +62,14 @@ void CorePlugin::onInstalled()
 	auto *a_file_export = a_file->addMenuInto("export", tr("&Export"));
 	a_file->addActionInto(a_file_export);
 
+	a_file->addSeparatorInto();
+	{
+		auto *a = new qfw::Action(tr("&Settings"));
+		connect(a, &qfw::Action::triggered, this, [=]() {
+			settingsDialog()->exec();
+		});
+		a_file->addActionInto(a);
+	}
 	a_file->addSeparatorInto();
 	{
 		auto *a_quit = new qfw::Action(tr("&Quit"));

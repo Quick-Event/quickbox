@@ -5,11 +5,17 @@
 #include "eventstatisticswidget.h"
 #include "printawardsoptionsdialogwidget.h"
 #include "services/resultsexporter.h"
+#include "../../Core/src/coreplugin.h"
+#include "../../Core/src/widgets/settingsdialog.h"
+#include "../../CardReader/src/cardreaderplugin.h"
+#include "../../Competitors/src/competitorsplugin.h"
+#include "../../Event/src/eventplugin.h"
 
 #include <quickevent/core/codedef.h>
 #include <quickevent/core/utils.h>
 #include <quickevent/core/si/punchrecord.h>
 #include <quickevent/core/resultstatus.h>
+#include <quickevent/gui/partwidget.h>
 
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/framework/dockwidget.h>
@@ -27,10 +33,6 @@
 #include <qf/core/utils/table.h>
 #include <qf/core/utils/treetable.h>
 #include <qf/core/model/sqltablemodel.h>
-#include <plugins/CardReader/src/cardreaderplugin.h>
-#include <plugins/Competitors/src/competitorsplugin.h>
-#include <plugins/Event/src/eventplugin.h>
-#include <quickevent/gui/partwidget.h>
 
 #include <QDesktopServices>
 #include <QFile>
@@ -767,21 +769,14 @@ QVariantMap RunsPlugin::printAwardsOptionsWithDialog(const QVariantMap &opts)
 	w->setPrintOptions(opts);
 	qf::qmlwidgets::dialogs::Dialog dlg(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, partWidget());
 	dlg.setCentralWidget(w);
-	w->init(qmlDir());
 	if(dlg.exec()) {
 		ret = w->printOptions();
 	}
 	return ret;
 }
 
-bool RunsPlugin::exportResultsIofXml30Stage(int stage_id, const QString &file_name)
+QString RunsPlugin::resultsIofXml30Stage(int stage_id)
 {
-	QFile f(file_name);
-	if(!f.open(QIODevice::WriteOnly)) {
-		qfError() << "Cannot open file" << f.fileName() << "for writing.";
-		return false;
-	}
-
 	QDateTime stage_start_date_time = getPlugin<EventPlugin>()->stageStartDateTime(stage_id);//.toTimeSpec(Qt::OffsetFromUTC);
 	//qfInfo() << stage_start_date_time << datetime_to_string(stage_start_date_time);
 	qf::core::utils::TreeTable tt1 = stageResultsTable(stage_id, QString(), 0, false, true);
@@ -917,10 +912,11 @@ bool RunsPlugin::exportResultsIofXml30Stage(int stage_id, const QString &file_na
 				QVariantList split_time{
 					QStringLiteral("SplitTime"),
 					QVariantList{QStringLiteral("ControlCode"), cd.code() },
-					QVariantList{QStringLiteral("Time"), stp_time / 1000 },
 				};
 				if(stp_time == 0)
 					split_time.insert(1, QVariantMap{ {QStringLiteral("status"), QStringLiteral("Missing")} });
+				else
+					split_time.insert(split_time.count(), QVariantList{QStringLiteral("Time"), stp_time / 1000});
 				result.insert(result.count(), split_time);
 				ix += 4;
 			}
@@ -933,7 +929,17 @@ bool RunsPlugin::exportResultsIofXml30Stage(int stage_id, const QString &file_na
 
 	qf::core::utils::HtmlUtils::FromXmlListOptions opts;
 	opts.setDocumentTitle(tr("E%1 IOF XML stage results").arg(tt1.value("stageId").toString()));
-	QString str = qf::core::utils::HtmlUtils::fromXmlList(result_list, opts);
+	return qf::core::utils::HtmlUtils::fromXmlList(result_list, opts);
+}
+
+bool RunsPlugin::exportResultsIofXml30Stage(int stage_id, const QString &file_name)
+{
+	QFile f(file_name);
+	if(!f.open(QIODevice::WriteOnly)) {
+		qfError() << "Cannot open file" << f.fileName() << "for writing.";
+		return false;
+	}
+	QString str = resultsIofXml30Stage(stage_id);
 	f.write(str.toUtf8());
 	qfInfo() << "exported:" << file_name;
 	return true;
@@ -1369,7 +1375,7 @@ void RunsPlugin::report_startListClasses()
 		QVariantMap props;
 		props["options"] = opts;
 		qf::qmlwidgets::reports::ReportViewWidget::showReport(fwk
-									, qmlDir() + "/startList_classes.qml"
+									, findReportFile("startList_classes.qml")
 									, tt.toVariant()
 									, tr("Start list by classes")
 									, "printStartList"
@@ -1396,7 +1402,7 @@ void RunsPlugin::report_startListClubs()
 		QVariantMap props;
 		props["options"] = opts;
 		qf::qmlwidgets::reports::ReportViewWidget::showReport(fwk
-									, qmlDir() + "/startList_clubs.qml"
+									, findReportFile("startList_clubs.qml")
 									, tt.toVariant()
 									, tr("Start list by clubs")
 									, "printStartList"
@@ -1421,7 +1427,7 @@ void RunsPlugin::report_startListStarters()
 		QVariantMap props;
 		props["options"] = opts;
 		qf::qmlwidgets::reports::ReportViewWidget::showReport(fwk
-									, qmlDir() + "/startList_starters.qml"
+									, findReportFile("startList_starters.qml")
 									, tt.toVariant()
 									, tr("Start list for starters")
 									, "printStartList"
@@ -1454,7 +1460,7 @@ void RunsPlugin::report_startListClassesNStages()
 		//qfDebug() << props;
 		//qfDebug() << "dlg.stagesCount():" << dlg.stagesCount() << opts.stagesCount();
 		qf::qmlwidgets::reports::ReportViewWidget::showReport(fwk
-									, qmlDir() + "/startList_classes_nstages.qml"
+									, findReportFile("startList_classes_nstages.qml")
 									, tt.toVariant()
 									, tr("Start list by classes for %n stage(s)", "", dlg.stagesCount())
 									, "printStartList"
@@ -1488,7 +1494,7 @@ void RunsPlugin::report_startListClubsNStages()
 		//props["reportTitle"] = "report_title";
 		//qfInfo() << props;
 		qf::qmlwidgets::reports::ReportViewWidget::showReport(fwk
-									, qmlDir() + "/startList_clubs_nstages.qml"
+									, findReportFile("startList_clubs_nstages.qml")
 									, tt.toVariant()
 									, tr("Start list by clubs for %n stage(s)", "", dlg.stagesCount())
 									, "printStartList"
@@ -1511,7 +1517,7 @@ void RunsPlugin::report_resultsClasses()
 		QVariantMap props;
 		props["options"] = opts;
 		qf::qmlwidgets::reports::ReportViewWidget::showReport(fwk
-									, qmlDir() + "/results_stage.qml"
+									, findReportFile("results_stage.qml")
 									, tt.toVariant()
 									, tr("Results by classes")
 									, "printResults"
@@ -1537,7 +1543,7 @@ void RunsPlugin::report_resultsForSpeaker()
 		//props["stageCount"] = getPlugin<EventPlugin>()->eventConfig()->stageCount();
 		//props["stageNumber"] = selectedStageId();
 		qf::qmlwidgets::reports::ReportViewWidget::showReport(fwk
-									, qmlDir() + "/results_stageSpeaker.qml"
+									, findReportFile("results_stageSpeaker.qml")
 									, tt.toVariant()
 									, tr("Results by classes")
 									, "printResultsSpeaker"
@@ -1560,7 +1566,7 @@ void RunsPlugin::report_resultsAwards()
 	props["eventConfig"] = QVariant::fromValue(getPlugin<EventPlugin>()->eventConfig());
 	auto tt = stageResultsTable(opts.value("stageId").toInt(), QString(), opts.value("numPlaces").toInt());
 	qf::qmlwidgets::reports::ReportViewWidget::showReport(fwk
-								, rep_path
+								, findReportFile(rep_path)
 								, tt.toVariant()
 								, tr("Stage awards")
 								, "printResultsAwards"
@@ -1587,7 +1593,7 @@ void RunsPlugin::report_resultsNStages()
 	props["stagesCount"] = dlg.stagesCount();
 	props["options"] = opts;
 	qf::qmlwidgets::reports::ReportViewWidget::showReport(fwk
-								, qmlDir() + "/results_nstages.qml"
+								, findReportFile("results_nstages.qml")
 								, tt.toVariant()
 								, tr("Results after %n stage(s)", "", dlg.stagesCount())
 								, "printResultsNStages"
@@ -1613,7 +1619,7 @@ void RunsPlugin::report_resultsNStagesSpeaker()
 	QVariantMap props;
 	props["stagesCount"] = dlg.stagesCount();
 	qf::qmlwidgets::reports::ReportViewWidget::showReport(fwk
-								, qmlDir() + "/results_nstagesSpeaker.qml"
+								, findReportFile("results_nstagesSpeaker.qml")
 								, tt.toVariant()
 								, tr("Results after %n stage(s)", "", dlg.stagesCount())
 								, "printResultsNStagesWide"
@@ -1635,7 +1641,7 @@ void RunsPlugin::report_nStagesAwards()
 	props["eventConfig"] = QVariant::fromValue(getPlugin<EventPlugin>()->eventConfig());
 	auto tt = nstagesResultsTable(QString(), opts.value("stageId").toInt(), opts.value("numPlaces").toInt());
 	qf::qmlwidgets::reports::ReportViewWidget::showReport(fwk
-								, rep_path
+								, findReportFile(rep_path)
 								, tt.toVariant()
 								, tr("Awards after %1 stages").arg(opts.value("stageId").toInt())
 								, "printResultsAwardsNStages"
@@ -1699,13 +1705,18 @@ void RunsPlugin::export_startListClassesHtml()
 			append_list(table, ltr);
 		}
 		qf::core::utils::TreeTable tt2 = tt1.row(i).table();
-		QVariantList trr{"tr",
-				  QVariantList{"th", tr("St. Num")},
-				  QVariantList{"th", tr("Name")},
-				  QVariantList{"th", tr("Registration")},
-				  QVariantList{"th", tr("SI")},
-				  QVariantList{"th", QVariantMap{{"colspan", "3"}}, tr("Start")}
-				};
+		bool show_start_number = false;
+		for(int j=0; j<tt2.rowCount(); j++) {
+			if (tt2.row(j).value(QStringLiteral("startNumber")).toInt() > 0)
+				show_start_number = true;
+		}
+		QVariantList trr{"tr"};
+		if (show_start_number)
+			append_list(trr, QVariantList{"th", tr("St. Num")});
+		append_list(trr, QVariantList{"th", tr("Name")});
+		append_list(trr,QVariantList{"th", tr("Registration")});
+		append_list(trr,QVariantList{"th", tr("SI")});
+		append_list(trr,QVariantList{"th", QVariantMap{{"colspan", "3"}}, tr("Start")});
 		append_list(table, trr);
 		for(int j=0; j<tt2.rowCount(); j++) {
 			qf::core::utils::TreeTableRow tt2_row = tt2.row(j);
@@ -1714,7 +1725,7 @@ void RunsPlugin::export_startListClassesHtml()
 				trr << QVariantMap{{"class", "odd"}};
 			if (tt2_row.value(QStringLiteral("startNumber")).toInt() > 0)
 				append_list(trr, QVariantList{"td", tt2_row.value(QStringLiteral("startNumber"))});
-			else
+			else if (show_start_number)
 				append_list(trr, QVariantList{"td", ""});
 			append_list(trr, QVariantList{"td", tt2_row.value(QStringLiteral("competitorName"))});
 			append_list(trr, QVariantList{"td", tt2_row.value(QStringLiteral("registration"))});
@@ -1793,14 +1804,19 @@ void RunsPlugin::export_startListClubsHtml()
 			append_list(table, ltr);
 		}
 		qf::core::utils::TreeTable tt2 = tt1_row.table();
-		QVariantList trr{"tr",
-				QVariantList{"th", tr("St. Num")},
-				QVariantList{"th", tr("Class")},
-				QVariantList{"th", tr("Name")},
-				QVariantList{"th", tr("Registration")},
-				QVariantList{"th", tr("SI")},
-				QVariantList{"th", QVariantMap{{"colspan", "3"}}, tr("Start")}
-			};
+		bool show_start_number = false;
+		for(int j=0; j<tt2.rowCount(); j++) {
+			if (tt2.row(j).value(QStringLiteral("startNumber")).toInt() > 0)
+				show_start_number = true;
+		}
+		QVariantList trr{"tr"};
+		if (show_start_number)
+			append_list(trr, QVariantList{"th", tr("St. Num")});
+		append_list(trr, QVariantList{"th", tr("Class")});
+		append_list(trr, QVariantList{"th", tr("Name")});
+		append_list(trr,QVariantList{"th", tr("Registration")});
+		append_list(trr,QVariantList{"th", tr("SI")});
+		append_list(trr,QVariantList{"th", QVariantMap{{"colspan", "3"}}, tr("Start")});
 		append_list(table, trr);
 		for(int j=0; j<tt2.rowCount(); j++) {
 			qf::core::utils::TreeTableRow tt2_row = tt2.row(j);
@@ -1809,7 +1825,7 @@ void RunsPlugin::export_startListClubsHtml()
 				trr << QVariantMap{{"class", "odd"}};
 			if (tt2_row.value(QStringLiteral("startNumber")).toInt() > 0)
 				append_list(trr, QVariantList{"td", tt2_row.value(QStringLiteral("startNumber"))});
-			else
+			else if (show_start_number)
 				append_list(trr, QVariantList{"td", ""});
 			append_list(trr, QVariantList{"td", tt2_row.value(QStringLiteral("classes.name"))});
 			append_list(trr, QVariantList{"td", tt2_row.value(QStringLiteral("competitorName"))});
@@ -2237,7 +2253,7 @@ void RunsPlugin::exportResultsHtmlStageWithLaps(const QString &laps_file_name, c
 	}
 }
 
-bool RunsPlugin::exportStartListStageIofXml30(int stage_id, const QString &file_name)
+QString RunsPlugin::startListStageIofXml30(int stage_id)
 {
 	QDateTime start00_datetime = getPlugin<EventPlugin>()->stageStartDateTime(stage_id);
 	//console.info("start00_datetime:", start00_datetime, typeof start00_datetime)
@@ -2328,14 +2344,20 @@ bool RunsPlugin::exportStartListStageIofXml30(int stage_id, const QString &file_
 	}
 	qf::core::utils::HtmlUtils::FromXmlListOptions opts;
 	opts.setDocumentTitle(tr("E%1 IOF XML stage results").arg(tt1.value("stageId").toString()));
-	QString str = qf::core::utils::HtmlUtils::fromXmlList(xml_root, opts);
+	return qf::core::utils::HtmlUtils::fromXmlList(xml_root, opts);
+}
+
+bool RunsPlugin::exportStartListStageIofXml30(int stage_id, const QString &file_name)
+{
 	QFile f(file_name);
-	if(f.open(QFile::WriteOnly)) {
-		f.write(str.toUtf8());
-		qfInfo() << "exported:" << file_name;
-		return true;
+	if(!f.open(QIODevice::WriteOnly)) {
+		qfError() << "Cannot open file" << f.fileName() << "for writing.";
+		return false;
 	}
-	return false;
+	QString str = startListStageIofXml30(stage_id);
+	f.write(str.toUtf8());
+	qfInfo() << "exported:" << file_name;
+	return true;
 }
 
 void RunsPlugin::addStartTimeTextToClass(qf::core::utils::TreeTable &tt2, const qint64 start00_epoch_sec, const quickevent::gui::ReportOptionsDialog::StartTimeFormat start_time_format)

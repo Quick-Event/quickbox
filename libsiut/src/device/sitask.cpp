@@ -93,6 +93,25 @@ void SiTaskSetDirectRemoteMode::onSiMessageReceived(const SIMessageData &msg)
 //===============================================================
 // CmdStationInfo
 //===============================================================
+QString SiStationConfig::toString() const
+{
+	QString msg = tr(""
+					 "Station number: {{StationNumber}}\n"
+					 "Extended mode: {{ExtendedMode}}\n"
+					 "Auto send: {{AutoSend}}\n"
+					 "Handshake: {{HandShake}}\n"
+					 "Password access: {{PasswordAccess}}\n"
+					 "Read out after punch: {{ReadOutAfterPunch}}\n"
+					 "");
+	msg.replace("{{StationNumber}}", QString::number(stationNumber()));
+	msg.replace("{{ExtendedMode}}", (flags() & (unsigned)siut::SiStationConfig::Flag::ExtendedMode)? tr("True"): tr("False"));
+	msg.replace("{{AutoSend}}", (flags() & (unsigned)siut::SiStationConfig::Flag::AutoSend)? tr("True"): tr("False"));
+	msg.replace("{{HandShake}}", (flags() & (unsigned)siut::SiStationConfig::Flag::HandShake)? tr("True"): tr("False"));
+	msg.replace("{{PasswordAccess}}", (flags() & (unsigned)siut::SiStationConfig::Flag::PasswordAccess)? tr("True"): tr("False"));
+	msg.replace("{{ReadOutAfterPunch}}", (flags() & (unsigned)siut::SiStationConfig::Flag::ReadOutAfterPunch)? tr("True"): tr("False"));
+	return msg;
+}
+
 void SiTaskStationConfig::start()
 {
 	QByteArray ba;

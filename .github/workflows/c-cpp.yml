@@ -59,7 +59,7 @@ jobs:
 
 
   build_windows:
-    runs-on: windows-latest
+    runs-on: windows-2019
     defaults:
       run:
         shell: bash
@@ -68,11 +68,6 @@ jobs:
     - uses: actions/checkout@v2
       with:
         submodules: 'recursive'
-
-    # In Qt 5.15.x is used MinGW 8.1 toolchain, see https://wiki.qt.io/MinGW
-    - name: Use MinGW 8.1
-      run: |
-        choco install mingw --version=8.1.0 --allow-downgrade
 
     - name: Cache Libs
       id: cache-libs
