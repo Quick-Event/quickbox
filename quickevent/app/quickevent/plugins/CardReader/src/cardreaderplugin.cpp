@@ -306,13 +306,12 @@ int CardReaderPlugin::savePunchRecordToSql(const quickevent::core::si::PunchReco
 
 	int code = resolveAltCode(punch.code(), punch.stageid());
 
-	// check if punch isn't duplicate of existing saved punch
-	q.prepare(QStringLiteral("SELECT * FROM punches WHERE siId=:siId AND code=:code AND timeMs=:timeMs AND stageId=:stageId "), qf::core::Exception::Throw);
-	q.bindValue(QStringLiteral(":siId"), punch.siid());
-	q.bindValue(QStringLiteral(":code"), code);
-	q.bindValue(QStringLiteral(":timeMs"), punch.timems());
-	q.bindValue(QStringLiteral(":stageId"), punch.stageid());
-	if(q.exec()) {
+	// Check if punch isn't duplicate of existing saved punch
+	// The reason is, we don't want have duplicity in punches table. Because of Speaker module, which uses this table.
+	// If we don't check for duplicity on inserting in db, we need to check it on every shown in module Speaker.
+	// I think it is better to resolve duplicity on write, and not on every read.
+	if (q.exec("SELECT * FROM punches WHERE siId=" QF_IARG(punch.siid()) " AND code=" QF_IARG(code)
+			   " AND timeMs=" QF_IARG(punch.timems()) " AND stageId=" QF_IARG(punch.stageid()))) {
 		if(q.next()) {
 			return 0;
 		}
