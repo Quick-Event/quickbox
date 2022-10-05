@@ -127,14 +127,12 @@ void OResultsClient::sendFile(QString name, QString request_path, QString file) 
 	QNetworkRequest request(url);
 	QNetworkReply *reply = m_networkManager->post(request, multi_part);
 
-	connect(reply, &QNetworkReply::finished, [reply, name]()
+	connect(reply, &QNetworkReply::finished, reply, [reply, name]()
 	{
-		if(reply->error())
-		{
-			qfError() << "OReuslts.eu [" + name + "]: " + QString(reply->readAll());
+		if(reply->error()) {
+			qfError() << "OReuslts.eu [" + name + "]:" << reply->errorString();
 		}
-		else
-		{
+		else {
 			qfInfo() << "OReuslts.eu [" + name + "]: success";
 		}
 		reply->deleteLater();
