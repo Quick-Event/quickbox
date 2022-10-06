@@ -5,9 +5,9 @@ HEADERS += \
     $$PWD/competitordocument.h \
     $$PWD/competitorswidget.h \
     $$PWD/competitorwidget.h \
+    $$PWD/lentcardssettingspage.h \
     $$PWD/registrationswidget.h \
     $$PWD/findregistrationedit.h \
-    $$PWD/lentcardswidget.h \
     $$PWD/stationsbackupmemorywidget.h
 
 SOURCES += \
@@ -15,15 +15,15 @@ SOURCES += \
     $$PWD/competitordocument.cpp \
     $$PWD/competitorswidget.cpp \
     $$PWD/competitorwidget.cpp \
+    $$PWD/lentcardssettingspage.cpp \
     $$PWD/registrationswidget.cpp \
     $$PWD/findregistrationedit.cpp \
-    $$PWD/lentcardswidget.cpp \
     $$PWD/stationsbackupmemorywidget.cpp
 
 FORMS += \
     $$PWD/competitorswidget.ui \
     $$PWD/competitorwidget.ui \
+    $$PWD/lentcardssettingspage.ui \
     $$PWD/registrationswidget.ui \
-    $$PWD/lentcardswidget.ui \
     $$PWD/stationsbackupmemorywidget.ui \
 
