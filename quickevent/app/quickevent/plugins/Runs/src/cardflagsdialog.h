@@ -25,6 +25,7 @@ private:
 	Ui::CardFlagsDialog *ui;
 	RunsTableModel *m_model;
 	int m_row;
+	void updateStatus();
 };
 
 

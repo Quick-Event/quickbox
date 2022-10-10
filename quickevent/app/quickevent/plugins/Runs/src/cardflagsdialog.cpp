@@ -11,8 +11,9 @@ CardFlagsDialog::CardFlagsDialog(QWidget *parent) :
 {
 	ui->setupUi(this);
 	// make checkbox read-only
-	ui->cbxCardInLentTable->setAttribute(Qt::WA_TransparentForMouseEvents);
-	ui->cbxCardInLentTable->setFocusPolicy(Qt::NoFocus);
+	ui->cbxCardInLentTable->setDisabled(true);
+	connect(ui->cbxCardLent, &QCheckBox::toggled, this, &CardFlagsDialog::updateStatus);
+	connect(ui->cbxCardReturned, &QCheckBox::toggled, this, &CardFlagsDialog::updateStatus);
 }
 
 CardFlagsDialog::~CardFlagsDialog()
@@ -28,6 +29,7 @@ void CardFlagsDialog::load(RunsTableModel *model, int row)
 	ui->cbxCardLent->setChecked(table_row.value(QStringLiteral("runs.cardLent")).toBool());
 	ui->cbxCardInLentTable->setChecked(table_row.value(QStringLiteral("cardInLentTable")).toBool());
 	ui->cbxCardReturned->setChecked(table_row.value(QStringLiteral("runs.cardReturned")).toBool());
+	updateStatus();
 }
 
 void CardFlagsDialog::save()
@@ -37,6 +39,18 @@ void CardFlagsDialog::save()
 	//table_row.setValue(QStringLiteral("cardInLentTable"), ui->cbxCardInLentTable->isChecked());
 	table_row.setValue(QStringLiteral("runs.cardReturned"), ui->cbxCardReturned->isChecked());
 	m_model->postRow(m_row, qf::core::Exception::Throw);
+}
+
+void CardFlagsDialog::updateStatus() {
+	if (ui->cbxCardReturned->isChecked()) {
+		ui->rentStatus->setText("Card rented and Returned");
+		return;
+	}
+	if (!ui->cbxCardInLentTable->isChecked() && !ui->cbxCardLent->isChecked()) {
+		ui->rentStatus->setText("Not a rented card");
+		return;
+	}
+	ui->rentStatus->setText("Rented card");
 }
 
 } // namespace Runs
