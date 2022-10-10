@@ -15,23 +15,34 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QCheckBox" name="cbxDisqualified">
-     <property name="text">
-      <string>Disqualified</string>
-     </property>
-    </widget>
+    <layout class="QHBoxLayout" name="horizontalLayout_status">
+     <item>
+      <widget class="QLabel" name="labelStatus">
+       <property name="text">
+        <string>status:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="runStatusText">
+       <property name="text">
+        <string>OK</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
    <item>
-    <widget class="QCheckBox" name="cbxDisqualifiedByOrganizer">
-     <property name="text">
-      <string>Disqualified by organiser</string>
+    <widget class="Line" name="line_2">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
      </property>
     </widget>
    </item>
    <item>
     <widget class="QCheckBox" name="cbxMisPunch">
      <property name="text">
-      <string>Missed punch</string>
+      <string>Miss punch</string>
      </property>
     </widget>
    </item>
@@ -56,6 +67,20 @@
     <widget class="QCheckBox" name="cbxNotFinish">
      <property name="text">
       <string>Did not finish</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="cbxDisqualifiedByOrganizer">
+     <property name="text">
+      <string>Other (dsq by organiser)</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="Line" name="line">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
      </property>
     </widget>
    </item>
@@ -92,7 +117,6 @@
   </layout>
  </widget>
  <tabstops>
-  <tabstop>cbxDisqualified</tabstop>
   <tabstop>cbxMisPunch</tabstop>
   <tabstop>cbxBadCheck</tabstop>
   <tabstop>cbxNotStart</tabstop>

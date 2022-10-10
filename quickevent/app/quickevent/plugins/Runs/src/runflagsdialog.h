@@ -26,6 +26,8 @@ private:
 	Ui::RunFlagsDialog *ui;
 	RunsTableModel *m_model;
 	int m_row;
+	bool m_isDisqualified;
+	void updateStatusText();
 };
 
 
