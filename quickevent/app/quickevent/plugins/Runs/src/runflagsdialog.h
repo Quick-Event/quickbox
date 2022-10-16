@@ -21,8 +21,8 @@ public:
 	void load(RunsTableModel *model, int row);
 	void save();
 private:
-	void updateState();
-	void updateStatusText();
+	void updateStatus();
+	bool isDisqualified() const;
 private:
 	Ui::RunFlagsDialog *ui;
 	RunsTableModel *m_model;
