@@ -22,10 +22,11 @@ public:
 	void load(RunsTableModel *model, int row);
 	void save();
 private:
+	void updateStatus();
+private:
 	Ui::CardFlagsDialog *ui;
 	RunsTableModel *m_model;
 	int m_row;
-	void updateStatus();
 };
 
 
