@@ -159,29 +159,23 @@ void RacomReadSplitFile::run()
 void RacomReadSplitFile::readAndProcessFile()
 {
 	QStringList text;
-	try {
-			QFile file(m_fileName);
-			if(file.open(QIODevice::ReadOnly|QIODevice::Text))
-			{
-				QTextStream stream(&file);
-
-				QString line;
-				do {
-					line = stream.readLine();
-					text << line;
-				} while(!line.isNull());
-			}
-			file.close();
-	}  catch (QException &e) {
-		qfWarning() << "Read split file fail :" << e.what();
+	QFile file(m_fileName);
+	if(file.open(QIODevice::ReadOnly|QIODevice::Text)) {
+		QTextStream stream(&file);
+		QString line;
+		while (stream.readLineInto(&line)) {
+			text << line;
+		}
+		file.close();
+		qfInfo() << "Read rawsplits file done, parsing " << text.size() << " lines";
 	}
+	else
+		qfWarning() << "Read split file failed to open " << m_fileName;
 
 	QList <siut::SIPunch> punches;
-	if (text.size() > 0 && m_lastRowCount < text.size())
-	{
+	if (text.size() > 0 && m_lastRowCount < text.size()) {
 		// parse punches from lines
-		for (int i = m_lastRowCount; i < text.size(); i++)
-		{
+		for (int i = m_lastRowCount; i < text.size(); i++) {
 			if (text[i].size() < 23)	// is not valid line
 				continue;
 
