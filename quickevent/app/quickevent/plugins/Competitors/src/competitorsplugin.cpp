@@ -1,8 +1,10 @@
 #include "competitorsplugin.h"
 #include "competitordocument.h"
+#include "plugins/Core/src/widgets/settingsdialog.h"
 #include "registrationswidget.h"
 #include "competitorwidget.h"
 #include "competitorswidget.h"
+#include "lentcardssettingspage.h"
 
 #include <qf/qmlwidgets/framework/application.h>
 #include <qf/qmlwidgets/framework/mainwindow.h>
@@ -15,6 +17,7 @@
 #include <qf/core/log.h>
 #include <qf/core/assert.h>
 #include <plugins/Event/src/eventplugin.h>
+#include <plugins/Core/src/coreplugin.h>
 
 #include <QQmlEngine>
 
@@ -83,6 +86,10 @@ void CompetitorsPlugin::onInstalled()
 
 	connect(getPlugin<EventPlugin>(), &Event::EventPlugin::eventOpenChanged, this, &CompetitorsPlugin::reloadRegistrationsModel);
 	connect(getPlugin<EventPlugin>(), &Event::EventPlugin::dbEventNotify, this, &CompetitorsPlugin::onDbEventNotify);
+
+
+	auto core_plugin = qf::qmlwidgets::framework::getPlugin<Core::CorePlugin>();
+	core_plugin->settingsDialog()->addPage(new LentCardsSettingsPage());
 
 	emit nativeInstalled();
 }

@@ -787,7 +787,7 @@ QString RunsPlugin::resultsIofXml30Stage(int stage_id)
 			{"status", "Complete"},
 			{"iofVersion", "3.0"},
 			{"creator", "QuickEvent"},
-			{"createTime", QDateTime::currentDateTime().toString(Qt::ISODate)},
+			{"createTime", datetime_to_string(QDateTime::currentDateTime())},
 		}
 	};
 	{
@@ -2255,9 +2255,7 @@ void RunsPlugin::exportResultsHtmlStageWithLaps(const QString &laps_file_name, c
 
 QString RunsPlugin::startListStageIofXml30(int stage_id)
 {
-	QDateTime start00_datetime = getPlugin<EventPlugin>()->stageStartDateTime(stage_id);
-	//console.info("start00_datetime:", start00_datetime, typeof start00_datetime)
-	auto start00_epoch_sec = start00_datetime.toSecsSinceEpoch();
+	QDateTime start00 = getPlugin<EventPlugin>()->stageStartDateTime(stage_id);
 	Event::EventConfig *event_config = getPlugin<EventPlugin>()->eventConfig();
 	bool last_handicap_stage = event_config->stageCount() == selectedStageId() && event_config->isHandicap();
 	bool print_vacants = !last_handicap_stage;
@@ -2270,7 +2268,7 @@ QString RunsPlugin::startListStageIofXml30(int stage_id)
 			{"xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance"},
 			{"iofVersion", "3.0"},
 			{"creator", "QuickEvent"},
-			{"createTime", QDateTime::currentDateTimeUtc().toString(Qt::ISODate)}
+			{"createTime", datetime_to_string(QDateTime::currentDateTime())}
 		}
 	};
 
@@ -2309,13 +2307,7 @@ QString RunsPlugin::startListStageIofXml30(int stage_id)
 			if(!bib_number.isNull())
 				append_list(xml_start, QVariantList{"BibNumber", bib_number});
 			int stime_msec = tt2_row.value("startTimeMs").toInt();
-			//console.info(start00_datetime.toJSON(), start00_datetime.getHours(), start00_epoch_sec / 60 / 60);
-			//console.info(family, given, start00_epoch_sec, stime_sec, stime_sec / 60);
-			QDateTime stime_datetime = QDateTime::fromMSecsSinceEpoch(start00_epoch_sec * 1000 + stime_msec);
-			//sdatetime.setTime(start00_epoch_sec);
-			//console.warn(stime_datetime.toJSON());
-			//stime_epoch_sec = start00_epoch_sec + stime_epoch_sec;
-			append_list(xml_start, QVariantList{"StartTime", stime_datetime.toUTC().toString(Qt::ISODateWithMs)});
+			append_list(xml_start, QVariantList{"StartTime", datetime_to_string(start00.addMSecs(stime_msec))});
 			QVariant siId = tt2_row.value(QStringLiteral("runs.siId"));
 			if (siId.toBool()) {
 				append_list(xml_start, QVariantList{"ControlCard", siId.toInt()});
