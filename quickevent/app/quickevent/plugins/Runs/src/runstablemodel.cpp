@@ -90,7 +90,7 @@ QVariant RunsTableModel::value(int row_ix, int column_ix) const
 			sl << tr("DO", "disqualifiedByOrganizer");
 		if(over_time)
 			sl << tr("OT", "OverTime");
-		if(is_disqualified && !mis_punch && !bad_check && !not_start && !not_finish && !is_disqualified_by_organizer)
+		if(is_disqualified && !mis_punch && !bad_check && !not_start && !not_finish && !is_disqualified_by_organizer && !over_time)
 			sl << tr("DSQ", "Disqualified");
 		if(sl.isEmpty())
 			return QStringLiteral("");

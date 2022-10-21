@@ -15,6 +15,7 @@ RunFlagsDialog::RunFlagsDialog(QWidget *parent) :
 	connect(ui->cbxNotStart, &QCheckBox::toggled, this, &RunFlagsDialog::updateStatus);
 	connect(ui->cbxNotFinish, &QCheckBox::toggled, this, &RunFlagsDialog::updateStatus);
 	connect(ui->cbxDisqualifiedByOrganizer, &QCheckBox::toggled, this, &RunFlagsDialog::updateStatus);
+	connect(ui->cbxOverTime, &QCheckBox::toggled, this, &RunFlagsDialog::updateStatus);
 	connect(ui->cbxNotCompeting, &QCheckBox::toggled, this, &RunFlagsDialog::updateStatus);
 }
 
@@ -65,7 +66,8 @@ bool RunFlagsDialog::isDisqualified() const {
 		ui->cbxBadCheck->isChecked() ||
 		ui->cbxNotStart->isChecked() ||
 		ui->cbxNotFinish->isChecked() ||
-		ui->cbxDisqualifiedByOrganizer->isChecked();
+		ui->cbxDisqualifiedByOrganizer->isChecked() ||
+		ui->cbxOverTime->isChecked();
 }
 
 } // namespace Runs
