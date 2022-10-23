@@ -1,5 +1,5 @@
-#include "lentcardswidget.h"
-#include "ui_lentcardswidget.h"
+#include "lentcardssettingspage.h"
+#include "ui_lentcardssettingspage.h"
 
 #include <qf/core/model/sqltablemodel.h>
 
@@ -9,16 +9,14 @@ namespace qfd = qf::qmlwidgets::dialogs;
 namespace qfm = qf::core::model;
 namespace qfs = qf::core::sql;
 
-LentCardsWidget::LentCardsWidget(QWidget *parent)
+LentCardsSettingsPage::LentCardsSettingsPage(QWidget *parent)
 	: Super(parent)
-	, ui(new Ui::LentCardsWidget)
+	, ui(new Ui::LentCardsSettingsPage)
 {
-	setTitle(tr("Cards to rent"));
-	setPersistentSettingsId("LentCardsWidget");
+	m_caption = tr("Cards to rent");
 	ui->setupUi(this);
 	ui->tblCardsTB->setTableView(ui->tblCards);
 	{
-		ui->tblCards->setPersistentSettingsId("tableView");
 		qfm::SqlTableModel *m = new qfm::SqlTableModel(this);
 		m->addColumn("siId", tr("SI"));
 		m->addColumn("ignored", tr("Ignored"));
@@ -26,17 +24,24 @@ LentCardsWidget::LentCardsWidget(QWidget *parent)
 		ui->tblCards->setTableModel(m);
 		m_tableModel = m;
 	}
-	{
-		qfs::QueryBuilder qb;
-		qb.select2("lentcards", "*")
-				.from("lentcards")
-				.orderBy("siid");//.limit(10);
-		m_tableModel->setQueryBuilder(qb, false);
-		m_tableModel->reload();
-	}
 }
 
-LentCardsWidget::~LentCardsWidget()
+LentCardsSettingsPage::~LentCardsSettingsPage()
 {
 	delete ui;
+}
+
+void LentCardsSettingsPage::load()
+{
+	qfs::QueryBuilder qb;
+	qb.select2("lentcards", "*")
+			.from("lentcards")
+			.orderBy("siid");//.limit(10);
+	m_tableModel->setQueryBuilder(qb, false);
+	m_tableModel->reload();
+}
+
+void LentCardsSettingsPage::save()
+{
+
 }

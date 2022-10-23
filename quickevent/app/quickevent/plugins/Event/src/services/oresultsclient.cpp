@@ -80,7 +80,7 @@ void OResultsClient::exportStartListIofXml3()
 			? getPlugin<RelaysPlugin>()->startListIofXml30()
 			: getPlugin<RunsPlugin>()->startListStageIofXml30(current_stage);
 
-	sendFile("start list upload", "/start-lists?format=xml", str);
+	sendFile("start list upload", "/start-lists", str);
 }
 
 qf::qmlwidgets::framework::DialogWidget *OResultsClient::createDetailWidget()
@@ -127,14 +127,16 @@ void OResultsClient::sendFile(QString name, QString request_path, QString file) 
 	QNetworkRequest request(url);
 	QNetworkReply *reply = m_networkManager->post(request, multi_part);
 
-	connect(reply, &QNetworkReply::finished, [reply, name]()
+	connect(reply, &QNetworkReply::finished, reply, [reply, name]()
 	{
-		if(reply->error())
-		{
-			qfError() << "OReuslts.eu [" + name + "]: " + QString(reply->readAll());
+		if(reply->error()) {
+			auto err_msg = "OReuslts.eu [" + name + "]: ";
+			auto response_body = reply->readAll();
+			if (!response_body.isEmpty())
+				err_msg += response_body + " | ";
+			qfError() << err_msg + reply->errorString();
 		}
-		else
-		{
+		else {
 			qfInfo() << "OReuslts.eu [" + name + "]: success";
 		}
 		reply->deleteLater();

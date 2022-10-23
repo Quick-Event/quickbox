@@ -177,7 +177,7 @@ void RunsTableWidget::reload(int stage_id, int class_id, bool show_offrace, cons
 			qb.where("runs.leg=" QF_IARG(leg));
 	}
 	else {
-		qb.select("competitors.startNumber");
+		qb.select("competitors.startNumber AS competitors__startNumber");
 		qb.join("competitors.classId", "classes.id");
 		qb.where("runs.stageId=" QF_IARG(stage_id));
 	}

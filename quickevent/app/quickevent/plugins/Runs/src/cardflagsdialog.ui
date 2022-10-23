@@ -15,19 +15,44 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>status:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="rentStatus">
+       <property name="text">
+        <string>Not a rented card</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="Line" name="line">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QCheckBox" name="cbxCardLent">
      <property name="text">
-      <string>Card rented / rent requested</string>
+      <string>Card rented ( or rent requested )</string>
      </property>
     </widget>
    </item>
    <item>
     <widget class="QCheckBox" name="cbxCardInLentTable">
      <property name="toolTip">
-      <string>Card exists in cards to rent table, see Competitors-&gt;Cards-&gt;Cards to rent</string>
+      <string>Card exists in cards to rent table, File-&gt;Settings-&gt;Cards to rent</string>
      </property>
      <property name="text">
-      <string>Card rented from rent table</string>
+      <string>Card rented ( from rent table )</string>
      </property>
     </widget>
    </item>
