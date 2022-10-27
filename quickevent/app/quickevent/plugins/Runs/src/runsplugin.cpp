@@ -2397,4 +2397,61 @@ void RunsPlugin::addStartTimeTextToClass(qf::core::utils::TreeTable &tt2, const 
 	}
 }
 
+bool RunsPlugin::exportStartListCurrentStageCsvSime(const QString &file_name)
+{
+	QFile f(file_name);
+	if(!f.open(QIODevice::WriteOnly)) {
+		qfError() << "Cannot open file" << f.fileName() << "for writing.";
+		return false;
+	}
+/*
+
+https://www.tak-soft.com/products/sport/starterclock/
+Example file:
+
+1;305305;Tarmo;Klaar;OK Ilves;H21;10:10:00
+2;291238;Mr.;Bean;England;H35;10:00:00
+
+Fields are separated by “;”, file type is „Comma Separated File“ (CSV). Fields:
+
+	Number – Runner’s code or bib-number
+	Chip card - Chip card number
+	First name
+	Last name
+	Club - Club or other information
+	Course - Course or class name
+	Start time - predefined start time for this runner in HH:MM:SS format
+
+Is started - True or 1 of started; empty, false or 0 if did not started
+
+*/
+	const QString separator = ";";
+	QTextStream csv(&f);
+	csv.setCodec("UTF-8");
+
+	// krome HDR a P
+	auto tt1 = startListClassesTable("classes.name NOT IN ('HDR','P')", true, quickevent::gui::ReportOptionsDialog::StartTimeFormat::DayTime);
+	int id = 0;
+	for(int i=0; i<tt1.rowCount(); i++) {
+		qf::core::utils::TreeTableRow tt1_row = tt1.row(i);
+		qf::core::utils::TreeTable tt2 = tt1.row(i).table();
+		for(int j=0; j<tt2.rowCount(); j++) {
+			qf::core::utils::TreeTableRow tt2_row = tt2.row(j);
+			csv << ++id << separator;
+			csv << tt2_row.value(QStringLiteral("runs.siId")).toString() << separator;
+			csv << tt2_row.value(QStringLiteral("competitors.lastName")).toString() << separator;
+			csv << tt2_row.value(QStringLiteral("competitors.firstName")).toString() << separator;
+			csv << tt2_row.value(QStringLiteral("registration")).toString() << separator;
+			csv << tt1_row.value(QStringLiteral("classes.name")).toString() << separator;
+			csv << tt2_row.value(QStringLiteral("startTimeText")).toString();
+			csv << Qt::endl;
+		}
+	}
+
+	f.close();
+	qfInfo() << "exported:" << file_name;
+	return true;
+}
+
+
 }
