@@ -16,7 +16,7 @@ public:
 	explicit ReceiptsPrinterOptionsDialog(QWidget *parent = 0);
 	~ReceiptsPrinterOptionsDialog();
 
-	void accept();
+	void accept() override;
 private:
 	void load();
 	void save();
