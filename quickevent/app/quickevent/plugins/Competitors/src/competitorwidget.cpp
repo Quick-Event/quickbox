@@ -44,7 +44,6 @@ class CompetitorRunsModel : public quickevent::core::og::SqlTableModel
 	Q_DECLARE_TR_FUNCTIONS(RunsModel)
 private:
 	using Super = quickevent::core::og::SqlTableModel;
-	QVariant value(int row_ix, int column_ix) const override;
 public:
 	CompetitorRunsModel(QObject *parent = nullptr);
 
@@ -61,6 +60,8 @@ public:
 		col_runs_cardFlags,
 		col_COUNT
 	};
+private:
+	QVariant value(int row_ix, int column_ix) const override;
 };
 
 CompetitorRunsModel::CompetitorRunsModel(QObject *parent)
