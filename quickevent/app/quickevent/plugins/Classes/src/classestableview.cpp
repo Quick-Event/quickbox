@@ -1,6 +1,5 @@
 #include "classesplugin.h"
 #include "classestableview.h"
-#include "classeswidget.h"
 
 #include <qf/core/assert.h>
 #include <qf/core/sql/transaction.h>

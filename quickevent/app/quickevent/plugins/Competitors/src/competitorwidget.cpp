@@ -2,8 +2,6 @@
 #include "ui_competitorwidget.h"
 
 #include "competitordocument.h"
-#include "competitorsplugin.h"
-#include "registrationswidget.h"
 
 #include <quickevent/gui/og/itemdelegate.h>
 

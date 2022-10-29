@@ -1,6 +1,5 @@
 #include "runstableitemdelegate.h"
 #include "runstablemodel.h"
-#include "runswidget.h"
 
 #include <quickevent/core/og/timems.h>
 
