@@ -4,7 +4,6 @@
 #include "addlegdialogwidget.h"
 
 #include "relaydocument.h"
-#include "relaysplugin.h"
 
 #include <plugins/Event/src/eventplugin.h>
 

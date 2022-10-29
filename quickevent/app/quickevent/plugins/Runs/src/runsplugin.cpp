@@ -5,8 +5,6 @@
 #include "eventstatisticswidget.h"
 #include "printawardsoptionsdialogwidget.h"
 #include "services/resultsexporter.h"
-#include "../../Core/src/coreplugin.h"
-#include "../../Core/src/widgets/settingsdialog.h"
 #include "../../CardReader/src/cardreaderplugin.h"
 #include "../../Competitors/src/competitorsplugin.h"
 #include "../../Event/src/eventplugin.h"
