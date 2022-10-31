@@ -21,13 +21,13 @@ QString ResultStatus::dbRunsColumnList()
 
 void ResultStatus::fillFromQuery(qf::core::sql::Query &q)
 {
-    m_disqualified = q.value("runs.disqualified").toBool();
-    m_disqualifiedByOrganizer = q.value("runs.disqualifiedByOrganizer").toBool();
-    m_notCompeting = q.value("runs.notCompeting").toBool();
-    m_missingPunch = q.value("runs.misPunch").toBool();
-    m_didNotStart = q.value("runs.notStart").toBool();
-    m_didNotFinish = q.value("runs.notFinish").toBool();
-    m_overTime = q.value("runs.overTime").toBool();
+	m_disqualified = q.value("runs.disqualified").toBool();
+	m_disqualifiedByOrganizer = q.value("runs.disqualifiedByOrganizer").toBool();
+	m_notCompeting = q.value("runs.notCompeting").toBool();
+	m_missingPunch = q.value("runs.misPunch").toBool();
+	m_didNotStart = q.value("runs.notStart").toBool();
+	m_didNotFinish = q.value("runs.notFinish").toBool();
+	m_overTime = q.value("runs.overTime").toBool();
 }
 
 void ResultStatus::fillFromTreeTableRow(const qf::core::utils::TreeTableRow &ttr)
@@ -43,21 +43,20 @@ void ResultStatus::fillFromTreeTableRow(const qf::core::utils::TreeTableRow &ttr
 
 bool ResultStatus::isOk() const
 {
-	return !(m_disqualified);
-	//( m_disqualifiedByOrganizer || m_notCompeting || m_missingPunch || m_didNotStart || m_didNotFinish || m_overTime);
+	return !(m_disqualified || m_notCompeting);
 }
 
 int ResultStatus::getOGTime(int time) const
 {
-    if (m_disqualifiedByOrganizer)
+	if (m_disqualifiedByOrganizer)
 		return quickevent::core::og::TimeMs::DISQ_TIME_MSEC;
-    else if (m_notCompeting)
+	else if (m_notCompeting)
 		return quickevent::core::og::TimeMs::NOT_COMPETITING_TIME_MSEC;
-    else if (m_didNotStart)
+	else if (m_didNotStart)
 		return quickevent::core::og::TimeMs::NOT_START_TIME_MSEC;
-    else if (m_didNotFinish)
+	else if (m_didNotFinish)
 		return quickevent::core::og::TimeMs::NOT_FINISH_TIME_MSEC;
-    else if (m_missingPunch && m_disqualified)
+	else if (m_missingPunch && m_disqualified)
 		return quickevent::core::og::TimeMs::MISPUNCH_TIME_MSEC;
 	else
 		return time;
@@ -65,36 +64,24 @@ int ResultStatus::getOGTime(int time) const
 
 QString ResultStatus::statusXml() const
 {
-    if (m_disqualifiedByOrganizer)
-        return QStringLiteral("Disqualified");
-    else if (m_notCompeting)
-        return QStringLiteral("NotCompeting");
-    else if (m_overTime)
-        return QStringLiteral("OverTime");
-    else if (m_didNotStart)
-        return QStringLiteral("DidNotStart");
-    else if (m_didNotFinish)
-        return QStringLiteral("DidNotFinish");
-    else if (m_missingPunch && m_disqualified)
-        return QStringLiteral("MissingPunch");
-    else
-        return QStringLiteral("OK");
-
-	/* z relaysplugin
-	bool disq = false;
-	bool nc = false;
-	bool notfinish = true;
-	QString status() const
-	{
-		if (notfinish)
-			 return QStringLiteral("DidNotFinish");
-		if (nc)
-			 return QStringLiteral("NotCompeting");
-		if (disq)
-			 return QStringLiteral("Disqualified");
-		return QStringLiteral("OK");
+	if (m_disqualified) {
+		if (m_disqualifiedByOrganizer)
+			return QStringLiteral("Disqualified");
+		else if (m_missingPunch)
+			return QStringLiteral("MissingPunch");
+		else if (m_didNotStart)
+			return QStringLiteral("DidNotStart");
+		else if (m_didNotFinish)
+			return QStringLiteral("DidNotFinish");
+		else if (m_overTime)
+			return QStringLiteral("OverTime");
+		else
+			return QStringLiteral("???");
 	}
-	 */
+	else if (m_notCompeting)
+		return QStringLiteral("NotCompeting");
+	else
+		return QStringLiteral("OK");
 }
 
 
@@ -106,40 +93,42 @@ QString ResultStatus::statusEmmaTxt() const
 			return QStringLiteral("DISQ");
 		else if (m_missingPunch)
 			return QStringLiteral("MP  ");
-		else if (m_overTime)
-			return QStringLiteral("OVRT");
-		else if (m_notCompeting)
-			return QStringLiteral("NC  ");
-		else if (m_didNotFinish)
-			return QStringLiteral("DNF ");
 		else if (m_didNotStart)
 			return QStringLiteral("DNS ");
+		else if (m_didNotFinish)
+			return QStringLiteral("DNF ");
+		else if (m_overTime)
+			return QStringLiteral("OVRT");
 		else
 			return QStringLiteral("???");
 	}
-    else
+	else if (m_notCompeting)
+		return QStringLiteral("NC  ");
+	else
 		return QStringLiteral("O.K.");
 }
 
 QString ResultStatus::statusResultExport() const
 {
-	if (!m_disqualified)
-		return QStringLiteral("OK");
-	else {
+	if (m_disqualified)
+	{
 		if (m_disqualifiedByOrganizer)
 			return QStringLiteral("DISQ");
-		else if (m_notCompeting)
-			return QStringLiteral("NC");
-		else if (m_overTime)
-			return QStringLiteral("OVRT");
+		else if (m_missingPunch)
+			return QStringLiteral("MP");
 		else if (m_didNotStart)
 			return QStringLiteral("DNS");
 		else if (m_didNotFinish)
 			return QStringLiteral("DNF");
-		else if (m_missingPunch)
-			return QStringLiteral("MP");
+		else if (m_overTime)
+			return QStringLiteral("OVRT");
 		else
 			return QStringLiteral("???");
+	}
+	else if (m_notCompeting)
+		return QStringLiteral("NC");
+	else
+		return QStringLiteral("OK");
 	}
 }
 
