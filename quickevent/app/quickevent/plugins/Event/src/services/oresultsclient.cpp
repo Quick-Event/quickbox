@@ -173,7 +173,7 @@ void OResultsClient::sendCompetitorChange(QString xml) {
 	connect(reply, &QNetworkReply::finished, reply, [reply]()
 	{
 		if(reply->error()) {
-			qfError() << "OReuslts.eu [competitor changed]:" << reply->errorString();
+			qfError() << "OReuslts.eu [competitor change]:" << reply->errorString();
 		}
 		else {
 			QString msg = reply->readAll();
