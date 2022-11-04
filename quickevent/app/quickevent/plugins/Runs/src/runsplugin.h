@@ -110,6 +110,7 @@ public:
 	void export_resultsHtmlNStages();
 	QString startListStageIofXml30(int stage_id);
 	QString resultsIofXml30Stage(int stage_id);
+	int competitorForRun(int run_id);
 private:
 	Q_SLOT void onInstalled();
 
