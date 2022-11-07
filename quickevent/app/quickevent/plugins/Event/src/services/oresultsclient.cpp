@@ -193,7 +193,7 @@ static void append_list(QVariantList &lst, const QVariantList &new_lst)
 
 static bool is_csos_reg(QString &reg)
 {
-	const std::regex csos_registration_regex("[A-Z]{3}[0-9]{4}");
+	const static std::regex csos_registration_regex("[A-Z]{3}[0-9]{4}");
 	return reg.length() == 7 && std::regex_match(reg.toStdString(), csos_registration_regex);
 }
 
@@ -257,20 +257,20 @@ void OResultsClient::onCompetitorChanged(int competitor_id)
 		   "INNER JOIN classes ON classes.id = competitors.classId OR classes.id = relays.classId  "
 		   "WHERE competitors.id=" QF_IARG(competitor_id) " AND runs.stageId=" QF_IARG(stage_id), qf::core::Exception::Throw);
 	if(q.next()) {
-		QString registration = q.value(0).toString();
-		int start_num = q.value(1).toInt();
-		QString name = q.value(2).toString();
-		QString class_name = q.value(3).toString();
-		int card_num = q.value(4).toInt();
-		bool isDisq = q.value(5).toBool();
-		bool isDisqByOrganizer = q.value(6).toBool();
-		bool isMissPunch = q.value(7).toBool();
-		bool isBadCheck = q.value(8).toBool();
-		bool isDidNotStart = q.value(9).toBool();
-		bool isDidNotFinish = q.value(10).toBool();
-		bool isNotCompeting = q.value(11).toBool();
-		int start_time = q.value(12).toInt();
-		int running_time = q.value(13).toInt();
+		QString registration = q.value("registration").toString();
+		int start_num = q.value("startNumber").toInt();
+		QString name = q.value("name").toString();
+		QString class_name = q.value("class").toString();
+		int card_num = q.value("siId").toInt();
+		bool isDisq = q.value("disqualified").toBool();
+		bool isDisqByOrganizer = q.value("disqualifiedByOrganizer").toBool();
+		bool isMissPunch = q.value("misPunch").toBool();
+		bool isBadCheck = q.value("badCheck").toBool();
+		bool isDidNotStart = q.value("notStart").toBool();
+		bool isDidNotFinish = q.value("notFinish").toBool();
+		bool isNotCompeting = q.value("notCompeting").toBool();
+		int start_time = q.value("startTimeMs").toInt();
+		int running_time = q.value("timeMs").toInt();
 
 		QString runner_id = is_csos_reg(registration) ? registration : QString::number(card_num);
 		int status_code = mop_run_status_code(running_time, isDisq, isDisqByOrganizer, isMissPunch, isBadCheck, isDidNotStart, isDidNotFinish, isNotCompeting);
