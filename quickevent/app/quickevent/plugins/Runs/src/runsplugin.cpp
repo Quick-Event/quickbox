@@ -2397,7 +2397,7 @@ void RunsPlugin::addStartTimeTextToClass(qf::core::utils::TreeTable &tt2, const 
 	}
 }
 
-bool RunsPlugin::exportStartListCurrentStageCsvSime(const QString &file_name)
+bool RunsPlugin::exportStartListCurrentStageCsvSime(const QString &file_name, bool bibs, QString sql_where)
 {
 	QFile f(file_name);
 	if(!f.open(QIODevice::WriteOnly)) {
@@ -2429,15 +2429,18 @@ Is started - True or 1 of started; empty, false or 0 if did not started
 	QTextStream csv(&f);
 	csv.setCodec("UTF-8");
 
-	// krome HDR a P
-	auto tt1 = startListClassesTable("classes.name NOT IN ('HDR','P')", true, quickevent::gui::ReportOptionsDialog::StartTimeFormat::DayTime);
+	auto tt1 = startListClassesTable(sql_where, true, quickevent::gui::ReportOptionsDialog::StartTimeFormat::DayTime);
 	int id = 0;
 	for(int i=0; i<tt1.rowCount(); i++) {
 		qf::core::utils::TreeTableRow tt1_row = tt1.row(i);
 		qf::core::utils::TreeTable tt2 = tt1.row(i).table();
 		for(int j=0; j<tt2.rowCount(); j++) {
 			qf::core::utils::TreeTableRow tt2_row = tt2.row(j);
-			csv << ++id << separator;
+			int bib = tt2_row.value(QStringLiteral("competitors.startNumber")).toInt();
+			if (bibs && bib != 0)
+				csv << bib  << separator;
+			else
+				csv << ++id << separator;
 			csv << tt2_row.value(QStringLiteral("runs.siId")).toString() << separator;
 			csv << tt2_row.value(QStringLiteral("competitors.lastName")).toString() << separator;
 			csv << tt2_row.value(QStringLiteral("competitors.firstName")).toString() << separator;

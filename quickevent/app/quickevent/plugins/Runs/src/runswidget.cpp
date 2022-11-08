@@ -962,8 +962,19 @@ void RunsWidget::export_startList_stage_iofxml30()
 
 void RunsWidget::export_startList_stage_csv_sime()
 {
-	QString fn = getSaveFileName("startlist.csv", selectedStageId());
-	if(fn.isEmpty())
-		return;
-	getPlugin<RunsPlugin>()->exportStartListCurrentStageCsvSime(fn);
+	qff::MainWindow *fwk = qff::MainWindow::frameWork();
+	quickevent::gui::ReportOptionsDialog dlg(fwk);
+	dlg.setPersistentSettingsId("startListCsvSimeReportOptions");
+	dlg.loadPersistentSettings();
+	dlg.setStartListOptionsVisible(true);
+	dlg.setVacantsVisible(false);
+	dlg.setPageLayoutVisible(false);
+	dlg.setStartTimeFormatVisible(false);
+	dlg.setColumnCountEnable(false);
+	if(dlg.exec()) {
+		QString fn = getSaveFileName("startlist.csv", selectedStageId());
+		if(fn.isEmpty())
+			return;
+		getPlugin<RunsPlugin>()->exportStartListCurrentStageCsvSime(fn, dlg.isStartListPrintStartNumbers(), dlg.sqlWhereExpression());
+	}
 }
