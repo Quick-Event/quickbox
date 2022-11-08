@@ -2428,6 +2428,10 @@ Is started - True or 1 of started; empty, false or 0 if did not started
 	const QString separator = ";";
 	QTextStream csv(&f);
 	csv.setCodec("UTF-8");
+#ifdef Q_OS_WINDOWS
+	// enable BOM for Windows
+	csv.setGenerateByteOrderMark(true);
+#endif
 
 	auto tt1 = startListClassesTable(sql_where, true, quickevent::gui::ReportOptionsDialog::StartTimeFormat::DayTime);
 	int id = 0;
