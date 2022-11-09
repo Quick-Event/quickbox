@@ -389,6 +389,27 @@ int RunsPlugin::cardForRun(int run_id)
 	return card_id;
 }
 
+int RunsPlugin::competitorForRun(int run_id)
+{
+	qfLogFuncFrame() << "run id:" << run_id;
+	//QF_TIME_SCOPE("reloadTimesFromCard()");
+	if(!run_id)
+		return 0;
+	int competitor_id = 0;
+	{
+		qf::core::sql::Query q;
+		if(q.exec("SELECT competitorId FROM runs WHERE id=" QF_IARG(run_id))) {
+			if(q.next()) {
+				competitor_id = q.value(0).toInt();
+			}
+			else {
+				qfWarning() << "Cannot find card record for run id:" << run_id;
+			}
+		}
+	}
+	return competitor_id;
+}
+
 qf::core::utils::Table RunsPlugin::nstagesClassResultsTable(int stages_count, int class_id, int places, bool exclude_disq)
 {
 	qfs::QueryBuilder qb;
