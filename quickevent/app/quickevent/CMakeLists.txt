@@ -4,11 +4,12 @@ add_executable(quickevent
     plugins/CardReader/src/cardcheckerfreeordercpp.cpp
     plugins/CardReader/src/cardreaderplugin.cpp
     plugins/CardReader/src/cardreaderwidget.cpp
-    plugins/CardReader/src/dlgsettings.cpp
     plugins/CardReader/src/services/mqttpunches.cpp
     plugins/CardReader/src/services/mqttpuncheswidget.cpp
     plugins/CardReader/src/services/racomclient.cpp
     plugins/CardReader/src/services/racomclientwidget.cpp
+    plugins/CardReader/src/cardreadersettingspage.cpp
+    plugins/CardReader/src/cardreadersettings.cpp
     plugins/Classes/src/classdefdocument.cpp
     plugins/Classes/src/classdefwidget.cpp
     plugins/Classes/src/classdocument.cpp
@@ -33,11 +34,15 @@ add_executable(quickevent
     plugins/Competitors/src/competitorswidget.cpp
     plugins/Competitors/src/competitorwidget.cpp
     plugins/Competitors/src/findregistrationedit.cpp
-    plugins/Competitors/src/lentcardswidget.cpp
+    plugins/Competitors/src/lentcardssettingspage.cpp
     plugins/Competitors/src/registrationswidget.cpp
     plugins/Competitors/src/stationsbackupmemorywidget.cpp
     plugins/Core/src/coreplugin.cpp
+    plugins/Core/src/settings.cpp
+    plugins/Core/src/widgets/reportssettingspage.cpp
     plugins/Core/src/widgets/appstatusbar.cpp
+    plugins/Core/src/widgets/settingspage.cpp
+    plugins/Core/src/widgets/settingsdialog.cpp
     plugins/Event/src/connectdbdialogwidget.cpp
     plugins/Event/src/connectionsettings.cpp
     plugins/Event/src/dbschema.cpp
@@ -46,6 +51,8 @@ add_executable(quickevent
     plugins/Event/src/eventplugin.cpp
     plugins/Event/src/services/emmaclient.cpp
     plugins/Event/src/services/emmaclientwidget.cpp
+    plugins/Event/src/services/oresultsclient.cpp
+    plugins/Event/src/services/oresultsclientwidget.cpp
     plugins/Event/src/services/service.cpp
     plugins/Event/src/services/serviceswidget.cpp
     plugins/Event/src/services/servicewidget.cpp
