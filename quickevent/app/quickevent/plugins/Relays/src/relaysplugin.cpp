@@ -806,8 +806,8 @@ QString RelaysPlugin::startListIofXml30()
 
 			append_list(team_start,
 				QVariantList{"Organisation",
+					QVariantList{"Name", tt_teams_row.value(QStringLiteral("clubs.name"))},
 					QVariantList{"ShortName", tt_teams_row.value(QStringLiteral("abbr"))},
-					QVariantList{"Name", tt_teams_row.value(QStringLiteral("clubs.name"))}
 				}
 			);
 
