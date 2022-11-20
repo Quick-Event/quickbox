@@ -1,5 +1,6 @@
 #include "resultstatus.h"
 #include "og/timems.h"
+#include <QCoreApplication>
 
 namespace quickevent {
 namespace core {
@@ -87,8 +88,7 @@ QString ResultStatus::statusXml() const
 
 QString ResultStatus::statusEmmaTxt() const
 {
-	if (m_disqualified)
-	{
+	if (m_disqualified)	{
 		if (m_disqualifiedByOrganizer)
 			return QStringLiteral("DISQ");
 		else if (m_missingPunch)
@@ -110,8 +110,7 @@ QString ResultStatus::statusEmmaTxt() const
 
 QString ResultStatus::statusResultExport() const
 {
-	if (m_disqualified)
-	{
+	if (m_disqualified)	{
 		if (m_disqualifiedByOrganizer)
 			return QStringLiteral("DISQ");
 		else if (m_missingPunch)
@@ -129,9 +128,29 @@ QString ResultStatus::statusResultExport() const
 		return QStringLiteral("NC");
 	else
 		return QStringLiteral("OK");
-	}
 }
 
+QString ResultStatus::statusText() const
+{
+	if (m_disqualified)	{
+		if (m_disqualifiedByOrganizer)
+			return QCoreApplication::translate("ResultStatus","DISQ", "Disqualified");
+		else if (m_missingPunch)
+			return QCoreApplication::translate("ResultStatus","MP", "Missing Punch");
+		else if (m_didNotStart)
+			return QCoreApplication::translate("ResultStatus","DNS", "Did Not Start");
+		else if (m_didNotFinish)
+			return QCoreApplication::translate("ResultStatus","DNF", "Did Not Finish");
+		else if (m_overTime)
+			return QCoreApplication::translate("ResultStatus","OVRT", "Over Time");
+		else
+			return QStringLiteral("???");
+	}
+	else if (m_notCompeting)
+		return QCoreApplication::translate("ResultStatus","NC", "Not Competing");
+	else
+		return QCoreApplication::translate("ResultStatus","OK");
+}
 
 } // namespace core
 } // namespace quickevent

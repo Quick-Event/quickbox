@@ -10,7 +10,7 @@ namespace core {
 class QUICKEVENTCORE_DECL_EXPORT ResultStatus
 {
 public:
-	ResultStatus() {}
+	ResultStatus() = default;
 	ResultStatus(qf::core::sql::Query &q);
 	ResultStatus(const qf::core::utils::TreeTableRow &ttr);
 	// set all variables from query (table runs)
@@ -23,6 +23,7 @@ public:
 	QString statusXml() const;
 	QString statusEmmaTxt() const;
 	QString statusResultExport() const;
+	QString statusText() const;
 
 	bool disqualified() const { return m_disqualified; }
 	bool disqualifiedByOrganizer() const { return m_disqualifiedByOrganizer; }
