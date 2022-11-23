@@ -35,6 +35,9 @@ jobs:
       run: |
         echo "VERSION=`grep APP_VERSION quickevent/app/quickevent/src/appversion.h | cut -d\\" -f2`" >> $GITHUB_ENV
 
+    - name: Install fuse
+      run: sudo apt-get install -y libfuse-dev
+  
     - name: Get AppImageTool
       run: |
         curl --silent "https://api.github.com/repos/AppImage/AppImageKit/releases/latest" | jq -r '.assets[] | select(.name == "appimagetool-x86_64.AppImage").browser_download_url' | sudo xargs curl -L -o /opt/appimagetool-x86_64.AppImage --create-dirs --url
