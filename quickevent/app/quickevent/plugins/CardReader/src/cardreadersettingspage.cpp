@@ -141,12 +141,11 @@ void CardReaderSettingsPage::save()
 
 void CardReaderSettingsPage::on_btTestConnection_clicked()
 {
-	CardReaderSettings settings;
-	QString device = settings.device();
-	int baud_rate = settings.baudRate();
-	int data_bits = settings.dataBits();
-	int stop_bits = settings.stopBits();
-	QString parity = settings.parity();
+	QString device = ui->lstDevice->currentText();
+	int baud_rate = ui->lstBaudRate->currentText().toInt();
+	int data_bits = ui->lstDataBits->currentText().toInt();
+	int stop_bits = ui->lstStopBits->currentText().toInt();
+	QString parity = ui->lstParity->currentText();
 	auto *comport = new siut::CommPort();
 	if(comport->openComm(device, baud_rate, data_bits, parity, stop_bits > 1)) {
 		auto *progress = new QProgressDialog(tr("Loading SI station info ..."), tr("Cancel"), 0, 0, this);

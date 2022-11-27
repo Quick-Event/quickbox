@@ -109,7 +109,6 @@ private:
 	Ui::CardReaderWidget *ui;
 	qf::qmlwidgets::Action *m_actAssignCard = nullptr;
 	qf::core::model::SqlTableModel *m_cardsModel = nullptr;
-	QPushButton *m_buttonTest = nullptr;
 	quickevent::gui::audio::Player *m_audioPlayer = nullptr;
 	siut::DeviceDriver *f_siDriver = nullptr;
 	siut::CommPort *m_commPort = nullptr;

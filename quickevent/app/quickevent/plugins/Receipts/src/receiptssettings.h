@@ -8,7 +8,7 @@ class ReceiptsSettings : public Core::Settings
 	Q_DECLARE_TR_FUNCTIONS(ReceiptsSettings)
 public:
 	enum class WhenRunnerNotFoundPrint { ErrorInfo, ReceiptWithoutName, };
-	enum class PrinterType { GraphicPrinter,  CharacterPrinter, };
+	enum class PrinterType { Invalid, GraphicPrinter,  CharacterPrinter};
 	enum class CharacterPrinteType { LPT, Directory, Network, };
 public:
 	ReceiptsSettings() : Core::Settings("plugin/Receipts") {}
@@ -33,6 +33,7 @@ public:
 	WhenRunnerNotFoundPrint whenRunnerNotFoundPrintEnum() const;
 	PrinterType printerTypeEnum() const;
 	static QString printerTypeToString(PrinterType e);
+	static PrinterType printerTypeFromString(const QString &str);
 	CharacterPrinteType characterPrinterTypeEnum() const;
 	static QString characterPrinterTypeToString(CharacterPrinteType e);
 	QString printerCaption() const;

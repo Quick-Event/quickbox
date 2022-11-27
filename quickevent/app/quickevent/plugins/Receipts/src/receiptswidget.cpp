@@ -1,8 +1,5 @@
 #include "receiptswidget.h"
 #include "ui_receiptswidget.h"
-#include "receiptsprinteroptionsdialog.h"
-#include "receiptsprinter.h"
-#include "receiptsprinteroptions.h"
 #include "receiptsplugin.h"
 #include "receiptssettings.h"
 

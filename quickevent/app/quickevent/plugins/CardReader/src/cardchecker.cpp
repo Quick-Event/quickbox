@@ -1,5 +1,4 @@
 #include "cardchecker.h"
-#include "cardreaderplugin.h"
 
 #include "../../Event/src/eventplugin.h"
 #include "../../Runs/src/runsplugin.h"

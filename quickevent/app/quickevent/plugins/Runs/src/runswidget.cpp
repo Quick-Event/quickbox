@@ -1,7 +1,6 @@
 #include "runswidget.h"
 #include "ui_runswidget.h"
 #include "runstablemodel.h"
-#include "runstableitemdelegate.h"
 #include "runsplugin.h"
 
 #include <quickevent/core/og/sqltablemodel.h>

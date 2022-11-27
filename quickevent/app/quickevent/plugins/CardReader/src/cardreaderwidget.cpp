@@ -180,8 +180,7 @@ CardReaderWidget::CardReaderWidget(QWidget *parent)
 	ui->lblConnectionInfo->setText(tr("SI station not connected"));
 #ifdef QT_DEBUG
 	{
-		ui->btTest->setObjectName("btTest");
-		connect(m_buttonTest, &QPushButton::clicked, this, &CardReaderWidget::onTestButtonClicked);
+		connect(ui->btTest, &QPushButton::clicked, this, &CardReaderWidget::onTestButtonClicked);
 	}
 #else
 	ui->btTest->hide();
@@ -242,11 +241,11 @@ void CardReaderWidget::onTestButtonClicked()
 	"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
 	"eeeeeeeeeeee07ac03");
 	QList<QByteArray> lst{data1, data2, data3};
-	Q_ASSERT(m_buttonTest);
+	Q_ASSERT(ui->btTest);
 	static int count = -1;
 	if(count < 0) {
 		++count;
-		m_buttonTest->setText("Send packet #" + QString::number(count));
+		ui->btTest->setText("Send packet #" + QString::number(count));
 		return;
 	}
 	QByteArray ba = lst[count];
@@ -254,7 +253,7 @@ void CardReaderWidget::onTestButtonClicked()
 	siDriver()->processData(ba);
 	count++;
 	count %= lst.size();
-	m_buttonTest->setText("Send packet #" + QString::number(count));
+	ui->btTest->setText("Send packet #" + QString::number(count));
 }
 
 void CardReaderWidget::onCustomContextMenuRequest(const QPoint & pos)

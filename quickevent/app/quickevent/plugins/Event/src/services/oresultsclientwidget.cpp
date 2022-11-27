@@ -1,7 +1,6 @@
 #include "oresultsclientwidget.h"
 #include "ui_oresultsclientwidget.h"
 #include "oresultsclient.h"
-#include "../eventplugin.h"
 #include <qf/qmlwidgets/framework/mainwindow.h>
 
 #include <qf/qmlwidgets/dialogs/messagebox.h>

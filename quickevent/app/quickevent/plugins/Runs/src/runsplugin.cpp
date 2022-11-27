@@ -5,8 +5,6 @@
 #include "eventstatisticswidget.h"
 #include "printawardsoptionsdialogwidget.h"
 #include "services/resultsexporter.h"
-#include "../../Core/src/coreplugin.h"
-#include "../../Core/src/widgets/settingsdialog.h"
 #include "../../CardReader/src/cardreaderplugin.h"
 #include "../../Competitors/src/competitorsplugin.h"
 #include "../../Event/src/eventplugin.h"
@@ -389,6 +387,27 @@ int RunsPlugin::cardForRun(int run_id)
 		}
 	}
 	return card_id;
+}
+
+int RunsPlugin::competitorForRun(int run_id)
+{
+	qfLogFuncFrame() << "run id:" << run_id;
+	//QF_TIME_SCOPE("reloadTimesFromCard()");
+	if(!run_id)
+		return 0;
+	int competitor_id = 0;
+	{
+		qf::core::sql::Query q;
+		if(q.exec("SELECT competitorId FROM runs WHERE id=" QF_IARG(run_id))) {
+			if(q.next()) {
+				competitor_id = q.value(0).toInt();
+			}
+			else {
+				qfWarning() << "Cannot find card record for run id:" << run_id;
+			}
+		}
+	}
+	return competitor_id;
 }
 
 qf::core::utils::Table RunsPlugin::nstagesClassResultsTable(int stages_count, int class_id, int places, bool exclude_disq)
@@ -860,19 +879,18 @@ QString RunsPlugin::resultsIofXml30Stage(int stage_id)
 			);
 
 			auto club_abbr = tt2_row.value(QStringLiteral("clubs.abbr")).toString();
-			if (!club_abbr.isEmpty())
-			{
+			if (!club_abbr.isEmpty()) {
 				person_result.insert(person_result.count(),
 					QVariantList{"Organisation",
+						QVariantList{"Name", tt2_row.value(QStringLiteral("clubs.name"))},
 						QVariantList{"ShortName", club_abbr},
-						QVariantList{"Name", tt2_row.value(QStringLiteral("clubs.name"))}
 					}
 				);
 			}
-			else
-			{
+			else {
 				person_result.insert(person_result.count(),
 					QVariantList{"Organisation",
+						QVariantList{"Name", QString()},
 						QVariantList{"ShortName",
 							tt2_row.value(QStringLiteral("competitors.registration")).toString().left(3)
 						}
@@ -2323,23 +2341,22 @@ QString RunsPlugin::startListStageIofXml30(int stage_id)
 				append_list(xml_start, QVariantList{"ControlCard", siId.toInt()});
 			}
 			append_list(xml_person, person);
-			append_list(xml_person, xml_start);
 			auto club_abbr = tt2_row.value(QStringLiteral("clubs.abbr")).toString();
-			if (!club_abbr.isEmpty())
-			{
+			if (!club_abbr.isEmpty()) {
 				append_list(xml_person, QVariantList{"Organisation",
+											QVariantList{"Name", tt2_row.value(QStringLiteral("clubs.name"))},
 											QVariantList{"ShortName", club_abbr},
-											QVariantList{"Name", tt2_row.value(QStringLiteral("clubs.name"))}
 										}
 				);
 			}
-			else
-			{
+			else {
 				append_list(xml_person, QVariantList{"Organisation",
+											QVariantList{"Name", QString()},
 											QVariantList{"ShortName", tt2_row.value(QStringLiteral("competitors.registration")).toString().left(3)}
 										}
 				);
 			}
+			append_list(xml_person, xml_start);
 			append_list(class_start, xml_person);
 		}
 		append_list(xml_root, class_start);
