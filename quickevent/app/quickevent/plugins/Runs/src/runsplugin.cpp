@@ -983,6 +983,7 @@ void RunsPlugin::writeCSOSHeader(QTextStream &ts)
 
 bool RunsPlugin::exportResultsCsosStage(int stage_id, const QString &file_name)
 {
+	// file format description: quickevent/doc/jednotny_format_vysledku_csos.txt
 	QFile f(file_name);
 	if(!f.open(QIODevice::WriteOnly)) {
 		qfError() << "Cannot open file" << f.fileName() << "for writing.";
@@ -1030,6 +1031,7 @@ bool RunsPlugin::exportResultsCsosStage(int stage_id, const QString &file_name)
 
 bool RunsPlugin::exportResultsCsosOverall(int stage_count, const QString &file_name)
 {
+	// file format description: quickevent/doc/jednotny_format_vysledku_csos.txt
 	QFile f(file_name);
 	if(!f.open(QIODevice::WriteOnly)) {
 		qfError() << "Cannot open file" << f.fileName() << "for writing.";
