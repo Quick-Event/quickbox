@@ -2414,4 +2414,48 @@ void RunsPlugin::addStartTimeTextToClass(qf::core::utils::TreeTable &tt2, const 
 	}
 }
 
+bool RunsPlugin::exportStartListCurrentStageCsvSime(const QString &file_name, bool bibs, QString sql_where)
+{
+	// file format description: quickevent/doc/sime_startlist_format.txt
+	QFile f(file_name);
+	if(!f.open(QIODevice::WriteOnly)) {
+		qfError() << "Cannot open file" << f.fileName() << "for writing.";
+		return false;
+	}
+	const QString separator = ";";
+	QTextStream csv(&f);
+	csv.setCodec("UTF-8");
+#ifdef Q_OS_WINDOWS
+	// enable BOM for Windows
+	csv.setGenerateByteOrderMark(true);
+#endif
+
+	auto tt1 = startListClassesTable(sql_where, true, quickevent::gui::ReportOptionsDialog::StartTimeFormat::DayTime);
+	int id = 0;
+	for(int i=0; i<tt1.rowCount(); i++) {
+		qf::core::utils::TreeTableRow tt1_row = tt1.row(i);
+		qf::core::utils::TreeTable tt2 = tt1.row(i).table();
+		for(int j=0; j<tt2.rowCount(); j++) {
+			qf::core::utils::TreeTableRow tt2_row = tt2.row(j);
+			int bib = tt2_row.value(QStringLiteral("competitors.startNumber")).toInt();
+			if (bibs && bib != 0)
+				csv << bib  << separator;
+			else
+				csv << ++id << separator;
+			csv << tt2_row.value(QStringLiteral("runs.siId")).toString() << separator;
+			csv << tt2_row.value(QStringLiteral("competitors.lastName")).toString() << separator;
+			csv << tt2_row.value(QStringLiteral("competitors.firstName")).toString() << separator;
+			csv << tt2_row.value(QStringLiteral("registration")).toString() << separator;
+			csv << tt1_row.value(QStringLiteral("classes.name")).toString() << separator;
+			csv << tt2_row.value(QStringLiteral("startTimeText")).toString();
+			csv << Qt::endl;
+		}
+	}
+
+	f.close();
+	qfInfo() << "exported:" << file_name;
+	return true;
+}
+
+
 }

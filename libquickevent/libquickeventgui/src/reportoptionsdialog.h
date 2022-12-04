@@ -38,7 +38,7 @@ class QUICKEVENTGUI_DECL_EXPORT ReportOptionsDialog : public QDialog, public qf:
 	QF_PROPERTY_BOOL_IMPL2(v, V, acantsVisible, true)
 	QF_PROPERTY_BOOL_IMPL2(s, S, tagesOptionVisible, false)
 	QF_PROPERTY_BOOL_IMPL2(l, L, egsOptionVisible, false)
-	QF_PROPERTY_BOOL_IMPL2(p, P, ageLayoutVisible, false)
+	QF_PROPERTY_BOOL_IMPL2(p, P, ageLayoutVisible, true)
 	QF_PROPERTY_BOOL_IMPL2(c, C, olumnCountEnable, true)
 	QF_PROPERTY_BOOL_IMPL2(r, R, esultOptionsVisible, false)
 	QF_PROPERTY_BOOL_IMPL2(s, S, tartTimeFormatVisible, false)

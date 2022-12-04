@@ -264,6 +264,14 @@ void RunsWidget::settleDownInPartWidget(quickevent::gui::PartWidget *part_widget
 			m_export_stlist_xml->addActionInto(a);
 		}
 	}
+	auto *m_export_stlist_csv = m_stlist->addMenuInto("csv", tr("&CSV"));
+	{
+		{
+			auto *a = new qfw::Action(tr("&SIME startlist (Starter Clock)"));
+			connect(a, &qfw::Action::triggered, this, &RunsWidget::export_startList_stage_csv_sime);
+			m_export_stlist_csv->addActionInto(a);
+		}
+	}
 
 	qfw::Action *a_export_results = a_export->addMenuInto("results", tr("Results"));
 	qfw::Action *a_export_results_stage = a_export_results->addMenuInto("currentStage", tr("Current stage"));
@@ -950,3 +958,22 @@ void RunsWidget::export_startList_stage_iofxml30()
 	getPlugin<RunsPlugin>()->exportStartListStageIofXml30(stage_id, fn);
 }
 
+
+void RunsWidget::export_startList_stage_csv_sime()
+{
+	qff::MainWindow *fwk = qff::MainWindow::frameWork();
+	quickevent::gui::ReportOptionsDialog dlg(fwk);
+	dlg.setPersistentSettingsId("startListCsvSimeReportOptions");
+	dlg.loadPersistentSettings();
+	dlg.setStartListOptionsVisible(true);
+	dlg.setVacantsVisible(false);
+	dlg.setPageLayoutVisible(false);
+	dlg.setStartTimeFormatVisible(false);
+	dlg.setColumnCountEnable(false);
+	if(dlg.exec()) {
+		QString fn = getSaveFileName("startlist.csv", selectedStageId());
+		if(fn.isEmpty())
+			return;
+		getPlugin<RunsPlugin>()->exportStartListCurrentStageCsvSime(fn, dlg.isStartListPrintStartNumbers(), dlg.sqlWhereExpression());
+	}
+}
