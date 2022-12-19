@@ -52,12 +52,6 @@ using CardReader::CardReaderPlugin;
 
 namespace Runs {
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-static const auto SkipEmptyParts = QString::SkipEmptyParts;
-#else
-static const auto SkipEmptyParts = Qt::SkipEmptyParts;
-#endif
-
 static QString datetime_to_string(const QDateTime &dt)
 {
 	return quickevent::core::Utils::dateTimeToIsoStringWithUtcOffset(dt);
@@ -819,7 +813,7 @@ QString RunsPlugin::resultsIofXml30Stage(int stage_id)
 		});
 		event_lst.insert(event_lst.count(),
 			QVariantList{"Official",
-				QVariantMap{{"type", "director"}},
+				QVariantMap{{"type", "Director"}},
 				QVariantList{"Person",
 					QVariantList{"Name",
 						QVariantList{"Family", event.value("director").toString().section(' ', 1, 1)},
@@ -830,7 +824,7 @@ QString RunsPlugin::resultsIofXml30Stage(int stage_id)
 		);
 		event_lst.insert(event_lst.count(),
 			QVariantList{"Official",
-				QVariantMap{{"type", "mainReferee"}},
+				QVariantMap{{"type", "MainReferee"}},
 				QVariantList{"Person",
 					QVariantList{"Name",
 						QVariantList{"Family", event.value("mainReferee").toString().section(' ', 1, 1)},
@@ -847,6 +841,7 @@ QString RunsPlugin::resultsIofXml30Stage(int stage_id)
 		const qf::core::utils::TreeTableRow tt1_row = tt1.row(i);
 		class_result.insert(class_result.count(),
 			QVariantList{"Class",
+				QVariantList{"Id", tt1_row.value(QStringLiteral("classes.id"))},
 				QVariantList{"Name", tt1_row.value(QStringLiteral("classes.name")) },
 			}
 		);
@@ -2300,15 +2295,38 @@ QString RunsPlugin::startListStageIofXml30(int stage_id)
 		}
 	};
 
-	//var event = tt1.value("event");
+	QVariantMap event = tt1.value("event").toMap();
 	QVariantList xml_event{"Event"};
+	append_list(xml_event, QVariantList{"Id", QVariantMap{{"type", "ORIS"}}, event.value("importId")});
 	append_list(xml_event, QVariantList{"Name", event_config->eventName()});
-	append_list(xml_event, QVariantList{"StartTime", QVariantList{"Date", event_config->eventDateTime().toUTC().date().toString(Qt::ISODate)}, QVariantList{"Time", event_config->eventDateTime().time().toString(Qt::ISODate)}});
-	append_list(xml_event, QVariantList{"EndTime", QVariantList{"Date", event_config->eventDateTime().toUTC().date().toString(Qt::ISODate)}, QVariantList{"Time", event_config->eventDateTime().time().toString(Qt::ISODate)}});
-	QStringList director = event_config->director().split(' ', SkipEmptyParts);
-	QStringList main_referee = event_config->mainReferee().split(' ', SkipEmptyParts);
-	append_list(xml_event, QVariantList{"Official", QVariantMap{{"type", "Director"}}, QVariantList{"Person", QVariantList{"Name", QVariantList{"Family", director.value(0)}, QVariantList{"Given", director.value(1)}}}});
-	append_list(xml_event, QVariantList{"Official", QVariantMap{{"type", "MainReferee"}}, QVariantList{"Person", QVariantList{"Name", QVariantList{"Family", main_referee.value(0)}, QVariantList{"Given", main_referee.value(1)}}}});
+	append_list(xml_event,
+		QVariantList{"StartTime",
+			QVariantList{"Date", event.value("date")},
+			QVariantList{"Time", event.value("time")}
+		}
+	);
+	append_list(xml_event, 
+		QVariantList{"Official",
+			QVariantMap{{"type", "Director"}},
+			QVariantList{"Person",
+				QVariantList{"Name",
+					QVariantList{"Family", event.value("director").toString().section(' ', 1, 1)},
+					QVariantList{"Given", event.value("director").toString().section(' ', 0, 0)},
+				}
+			},
+		}
+	);
+	append_list(xml_event, 
+		QVariantList{"Official",
+			QVariantMap{{"type", "MainReferee"}},
+			QVariantList{"Person",
+				QVariantList{"Name",
+					QVariantList{"Family", event.value("mainReferee").toString().section(' ', 1, 1)},
+					QVariantList{"Given", event.value("mainReferee").toString().section(' ', 0, 0)},
+				}
+			},
+		}
+	);
 	append_list(xml_root, xml_event);
 
 	for(int i=0; i<tt1.rowCount(); i++) {
@@ -2326,7 +2344,7 @@ QString RunsPlugin::startListStageIofXml30(int stage_id)
 			auto tt2_row = tt2.row(j);
 			QVariantList xml_person{"PersonStart"};
 			QVariantList person{"Person"};
-			append_list(person, QVariantList{"Id", tt2_row.value(QStringLiteral("competitors.registration"))});
+			append_list(person, QVariantList{"Id", QVariantMap{{"type", "CZE"}}, tt2_row.value(QStringLiteral("competitors.registration"))});
 			auto family = tt2_row.value(QStringLiteral("competitors.lastName"));
 			auto given = tt2_row.value(QStringLiteral("competitors.firstName"));
 			append_list(person, QVariantList{"Name", QVariantList{"Family", family}, QVariantList{"Given", given}});
