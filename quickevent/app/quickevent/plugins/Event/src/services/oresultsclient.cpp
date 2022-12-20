@@ -240,7 +240,7 @@ void OResultsClient::onCompetitorChanged(int competitor_id)
 	q.exec("SELECT competitors.registration, "
 		   "competitors.startNumber, "
 		   "competitors.lastName || ' ' || competitors.firstName AS name, "
-		   "classes.name AS class, "
+		   "classes.id AS classId, "
 		   "runs.siId, "
 		   "runs.disqualified, "
 		   "runs.disqualifiedByOrganizer, "
@@ -260,7 +260,7 @@ void OResultsClient::onCompetitorChanged(int competitor_id)
 		QString registration = q.value("registration").toString();
 		int start_num = q.value("startNumber").toInt();
 		QString name = q.value("name").toString();
-		QString class_name = q.value("class").toString();
+		QString class_id = q.value("classId").toString();
 		int card_num = q.value("siId").toInt();
 		bool isDisq = q.value("disqualified").toBool();
 		bool isDisqByOrganizer = q.value("disqualifiedByOrganizer").toBool();
@@ -279,12 +279,11 @@ void OResultsClient::onCompetitorChanged(int competitor_id)
 			return;
 
 		QVariantMap competitor {
-			{"stat", status_code}
+			{"stat", status_code},
+			{"cls", class_id}
 		};
 		if (start_num != 0)
 			competitor.insert("bib", start_num);
-		if (!class_name.isEmpty())
-			competitor.insert("cls", class_name);
 		if(start_time != 0)
 			competitor.insert("st", mop_start(start_time));
 		if(running_time != 0)
