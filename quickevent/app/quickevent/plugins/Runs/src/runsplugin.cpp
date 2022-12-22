@@ -1697,7 +1697,6 @@ void RunsPlugin::export_startListClassesHtml()
 						"a",
 						QVariantMap{{"href", "#class_" + tt1_row.value("classes.name").toString()}},
 						tt1_row.value("classes.name"),
-						"&nbsp;"
 					});
 	}
 	append_list(body, div1);
@@ -1798,7 +1797,6 @@ void RunsPlugin::export_startListClubsHtml()
 						"a",
 						QVariantMap{{"href", "#club_" + tt1_row.value("clubAbbr").toString()}},
 						tt1_row.value("clubAbbr"),
-						"&nbsp;"
 					});
 	}
 	append_list(body, div1);
@@ -1903,7 +1901,6 @@ QString RunsPlugin::export_resultsHtmlStage(bool with_laps)
 						"a",
 						QVariantMap{{"href", "#class_" + tt1_row.value("classes.name").toString()}},
 						tt1_row.value("classes.name"),
-						"&nbsp;"
 					});
 	}
 	append_list(body, div1);
@@ -2037,7 +2034,6 @@ void RunsPlugin::export_resultsHtmlNStages()
 						"a",
 						QVariantMap{{"href", "#class_" + tt1_row.value("classes.name").toString()}},
 						tt1_row.value("classes.name"),
-						"&nbsp;"
 					});
 	}
 	append_list(body, div1);
@@ -2184,16 +2180,16 @@ void RunsPlugin::exportResultsHtmlStageWithLaps(const QString &laps_file_name, c
 	}
 	{
 		QVariantList trr{"tr",
-					QVariantList{"th", QVariantMap{{QStringLiteral("class"), "br bbb"}}, "&nbsp;"},
+					QVariantList{"th", QVariantMap{{QStringLiteral("class"), "br bbb"}}, "\u00A0"},
 					QVariantList{"th", QVariantMap{{QStringLiteral("class"), "br bbb"}}, tr("Registration")},
-					QVariantList{"th", QVariantMap{{QStringLiteral("class"), "br bbb"}}, "&nbsp;"},
-					QVariantList{"th", QVariantMap{{QStringLiteral("class"), "brb bbb"}}, "&nbsp;"},
+					QVariantList{"th", QVariantMap{{QStringLiteral("class"), "br bbb"}}, "\u00A0"},
+					QVariantList{"th", QVariantMap{{QStringLiteral("class"), "brb bbb"}}, "\u00A0"},
 				};
 		int i = 1;
 		for(QVariant v : course_codes) {
 			append_list(trr, QVariantList{"th",
 										  QVariantMap{{QStringLiteral("class"), "br bbb"}, {"colspan", "2"}},
-										  (i++ < course_codes.size())? QVariant(quickevent::core::CodeDef{v.toMap()}.code()): QVariant("&nbsp;")});
+										  (i++ < course_codes.size())? QVariant(quickevent::core::CodeDef{v.toMap()}.code()): QVariant("\u00A0")});
 		}
 		append_list(table, trr);
 	}
@@ -2236,7 +2232,7 @@ void RunsPlugin::exportResultsHtmlStageWithLaps(const QString &laps_file_name, c
 		append_list(table, trr1);
 
 		QVariantList trr2{"tr", QVariantMap{{QStringLiteral("class"), "odd"}}};
-		append_list(trr2, QVariantList{"td", QVariantMap{{QStringLiteral("class"), "br bb"}}, "&nbsp;"});
+		append_list(trr2, QVariantList{"td", QVariantMap{{QStringLiteral("class"), "br bb"}}, "\u00A0"});
 		append_list(trr2, QVariantList{"td", QVariantMap{{QStringLiteral("class"), "br bb"}}, tt_row.value(QStringLiteral("registration"))});
 		QString disq_str;
 		if(tt_row.value("notCompeting").toBool()) {
@@ -2246,10 +2242,10 @@ void RunsPlugin::exportResultsHtmlStageWithLaps(const QString &laps_file_name, c
 			disq_str = tr("DISQ");
 		}
 		else {
-			disq_str = "&nbsp;";
+			disq_str = "\u00A0";
 		}
 		append_list(trr2, QVariantList{"td", QVariantMap{{QStringLiteral("class"), "br bb"}}, disq_str});
-		append_list(trr2, QVariantList{"td", QVariantMap{{QStringLiteral("class"), "brb bb"}}, "&nbsp;"});
+		append_list(trr2, QVariantList{"td", QVariantMap{{QStringLiteral("class"), "brb bb"}}, "\u00A0"});
 		for(int i=0; i<course_codes.size(); i++) {
 			QString css_class = QStringLiteral("right");
 			int pos = tt_row.value(col_stp_time1_ix + 4*i + 3).toInt();
