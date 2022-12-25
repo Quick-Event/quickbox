@@ -119,9 +119,15 @@ struct Leg
 	quickevent::core::ResultStatus resultStatus;
 };
 
+struct Organization {
+	QString name;
+	QString shortName;
+};
+
 struct Relay
 {
 	QString name;
+	Organization org;
 	QVector<Leg> legs;
 	int relayNumber = 0;
 	int relayId = 0;
@@ -169,6 +175,7 @@ qf::core::utils::TreeTable RelaysPlugin::nLegsResultsTable(const QString &where_
 	while(q.next()) {
 		int ix = tt.appendRow();
 		qf::core::utils::TreeTableRow tt_row = tt.row(ix);
+		tt_row.setValue("classId", q.value("classes.id"));
 		tt_row.setValue("className", q.value("classes.name"));
 		qf::core::utils::TreeTable tt2 = nLegsClassResultsTable(q.value("classes.id").toInt(), leg_count, places, exclude_not_finish);
 		tt_row.appendTable(tt2);
@@ -210,7 +217,7 @@ qf::core::utils::TreeTable RelaysPlugin::nLegsClassResultsTable(int class_id, in
 	{
 		qfs::QueryBuilder qb;
 		qb.select2("relays", "id, club, name, number")
-				.select2("clubs", "name")
+				.select2("clubs", "name, abbr")
 				.from("relays")
 				.join("relays.club", "clubs.abbr")
 				.where("relays.classId=" QF_IARG(class_id));
@@ -219,10 +226,11 @@ qf::core::utils::TreeTable RelaysPlugin::nLegsClassResultsTable(int class_id, in
 			Relay r;
 			r.relayId = q.value("relays.id").toInt();
 			r.relayNumber = q.value("relays.number").toInt();
-			r.name = (q.value("relays.number").toString()
-					+ ' ' + q.value("relays.club").toString()
-					+ ' ' + q.value("relays.name").toString()
-					+ ' ' + q.value("clubs.name").toString()).trimmed();
+			r.name = (q.value("relays.club").toString() + ' ' + q.value("relays.number").toString()).trimmed();
+			r.org = {
+				.name = q.value("clubs.name").toString(),
+				.shortName = q.value("clubs.abbr").toString()
+			};
 			for (int i = 0; i < leg_count; ++i)
 				r.legs << Leg();
 			relays << r;
@@ -364,6 +372,8 @@ qf::core::utils::TreeTable RelaysPlugin::nLegsClassResultsTable(int class_id, in
 		tt_row.setValue("pos", (time <= qog::TimeMs::MAX_REAL_TIME_MSEC && time > prev_time)? i+1: 0);
 		tt_row.setValue("name", relay.name);
 		tt_row.setValue("relayNumber", relay.relayNumber);
+		tt_row.setValue("orgName", relay.org.name);
+		tt_row.setValue("orgShortName", relay.org.shortName);
 		tt_row.setValue("id", relay.relayId);
 		tt_row.setValue("time", time);
 		tt_row.setValue("loss", (time <= qog::TimeMs::MAX_REAL_TIME_MSEC)?time - time0: 0);
@@ -512,7 +522,7 @@ QString RelaysPlugin::resultsIofXml30()
 		});
 		event_lst.insert(event_lst.count(),
 			QVariantList{"Official",
-				QVariantMap{{"type", "director"}},
+				QVariantMap{{"type", "Director"}},
 				QVariantList{"Person",
 					QVariantList{"Name",
 						QVariantList{"Family", event.value("director").toString().section(' ', 1, 1)},
@@ -523,7 +533,7 @@ QString RelaysPlugin::resultsIofXml30()
 		);
 		event_lst.insert(event_lst.count(),
 			QVariantList{"Official",
-				QVariantMap{{"type", "mainReferee"}},
+				QVariantMap{{"type", "MainReferee"}},
 				QVariantList{"Person",
 					QVariantList{"Name",
 						QVariantList{"Family", event.value("mainReferee").toString().section(' ', 1, 1)},
@@ -541,6 +551,7 @@ QString RelaysPlugin::resultsIofXml30()
 		QF_TIME_SCOPE("exporting class: " + tt_classes_row.value(QStringLiteral("className")).toString());
 		append_list(class_result,
 			QVariantList{"Class",
+				QVariantList{"Id", tt_classes_row.value(QStringLiteral("classId"))},
 				QVariantList{"Name", tt_classes_row.value(QStringLiteral("className")) },
 			}
 		);
@@ -552,6 +563,14 @@ QString RelaysPlugin::resultsIofXml30()
 			append_list(team_result,
 				QVariantList{"Name", tt_teams_row.value(QStringLiteral("name")) }
 			);
+
+			append_list(team_result,
+				QVariantList{"Organisation",
+					QVariantList{"Name", tt_teams_row.value(QStringLiteral("orgName"))},
+					QVariantList{"ShortName", tt_teams_row.value(QStringLiteral("orgShortName"))},
+				}
+			);
+
 			int relay_number = tt_teams_row.value(QStringLiteral("relayNumber")).toInt();
 			append_list(team_result,
 				QVariantList{"BibNumber", relay_number }
@@ -732,6 +751,7 @@ QString RelaysPlugin::startListIofXml30()
 		QF_TIME_SCOPE("exporting class: " + tt_classes_row.value(QStringLiteral("classes.name")).toString());
 		append_list(class_start,
 			QVariantList{"Class",
+				QVariantList{"Id", tt_classes_row.value(QStringLiteral("classes.id"))},
 				QVariantList{"Name", tt_classes_row.value(QStringLiteral("classes.name")) },
 			}
 		);
@@ -746,8 +766,8 @@ QString RelaysPlugin::startListIofXml30()
 
 			append_list(team_start,
 				QVariantList{"Organisation",
+					QVariantList{"Name", tt_teams_row.value(QStringLiteral("clubs.name"))},
 					QVariantList{"ShortName", tt_teams_row.value(QStringLiteral("abbr"))},
-					QVariantList{"Name", tt_teams_row.value(QStringLiteral("clubs.name"))}
 				}
 			);
 

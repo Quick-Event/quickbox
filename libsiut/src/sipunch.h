@@ -29,7 +29,7 @@ public:
 	QF_VARIANTMAP_FIELD(int, d, setD, ayOfWeek)
 	QF_VARIANTMAP_FIELD(int, w, setW, eekCnt)
 
-	QString toString() const;
+//	QString toString() const; - undefined
 
 	static unsigned getUnsigned(const QByteArray &ba, int ix, int byte_cnt = 2);
 };

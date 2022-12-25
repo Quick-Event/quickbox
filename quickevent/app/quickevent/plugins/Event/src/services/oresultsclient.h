@@ -16,7 +16,7 @@ class OResultsClientSettings : public ServiceSettings
 	using Super = ServiceSettings;
 
 	QF_VARIANTMAP_FIELD(QString, a, setA, piKey)
-	QF_VARIANTMAP_FIELD2(int, e, setE, xportIntervalSec, 15)
+	QF_VARIANTMAP_FIELD2(int, e, setE, xportIntervalSec, 60)
 public:
 	OResultsClientSettings(const QVariantMap &o = QVariantMap()) : Super(o) {}
 };
@@ -38,14 +38,19 @@ public:
 	void exportResultsIofXml3();
 	void exportStartListIofXml3();
 	void loadSettings() override;
+	void onDbEventNotify(const QString &domain, int connection_id, const QVariant &data);
+
+private:
+	QTimer *m_exportTimer = nullptr;
+	QNetworkAccessManager *m_networkManager = nullptr;
+	const QString API_URL = "https://api.oresults.eu";
 private:
 	qf::qmlwidgets::framework::DialogWidget *createDetailWidget() override;
 	void onExportTimerTimeOut();
 	void init();
-	QTimer *m_exportTimer = nullptr;
-	QNetworkAccessManager *m_networkManager = nullptr;
 	void sendFile(QString name, QString request_path, QString file);
-	const QString API_URL = "https://api.oresults.eu";
+	void sendCompetitorChange(QString xml);
+	void onCompetitorChanged(int competitor_id);
 };
 
 }}

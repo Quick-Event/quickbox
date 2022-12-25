@@ -13,6 +13,8 @@ IPersistentSettings::IPersistentSettings(QObject *controlled_object) :
 	Q_ASSERT(m_controlledObject != nullptr);
 }
 
+IPersistentSettings::~IPersistentSettings() = default;
+
 QString IPersistentSettings::persistentSettingsId()
 {
 	return m_persistentSettingsId;

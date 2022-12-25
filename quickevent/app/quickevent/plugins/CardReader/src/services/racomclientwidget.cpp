@@ -25,7 +25,13 @@ RacomClientWidget::RacomClientWidget(QWidget *parent)
 		ui->edRawDataListenPort->setValue(ss.rawDataListenPort());
 		ui->chkListenSirxdData->setChecked(ss.isListenSirxdData());
 		ui->edSirxdDataListenPort->setValue(ss.sirxdDataListenPort());
+		ui->gbReadSplitsFile->setChecked(ss.isReadSplitFile());
+		ui->edReadSplitsFile->setText(ss.splitFileName());
+		ui->edReadSplitInterval->setValue(ss.splitFileInterval());
+		ui->edReadSplitFinishCode->setValue(ss.splitFileFinishCode());
 	}
+
+	connect(ui->btChooseSplitsFile, &QPushButton::clicked, this, &RacomClientWidget::onBtChooseTxtSplitsFileClicked);
 }
 
 RacomClientWidget::~RacomClientWidget()
@@ -66,7 +72,22 @@ void RacomClientWidget::saveSettings()
 		ss.setRawDataListenPort(ui->edRawDataListenPort->value());
 		ss.setListenSirxdData(ui->chkListenSirxdData->isChecked());
 		ss.setSirxdDataListenPort(ui->edSirxdDataListenPort->value());
+		ss.setReadSplitFile(ui->gbReadSplitsFile->isChecked());
+		ss.setSplitFileName(ui->edReadSplitsFile->text());
+		ss.setSplitFileFinishCode(ui->edReadSplitFinishCode->value());
+		ss.setSplitFileInterval(ui->edReadSplitInterval->value());
 		svc->setSettings(ss);
+	}
+}
+
+void RacomClientWidget::onBtChooseTxtSplitsFileClicked()
+{
+	RacomClient *svc = service();
+	if(svc) {
+		RacomClientSettings ss = svc->settings();
+		QString file = QFileDialog::getOpenFileName(this, tr("Open txt splits file"), ss.splitFileName());
+		if(!file.isEmpty())
+			ui->edReadSplitsFile->setText(file);
 	}
 }
 

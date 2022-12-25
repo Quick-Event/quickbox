@@ -48,6 +48,7 @@ public:
 	Q_INVOKABLE int selectedStageId();
 public:
 	void export_startList_stage_iofxml30();
+	void export_startList_stage_csv_sime();
 
 	void export_results_stage_iofxml30();
 	void export_results_stage_csos();
