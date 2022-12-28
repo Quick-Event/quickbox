@@ -57,6 +57,8 @@ int ResultStatus::getOGTime(int time) const
 		return quickevent::core::og::TimeMs::NOT_START_TIME_MSEC;
 	else if (m_didNotFinish)
 		return quickevent::core::og::TimeMs::NOT_FINISH_TIME_MSEC;
+	else if (m_overTime)
+		return quickevent::core::og::TimeMs::OVERTIME_TIME_MSEC;
 	else if (m_missingPunch && m_disqualified)
 		return quickevent::core::og::TimeMs::MISPUNCH_TIME_MSEC;
 	else

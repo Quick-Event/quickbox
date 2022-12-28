@@ -21,7 +21,8 @@ public:
 	static constexpr int NOT_COMPETITING_TIME_MSEC = NOT_START_TIME_MSEC - 1;
 	static constexpr int DISQ_TIME_MSEC = NOT_COMPETITING_TIME_MSEC - 1;
 	static constexpr int MISPUNCH_TIME_MSEC = DISQ_TIME_MSEC - 1;
-	static constexpr int MAX_REAL_TIME_MSEC = MISPUNCH_TIME_MSEC - 1;
+	static constexpr int OVERTIME_TIME_MSEC = MISPUNCH_TIME_MSEC - 1;
+	static constexpr int MAX_REAL_TIME_MSEC = OVERTIME_TIME_MSEC - 1;
 
 	TimeMs();
 	TimeMs(int msec);

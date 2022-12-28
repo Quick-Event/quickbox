@@ -25,6 +25,8 @@ Report {
 			return qsTr("DNF");
 		if(time_ms === OGTime.NOT_START_TIME_MSEC)
 			return qsTr("DNS");
+		if(time_ms === OGTime.OVERTIME_TIME_MSEC)
+			return qsTr("OVRT");
 		return OGTime.msecToString_mmss(time_ms);
 	}
 
