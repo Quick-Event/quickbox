@@ -141,7 +141,7 @@ void StageResultsCsvExporter::exportClass(int class_id, QTextStream &csv)
 			csv << club << m_separator;
 			csv << q2.value("competitors.country").toString() << m_separator;
 			csv << stime << m_separator;
-			csv << result_status.statusResultExport();
+			csv << result_status.toHtmlExportString();
 			csv << Qt::endl;
 		}
 	}

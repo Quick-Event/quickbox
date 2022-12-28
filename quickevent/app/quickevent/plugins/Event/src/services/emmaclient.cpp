@@ -384,7 +384,7 @@ void EmmaClient::exportFinishRacomTxt()
 		s += tm.toString(QStringLiteral("HH:mm:ss.zzz"));
 		s += '0';
 		s += '/';
-		s += result_status.statusEmmaTxt();
+		s += result_status.toEmmaExportString();
 		ts << s << "\n";
 	}
 }

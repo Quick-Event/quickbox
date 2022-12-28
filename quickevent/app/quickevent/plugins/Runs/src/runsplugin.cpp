@@ -908,7 +908,7 @@ QString RunsPlugin::resultsIofXml30Stage(int stage_id)
 			if (j == 0) // fill firstTime with time of first runner
 				first_time = time;
 			int time_behind = time - first_time;
-			if (!result_status.didNotStart() && !result_status.didNotFinish())
+			if (!result_status.isDidNotStart() && !result_status.isDidNotFinish())
 			{
 				result.insert(result.count(), QVariantList{"FinishTime", datetime_to_string(stage_start_date_time.addMSecs(ftime))});
 				result.insert(result.count(), QVariantList{"Time", time / 1000});
@@ -920,8 +920,8 @@ QString RunsPlugin::resultsIofXml30Stage(int stage_id)
 				// This element should only be present when the Status element is set to OK.
 				result.insert(result.count(), QVariantList{"Position", tt2_row.value(QStringLiteral("npos"))});
 			}
-			result.insert(result.count(), QVariantList{"Status", result_status.statusXml()});
-			if (!result_status.didNotStart())
+			result.insert(result.count(), QVariantList{"Status", result_status.toXmlExportString()});
+			if (!result_status.isDidNotStart())
 			{
 				int ix = stpTime_0_ix;
 				for(const QVariant &v : codes) {
@@ -1961,7 +1961,7 @@ QString RunsPlugin::export_resultsHtmlStage(bool with_laps)
 					loss_str = "+" + loss_str;
 			}
 			else {
-				loss_str = result_status.statusText();
+				loss_str = result_status.toString();
 			}
 			append_list(trr, QVariantList{"td", QVariantMap{{"align", "right"}}, loss_str});
 			append_list(table, trr);
@@ -2236,7 +2236,7 @@ void RunsPlugin::exportResultsHtmlStageWithLaps(const QString &laps_file_name, c
 			disq_str = "\u00A0";
 		}
 		else {
-			disq_str = result_status.statusText();
+			disq_str = result_status.toString();
 		}
 		append_list(trr2, QVariantList{"td", QVariantMap{{QStringLiteral("class"), "br bb"}}, disq_str});
 		append_list(trr2, QVariantList{"td", QVariantMap{{QStringLiteral("class"), "brb bb"}}, "\u00A0"});

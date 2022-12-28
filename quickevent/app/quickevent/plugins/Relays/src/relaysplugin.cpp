@@ -149,7 +149,7 @@ struct Relay
 	{
 		for (int i = 0; i < qMin(legs.count(), leg_cnt); ++i) {
 			const Leg &leg = legs[i];
-			return leg.resultStatus.statusXml();
+			return leg.resultStatus.toXmlExportString();
 		}
 		return QStringLiteral("DidNotStart");	// relay leg not found
 	}
@@ -402,7 +402,7 @@ qf::core::utils::TreeTable RelaysPlugin::nLegsClassResultsTable(int class_id, in
 			tt2_row.setValue("registration", leg.reg);
 			tt2_row.setValue("time", leg.resultStatus.getOGTime(leg.time));
 			tt2_row.setValue("pos", leg.pos);
-			tt2_row.setValue("status", leg.resultStatus.statusXml());
+			tt2_row.setValue("status", leg.resultStatus.toXmlExportString());
 			tt2_row.setValue("stime", leg.stime);
 			tt2_row.setValue("spos", leg.spos);
 			tt2_row.setValue("runId", leg.runId);

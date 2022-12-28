@@ -74,7 +74,7 @@ void StageResultsHtmlExporter::exportClass(int class_id, const QVariantList &cla
 		while(q2.next()) {
 			pos++;
 			quickevent::core::ResultStatus result_status(q2);
-			QString status = result_status.statusResultExport();
+			QString status = result_status.toHtmlExportString();
 			int time_ms = q2.value(QStringLiteral("timeMs")).toInt();
 			QString stime = og::TimeMs(time_ms).toString('.');
 			QString spos;

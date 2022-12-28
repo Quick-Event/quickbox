@@ -20,18 +20,18 @@ public:
 	bool isOk() const;
 	int getOGTime(int time) const;
 
-	QString statusXml() const;
-	QString statusEmmaTxt() const;
-	QString statusResultExport() const;
-	QString statusText() const;
+	QString toXmlExportString() const;
+	QString toEmmaExportString() const;
+	QString toHtmlExportString() const;
+	QString toString() const;
 
-	bool disqualified() const { return m_disqualified; }
-	bool disqualifiedByOrganizer() const { return m_disqualifiedByOrganizer; }
-	bool notCompeting() const { return m_notCompeting; }
-	bool missingPunch() const { return m_missingPunch; }
-	bool didNotStart() const { return m_didNotStart; }
-	bool didNotFinish() const { return m_didNotFinish; }
-	bool overTime() const { return m_overTime; }
+	bool idDisqualified() const { return m_disqualified; }
+	bool isDisqualifiedByOrganizer() const { return m_disqualifiedByOrganizer; }
+	bool isNotCompeting() const { return m_notCompeting; }
+	bool isMissingPunch() const { return m_missingPunch; }
+	bool isDidNotStart() const { return m_didNotStart; }
+	bool isDidNotFinish() const { return m_didNotFinish; }
+	bool isOverTime() const { return m_overTime; }
 
 	static QString dbRunsColumnList();
 private:

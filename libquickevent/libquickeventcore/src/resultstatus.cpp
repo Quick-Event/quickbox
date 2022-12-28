@@ -65,7 +65,7 @@ int ResultStatus::getOGTime(int time) const
 		return time;
 }
 
-QString ResultStatus::statusXml() const
+QString ResultStatus::toXmlExportString() const
 {
 	if (m_disqualified) {
 		if (m_disqualifiedByOrganizer)
@@ -88,7 +88,7 @@ QString ResultStatus::statusXml() const
 }
 
 
-QString ResultStatus::statusEmmaTxt() const
+QString ResultStatus::toEmmaExportString() const
 {
 	if (m_disqualified)	{
 		if (m_disqualifiedByOrganizer)
@@ -110,7 +110,7 @@ QString ResultStatus::statusEmmaTxt() const
 		return QStringLiteral("O.K.");
 }
 
-QString ResultStatus::statusResultExport() const
+QString ResultStatus::toHtmlExportString() const
 {
 	if (m_disqualified)	{
 		if (m_disqualifiedByOrganizer)
@@ -132,7 +132,7 @@ QString ResultStatus::statusResultExport() const
 		return QStringLiteral("OK");
 }
 
-QString ResultStatus::statusText() const
+QString ResultStatus::toString() const
 {
 	if (m_disqualified)	{
 		if (m_disqualifiedByOrganizer)
