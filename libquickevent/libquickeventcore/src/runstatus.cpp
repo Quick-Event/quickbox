@@ -1,26 +1,26 @@
-#include "resultstatus.h"
+#include "runstatus.h"
 #include "og/timems.h"
 #include <QCoreApplication>
 
 namespace quickevent {
 namespace core {
 
-ResultStatus::ResultStatus(qf::core::sql::Query &q)
+RunStatus::RunStatus(qf::core::sql::Query &q)
 {
 	fillFromQuery(q);
 }
 
-ResultStatus::ResultStatus(const qf::core::utils::TreeTableRow &ttr)
+RunStatus::RunStatus(const qf::core::utils::TreeTableRow &ttr)
 {
 	fillFromTreeTableRow(ttr);
 }
 
-QString ResultStatus::dbRunsColumnList()
+QString RunStatus::dbRunsColumnList()
 {
 	return QStringLiteral(" disqualified, disqualifiedByOrganizer, notCompeting, misPunch, notStart, notFinish, overTime");
 }
 
-void ResultStatus::fillFromQuery(qf::core::sql::Query &q)
+void RunStatus::fillFromQuery(qf::core::sql::Query &q)
 {
 	m_disqualified = q.value("runs.disqualified").toBool();
 	m_disqualifiedByOrganizer = q.value("runs.disqualifiedByOrganizer").toBool();
@@ -31,7 +31,7 @@ void ResultStatus::fillFromQuery(qf::core::sql::Query &q)
 	m_overTime = q.value("runs.overTime").toBool();
 }
 
-void ResultStatus::fillFromTreeTableRow(const qf::core::utils::TreeTableRow &ttr)
+void RunStatus::fillFromTreeTableRow(const qf::core::utils::TreeTableRow &ttr)
 {
 	m_disqualified = ttr.value(QStringLiteral("disqualified")).toBool();
 	m_disqualifiedByOrganizer = ttr.value("disqualifiedByOrganizer").toBool();
@@ -42,12 +42,12 @@ void ResultStatus::fillFromTreeTableRow(const qf::core::utils::TreeTableRow &ttr
 	m_overTime = ttr.value("overTime").toBool();
 }
 
-bool ResultStatus::isOk() const
+bool RunStatus::isOk() const
 {
 	return !(m_disqualified || m_notCompeting);
 }
 
-int ResultStatus::getOGTime(int time) const
+int RunStatus::getOGTime(int time) const
 {
 	if (m_disqualifiedByOrganizer)
 		return quickevent::core::og::TimeMs::DISQ_TIME_MSEC;
@@ -65,7 +65,7 @@ int ResultStatus::getOGTime(int time) const
 		return time;
 }
 
-QString ResultStatus::toXmlExportString() const
+QString RunStatus::toXmlExportString() const
 {
 	if (m_disqualified) {
 		if (m_disqualifiedByOrganizer)
@@ -88,7 +88,7 @@ QString ResultStatus::toXmlExportString() const
 }
 
 
-QString ResultStatus::toEmmaExportString() const
+QString RunStatus::toEmmaExportString() const
 {
 	if (m_disqualified)	{
 		if (m_disqualifiedByOrganizer)
@@ -110,7 +110,7 @@ QString ResultStatus::toEmmaExportString() const
 		return QStringLiteral("O.K.");
 }
 
-QString ResultStatus::toHtmlExportString() const
+QString RunStatus::toHtmlExportString() const
 {
 	if (m_disqualified)	{
 		if (m_disqualifiedByOrganizer)
@@ -132,26 +132,26 @@ QString ResultStatus::toHtmlExportString() const
 		return QStringLiteral("OK");
 }
 
-QString ResultStatus::toString() const
+QString RunStatus::toString() const
 {
 	if (m_disqualified)	{
 		if (m_disqualifiedByOrganizer)
-			return QCoreApplication::translate("ResultStatus","DISQ", "Disqualified");
+			return QCoreApplication::translate("RunStatus","DISQ", "Disqualified");
 		else if (m_missingPunch)
-			return QCoreApplication::translate("ResultStatus","MP", "Missing Punch");
+			return QCoreApplication::translate("RunStatus","MP", "Missing Punch");
 		else if (m_didNotStart)
-			return QCoreApplication::translate("ResultStatus","DNS", "Did Not Start");
+			return QCoreApplication::translate("RunStatus","DNS", "Did Not Start");
 		else if (m_didNotFinish)
-			return QCoreApplication::translate("ResultStatus","DNF", "Did Not Finish");
+			return QCoreApplication::translate("RunStatus","DNF", "Did Not Finish");
 		else if (m_overTime)
-			return QCoreApplication::translate("ResultStatus","OVRT", "Over Time");
+			return QCoreApplication::translate("RunStatus","OVRT", "Over Time");
 		else
 			return QStringLiteral("???");
 	}
 	else if (m_notCompeting)
-		return QCoreApplication::translate("ResultStatus","NC", "Not Competing");
+		return QCoreApplication::translate("RunStatus","NC", "Not Competing");
 	else
-		return QCoreApplication::translate("ResultStatus","OK");
+		return QCoreApplication::translate("RunStatus","OK");
 }
 
 } // namespace core

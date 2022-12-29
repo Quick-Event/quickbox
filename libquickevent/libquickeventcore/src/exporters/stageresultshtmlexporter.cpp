@@ -1,7 +1,7 @@
 #include "stageresultshtmlexporter.h"
 
 #include "../og/timems.h"
-#include "../resultstatus.h"
+#include "../runstatus.h"
 
 #include <qf/core/sql/query.h>
 #include <qf/core/sql/querybuilder.h>
@@ -73,12 +73,12 @@ void StageResultsHtmlExporter::exportClass(int class_id, const QVariantList &cla
 		int prev_time_ms = 0;
 		while(q2.next()) {
 			pos++;
-			quickevent::core::ResultStatus result_status(q2);
-			QString status = result_status.toHtmlExportString();
+			quickevent::core::RunStatus run_status(q2);
+			QString status = run_status.toHtmlExportString();
 			int time_ms = q2.value(QStringLiteral("timeMs")).toInt();
 			QString stime = og::TimeMs(time_ms).toString('.');
 			QString spos;
-			if(result_status.isOk()) {
+			if(run_status.isOk()) {
 				if(time_ms != prev_time_ms)
 					spos = QString::number(pos) + '.';
 			}

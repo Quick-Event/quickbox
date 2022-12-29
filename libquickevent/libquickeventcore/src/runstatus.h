@@ -7,12 +7,12 @@
 namespace quickevent {
 namespace core {
 
-class QUICKEVENTCORE_DECL_EXPORT ResultStatus
+class QUICKEVENTCORE_DECL_EXPORT RunStatus
 {
 public:
-	ResultStatus() = default;
-	ResultStatus(qf::core::sql::Query &q);
-	ResultStatus(const qf::core::utils::TreeTableRow &ttr);
+	RunStatus() = default;
+	RunStatus(qf::core::sql::Query &q);
+	RunStatus(const qf::core::utils::TreeTableRow &ttr);
 	// set all variables from query (table runs)
 	void fillFromQuery(qf::core::sql::Query &q);
 	void fillFromTreeTableRow(const qf::core::utils::TreeTableRow &ttr);

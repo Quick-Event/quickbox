@@ -4,7 +4,7 @@
 #include "../eventplugin.h"
 
 #include <quickevent/core/si/checkedcard.h>
-#include <quickevent/core/resultstatus.h>
+#include <quickevent/core/runstatus.h>
 
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/dialogs/dialog.h>
@@ -356,7 +356,7 @@ void EmmaClient::exportFinishRacomTxt()
 	qfs::QueryBuilder qb;
 	qfs::Query q2;
 
-	qb.select2("runs", "siId, isRunning, finishTimeMs, " + quickevent::core::ResultStatus::dbRunsColumnList())
+	qb.select2("runs", "siId, isRunning, finishTimeMs, " + quickevent::core::RunStatus::dbRunsColumnList())
 			.select2("cards", "id")
 			.from("runs")
 			.join("runs.id","cards.runId")
@@ -369,7 +369,7 @@ void EmmaClient::exportFinishRacomTxt()
 	while(q2.next()) {
 		int si = q2.value("runs.siId").toInt();
 		int fin_time = q2.value("runs.finishTimeMs").toInt();
-		quickevent::core::ResultStatus result_status(q2);
+		quickevent::core::RunStatus result_status(q2);
 		int cards_id = q2.value("cards.id").toInt();
 
 		if (si == 0 || last_si == si)

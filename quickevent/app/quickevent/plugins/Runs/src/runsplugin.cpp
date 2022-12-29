@@ -12,7 +12,7 @@
 #include <quickevent/core/codedef.h>
 #include <quickevent/core/utils.h>
 #include <quickevent/core/si/punchrecord.h>
-#include <quickevent/core/resultstatus.h>
+#include <quickevent/core/runstatus.h>
 #include <quickevent/gui/partwidget.h>
 
 #include <qf/qmlwidgets/framework/mainwindow.h>
@@ -894,7 +894,7 @@ QString RunsPlugin::resultsIofXml30Stage(int stage_id)
 				);
 			}
 
-			quickevent::core::ResultStatus result_status(tt2_row);
+			quickevent::core::RunStatus run_status(tt2_row);
 
 			QVariantList result{"Result"};
 			//int run_id = tt2_row.value(QStringLiteral("runs.id")).toInt();
@@ -908,20 +908,20 @@ QString RunsPlugin::resultsIofXml30Stage(int stage_id)
 			if (j == 0) // fill firstTime with time of first runner
 				first_time = time;
 			int time_behind = time - first_time;
-			if (!result_status.isDidNotStart() && !result_status.isDidNotFinish())
+			if (!run_status.isDidNotStart() && !run_status.isDidNotFinish())
 			{
 				result.insert(result.count(), QVariantList{"FinishTime", datetime_to_string(stage_start_date_time.addMSecs(ftime))});
 				result.insert(result.count(), QVariantList{"Time", time / 1000});
 				result.insert(result.count(), QVariantList{"TimeBehind", time_behind / 1000});
 			}
 
-			if (result_status.isOk()) {
+			if (run_status.isOk()) {
 				// The position in the result list for the person that the result belongs to.
 				// This element should only be present when the Status element is set to OK.
 				result.insert(result.count(), QVariantList{"Position", tt2_row.value(QStringLiteral("npos"))});
 			}
-			result.insert(result.count(), QVariantList{"Status", result_status.toXmlExportString()});
-			if (!result_status.isDidNotStart())
+			result.insert(result.count(), QVariantList{"Status", run_status.toXmlExportString()});
+			if (!run_status.isDidNotStart())
 			{
 				int ix = stpTime_0_ix;
 				for(const QVariant &v : codes) {
@@ -1953,15 +1953,15 @@ QString RunsPlugin::export_resultsHtmlStage(bool with_laps)
 			append_list(trr, QVariantList{"td", tt2_row.value(QStringLiteral("clubs.name"))});
 			append_list(trr, QVariantList{"td", QVariantMap{{"align", "right"}}, quickevent::core::og::TimeMs::fromVariant(tt2_row.value("timeMs")).toString()});
 
-			quickevent::core::ResultStatus result_status(tt2_row);
+			quickevent::core::RunStatus run_status(tt2_row);
 			QString loss_str;
-			if (result_status.isOk()) {
+			if (run_status.isOk()) {
 				loss_str = quickevent::core::og::TimeMs::fromVariant(tt2_row.value("loss")).toString();
 				if(!loss_str.isEmpty())
 					loss_str = "+" + loss_str;
 			}
 			else {
-				loss_str = result_status.toString();
+				loss_str = run_status.toString();
 			}
 			append_list(trr, QVariantList{"td", QVariantMap{{"align", "right"}}, loss_str});
 			append_list(table, trr);
@@ -2230,13 +2230,13 @@ void RunsPlugin::exportResultsHtmlStageWithLaps(const QString &laps_file_name, c
 		append_list(trr2, QVariantList{"td", QVariantMap{{QStringLiteral("class"), "br bb"}}, "\u00A0"});
 		append_list(trr2, QVariantList{"td", QVariantMap{{QStringLiteral("class"), "br bb"}}, tt_row.value(QStringLiteral("registration"))});
 
-		quickevent::core::ResultStatus result_status(tt_row);
+		quickevent::core::RunStatus run_status(tt_row);
 		QString disq_str;
-		if (result_status.isOk()) {
+		if (run_status.isOk()) {
 			disq_str = "\u00A0";
 		}
 		else {
-			disq_str = result_status.toString();
+			disq_str = run_status.toString();
 		}
 		append_list(trr2, QVariantList{"td", QVariantMap{{QStringLiteral("class"), "br bb"}}, disq_str});
 		append_list(trr2, QVariantList{"td", QVariantMap{{QStringLiteral("class"), "brb bb"}}, "\u00A0"});

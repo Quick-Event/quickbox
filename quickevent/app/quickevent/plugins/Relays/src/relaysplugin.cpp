@@ -6,7 +6,7 @@
 #include <quickevent/core/og/timems.h>
 #include <quickevent/core/si/checkedcard.h>
 #include <quickevent/core/utils.h>
-#include <quickevent/core/resultstatus.h>
+#include <quickevent/core/runstatus.h>
 
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/framework/dockwidget.h>
@@ -116,7 +116,7 @@ struct Leg
 	int pos = 0;
 	int stime = 0;
 	int spos = 0;
-	quickevent::core::ResultStatus resultStatus;
+	quickevent::core::RunStatus runStatus;
 };
 
 struct Organization {
@@ -138,10 +138,10 @@ struct Relay
 		int ret = 0;
 		for (int i = 0; i < qMin(legs.count(), leg_cnt); ++i) {
 			const Leg &leg = legs[i];
-			if (leg.resultStatus.isOk())
+			if (leg.runStatus.isOk())
 				ret += leg.time;
 			else
-				return leg.resultStatus.getOGTime(leg.time);
+				return leg.runStatus.getOGTime(leg.time);
 		}
 		return ret;
 	}
@@ -149,7 +149,7 @@ struct Relay
 	{
 		for (int i = 0; i < qMin(legs.count(), leg_cnt); ++i) {
 			const Leg &leg = legs[i];
-			return leg.resultStatus.toXmlExportString();
+			return leg.runStatus.toXmlExportString();
 		}
 		return QStringLiteral("DidNotStart");	// relay leg not found
 	}
@@ -271,7 +271,7 @@ qf::core::utils::TreeTable RelaysPlugin::nLegsClassResultsTable(int class_id, in
 	}
 	for (int legno = 1; legno <= leg_count; ++legno) {
 		qfs::QueryBuilder qb;
-		qb.select2("runs", "id, relayId, timeMs," + quickevent::core::ResultStatus::dbRunsColumnList())
+		qb.select2("runs", "id, relayId, timeMs," + quickevent::core::RunStatus::dbRunsColumnList())
 				.from("runs")
 				.joinRestricted("runs.relayId", "relays.id",
 								"relays.classId=" QF_IARG(class_id)
@@ -294,9 +294,9 @@ qf::core::utils::TreeTable RelaysPlugin::nLegsClassResultsTable(int class_id, in
 						qfError() << "internal error, leg:" << legno << "runId check:" << leg.runId << "should equal" << run_id;
 					}
 					else {
-						leg.resultStatus.fillFromQuery(q);
+						leg.runStatus.fillFromQuery(q);
 						leg.time = q.value("timeMs").toInt();
-						leg.pos = leg.resultStatus.isOk()? run_pos : 0;
+						leg.pos = leg.runStatus.isOk()? run_pos : 0;
 						run_pos++;
 					}
 					break;
@@ -310,7 +310,7 @@ qf::core::utils::TreeTable RelaysPlugin::nLegsClassResultsTable(int class_id, in
 		for (int i = 0; i < relays.count(); ++i) {
 			Relay &relay = relays[i];
 			Leg &leg = relay.legs[legno - 1];
-			if(leg.resultStatus.isOk()) {
+			if(leg.runStatus.isOk()) {
 				if(legno == 1)
 					leg.stime = leg.time;
 				else if(relay.legs[legno-2].stime > 0)
@@ -400,9 +400,9 @@ qf::core::utils::TreeTable RelaysPlugin::nLegsClassResultsTable(int class_id, in
 			tt2_row.setValue("firstName", leg.firstName);
 			tt2_row.setValue("lastName", leg.lastName);
 			tt2_row.setValue("registration", leg.reg);
-			tt2_row.setValue("time", leg.resultStatus.getOGTime(leg.time));
+			tt2_row.setValue("time", leg.runStatus.getOGTime(leg.time));
 			tt2_row.setValue("pos", leg.pos);
-			tt2_row.setValue("status", leg.resultStatus.toXmlExportString());
+			tt2_row.setValue("status", leg.runStatus.toXmlExportString());
 			tt2_row.setValue("stime", leg.stime);
 			tt2_row.setValue("spos", leg.spos);
 			tt2_row.setValue("runId", leg.runId);

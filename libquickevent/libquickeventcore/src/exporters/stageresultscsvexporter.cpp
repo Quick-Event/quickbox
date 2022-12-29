@@ -1,7 +1,7 @@
 #include "stageresultscsvexporter.h"
 
 #include "../og/timems.h"
-#include "../resultstatus.h"
+#include "../runstatus.h"
 
 #include <qf/core/sql/query.h>
 #include <qf/core/sql/querybuilder.h>
@@ -117,10 +117,10 @@ void StageResultsCsvExporter::exportClass(int class_id, QTextStream &csv)
 		QString spos; // keep last number when same time
 		while(q2.next()) {
 			pos++;
-			quickevent::core::ResultStatus result_status(q2);
+			quickevent::core::RunStatus run_status(q2);
 			int time_ms = q2.value(QStringLiteral("timeMs")).toInt();
 			QString stime = og::TimeMs(time_ms).toString('.');
-			if(result_status.isOk()) {
+			if(run_status.isOk()) {
 				if(time_ms != prev_time_ms)
 					spos = QString::number(pos);
 			}
@@ -141,7 +141,7 @@ void StageResultsCsvExporter::exportClass(int class_id, QTextStream &csv)
 			csv << club << m_separator;
 			csv << q2.value("competitors.country").toString() << m_separator;
 			csv << stime << m_separator;
-			csv << result_status.toHtmlExportString();
+			csv << run_status.toHtmlExportString();
 			csv << Qt::endl;
 		}
 	}
