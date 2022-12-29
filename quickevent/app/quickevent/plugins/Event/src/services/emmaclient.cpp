@@ -369,12 +369,12 @@ void EmmaClient::exportFinishRacomTxt()
 	while(q2.next()) {
 		int si = q2.value("runs.siId").toInt();
 		int fin_time = q2.value("runs.finishTimeMs").toInt();
-		quickevent::core::RunStatus result_status(q2);
+		auto run_status = quickevent::core::RunStatus::fromQuery(q2);
 		int cards_id = q2.value("cards.id").toInt();
 
 		if (si == 0 || last_si == si)
 			continue; // without si or duplicate readout are unusable
-		if (cards_id == 0 && result_status.isOk())
+		if (cards_id == 0 && run_status.isOk())
 			continue; // skip if not yet card readout and not DNS,DNF, ...
 		last_si = si;
 		QString s = QString("%1").arg(si , 8, 10, QChar(' '));
@@ -384,7 +384,7 @@ void EmmaClient::exportFinishRacomTxt()
 		s += tm.toString(QStringLiteral("HH:mm:ss.zzz"));
 		s += '0';
 		s += '/';
-		s += result_status.toEmmaExportString();
+		s += run_status.toEmmaExportString();
 		ts << s << "\n";
 	}
 }

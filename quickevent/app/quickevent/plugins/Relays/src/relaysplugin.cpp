@@ -294,7 +294,7 @@ qf::core::utils::TreeTable RelaysPlugin::nLegsClassResultsTable(int class_id, in
 						qfError() << "internal error, leg:" << legno << "runId check:" << leg.runId << "should equal" << run_id;
 					}
 					else {
-						leg.runStatus.fillFromQuery(q);
+						leg.runStatus = quickevent::core::RunStatus::fromQuery(q);
 						leg.time = q.value("timeMs").toInt();
 						leg.pos = leg.runStatus.isOk()? run_pos : 0;
 						run_pos++;

@@ -3,19 +3,19 @@
 #include "quickeventcoreglobal.h"
 #include <qf/core/sql/query.h>
 #include <qf/core/utils/treetable.h>
+#include <QCoreApplication>
 
 namespace quickevent {
 namespace core {
 
 class QUICKEVENTCORE_DECL_EXPORT RunStatus
 {
+	Q_DECLARE_TR_FUNCTIONS(RunStatus)
 public:
 	RunStatus() = default;
-	RunStatus(qf::core::sql::Query &q);
-	RunStatus(const qf::core::utils::TreeTableRow &ttr);
 	// set all variables from query (table runs)
-	void fillFromQuery(qf::core::sql::Query &q);
-	void fillFromTreeTableRow(const qf::core::utils::TreeTableRow &ttr);
+	static RunStatus fromQuery(qf::core::sql::Query &q);
+	static RunStatus fromTreeTableRow(const qf::core::utils::TreeTableRow &ttr);
 
 	bool isOk() const;
 	int getOGTime(int time) const;

@@ -117,7 +117,7 @@ void StageResultsCsvExporter::exportClass(int class_id, QTextStream &csv)
 		QString spos; // keep last number when same time
 		while(q2.next()) {
 			pos++;
-			quickevent::core::RunStatus run_status(q2);
+			auto run_status = quickevent::core::RunStatus::fromQuery(q2);
 			int time_ms = q2.value(QStringLiteral("timeMs")).toInt();
 			QString stime = og::TimeMs(time_ms).toString('.');
 			if(run_status.isOk()) {

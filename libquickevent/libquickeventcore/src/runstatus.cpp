@@ -5,41 +5,35 @@
 namespace quickevent {
 namespace core {
 
-RunStatus::RunStatus(qf::core::sql::Query &q)
-{
-	fillFromQuery(q);
-}
-
-RunStatus::RunStatus(const qf::core::utils::TreeTableRow &ttr)
-{
-	fillFromTreeTableRow(ttr);
-}
-
 QString RunStatus::dbRunsColumnList()
 {
 	return QStringLiteral(" disqualified, disqualifiedByOrganizer, notCompeting, misPunch, notStart, notFinish, overTime");
 }
 
-void RunStatus::fillFromQuery(qf::core::sql::Query &q)
+RunStatus RunStatus::fromQuery(qf::core::sql::Query &q)
 {
-	m_disqualified = q.value("runs.disqualified").toBool();
-	m_disqualifiedByOrganizer = q.value("runs.disqualifiedByOrganizer").toBool();
-	m_notCompeting = q.value("runs.notCompeting").toBool();
-	m_missingPunch = q.value("runs.misPunch").toBool();
-	m_didNotStart = q.value("runs.notStart").toBool();
-	m_didNotFinish = q.value("runs.notFinish").toBool();
-	m_overTime = q.value("runs.overTime").toBool();
+	RunStatus new_obj;
+	new_obj.m_disqualified = q.value("runs.disqualified").toBool();
+	new_obj.m_disqualifiedByOrganizer = q.value("runs.disqualifiedByOrganizer").toBool();
+	new_obj.m_notCompeting = q.value("runs.notCompeting").toBool();
+	new_obj.m_missingPunch = q.value("runs.misPunch").toBool();
+	new_obj.m_didNotStart = q.value("runs.notStart").toBool();
+	new_obj.m_didNotFinish = q.value("runs.notFinish").toBool();
+	new_obj.m_overTime = q.value("runs.overTime").toBool();
+	return new_obj;
 }
 
-void RunStatus::fillFromTreeTableRow(const qf::core::utils::TreeTableRow &ttr)
+RunStatus RunStatus::fromTreeTableRow(const qf::core::utils::TreeTableRow &ttr)
 {
-	m_disqualified = ttr.value(QStringLiteral("disqualified")).toBool();
-	m_disqualifiedByOrganizer = ttr.value("disqualifiedByOrganizer").toBool();
-	m_notCompeting = ttr.value("notCompeting").toBool();
-	m_missingPunch = ttr.value("misPunch").toBool();
-	m_didNotStart = ttr.value("notStart").toBool();
-	m_didNotFinish = ttr.value("notFinish").toBool();
-	m_overTime = ttr.value("overTime").toBool();
+	RunStatus new_obj;
+	new_obj.m_disqualified = ttr.value(QStringLiteral("disqualified")).toBool();
+	new_obj.m_disqualifiedByOrganizer = ttr.value("disqualifiedByOrganizer").toBool();
+	new_obj.m_notCompeting = ttr.value("notCompeting").toBool();
+	new_obj.m_missingPunch = ttr.value("misPunch").toBool();
+	new_obj.m_didNotStart = ttr.value("notStart").toBool();
+	new_obj.m_didNotFinish = ttr.value("notFinish").toBool();
+	new_obj.m_overTime = ttr.value("overTime").toBool();
+	return new_obj;
 }
 
 bool RunStatus::isOk() const
@@ -136,22 +130,22 @@ QString RunStatus::toString() const
 {
 	if (m_disqualified)	{
 		if (m_disqualifiedByOrganizer)
-			return QCoreApplication::translate("RunStatus","DISQ", "Disqualified");
+			return tr("DISQ", "Disqualified");
 		else if (m_missingPunch)
-			return QCoreApplication::translate("RunStatus","MP", "Missing Punch");
+			return tr("MP", "Missing Punch");
 		else if (m_didNotStart)
-			return QCoreApplication::translate("RunStatus","DNS", "Did Not Start");
+			return tr("DNS", "Did Not Start");
 		else if (m_didNotFinish)
-			return QCoreApplication::translate("RunStatus","DNF", "Did Not Finish");
+			return tr("DNF", "Did Not Finish");
 		else if (m_overTime)
-			return QCoreApplication::translate("RunStatus","OVRT", "Over Time");
+			return tr("OVRT", "Over Time");
 		else
 			return QStringLiteral("???");
 	}
 	else if (m_notCompeting)
-		return QCoreApplication::translate("RunStatus","NC", "Not Competing");
+		return tr("NC", "Not Competing");
 	else
-		return QCoreApplication::translate("RunStatus","OK");
+		return tr("OK");
 }
 
 } // namespace core

@@ -894,7 +894,7 @@ QString RunsPlugin::resultsIofXml30Stage(int stage_id)
 				);
 			}
 
-			quickevent::core::RunStatus run_status(tt2_row);
+			auto run_status = quickevent::core::RunStatus::fromTreeTableRow(tt2_row);
 
 			QVariantList result{"Result"};
 			//int run_id = tt2_row.value(QStringLiteral("runs.id")).toInt();
@@ -1953,7 +1953,7 @@ QString RunsPlugin::export_resultsHtmlStage(bool with_laps)
 			append_list(trr, QVariantList{"td", tt2_row.value(QStringLiteral("clubs.name"))});
 			append_list(trr, QVariantList{"td", QVariantMap{{"align", "right"}}, quickevent::core::og::TimeMs::fromVariant(tt2_row.value("timeMs")).toString()});
 
-			quickevent::core::RunStatus run_status(tt2_row);
+			auto run_status = quickevent::core::RunStatus::fromTreeTableRow(tt2_row);
 			QString loss_str;
 			if (run_status.isOk()) {
 				loss_str = quickevent::core::og::TimeMs::fromVariant(tt2_row.value("loss")).toString();
@@ -2230,7 +2230,7 @@ void RunsPlugin::exportResultsHtmlStageWithLaps(const QString &laps_file_name, c
 		append_list(trr2, QVariantList{"td", QVariantMap{{QStringLiteral("class"), "br bb"}}, "\u00A0"});
 		append_list(trr2, QVariantList{"td", QVariantMap{{QStringLiteral("class"), "br bb"}}, tt_row.value(QStringLiteral("registration"))});
 
-		quickevent::core::RunStatus run_status(tt_row);
+		auto run_status = quickevent::core::RunStatus::fromTreeTableRow(tt_row);
 		QString disq_str;
 		if (run_status.isOk()) {
 			disq_str = "\u00A0";
