@@ -33,7 +33,7 @@ public:
 	bool isDidNotFinish() const { return m_didNotFinish; }
 	bool isOverTime() const { return m_overTime; }
 
-	static QString dbRunsColumnList();
+	static QStringList runsTableColumns();
 private:
 	bool m_disqualified = false;
 	bool m_disqualifiedByOrganizer = false;

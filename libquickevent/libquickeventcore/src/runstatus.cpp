@@ -5,9 +5,9 @@
 namespace quickevent {
 namespace core {
 
-QString RunStatus::dbRunsColumnList()
+QStringList RunStatus::runsTableColumns()
 {
-	return QStringLiteral(" disqualified, disqualifiedByOrganizer, notCompeting, misPunch, notStart, notFinish, overTime");
+	return {"disqualified", "disqualifiedByOrganizer", "notCompeting", "misPunch", "notStart", "notFinish", "overTime"};
 }
 
 RunStatus RunStatus::fromQuery(qf::core::sql::Query &q)

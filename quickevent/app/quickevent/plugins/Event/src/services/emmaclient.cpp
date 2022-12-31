@@ -356,7 +356,7 @@ void EmmaClient::exportFinishRacomTxt()
 	qfs::QueryBuilder qb;
 	qfs::Query q2;
 
-	qb.select2("runs", "siId, isRunning, finishTimeMs, " + quickevent::core::RunStatus::dbRunsColumnList())
+	qb.select2("runs", "siId, isRunning, finishTimeMs, " + quickevent::core::RunStatus::runsTableColumns().join(","))
 			.select2("cards", "id")
 			.from("runs")
 			.join("runs.id","cards.runId")
