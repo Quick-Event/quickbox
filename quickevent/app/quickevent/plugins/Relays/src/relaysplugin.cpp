@@ -141,7 +141,7 @@ struct Relay
 			if (leg.runStatus.isOk())
 				ret += leg.time;
 			else
-				return leg.runStatus.getOGTime(leg.time);
+				return leg.runStatus.toTime();
 		}
 		return ret;
 	}
@@ -400,7 +400,7 @@ qf::core::utils::TreeTable RelaysPlugin::nLegsClassResultsTable(int class_id, in
 			tt2_row.setValue("firstName", leg.firstName);
 			tt2_row.setValue("lastName", leg.lastName);
 			tt2_row.setValue("registration", leg.reg);
-			tt2_row.setValue("time", leg.runStatus.getOGTime(leg.time));
+			tt2_row.setValue("time", leg.runStatus.isOk() ? leg.time : leg.runStatus.toTime());
 			tt2_row.setValue("pos", leg.pos);
 			tt2_row.setValue("status", leg.runStatus.toXmlExportString());
 			tt2_row.setValue("stime", leg.stime);

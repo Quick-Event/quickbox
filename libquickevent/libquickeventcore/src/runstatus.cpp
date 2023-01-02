@@ -41,22 +41,26 @@ bool RunStatus::isOk() const
 	return !(m_disqualified || m_notCompeting);
 }
 
-int RunStatus::getOGTime(int time) const
+int RunStatus::toTime() const
 {
-	if (m_disqualifiedByOrganizer)
-		return quickevent::core::og::TimeMs::DISQ_TIME_MSEC;
+	if (m_disqualified) {
+		if (m_disqualifiedByOrganizer)
+			return quickevent::core::og::TimeMs::DISQ_TIME_MSEC;
+		else if (m_missingPunch)
+			return quickevent::core::og::TimeMs::MISPUNCH_TIME_MSEC;
+		else if (m_didNotStart)
+			return quickevent::core::og::TimeMs::NOT_START_TIME_MSEC;
+		else if (m_didNotFinish)
+			return quickevent::core::og::TimeMs::NOT_FINISH_TIME_MSEC;
+		else if (m_overTime)
+			return quickevent::core::og::TimeMs::OVERTIME_TIME_MSEC;
+		else
+			return 0;
+	}
 	else if (m_notCompeting)
 		return quickevent::core::og::TimeMs::NOT_COMPETITING_TIME_MSEC;
-	else if (m_didNotStart)
-		return quickevent::core::og::TimeMs::NOT_START_TIME_MSEC;
-	else if (m_didNotFinish)
-		return quickevent::core::og::TimeMs::NOT_FINISH_TIME_MSEC;
-	else if (m_overTime)
-		return quickevent::core::og::TimeMs::OVERTIME_TIME_MSEC;
-	else if (m_missingPunch && m_disqualified)
-		return quickevent::core::og::TimeMs::MISPUNCH_TIME_MSEC;
 	else
-		return time;
+		return 0;
 }
 
 QString RunStatus::toXmlExportString() const
