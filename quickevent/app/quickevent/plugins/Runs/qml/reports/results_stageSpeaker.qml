@@ -128,21 +128,7 @@ Report {
 							Para {
 								width: 10
 								textFn: function() {
-									if(runnersDetail.rowData("disqualified")) {
-										if (runnersDetail.rowData("disqualifiedByOrganizer"))
-											return qsTr("DISQ");
-										if (runnersDetail.rowData("misPunch"))
-											return qsTr("MP");
-										if (runnersDetail.rowData("notStart"))
-											return qsTr("DNS");
-										if (runnersDetail.rowData("notFinish"))
-											return qsTr("DNF");
-										if (runnersDetail.rowData("overTime"))
-											return qsTr("OVRT");
-									}
-									if(runnersDetail.rowData("notCompeting"))
-										return qsTr("NC");
-									return "";
+									return OGTime.detailRunStatusToString(runnersDetail);
 								}
 							}
 						}

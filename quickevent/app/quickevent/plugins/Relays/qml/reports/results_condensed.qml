@@ -12,24 +12,6 @@ Report {
 	property bool isPrintStartNumbers: false
 	property var options
 
-	function ogTimeToString(time_ms)
-	{
-		//return "999.99";
-		if(time_ms === OGTime.DISQ_TIME_MSEC)
-			return qsTr("DISQ");
-		if(time_ms === OGTime.MISPUNCH_TIME_MSEC)
-			return qsTr("MP");
-		if(time_ms === OGTime.NOT_COMPETITING_TIME_MSEC)
-			return qsTr("NC");
-		if(time_ms === OGTime.NOT_FINISH_TIME_MSEC)
-			return qsTr("DNF");
-		if(time_ms === OGTime.NOT_START_TIME_MSEC)
-			return qsTr("DNS");
-		if(time_ms === OGTime.OVERTIME_TIME_MSEC)
-			return qsTr("OVRT");
-		return OGTime.msecToString_mmss(time_ms);
-	}
-
 	function ogSumTimeToString(time_ms)
 	{
 		//return "999.99";
@@ -149,7 +131,7 @@ Report {
 							width: "%"
 							layout: Frame.LayoutVertical
 							function dataFn(field_name) {return function() {return rowData(field_name);}}
-							Space {height: 2}
+							//Space {height: 2}
 							Frame {
 								width: "%"
 								layout: Frame.LayoutHorizontal
@@ -169,7 +151,7 @@ Report {
 								Para {
 									width: 15
 									halign: Frame.AlignRight
-									textFn: function() {return root.ogTimeToString(relayDetail.rowData("time"))}
+									textFn: function() {return OGTime.ogTimeToString(relayDetail.rowData("time"))}
 								}
 								Para {
 									width: 17
