@@ -34,7 +34,7 @@ bool ClassDocument::saveData()
 			//int si_id = value("competitors.siId").toInt();
 
 			int stage_count = getPlugin<EventPlugin>()->stageCount();
-			qf::core::sql::Query q(model()->connectionName());
+			qf::core::sql::Query q(sqlModel()->connectionName());
 			q.prepare("INSERT INTO classdefs (classId, stageId) VALUES (:classId, :stageId)");
 			for(int i=0; i<stage_count; i++) {
 				q.bindValue(":classId", class_id);
@@ -54,7 +54,7 @@ bool ClassDocument::dropData()
 	bool ret = false;
 	auto id = dataId();
 	{
-		qf::core::sql::Query q(model()->connectionName());
+		qf::core::sql::Query q(sqlModel()->connectionName());
 		q.prepare("DELETE FROM classdefs WHERE classId = :classId");
 		q.bindValue(":classId", id);
 		q.exec(qf::core::Exception::Throw);
