@@ -12,7 +12,7 @@
 
 #include <QDialog>
 
-namespace Ui {class DlgIndexDef;};
+namespace Ui {class DlgIndexDef;}
 
 class QSqlDatabase;
 

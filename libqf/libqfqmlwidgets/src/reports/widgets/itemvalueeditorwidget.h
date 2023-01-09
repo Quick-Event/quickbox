@@ -14,7 +14,7 @@ namespace qf {
 namespace qmlwidgets {
 namespace reports {
 
-namespace Ui {class ItemValueEditorWidget;};
+namespace Ui {class ItemValueEditorWidget;}
 
 
 class  ItemValueEditorWidget : public qf::qmlwidgets::framework::DialogWidget

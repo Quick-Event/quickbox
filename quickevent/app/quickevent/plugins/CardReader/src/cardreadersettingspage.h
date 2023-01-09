@@ -12,7 +12,7 @@
 
 namespace CardReader {
 
-namespace Ui {class CardReaderSettingsPage;};
+namespace Ui {class CardReaderSettingsPage;}
 
 //class CardReaderWidget;
 

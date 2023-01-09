@@ -4,7 +4,7 @@
 
 namespace Receipts {
 
-namespace Ui {class ReceiptsSettingsPage;};
+namespace Ui {class ReceiptsSettingsPage;}
 
 class  ReceiptsSettingsPage : public Core::SettingsPage
 {

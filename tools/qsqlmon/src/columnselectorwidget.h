@@ -12,7 +12,7 @@
 #include <qf/qmlwidgets/framework/dialogwidget.h>
 
 class QSqlDatabase;
-namespace Ui {class ColumnSelectorWidget;};
+namespace Ui {class ColumnSelectorWidget;}
 
 
 class  ColumnSelectorWidget : public qf::qmlwidgets::framework::DialogWidget

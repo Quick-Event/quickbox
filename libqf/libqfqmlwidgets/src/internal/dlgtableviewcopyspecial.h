@@ -7,7 +7,7 @@ namespace qf {
 namespace qmlwidgets {
 namespace internal {
 
-namespace Ui {class DlgTableViewCopySpecial;};
+namespace Ui {class DlgTableViewCopySpecial;}
 
 class DlgTableViewCopySpecial : public QDialog
 {
