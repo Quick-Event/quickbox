@@ -60,7 +60,7 @@ public:
 		QVariantMap columnCaptions() const {return value("columnCaptions").toMap();}
 		TextExportOptions& setColumnCaptions(const QVariantMap &cc) {this->operator[]("columnCaptions") = cc; return *this;}
 
-		FieldQuoting fieldQuotingPolicy() const {return (FieldQuoting)(value("fieldQuotingPolicy", IfNecessary).toInt());}
+		FieldQuoting fieldQuotingPolicy() const {return static_cast<FieldQuoting>(value("fieldQuotingPolicy", IfNecessary).toInt());}
 		TextExportOptions& setFieldQuotingPolicy(FieldQuoting fq) {this->operator[]("fieldQuotingPolicy") = fq; return *this;}
 
 		//QF_VARIANTMAP_FIELD(FieldQuoting, f, setF, ieldQuotingPolicy, IfNecessary)
@@ -138,7 +138,7 @@ public:
 		QString tableId() const;
 		QString toString() const;
 
-		QVariant::Type type() const {return (QVariant::Type)d->userType;}
+		QVariant::Type type() const {return static_cast<QVariant::Type>(d->userType);}
 		void setType(QVariant::Type t) {d->userType = t;}
 		void setUserType(int t) {d->userType = t;}
 		QF_SHARED_CLASS_FIELD_RW(QString, n, setN, ame)
