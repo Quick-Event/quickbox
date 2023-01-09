@@ -14,14 +14,14 @@ SqlDataDocument::~SqlDataDocument()
 
 }
 
-SqlTableModel *SqlDataDocument::model()
+SqlTableModel *SqlDataDocument::sqlModel()
 {
 	return qobject_cast<SqlTableModel*>(Super::model());
 }
 
 qf::core::sql::QueryBuilder SqlDataDocument::queryBuilder()
 {
-	SqlTableModel *m = model();
+	SqlTableModel *m = sqlModel();
 	if(m)
 		return m->queryBuilder();
 	return qf::core::sql::QueryBuilder();
@@ -29,7 +29,7 @@ qf::core::sql::QueryBuilder SqlDataDocument::queryBuilder()
 
 void SqlDataDocument::setQueryBuilder(const qf::core::sql::QueryBuilder &qb)
 {
-	SqlTableModel *m = model();
+	SqlTableModel *m = sqlModel();
 	QF_ASSERT(m != nullptr, "Document model is NULL", return);
 	m->setQueryBuilder(qb, false);
 }
@@ -43,7 +43,7 @@ bool SqlDataDocument::loadData()
 {
 	qfLogFuncFrame();
 	bool ret = false;
-	SqlTableModel *md = model();
+	SqlTableModel *md = sqlModel();
 	if(!md) {
 		qfWarning() << "Model is NULL";
 		return false;
