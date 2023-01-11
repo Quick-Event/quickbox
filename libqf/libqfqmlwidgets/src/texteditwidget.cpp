@@ -15,6 +15,9 @@
 #include <QPrinter>
 #include <QStyle>
 #include <QTextStream>
+#if QT_VERSION_MAJOR < 6
+#include <QTextCodec>
+#endif
 
 namespace qfu = qf::core::utils;
 using namespace qf::qmlwidgets;
