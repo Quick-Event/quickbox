@@ -12,7 +12,7 @@
 #include <QDialog>
 
 
-namespace Ui {class DlgSettings;};
+namespace Ui {class DlgSettings;}
 
 //! TODO: write class documentation.
 class  DlgSettings : public QDialog
