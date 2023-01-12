@@ -459,7 +459,7 @@ Connection::IndexList Connection::indexes(const QString& tbl_name) const
 				int ix = s.lastIndexOf('(');
 				if(ix > 0) {
 					s = s.mid(ix+1);
-					s = s.mid(0, s.count()-1);
+					s = s.mid(0, s.size()-1);
 					QStringList sl = s.split(',');
 					df.fields = sl;
 				}
