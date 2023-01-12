@@ -156,8 +156,13 @@ QString Connection::info(int verbosity) const
 static QString formatValueForSql(const QVariant &val)
 {
 	QString ret = val.toString();
-	switch(val.type()) {
-	case QVariant::String:
+#if QT_VERSION_MAJOR >= 6
+	auto type = val.typeId();
+#else
+	int type = val.type();
+#endif
+	switch(type) {
+	case QMetaType::QString:
 		ret = "'" + ret + "'";
 		break;
 	default:

@@ -71,11 +71,11 @@ QVariantMap ReceiptsPlugin::readCardTablesData(int card_id)
 	quickevent::core::si::ReadCard read_card = getPlugin<CardReaderPlugin>()->readCard(card_id);
 	{
 		qfu::TreeTable tt;
-		tt.appendColumn("position", QVariant::Int);
-		tt.appendColumn("code", QVariant::Int);
-		tt.appendColumn("punchTimeMs", QVariant::Int);
-		tt.appendColumn("stpTimeMs", QVariant::Int);
-		tt.appendColumn("lapTimeMs", QVariant::Int);
+		tt.appendColumn("position", QMetaType(QMetaType::Int));
+		tt.appendColumn("code", QMetaType(QMetaType::Int));
+		tt.appendColumn("punchTimeMs", QMetaType(QMetaType::Int));
+		tt.appendColumn("stpTimeMs", QMetaType(QMetaType::Int));
+		tt.appendColumn("lapTimeMs", QMetaType(QMetaType::Int));
  		QMapIterator<QString, QVariant> it(read_card);
 		while(it.hasNext()) {
 			it.next();
@@ -348,14 +348,14 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 	}
 	{
 		qfu::TreeTable tt;
-		tt.appendColumn("position", QVariant::Int);
-		tt.appendColumn("code", QVariant::Int);
-		tt.appendColumn("stpTimeMs", QVariant::Int);
-		tt.appendColumn("lapTimeMs", QVariant::Int);
-		tt.appendColumn("standLap", QVariant::Int);
-		tt.appendColumn("standCummulative", QVariant::Int);
-		tt.appendColumn("lossMs", QVariant::Int);
-		tt.appendColumn("distance", QVariant::Int);
+		tt.appendColumn("position", QMetaType(QMetaType::Int));
+		tt.appendColumn("code", QMetaType(QMetaType::Int));
+		tt.appendColumn("stpTimeMs", QMetaType(QMetaType::Int));
+		tt.appendColumn("lapTimeMs", QMetaType(QMetaType::Int));
+		tt.appendColumn("standLap", QMetaType(QMetaType::Int));
+		tt.appendColumn("standCummulative", QMetaType(QMetaType::Int));
+		tt.appendColumn("lossMs", QMetaType(QMetaType::Int));
+		tt.appendColumn("distance", QMetaType(QMetaType::Int));
 		QMapIterator<QString, QVariant> it(checked_card);
 		while(it.hasNext()) {
 			it.next();

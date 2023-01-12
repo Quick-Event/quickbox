@@ -149,7 +149,7 @@ const qf::core::utils::Table &CompetitorsPlugin::registrationsTable()
 	if(m_registrationsTable.isNull() && !m->table().isNull()) {
 		m_registrationsTable = m->table();
 		auto c_nsk = QStringLiteral("competitorNameAscii7");
-		m_registrationsTable.appendColumn(c_nsk, QVariant::String);
+		m_registrationsTable.appendColumn(c_nsk, QMetaType::QString);
 		int ix_nsk = m_registrationsTable.fields().fieldIndex(c_nsk);
 		int ix_cname = m_registrationsTable.fields().fieldIndex(QStringLiteral("competitorName"));
 		for (int i = 0; i < m_registrationsTable.rowCount(); ++i) {

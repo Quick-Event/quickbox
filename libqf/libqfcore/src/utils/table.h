@@ -137,8 +137,8 @@ public:
 		QString tableId() const;
 		QString toString() const;
 
-		QVariant::Type type() const {return static_cast<QVariant::Type>(d->userType);}
-		void setType(QVariant::Type t) {d->userType = t;}
+		QMetaType type() const {return QMetaType(d->userType);}
+		void setType(QMetaType::Type t) {d->userType = t;}
 		void setUserType(int t) {d->userType = t;}
 		QF_SHARED_CLASS_FIELD_RW(QString, n, setN, ame)
 		QF_SHARED_CLASS_BIT_FIELD_RW(bool, c, setC, anUpdate)
@@ -258,8 +258,8 @@ public:
 	}
 public:
 	virtual int columnCount() const;
-	Field& insertColumn(int ix, const QString &name, QVariant::Type t);
-	Field& appendColumn(const QString &name, QVariant::Type t) {return insertColumn(columnCount(), name, t);}
+	Field& insertColumn(int ix, const QString &name, QMetaType::Type t);
+	Field& appendColumn(const QString &name, QMetaType::Type t) {return insertColumn(columnCount(), name, t);}
 
 	//! return empty row which is not inserted in the table rows
 	TableRow isolatedRow();

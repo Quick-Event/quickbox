@@ -84,7 +84,11 @@ QString FieldInfo::toString(const QString& indent) const
 	QTextStream ts(&s, QIODevice::WriteOnly);
 	ts << indent << "name: " << name() << "\n";
 	ts << indent << "full name: " << fullName() << "\n";
+#if QT_VERSION_MAJOR >= 6
+	ts << indent << "type: " << metaType().name() << "\n";
+#else
 	ts << indent << "type: " << QVariant::typeToName(type()) << "\n";
+#endif
 	ts << indent << "valid: " << isValid() << "\n";
 	ts << indent << "length: " << length() << "\n";
 	ts << indent << "precision: " << precision() << "\n";

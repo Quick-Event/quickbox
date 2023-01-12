@@ -51,7 +51,7 @@ public:
 	Q_SLOT virtual bool drop();
 	Q_SLOT virtual bool copy();
 
-	//virtual QVariant::Type fieldType(const QString &data_id);
+	//virtual QMetaType::Type fieldType(const QString &data_id);
 	Q_INVOKABLE virtual bool isEmpty() const;
 	Q_INVOKABLE QStringList fieldNames() const;
 	Q_INVOKABLE virtual bool isValidFieldName(const QString &data_id) const;

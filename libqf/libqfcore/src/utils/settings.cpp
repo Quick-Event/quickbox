@@ -8,7 +8,11 @@ using namespace qf::core::utils;
 void Settings::setValue(const QString &key, const QVariant &value)
 {
 	QVariant v = value;
+#if QT_VERSION_MAJOR >= 6
+	if(v.typeId() == QMetaType::QString)
+#else
 	if(v.type() == QVariant::String)
+#endif
 		v = '"' + v.toString() + '"';
 	Super::setValue(key, v);
 }
@@ -19,7 +23,11 @@ QVariant Settings::value(const QString &key, const QVariant &default_value) cons
 	if(!v.isValid())
 		return default_value;
 	QVariant ret = v;
+#if QT_VERSION_MAJOR >= 6
+	if(v.typeId() == QMetaType::QString) {
+#else
 	if(v.type() == QVariant::String) {
+#endif
 		String s = v.toString();
 		if(s.value(0) == '"' && s.value(-1) == '"') {
 			ret = s.slice(1, -1);
