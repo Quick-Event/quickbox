@@ -1,7 +1,7 @@
 message(including $$PWD)
 QT += core gui qml widgets sql xml
 
-CONFIG += C++11
+CONFIG += c++17
 CONFIG += lrelease embed_translations
 
 TEMPLATE = app

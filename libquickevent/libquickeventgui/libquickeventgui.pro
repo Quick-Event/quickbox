@@ -4,7 +4,7 @@ TARGET = quickeventgui
 QT += widgets sql qml multimedia
 
 CONFIG += qt dll
-CONFIG += c++11 hide_symbols
+CONFIG += c++17 hide_symbols
 CONFIG += lrelease embed_translations
 
 DEFINES += QUICKEVENTGUI_BUILD_DLL

@@ -20,7 +20,7 @@ message ( QF_PROJECT_TOP_BUILDDIR == '$$QF_PROJECT_TOP_BUILDDIR' )
 DESTDIR = $$QF_PROJECT_TOP_BUILDDIR/bin
 message ( DESTDIR: $$DESTDIR )
 
-CONFIG += C++11
+CONFIG += c++17
 CONFIG += console
 CONFIG -= app_bundle
 

@@ -1,7 +1,7 @@
 TEMPLATE = lib
 
 CONFIG += plugin
-CONFIG += c++11
+CONFIG += c++17
 CONFIG += hide_symbols
 
 win32: LIB_DIR_NAME = bin
