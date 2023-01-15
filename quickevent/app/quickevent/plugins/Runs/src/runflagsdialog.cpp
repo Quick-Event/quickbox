@@ -15,6 +15,7 @@ RunFlagsDialog::RunFlagsDialog(QWidget *parent) :
 	connect(ui->cbxNotStart, &QCheckBox::toggled, this, &RunFlagsDialog::updateStatus);
 	connect(ui->cbxNotFinish, &QCheckBox::toggled, this, &RunFlagsDialog::updateStatus);
 	connect(ui->cbxDisqualifiedByOrganizer, &QCheckBox::toggled, this, &RunFlagsDialog::updateStatus);
+	connect(ui->cbxOverTime, &QCheckBox::toggled, this, &RunFlagsDialog::updateStatus);
 	connect(ui->cbxNotCompeting, &QCheckBox::toggled, this, &RunFlagsDialog::updateStatus);
 }
 
@@ -33,6 +34,7 @@ void RunFlagsDialog::load(RunsTableModel *model, int row)
 	ui->cbxNotStart->setChecked(table_row.value(QStringLiteral("runs.notStart")).toBool());
 	ui->cbxNotFinish->setChecked(table_row.value(QStringLiteral("runs.notFinish")).toBool());
 	ui->cbxDisqualifiedByOrganizer->setChecked(table_row.value(QStringLiteral("runs.disqualifiedByOrganizer")).toBool());
+	ui->cbxOverTime->setChecked(table_row.value(QStringLiteral("runs.overTime")).toBool());
 	ui->cbxNotCompeting->setChecked(table_row.value(QStringLiteral("runs.notCompeting")).toBool());
 	updateStatus();
 }
@@ -46,6 +48,7 @@ void RunFlagsDialog::save()
 	table_row.setValue(QStringLiteral("runs.notStart"), ui->cbxNotStart->isChecked());
 	table_row.setValue(QStringLiteral("runs.notFinish"), ui->cbxNotFinish->isChecked());
 	table_row.setValue(QStringLiteral("runs.disqualifiedByOrganizer"), ui->cbxDisqualifiedByOrganizer->isChecked());
+	table_row.setValue(QStringLiteral("runs.overTime"), ui->cbxOverTime->isChecked());
 	table_row.setValue(QStringLiteral("runs.notCompeting"), ui->cbxNotCompeting->isChecked());
 	m_model->postRow(m_row, qf::core::Exception::Throw);
 }
@@ -63,7 +66,8 @@ bool RunFlagsDialog::isDisqualified() const {
 		ui->cbxBadCheck->isChecked() ||
 		ui->cbxNotStart->isChecked() ||
 		ui->cbxNotFinish->isChecked() ||
-		ui->cbxDisqualifiedByOrganizer->isChecked();
+		ui->cbxDisqualifiedByOrganizer->isChecked() ||
+		ui->cbxOverTime->isChecked();
 }
 
 } // namespace Runs

@@ -219,7 +219,7 @@ Schema {
 					MissingPunch
 					DidNotStart
 					DidNotFinish
-					OverTime - can be computed
+					OverTime
 
 				not supported by QE
 					OK
@@ -236,7 +236,7 @@ Schema {
 					defaultValue: false;
 					notNull: true
 				},
-				Field { name: 'disqualifiedByOrganizer'; type: Boolean { } // NotCompeting
+				Field { name: 'disqualifiedByOrganizer'; type: Boolean { } // Disqualified by Org
 					defaultValue: false;
 					notNull: true
 					comment: "Competitor is disqualified by organizer for breaking rules, etc."
@@ -259,6 +259,10 @@ Schema {
 					notNull: true
 				},
 				Field { name: 'badCheck'; type: Boolean { } // Bad CHECK time in card, cheating on start
+					defaultValue: false;
+					notNull: true
+				},
+				Field { name: 'overTime'; type: Boolean { } // OverTime
 					defaultValue: false;
 					notNull: true
 				},

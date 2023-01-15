@@ -6,6 +6,7 @@
 #include <quickevent/core/og/timems.h>
 #include <quickevent/core/si/checkedcard.h>
 #include <quickevent/core/utils.h>
+#include <quickevent/core/runstatus.h>
 
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/framework/dockwidget.h>
@@ -115,19 +116,7 @@ struct Leg
 	int pos = 0;
 	int stime = 0;
 	int spos = 0;
-	bool disq = false;
-	bool nc = false;
-	bool notfinish = true;
-	QString status() const
-	{
-		if (notfinish)
-			 return QStringLiteral("DidNotFinish");
-		if (nc)
-			 return QStringLiteral("NotCompeting");
-		if (disq)
-			 return QStringLiteral("Disqualified");
-		return QStringLiteral("OK");
-	}
+	quickevent::core::RunStatus runStatus;
 };
 
 struct Organization {
@@ -149,13 +138,10 @@ struct Relay
 		int ret = 0;
 		for (int i = 0; i < qMin(legs.count(), leg_cnt); ++i) {
 			const Leg &leg = legs[i];
-			if(leg.disq)
-				return qog::TimeMs::DISQ_TIME_MSEC;
-			if(leg.nc)
-				return qog::TimeMs::NOT_COMPETITING_TIME_MSEC;
-			if(leg.notfinish)
-				return qog::TimeMs::NOT_FINISH_TIME_MSEC;
-			ret += leg.time;
+			if (leg.runStatus.isOk())
+				ret += leg.time;
+			else
+				return leg.runStatus.toTime();
 		}
 		return ret;
 	}
@@ -163,50 +149,10 @@ struct Relay
 	{
 		for (int i = 0; i < qMin(legs.count(), leg_cnt); ++i) {
 			const Leg &leg = legs[i];
-			if(leg.disq)
-				return QStringLiteral("Disqualified");
-			if(leg.nc)
-				return QStringLiteral("NotCompeting");
-			if(leg.notfinish)
-				return QStringLiteral("DidNotFinish");
+			return leg.runStatus.toXmlExportString();
 		}
-		return QStringLiteral("OK");
+		return QStringLiteral("DidNotStart");	// relay leg not found
 	}
-#if 0
-	bool isDisq(int leg_cnt) const
-	{
-		for (int i = 0; i < qMin(legs.count(), leg_cnt); ++i) {
-			const Leg &leg = legs[i];
-			if(leg.disq)
-				return true;
-		}
-		return false;
-		/*
-		leg_cnt = qMin(legs.count(), leg_cnt);
-		if(leg_cnt == 0)
-			return false;
-		return legs[leg_cnt-1].stime == 0;
-		*/
-	}
-	bool notFinish(int leg_cnt) const
-	{
-		for (int i = 0; i < qMin(legs.count(), leg_cnt); ++i) {
-			const Leg &leg = legs[i];
-			if(leg.time == 0 && !leg.disq)
-				return true;
-		}
-		return false;
-	}
-	bool isOk(int leg_cnt) const
-	{
-		for (int i = 0; i < qMin(legs.count(), leg_cnt); ++i) {
-			const Leg &leg = legs[i];
-			if(leg.time == 0 || leg.disq)
-				return false;
-		}
-		return true;
-	}
-#endif
 };
 }
 
@@ -325,7 +271,7 @@ qf::core::utils::TreeTable RelaysPlugin::nLegsClassResultsTable(int class_id, in
 	}
 	for (int legno = 1; legno <= leg_count; ++legno) {
 		qfs::QueryBuilder qb;
-		qb.select2("runs", "id, relayId, timeMs, disqualified, notCompeting")
+		qb.select2("runs", "id, relayId, timeMs," + quickevent::core::RunStatus::runsTableColumns().join(","))
 				.from("runs")
 				.joinRestricted("runs.relayId", "relays.id",
 								"relays.classId=" QF_IARG(class_id)
@@ -348,11 +294,9 @@ qf::core::utils::TreeTable RelaysPlugin::nLegsClassResultsTable(int class_id, in
 						qfError() << "internal error, leg:" << legno << "runId check:" << leg.runId << "should equal" << run_id;
 					}
 					else {
-						leg.notfinish = false;
-						leg.nc = q.value("runs.notCompeting").toBool();
-						leg.disq = q.value("runs.disqualified").toBool();
+						leg.runStatus = quickevent::core::RunStatus::fromQuery(q);
 						leg.time = q.value("timeMs").toInt();
-						leg.pos = leg.disq? 0: run_pos;
+						leg.pos = leg.runStatus.isOk()? run_pos : 0;
 						run_pos++;
 					}
 					break;
@@ -366,7 +310,7 @@ qf::core::utils::TreeTable RelaysPlugin::nLegsClassResultsTable(int class_id, in
 		for (int i = 0; i < relays.count(); ++i) {
 			Relay &relay = relays[i];
 			Leg &leg = relay.legs[legno - 1];
-			if(!leg.notfinish && !leg.disq) {
+			if(leg.runStatus.isOk()) {
 				if(legno == 1)
 					leg.stime = leg.time;
 				else if(relay.legs[legno-2].stime > 0)
@@ -456,19 +400,15 @@ qf::core::utils::TreeTable RelaysPlugin::nLegsClassResultsTable(int class_id, in
 			tt2_row.setValue("firstName", leg.firstName);
 			tt2_row.setValue("lastName", leg.lastName);
 			tt2_row.setValue("registration", leg.reg);
-			tt2_row.setValue("time",
-						 leg.disq? qog::TimeMs::DISQ_TIME_MSEC
-								: (leg.time == 0)? qog::TimeMs::NOT_FINISH_TIME_MSEC
-												: leg.time);
+			tt2_row.setValue("time", leg.runStatus.isOk() ? leg.time : leg.runStatus.toTime());
 			tt2_row.setValue("pos", leg.pos);
-			tt2_row.setValue("status", leg.status());
+			tt2_row.setValue("status", leg.runStatus.toXmlExportString());
 			tt2_row.setValue("stime", leg.stime);
 			tt2_row.setValue("spos", leg.spos);
 			tt2_row.setValue("runId", leg.runId);
 			tt2_row.setValue("sstatus", relay.status(j+1));
 			//tt2_row.setValue("courseId", leg.courseId);
 			tt2.setRow(ix2, tt2_row);
-			//rr2.setValue("disq", leg.disq);
 			qfDebug() << '\t' << leg.pos << leg.fullName;
 		}
 		tt_row.appendTable(tt2);

@@ -78,6 +78,13 @@
     </widget>
    </item>
    <item>
+    <widget class="QCheckBox" name="cbxOverTime">
+     <property name="text">
+      <string>Over time</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="Line" name="line">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -121,6 +128,9 @@
   <tabstop>cbxBadCheck</tabstop>
   <tabstop>cbxNotStart</tabstop>
   <tabstop>cbxNotFinish</tabstop>
+  <tabstop>cbxDisqualifiedByOrganizer</tabstop>
+  <tabstop>cbxOverTime</tabstop>
+  <tabstop>cbxNotCompeting</tabstop>
  </tabstops>
  <resources/>
  <connections>

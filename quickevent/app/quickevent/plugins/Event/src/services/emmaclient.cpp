@@ -4,6 +4,7 @@
 #include "../eventplugin.h"
 
 #include <quickevent/core/si/checkedcard.h>
+#include <quickevent/core/runstatus.h>
 
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/dialogs/dialog.h>
@@ -355,7 +356,7 @@ void EmmaClient::exportFinishRacomTxt()
 	qfs::QueryBuilder qb;
 	qfs::Query q2;
 
-	qb.select2("runs", "siId, isRunning, finishTimeMs, misPunch, badCheck, disqualified, notCompeting")
+	qb.select2("runs", "siId, isRunning, finishTimeMs, " + quickevent::core::RunStatus::runsTableColumns().join(","))
 			.select2("cards", "id")
 			.from("runs")
 			.join("runs.id","cards.runId")
@@ -368,15 +369,13 @@ void EmmaClient::exportFinishRacomTxt()
 	while(q2.next()) {
 		int si = q2.value("runs.siId").toInt();
 		int fin_time = q2.value("runs.finishTimeMs").toInt();
-		bool is_mis_punch = q2.value("runs.misPunch").toBool();
-		bool is_bad_check = q2.value("runs.badCheck").toBool();
-		bool is_disq = q2.value("runs.disqualified").toBool();
-		bool is_running = q2.value("runs.isRunning").toBool();
-		bool not_competing = q2.value("runs.notCompeting").toBool();
+		auto run_status = quickevent::core::RunStatus::fromQuery(q2);
 		int cards_id = q2.value("cards.id").toInt();
 
 		if (si == 0 || last_si == si)
 			continue; // without si or duplicate readout are unusable
+		if (cards_id == 0 && run_status.isOk())
+			continue; // skip if not yet card readout and not DNS,DNF, ...
 		last_si = si;
 		QString s = QString("%1").arg(si , 8, 10, QChar(' '));
 		s += QStringLiteral(": FIN/");
@@ -385,26 +384,7 @@ void EmmaClient::exportFinishRacomTxt()
 		s += tm.toString(QStringLiteral("HH:mm:ss.zzz"));
 		s += '0';
 		s += '/';
-		if (!is_running) {
-			s += QStringLiteral("DNS ");
-		} else if (fin_time > 0) {
-			if (not_competing) {
-				s += QStringLiteral("NC  ");
-			} else if (is_disq) {
-				if (is_mis_punch || is_bad_check)
-					s += QStringLiteral("MP  ");
-				else
-					s += QStringLiteral("DISQ");
-			} else {
-				//checked_card is OK
-				s += QStringLiteral("O.K.");
-			}
-		} else if (cards_id == 0) {
-			continue; // skip if not yet readout
-		} else {
-			// DidNotFinish
-			s += QStringLiteral("DNF ");
-		}
+		s += run_status.toEmmaExportString();
 		ts << s << "\n";
 	}
 }

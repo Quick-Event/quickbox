@@ -130,11 +130,7 @@ Report {
 							Para {
 								width: 10
 								textFn: function() {
-									if(runnersDetail.rowData("disqualified"))
-										return qsTr("DISQ");
-									if(runnersDetail.rowData("notCompeting"))
-										return qsTr("NC");
-									return "";
+									return OGTime.detailRunStatusToString(runnersDetail);
 								}
 							}
 						}

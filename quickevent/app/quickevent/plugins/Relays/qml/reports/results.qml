@@ -12,18 +12,6 @@ Report {
 	property bool isPrintStartNumbers: false
 	property var options
 
-	function ogTimeToString(time_ms)
-	{
-		//return "999.99";
-		if(time_ms === OGTime.DISQ_TIME_MSEC)
-			return qsTr("DISQ");
-		if(time_ms === OGTime.NOT_COMPETITING_TIME_MSEC)
-			return qsTr("NC");
-		if(time_ms === OGTime.NOT_FINISH_TIME_MSEC)
-			return qsTr("---");
-		return OGTime.msecToString_mmss(time_ms);
-	}
-
 	function ogSumTimeToString(time_ms)
 	{
 		//return "999.99";
@@ -163,7 +151,7 @@ Report {
 								Para {
 									width: 15
 									halign: Frame.AlignRight
-									textFn: function() {return root.ogTimeToString(relayDetail.rowData("time"))}
+									textFn: function() {return OGTime.ogTimeToString(relayDetail.rowData("time"))}
 								}
 								Para {
 									width: 17
@@ -195,7 +183,7 @@ Report {
 									Para {
 										width: 13
 										halign: Frame.AlignRight
-										textFn: function() {return root.ogTimeToString(lapsDetail.rowData("time"))}
+										textFn: function() {return OGTime.ogTimeToString(lapsDetail.rowData("time"))}
 									}
 									Para {
 										width: 9
