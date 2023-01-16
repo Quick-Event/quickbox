@@ -369,3 +369,20 @@ bool QueryBuilder::BuildOptions::isSqlDriverSupportsTableNamesInSelect() const
 	}
 	return ret;
 }
+
+QueryBuilder::TableKey::TableKey(const QString &n)
+{
+	int ix = n.lastIndexOf('.');
+	if(ix > 0) {
+		table = n.mid(0, ix).trimmed();
+		field = n.mid(ix+1).trimmed();
+	}
+	else {
+		field = n;
+	}
+	ix = field.indexOf(QLatin1String(" AS "), Qt::CaseInsensitive);
+	if(ix > 0) {
+		tableAlias = field.mid(ix + 4);
+		field = field.mid(0, ix);
+	}
+}

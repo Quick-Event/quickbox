@@ -76,7 +76,11 @@ QObject *StyleObject::styleobjectFromVariant(const QVariant &v, StyleGroup style
     if(v.isValid()) {
         ret = v.value<QObject*>();
         if(!ret) {
+#if QT_VERSION_MAJOR >= 6
+            if(v.typeId() == QMetaType::QString) {
+#else
             if(v.type() == QVariant::String) {
+#endif
                 StyleGroup sg = style_group;
                 if(sg == SGOwn)
                     sg = m_styleGroup;

@@ -6,6 +6,8 @@
 #include <QColor>
 #include <QDateTime>
 
+Q_DECLARE_METATYPE(NecroLog::Level)
+
 namespace qf {
 namespace core {
 namespace model {

@@ -370,7 +370,7 @@ ReportViewWidget::ReportViewWidget(QWidget *parent)
 	m_scrollArea->setWidget(m_painterWidget);
 	QBoxLayout *ly = new QVBoxLayout(this);
 	ly->setSpacing(0);
-	ly->setMargin(0);
+	ly->setContentsMargins(0, 0, 0, 0);
 	ly->addWidget(m_scrollArea);
 	ly->addWidget(statusBar());
 
@@ -728,7 +728,7 @@ void ReportViewWidget::setupPainter(ReportPainter *p)
 #if QT_VERSION < QT_VERSION_CHECK(5, 13, 0)
 	m_painterInverseMatrix = p->matrix().inverted();
 #else
-	m_painterInverseMatrix = p->worldTransform().toAffine().inverted();
+	m_painterInverseMatrix = p->worldTransform().inverted();
 #endif
 }
 
@@ -1182,7 +1182,12 @@ void ReportViewWidget::file_export_html()
 			return;
 		}
 		QTextStream out(&f);
+#if QT_VERSION_MAJOR >= 6
+		out.setEncoding(QStringConverter::encodingForName("UTF-8").value());
+#else
 		out.setCodec("UTF-8");
+#endif
+
 		out << s;
 	}
 }

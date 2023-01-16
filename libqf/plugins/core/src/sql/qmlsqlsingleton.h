@@ -26,7 +26,7 @@ public:
 	static QObject* singletontype_provider(QQmlEngine *engine, QJSEngine *scriptEngine);
 public:
 	Q_INVOKABLE bool addDatabase(const QString &type, const QString &connection_name = QLatin1String(QSqlDatabase::defaultConnection));
-	QVariant retypeVariant(const QVariant &val, QVariant::Type type);
+	QVariant retypeVariant(const QVariant &val, QMetaType::Type type);
 	Q_INVOKABLE QVariant retypeStringValue(const QString &str_val, const QString &type_name);
 	Q_INVOKABLE QString typeNameForValue(const QVariant &val);
 private:

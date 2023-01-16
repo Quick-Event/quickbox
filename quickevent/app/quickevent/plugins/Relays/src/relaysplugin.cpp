@@ -162,7 +162,7 @@ qf::core::utils::TreeTable RelaysPlugin::nLegsResultsTable(const QString &where_
 	qf::core::utils::TreeTable tt;
 	tt.setValue("event", getPlugin<EventPlugin>()->eventConfig()->value("event"));
 	tt.setValue("stageStart", getPlugin<EventPlugin>()->stageStartDateTime(1));
-	tt.appendColumn("className", QVariant::String);
+	tt.appendColumn("className", QMetaType(QMetaType::QString));
 	qfs::QueryBuilder qb;
 	qb.select2("classes", "id, name")
 			.from("classes")
@@ -354,13 +354,13 @@ qf::core::utils::TreeTable RelaysPlugin::nLegsClassResultsTable(int class_id, in
 
 	int time0 = 0;
 	qf::core::utils::TreeTable tt;
-	tt.appendColumn("pos", QVariant::Int);
-	tt.appendColumn("name", QVariant::String);
-	tt.appendColumn("relayNumber", QVariant::Int);
-	tt.appendColumn("id", QVariant::Int);
-	tt.appendColumn("time", QVariant::Int);
-	tt.appendColumn("loss", QVariant::Int);
-	tt.appendColumn("status", QVariant::String);
+	tt.appendColumn("pos", QMetaType(QMetaType::Int));
+	tt.appendColumn("name", QMetaType(QMetaType::QString));
+	tt.appendColumn("relayNumber", QMetaType(QMetaType::Int));
+	tt.appendColumn("id", QMetaType(QMetaType::Int));
+	tt.appendColumn("time", QMetaType(QMetaType::Int));
+	tt.appendColumn("loss", QMetaType(QMetaType::Int));
+	tt.appendColumn("status", QMetaType(QMetaType::QString));
 	for (int i = 0; i < relays.count() && i < max_places; ++i) {
 		int ix = tt.appendRow();
 		qf::core::utils::TreeTableRow tt_row = tt.row(ix);
@@ -380,18 +380,18 @@ qf::core::utils::TreeTable RelaysPlugin::nLegsClassResultsTable(int class_id, in
 		tt_row.setValue("status", relay.status(relay.legs.count()));
 		qfDebug() << tt.rowCount() << relay.name;
 		qf::core::utils::TreeTable tt2;
-		tt2.appendColumn("competitorName", QVariant::String);
-		tt2.appendColumn("firstName", QVariant::String);
-		tt2.appendColumn("lastName", QVariant::String);
-		tt2.appendColumn("registration", QVariant::String);
-		tt2.appendColumn("time", QVariant::Int);
-		tt2.appendColumn("pos", QVariant::Int);
-		tt2.appendColumn("status", QVariant::String);
-		tt2.appendColumn("stime", QVariant::Int);
-		tt2.appendColumn("spos", QVariant::Int);
-		tt2.appendColumn("runId", QVariant::Int);
-		tt2.appendColumn("courseId", QVariant::Int);
-		tt2.appendColumn("sstatus", QVariant::String);
+		tt2.appendColumn("competitorName", QMetaType(QMetaType::QString));
+		tt2.appendColumn("firstName", QMetaType(QMetaType::QString));
+		tt2.appendColumn("lastName", QMetaType(QMetaType::QString));
+		tt2.appendColumn("registration", QMetaType(QMetaType::QString));
+		tt2.appendColumn("time", QMetaType(QMetaType::Int));
+		tt2.appendColumn("pos", QMetaType(QMetaType::Int));
+		tt2.appendColumn("status", QMetaType(QMetaType::QString));
+		tt2.appendColumn("stime", QMetaType(QMetaType::Int));
+		tt2.appendColumn("spos", QMetaType(QMetaType::Int));
+		tt2.appendColumn("runId", QMetaType(QMetaType::Int));
+		tt2.appendColumn("courseId", QMetaType(QMetaType::Int));
+		tt2.appendColumn("sstatus", QMetaType(QMetaType::QString));
 		for (int j = 0; j < relay.legs.count(); ++j) {
 			const Leg &leg = relay.legs[j];
 			int ix2 = tt2.appendRow();

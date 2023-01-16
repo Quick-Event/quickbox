@@ -66,10 +66,8 @@ void MessageBox::showInfo(QWidget *parent, const QString &message)
 
 bool MessageBox::askYesNo(QWidget *parent, const QString &msg, bool default_ret)
 {
-	int i_def = (default_ret)? 0: 1;
-	int i = QMessageBox::question(parent, tr("Question"), msg,
-								  tr("&Yes"), tr("&No"), QString(),
-								  i_def, 1);
+	auto i_def = (default_ret)? StandardButton::No: StandardButton::Yes;
+	int i = QMessageBox::question(parent, tr("Question"), msg, StandardButtons(Yes | No), i_def);
 	return i == 0;
 }
 

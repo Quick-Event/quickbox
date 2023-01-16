@@ -5,9 +5,9 @@
 
 #include <QApplication>
 #include <QJsonDocument>
+#include <QQmlError>
 
 class QQmlEngine;
-class QQmlError;
 
 namespace qf {
 namespace qmlwidgets {

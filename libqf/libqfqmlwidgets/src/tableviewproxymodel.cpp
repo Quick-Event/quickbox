@@ -5,7 +5,6 @@
 #include <qf/core/model/tablemodel.h>
 
 #include <QColor>
-#include <QTextCodec>
 #include <QDateTime>
 
 //namespace qfm = qf::core::model;

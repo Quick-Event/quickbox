@@ -15,7 +15,7 @@
 
 #include <QScrollArea>
 #include <QFrame>
-#include <QMatrix>
+#include <QTransform>
 
 class QLineEdit;
 class QSpinBox;
@@ -83,7 +83,7 @@ protected:
 	QLineEdit *edCurrentPage;
 
 	ReportItemMetaPaint *m_selectedItem;
-	QMatrix m_painterInverseMatrix;
+	QTransform m_painterInverseMatrix;
 
 	ReportProcessor *m_reportProcessor;
 

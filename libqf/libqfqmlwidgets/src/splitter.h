@@ -27,10 +27,15 @@ private:
 	Q_SLOT void loadPersistentSettings();
 	Q_SLOT void savePersistentSettings();
 private:
+#if QT_VERSION_MAJOR < 6
+	using WidgetIndexType = int;
+#else
+	using WidgetIndexType = long long;
+#endif
 	static void addWidgetFunction(QQmlListProperty<QWidget> *listProperty, QWidget *widget);
-	static QWidget* widgetAtFunction(QQmlListProperty<QWidget> *listProperty, int index);
+	static QWidget* widgetAtFunction(QQmlListProperty<QWidget> *listProperty, WidgetIndexType index);
 	static void removeAllWidgetsFunction(QQmlListProperty<QWidget> *listProperty);
-	static int countWidgetsFunction(QQmlListProperty<QWidget> *listProperty);
+	static WidgetIndexType countWidgetsFunction(QQmlListProperty<QWidget> *listProperty);
 };
 
 }}

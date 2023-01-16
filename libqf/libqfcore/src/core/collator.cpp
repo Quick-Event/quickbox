@@ -29,13 +29,6 @@ const Collator &Collator::sharedNull()
 
 int Collator::compare(const QString &s1, const QString &s2) const
 {
-	QStringRef sr1(&s1);
-	QStringRef sr2(&s2);
-	return compare(sr1, sr2);
-}
-
-int Collator::compare(const QStringRef &s1, const QStringRef &s2) const
-{
 	int ret = 0;
 	for(int i=0; i<s1.length() && i<s2.length(); i++) {
 		QChar c1 = s1.at(i);

@@ -3,6 +3,7 @@
 
 #include "../qmlwidgetsglobal.h"
 #include "ipersistentsettings.h"
+#include "../statusbar.h"
 //#include "pluginloader.h"
 
 #include <qf/core/utils.h>
@@ -19,7 +20,6 @@ namespace qf {
 namespace qmlwidgets {
 
 class MenuBar;
-class StatusBar;
 class ToolBar;
 
 namespace dialogs {

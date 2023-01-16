@@ -116,9 +116,7 @@ public:
 public:
 	void clearRows();
 	void clearColumns(int new_column_count = 0);
-	ColumnDefinition& addColumn(const QString &field_name, const QString &caption = QString()) {
-		return insertColumn(m_columns.count(), field_name, caption);
-	}
+	ColumnDefinition& addColumn(const QString &field_name, const QString &caption = QString());
 	ColumnDefinition& insertColumn(int before_ix, const QString &field_name, const QString &_caption = QString());
 	ColumnDefinition& insertColumn(int before_ix, const ColumnDefinition &cd);
 	void setColumn(int ix, const ColumnDefinition &cd);

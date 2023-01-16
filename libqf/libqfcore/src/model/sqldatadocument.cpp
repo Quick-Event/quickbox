@@ -53,7 +53,12 @@ bool SqlDataDocument::loadData()
 		//setDataId(-1);
 	}
 	QVariant qp = md->queryParameters();
-	if(qp.type() == QVariant::Map) {
+#if QT_VERSION_MAJOR >= 6
+	auto type_id = qp.typeId();
+#else
+	int type_id = qp.type();
+#endif
+	if(type_id == QMetaType::QVariantMap) {
 		QVariantMap m = qp.toMap();
 		m[idFieldName()] = dataId();
 	}

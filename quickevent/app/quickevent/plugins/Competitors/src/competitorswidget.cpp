@@ -353,8 +353,8 @@ void CompetitorsWidget::report_competitorsStatistics()
 		QString prefix = "e" + QString::number(stage_id) + "_";
 		QString col_runs_count = prefix + "runCount";
 		QString col_map_count = prefix + "mapCount";
-		tt.appendColumn(col_runs_count, QVariant::Int);
-		tt.appendColumn(col_map_count, QVariant::Int);
+		tt.appendColumn(col_runs_count, QMetaType(QMetaType::Int));
+		tt.appendColumn(col_map_count, QMetaType(QMetaType::Int));
 		{
 			qfs::QueryBuilder qb;
 			qb.select2("classes", "name")

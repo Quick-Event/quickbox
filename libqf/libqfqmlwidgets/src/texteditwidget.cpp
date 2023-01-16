@@ -13,9 +13,11 @@
 
 #include <QPrintDialog>
 #include <QPrinter>
-#include <QTextCodec>
 #include <QStyle>
 #include <QTextStream>
+#if QT_VERSION_MAJOR < 6
+#include <QTextCodec>
+#endif
 
 namespace qfu = qf::core::utils;
 using namespace qf::qmlwidgets;
@@ -94,13 +96,23 @@ void TextEditWidget::save_helper(const QString &file_name)
 	//QString codec_name = codecName();
 	//if(codec_name.isEmpty()) codec_name = "utf8";
 	qfDebug() << "\tcodecName:" << codecName();
+	QTextStream ts(&f);
+#if QT_VERSION_MAJOR >= 6
+	auto encoding = QStringConverter::encodingForName(codecName().toLatin1());
+	if(encoding) {
+		dialogs::MessageBox::showError(this, tr("Cannot load text codec %1.").arg(codecName()));
+		return;
+	}
+	ts.setEncoding(encoding.value());
+#else
 	QTextCodec *tc = QTextCodec::codecForName(codecName().toLatin1());
 	if(!tc) {
 		dialogs::MessageBox::showError(this, tr("Cannot load text codec %1.").arg(codecName()));
 		return;
 	}
-	QTextStream ts(&f);
 	ts.setCodec(tc);
+#endif
+
 	ts << text();
 	//f.write(htmlTextOriginal.toUtf8());
 	//f.write(text().toUtf8());

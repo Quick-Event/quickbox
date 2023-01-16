@@ -129,22 +129,7 @@ private:
 		QString field;
 
 		TableKey(const QString &t, const QString &f) : table(t), field(f) {}
-		TableKey(const QString &n = QString())
-		{
-			int ix = n.lastIndexOf('.');
-			if(ix > 0) {
-				table = n.mid(0, ix).trimmed();
-				field = n.mid(ix+1).trimmed();
-			}
-			else {
-				field = n;
-			}
-			ix = field.indexOf(QLatin1String(" AS "), Qt::CaseInsensitive);
-			if(ix > 0) {
-				tableAlias = field.mid(ix + 4);
-				field = field.mid(0, ix);
-			}
-		}
+		TableKey(const QString &n = QString());
 
 		bool isEmpty() const {return table.isEmpty() && field.isEmpty();}
 		QString buildString() const {return (tableAlias.isEmpty()? table: tableAlias) + '.' + field;}

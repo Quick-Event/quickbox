@@ -87,7 +87,7 @@ const qf::core::utils::Table &RunsPlugin::runnersTable(int stage_id)
 		m_runnersTableCache = m.table();
 
 		auto c_nsk = QStringLiteral("competitorNameAscii7");
-		m_runnersTableCache.appendColumn(c_nsk, QVariant::String);
+		m_runnersTableCache.appendColumn(c_nsk, QMetaType::QString);
 		int ix_nsk = m_runnersTableCache.fields().fieldIndex(c_nsk);
 		int ix_cname = m_runnersTableCache.fields().fieldIndex(QStringLiteral("competitorName"));
 		for (int i = 0; i < m_runnersTableCache.rowCount(); ++i) {
@@ -627,9 +627,9 @@ qf::core::utils::TreeTable RunsPlugin::stageResultsTable(int stage_id, const QSt
 		model.setQueryParameters(qm);
 		model.reload();
 		qf::core::utils::TreeTable tt2 = model.toTreeTable();
-		tt2.appendColumn("pos", QVariant::String);
-		tt2.appendColumn("npos", QVariant::Int);
-		tt2.appendColumn("loss", QVariant::Int);
+		tt2.appendColumn("pos", QMetaType(QMetaType::QString));
+		tt2.appendColumn("npos", QMetaType(QMetaType::Int));
+		tt2.appendColumn("loss", QMetaType(QMetaType::Int));
 		int first_time_ms = 0;
 		int prev_time_ms = 0;
 		int prev_pos = 0;
@@ -682,10 +682,10 @@ qf::core::utils::TreeTable RunsPlugin::addLapsToStageResultsTable(int course_id,
 	course_codes << finish_code;
 	for (int i = 0; i < course_codes.count(); ++i) {
 		quickevent::core::CodeDef cd(course_codes[i].toMap());
-		tt.appendColumn(QStringLiteral("stpTime_%1").arg(i), QVariant::Int, QStringLiteral("%1 (%2)").arg(i+1).arg(cd.code()));
-		tt.appendColumn(QStringLiteral("stpPos_%1").arg(i), QVariant::Int);
-		tt.appendColumn(QStringLiteral("lapTime_%1").arg(i), QVariant::Int);
-		tt.appendColumn(QStringLiteral("lapPos_%1").arg(i), QVariant::Int);
+		tt.appendColumn(QStringLiteral("stpTime_%1").arg(i), QMetaType(QMetaType::Int), QStringLiteral("%1 (%2)").arg(i+1).arg(cd.code()));
+		tt.appendColumn(QStringLiteral("stpPos_%1").arg(i), QMetaType(QMetaType::Int));
+		tt.appendColumn(QStringLiteral("lapTime_%1").arg(i), QMetaType(QMetaType::Int));
+		tt.appendColumn(QStringLiteral("lapPos_%1").arg(i), QMetaType(QMetaType::Int));
 	}
 	QStringList run_ids;
 	for(int i=0; i<tt.rowCount(); i++) {
@@ -1108,7 +1108,7 @@ qf::core::utils::TreeTable RunsPlugin::startListClassesTable(const QString &wher
 	tt.setValue("stageId", stage_id);
 	tt.setValue("event", getPlugin<EventPlugin>()->eventConfig()->value("event"));
 	tt.setValue("stageStart", getPlugin<EventPlugin>()->stageStartDateTime(stage_id));
-	tt.appendColumn("courses.numberOfControls", QVariant::Type::Int);
+	tt.appendColumn("courses.numberOfControls", QMetaType(QMetaType::Int));
 
 	qfs::QueryBuilder qb2;
 	qb2.select2("competitors", "lastName, firstName, registration, startNumber")

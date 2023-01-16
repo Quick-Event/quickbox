@@ -2,6 +2,7 @@
 #define QF_QMLWIDGETS_FRAME_H
 
 #include "qmlwidgetsglobal.h"
+#include "layouttypeproperties.h"
 
 #include <qf/core/utils.h>
 
@@ -12,8 +13,6 @@ class QBoxLayout;
 
 namespace qf {
 namespace qmlwidgets {
-
-class LayoutTypeProperties;
 
 class QFQMLWIDGETS_DECL_EXPORT Frame : public QFrame
 {
@@ -44,10 +43,15 @@ public:
 	void setVisible(bool b) Q_DECL_OVERRIDE;
 	Q_SIGNAL void visibleChanged(bool visible);
 private:
+#if QT_VERSION_MAJOR < 6
+	using WidgetIndexType = int;
+#else
+	using WidgetIndexType = long long;
+#endif
 	static void addWidgetFunction(QQmlListProperty<QWidget> *listProperty, QWidget *value);
-	static QWidget* widgetAtFunction(QQmlListProperty<QWidget> *listProperty, int index);
+	static QWidget* widgetAtFunction(QQmlListProperty<QWidget> *listProperty, WidgetIndexType index);
 	static void removeAllWidgetsFunction(QQmlListProperty<QWidget> *listProperty);
-	static int countWidgetsFunction(QQmlListProperty<QWidget> *listProperty);
+	static WidgetIndexType countWidgetsFunction(QQmlListProperty<QWidget> *listProperty);
 
 	void add(QWidget *control);
 	QWidget* at(int index) const;

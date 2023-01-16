@@ -12,11 +12,13 @@ void SiId::registerQVariantFunctions()
 	if(!registered) {
 		registered = true;
 		qfInfo() << __FUNCTION__;
+#if QT_VERSION_MAJOR < 6
 		{
 			bool ok = QMetaType::registerComparators<SiId>();
 			if(!ok)
 				qfError() << "Error registering comparators for quickevent::core::si::SiId!";
 		}
+#endif
 		{
 			bool ok = QMetaType::registerConverter<SiId, int>([](const SiId &i) -> int {return (int)i;});
 			if(!ok)

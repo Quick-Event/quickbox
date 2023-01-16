@@ -6,7 +6,6 @@
 #include "../sql/dbenum.h"
 #include "../sql/dbenumcache.h"
 
-#include <QRegExp>
 #include <QSqlError>
 #include <QSqlRecord>
 #include <QSqlIndex>
@@ -216,9 +215,13 @@ bool SqlTableModel::postRow(int row_no, bool throw_exc)
 			}
 			else {
 				for(int i=0; i<rec.count(); i++) {
-					QVariant::Type type = rec.field(i).value().type();
+#if QT_VERSION_MAJOR >= 6
+					auto meta_type = rec.field(i).value().metaType();
+#else
+					auto meta_type = QMetaType(rec.field(i).value().type());
+#endif
 					//qfInfo() << "\t" << rec.field(i).name() << "bound type:" << QVariant::typeToName(type);
-					qfDebug() << "\t\t" << rec.field(i).name() << "bound type:" << QVariant::typeToName(type) << "value:" << rec.field(i).value().toString().mid(0, 100);
+					qfDebug() << "\t\t" << rec.field(i).name() << "bound type:" << meta_type.name() << "value:" << rec.field(i).value().toString().mid(0, 100);
 					q.addBindValue(rec.field(i).value());
 				}
 			}
@@ -285,9 +288,13 @@ bool SqlTableModel::postRow(int row_no, bool throw_exc)
 				}
 				QVariant v = row_ref.value(i);
 				//qfDebug() << "\ttableid:" << tableid << "fullTableName:" << fld.fullTableName();
-				qfDebug() << "\tdirty field" << fld.name() << "type:" << fld.type() << "orig val:" << row_ref.origValue(i).toString() << "new val:" << v.toString();
+				qfDebug() << "\tdirty field" << fld.name() << "type:" << fld.type().id() << "orig val:" << row_ref.origValue(i).toString() << "new val:" << v.toString();
 				//qfDebug().noSpace() << "\tdirty value: '" << v.toString() << "' isNull(): " << v.isNull() << " type(): " << v.type();
+#if QT_VERSION_MAJOR >= 6
 				QSqlField sqlfld(fld.shortName(), fld.type());
+#else
+				QSqlField sqlfld(fld.shortName(), static_cast<QVariant::Type>(fld.type().id()));
+#endif
 				sqlfld.setValue(v);
 				//if(sqlfld.type() == QVariant::ByteArray)
 				//	has_blob_field = true;
@@ -310,7 +317,11 @@ bool SqlTableModel::postRow(int row_no, bool throw_exc)
 							  continue);
 					qfu::Table::Field fld = m_table.fields().at(fld_ix);
 					qfDebug() << "\t found field:" << fld.name() << "at index:" << fld_ix;
+#if QT_VERSION_MAJOR >= 6
 					QSqlField sqlfld(fld.shortName(), fld.type());
+#else
+					QSqlField sqlfld(fld.shortName(), static_cast<QVariant::Type>(fld.type().id()));
+#endif
 					sqlfld.setValue(row_ref.origValue(fld_ix));
 					/*
 					if(row_ref.isDirty(fld_ix))
@@ -319,7 +330,11 @@ bool SqlTableModel::postRow(int row_no, bool throw_exc)
 						sqlfld.setValue(row_ref.value(fld_ix));
 					*/
 					//qfDebug() << row_ref.toString();
+#if QT_VERSION_MAJOR >= 6
+					qfDebug() << "\tpri index field" << full_fld_name << "type:" << sqlfld.typeID() << "orig val:" << row_ref.origValue(fld_ix) << "current val:" << row_ref.value(fld_ix);
+#else
 					qfDebug() << "\tpri index field" << full_fld_name << "type:" << sqlfld.type() << "orig val:" << row_ref.origValue(fld_ix) << "current val:" << row_ref.value(fld_ix);
+#endif
 					where_rec.append(sqlfld);
 				}
 				QF_ASSERT(!where_rec.isEmpty(),
@@ -400,12 +415,20 @@ bool SqlTableModel::removeTableRow(int row_no, bool throw_exc)
 						  continue);
 				qfu::Table::Field fld = m_table.fields().at(fld_ix);
 				QVariant id = row.value(fld_ix);
+#if QT_VERSION_MAJOR >= 6
 				QSqlField sqlfld(fld.shortName(), fld.type());
+#else
+				QSqlField sqlfld(fld.shortName(), static_cast<QVariant::Type>(fld.type().id()));
+#endif
 				sqlfld.setValue(id);
 				bool invalid_id = false;
 				if(id.isNull())
 					invalid_id = true;
+#if QT_VERSION_MAJOR >= 6
+				else if(id.typeId() == QMetaType::Int && id.toInt() == 0)
+#else
 				else if(id.type() == QVariant::Int && id.toInt() == 0)
+#endif
 					invalid_id= true;
 				if(!invalid_id) {
 					sqlfld.setValue(id);
@@ -487,7 +510,11 @@ int SqlTableModel::reloadRow(int row_no)
 				continue;
 			}
 			qfu::Table::Field fld = m_table.fields().at(fld_ix);
+#if QT_VERSION_MAJOR >= 6
 			QSqlField sqlfld(fld.shortName(), fld.type());
+#else
+			QSqlField sqlfld(fld.shortName(), static_cast<QVariant::Type>(fld.type().id()));
+#endif
 			// cannot use origValue() here, since reloadRow() must work for even edited primary keys
 			sqlfld.setValue(pri_ix_val);
 			QString formated_val = sqldrv->formatValue(sqlfld);
@@ -598,7 +625,11 @@ QString SqlTableModel::replaceQueryParameters(const QString query_str)
 		auto jsv = par_v.value<QJSValue>();
 		par_v = jsv.toVariant();
 	}
+#if QT_VERSION_MAJOR >= 6
+	if(par_v.typeId() == QMetaType::QVariantMap) {
+#else
 	if(par_v.type() == QVariant::Map) {
+#endif
 		QVariantMap par_map = par_v.toMap();
 		QMapIterator<QString, QVariant> it(par_map);
 		while(it.hasNext()) {
@@ -654,7 +685,11 @@ bool SqlTableModel::reloadTable(const QString &query_str)
 		for(int i=0; i<fld_cnt; i++) {
 			QSqlField rec_fld = rec.field(i);
 			//qfInfo() << rec_fld.name() << rec_fld.type() << QVariant::typeToName(rec_fld.type());
+#if QT_VERSION_MAJOR >= 6
+			qfu::Table::Field fld(rec_fld.name(), rec_fld.typeID());
+#else
 			qfu::Table::Field fld(rec_fld.name(), rec_fld.type());
+#endif
 			table_fields << fld;
 		}
 		setSqlFlags(table_fields, query_str);
@@ -668,7 +703,11 @@ bool SqlTableModel::reloadTable(const QString &query_str)
 				if(retype_null_values) {
 					// SQLite driver reports NULL values as QString()
 					if(v.isNull())
+#if QT_VERSION_MAJOR >= 6
 						v = QVariant(table_fields.value(i).type());
+#else
+						v = QVariant(table_fields.value(i).type().id());
+#endif
 				}
 				//qfWarning() << table_fields.value(i).name() << table_fields.value(i).type() << i << v << "null:" << v.isNull();
 				row.setBareBoneValue(i, v);
