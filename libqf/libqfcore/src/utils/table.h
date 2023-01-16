@@ -385,11 +385,11 @@ public:
 
 
 	//! returns number of fields in the row.
-	int fieldCount() const {return fields().count();}
+	int fieldCount() const;
 	//! returns number of values in the row, Shoul be the same as \a fieldCount() .
-	int count() const {return d->values.count();}
-	bool isInsert() const {return d->flags.insert;}
-	void setInsert(bool b) {d->flags.insert = b;}
+	int count() const;
+	bool isInsert() const;
+	void setInsert(bool b);
 	//bool isForcedInsert() const {return d->flags.forcedInsert;}
 	/// forcedInsert se pouziva v pripadech, kdy se data zaznamu nachazi ve vice linkovanych tabulkach a behem loadData() se zjisti, ze zaznam v nekterych tabulkach chybi
 	/// viz. napr. PPKlientKartaDataFormDocument::loadData()

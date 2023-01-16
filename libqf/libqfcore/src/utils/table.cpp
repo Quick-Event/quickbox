@@ -808,6 +808,27 @@ TableRow Table::lastRow() const
 	ret = row(rowCount() - 1);
 	return ret;
 }
+
+int TableRow::fieldCount() const
+{
+	return fields().count();
+}
+
+int TableRow::count() const
+{
+	return d->values.count();
+}
+
+bool TableRow::isInsert() const
+{
+	return d->flags.insert;
+}
+
+void TableRow::setInsert(bool b)
+{
+	d->flags.insert = b;
+}
+
 /*
 static QString quote_XML(const QString &s, const Table::TextExportOptions &opts)
 {
