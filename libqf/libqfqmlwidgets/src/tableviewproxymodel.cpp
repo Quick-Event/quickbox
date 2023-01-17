@@ -127,8 +127,8 @@ int TableViewProxyModel::variantCmp(const QVariant &left, const QVariant &right)
 		return -1;
 	if(left.isValid() && !right.isValid())
 		return 1;
-	bool left_null = left.isNull() || (left.userType() == QVariant::String && left == QStringLiteral("null"));
-	bool right_null = right.isNull() || (right.userType() == QVariant::String && right == QStringLiteral("null"));
+	bool left_null = left.isNull() || (left.userType() == QMetaType::QString && left == QStringLiteral("null"));
+	bool right_null = right.isNull() || (right.userType() == QMetaType::QString && right == QStringLiteral("null"));
 	if(left_null && right_null)
 		return 0;
 	if(left_null && !right_null)
@@ -142,7 +142,7 @@ int TableViewProxyModel::variantCmp(const QVariant &left, const QVariant &right)
 	return (left > right)? 1: 0;
 #else
 	switch (left.userType()) {
-	case QVariant::Bool: {
+	case QMetaType::Bool: {
 		bool l = left.toBool();
 		bool r = right.toBool();
 		if(l < r)
@@ -151,25 +151,25 @@ int TableViewProxyModel::variantCmp(const QVariant &left, const QVariant &right)
 			return 1;
 		return 0;
 	}
-	case QVariant::Int:
+	case QMetaType::Int:
 		return left.toInt() - right.toInt();
-	case QVariant::UInt:
+	case QMetaType::UInt:
 		return left.toUInt() - right.toUInt();
-	case QVariant::LongLong:
+	case QMetaType::LongLong:
 		return left.toLongLong() - right.toLongLong();
-	case QVariant::ULongLong:
+	case QMetaType::ULongLong:
 		return left.toULongLong() - right.toULongLong();
 	case QMetaType::Float:
 		return left.toFloat() - right.toFloat();
-	case QVariant::Double:
+	case QMetaType::Double:
 		return left.toDouble() - right.toDouble();
-	case QVariant::Char:
+	case QMetaType::Char:
 		return left.toChar().unicode() - right.toChar().unicode();
-	case QVariant::Date:
+	case QMetaType::QDate:
 		return left.toDate().toJulianDay() - right.toDate().toJulianDay();
-	case QVariant::Time:
+	case QMetaType::QTime:
 		return left.toTime().msecsSinceStartOfDay() - right.toTime().msecsSinceStartOfDay();
-	case QVariant::DateTime:
+	case QMetaType::QDateTime:
 		return left.toDateTime().toMSecsSinceEpoch() - right.toDateTime().toMSecsSinceEpoch();
 	default:
 		auto ret = left.toString().compare(right.toString());

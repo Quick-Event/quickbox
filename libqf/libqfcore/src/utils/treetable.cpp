@@ -115,11 +115,11 @@ QString TreeTableColumn::halign() const
 	if(ret.isEmpty()) {
 		/// pokud neni hodnota predepsana, vem ji z dat
 		switch(type()) {
-			case QVariant::Int:
-			case QVariant::UInt:
-			case QVariant::LongLong:
-			case QVariant::ULongLong:
-			case QVariant::Double:
+			case QMetaType::Int:
+			case QMetaType::UInt:
+			case QMetaType::LongLong:
+			case QMetaType::ULongLong:
+			case QMetaType::Double:
 				ret = "right";
 				break;
 			default:

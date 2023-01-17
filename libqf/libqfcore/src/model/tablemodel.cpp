@@ -77,7 +77,7 @@ Qt::ItemFlags TableModel::flags(const QModelIndex &index) const
 					int type = columnType(index.column());
 					// BLOB fields cannot be edited in grid.
 					//can_edit = can_edit && (type != QVariant::ByteArray);
-					if(type == QVariant::Bool) {
+					if(type == QMetaType::Bool) {
 						flags |= Qt::ItemIsUserCheckable;// << Qt::ItemIsEnabled;
 					}
 				}
@@ -207,7 +207,7 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
 	}
 	else if(role == Qt::ForegroundRole) {
 		int type = columnType(index.column());
-		if(type == QVariant::ByteArray)
+		if(type == QMetaType::QByteArray)
 			return QColor(Qt::blue);
 		if(data(index, ValueIsNullRole).toBool()) {
 			return QColor(Qt::blue);
@@ -219,7 +219,7 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
 	}
 	else if (role == Qt::CheckStateRole) {
 		int type = columnType(index.column());
-		if(type == QVariant::Bool) {
+		if(type == QMetaType::Bool) {
 			//qfInfo() << "BOOL";
 			return (data(index, Qt::EditRole).toBool()? Qt::Checked: Qt::Unchecked);
 		}
@@ -624,13 +624,13 @@ void TableModel::fillColumnIndexes()
 
 int TableModel::columnType(int column_index) const
 {
-	int ret = QVariant::Invalid;
+	int ret = QMetaType::UnknownType;
 	ColumnDefinition cd = m_columns.value(column_index);
 	QF_ASSERT(!cd.isNull(),
 			  tr("Invalid column index: %1").arg(column_index),
 			  return ret);
 	ret = cd.castType();
-	if(ret == QVariant::Invalid) {
+	if(ret == QMetaType::UnknownType) {
 		if(cd.isVirtual()) {
 			qfWarning() << "Virtual column shoul have cast type defined!";
 		}
