@@ -605,7 +605,7 @@ Table::Table(const QStringList &col_names)
 {
 	d = new Data();
 	for(int i=0; i<col_names.count(); i++) {
-		Field fld(col_names[i], QVariant::String);
+		Field fld(col_names[i], QMetaType::QString);
 		fld.setCanUpdate(true);
 		fieldsRef().append(fld);
 	}
@@ -952,7 +952,7 @@ void Table::importCSV(QTextStream &ts, TextImportOptions opts)
 		sl = reader.readCSVLineSplitted();
 		foreach(s, sl) {
 			//qfDebug() << "\tfield:" << s;
-			Field fld(s, QVariant::String);
+			Field fld(s, QMetaType::QString);
 			fieldsRef().append(fld);
 		}
 	}
@@ -969,7 +969,7 @@ void Table::importCSV(QTextStream &ts, TextImportOptions opts)
 				/// pokud nejsou vytvoreny fieldy, treba protoze se neimpoortovaly nazvy sloupcu, udelej je z tohoto radku
 				int colno = 0;
 				foreach(s, sl) {
-					Field fld(QString("col%1").arg(++colno), QVariant::String);
+					Field fld(QString("col%1").arg(++colno), QMetaType::QString);
 					fieldsRef().append(fld);
 				}
 			}

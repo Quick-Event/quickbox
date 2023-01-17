@@ -51,7 +51,7 @@ public:
 			int castType;
 			QVariantMap castProperties;
 
-			Data(const QString &fldname = QString()) : fieldName(fldname), fieldIndex(-1), castType(QVariant::Invalid) {}
+			Data(const QString &fldname = QString()) : fieldName(fldname), fieldIndex(-1), castType(QMetaType::UnknownType) {}
 		};
 	private:
 		QSharedDataPointer<Data> d;
