@@ -71,7 +71,6 @@ StackTrace StackTrace::stackTrace()
 	QStringList sl_ret;
 #if defined Q_CC_GNU && !defined Q_CC_MINGW
 	QStringList sl = trace2str();
-	int i = 0;
 	for(String s : sl) {
 		int ix = s.indexOf('(');
 		String s1, s2, s3;
@@ -94,7 +93,6 @@ StackTrace StackTrace::stackTrace()
 			else s1 = s;
 		}
 		sl_ret << s1 + ";" + demangle_gcc(s2) + ";" + s3;
-		i++;
 	}
 #endif
 	return StackTrace(sl_ret);
