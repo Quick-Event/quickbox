@@ -331,7 +331,7 @@ bool SqlTableModel::postRow(int row_no, bool throw_exc)
 					*/
 					//qfDebug() << row_ref.toString();
 #if QT_VERSION_MAJOR >= 6
-					qfDebug() << "\tpri index field" << full_fld_name << "type:" << sqlfld.typeID() << "orig val:" << row_ref.origValue(fld_ix) << "current val:" << row_ref.value(fld_ix);
+					qfDebug() << "\tpri index field" << full_fld_name << "type:" << sqlfld.metaType().id() << "orig val:" << row_ref.origValue(fld_ix) << "current val:" << row_ref.value(fld_ix);
 #else
 					qfDebug() << "\tpri index field" << full_fld_name << "type:" << sqlfld.type() << "orig val:" << row_ref.origValue(fld_ix) << "current val:" << row_ref.value(fld_ix);
 #endif
@@ -686,7 +686,7 @@ bool SqlTableModel::reloadTable(const QString &query_str)
 			QSqlField rec_fld = rec.field(i);
 			//qfInfo() << rec_fld.name() << rec_fld.type() << QVariant::typeToName(rec_fld.type());
 #if QT_VERSION_MAJOR >= 6
-			qfu::Table::Field fld(rec_fld.name(), rec_fld.typeID());
+			qfu::Table::Field fld(rec_fld.name(), rec_fld.metaType().id());
 #else
 			qfu::Table::Field fld(rec_fld.name(), rec_fld.type());
 #endif
