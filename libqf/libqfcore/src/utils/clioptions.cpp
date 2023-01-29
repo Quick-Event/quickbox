@@ -484,13 +484,9 @@ void ConfigCLIOptions::mergeConfig_helper(const QString &key_prefix, const QVari
 		}
 		else {
 			try {
-				if(key == QLatin1String("debug")) {
-					// allways understand --debug parameter even if it is not defined explicitly in CLI options
-					NecroLog::setFileLogTresholds(v.toString().toStdString());
-				}
-				else if(key == QLatin1String("verbose")) {
+				if(key == QLatin1String("verbose")) {
 					// allways understand --verbose parameter even if it is not defined explicitly in CLI options
-					NecroLog::setTopicsLogTresholds(v.toString().toStdString());
+					NecroLog::setTopicsLogThresholds(v.toString().toStdString());
 				}
 				else {
 					qfWarning() << "Cannot merge nonexisting option key:" << key;
