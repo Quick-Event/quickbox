@@ -65,7 +65,7 @@ int main(int argc, char *argv[])
 
 	qfInfo() << "========================================================";
 	qfInfo() << QDateTime::currentDateTime().toString(Qt::ISODate) << "starting" << QCoreApplication::applicationName() << "ver:" << QCoreApplication::applicationVersion();
-	qfInfo() << "Log tresholds:" << NecroLog::tresholdsLogInfo();
+	qfInfo() << "Log tresholds:" << NecroLog::thresholdsLogInfo();
 	qfInfo() << "========================================================";
 
 	qRegisterMetaType<qf::core::LogEntryMap>();
