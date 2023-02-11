@@ -30,6 +30,38 @@
     </message>
 </context>
 <context>
+    <name>SiStationConfig</name>
+    <message>
+        <location filename="src/device/sitask.cpp" line="98"/>
+        <source>Station number: {{StationNumber}}
+Extended mode: {{ExtendedMode}}
+Auto send: {{AutoSend}}
+Handshake: {{HandShake}}
+Password access: {{PasswordAccess}}
+Read out after punch: {{ReadOutAfterPunch}}
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/device/sitask.cpp" line="107"/>
+        <location filename="src/device/sitask.cpp" line="108"/>
+        <location filename="src/device/sitask.cpp" line="109"/>
+        <location filename="src/device/sitask.cpp" line="110"/>
+        <location filename="src/device/sitask.cpp" line="111"/>
+        <source>True</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/device/sitask.cpp" line="107"/>
+        <location filename="src/device/sitask.cpp" line="108"/>
+        <location filename="src/device/sitask.cpp" line="109"/>
+        <location filename="src/device/sitask.cpp" line="110"/>
+        <location filename="src/device/sitask.cpp" line="111"/>
+        <source>False</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>siut::CommPort</name>
     <message>
         <location filename="src/device/commport.cpp" line="42"/>
@@ -54,6 +86,25 @@
     <message>
         <location filename="src/device/commport.cpp" line="74"/>
         <source>%1 closed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/device/commport.cpp" line="91"/>
+        <source>possible solution:
+Wait at least 10 seconds and then try again.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/device/commport.cpp" line="100"/>
+        <source>There are no ports available.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/device/commport.cpp" line="103"/>
+        <source>Selected port %1 is not available.
+List of accessible ports:
+
+</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

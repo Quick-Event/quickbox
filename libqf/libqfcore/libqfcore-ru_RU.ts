@@ -4,8 +4,8 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="src/sql/catalog.cpp" line="33"/>
-        <location filename="src/sql/catalog.cpp" line="61"/>
+        <location filename="src/sql/catalog.cpp" line="34"/>
+        <location filename="src/sql/catalog.cpp" line="62"/>
         <source>Error getting the sequence nextval(&apos;%1&apos;)</source>
         <translation>Ошибка при получении последовательности nextval (&apos;% 1&apos;)</translation>
     </message>
@@ -13,42 +13,42 @@
 <context>
     <name>qf::core::model::LogTableModel</name>
     <message>
-        <location filename="src/model/logtablemodel.cpp" line="49"/>
+        <location filename="src/model/logtablemodel.cpp" line="51"/>
         <source>Category</source>
         <translation>Категория</translation>
     </message>
     <message>
-        <location filename="src/model/logtablemodel.cpp" line="51"/>
+        <location filename="src/model/logtablemodel.cpp" line="53"/>
         <source>File</source>
         <translation>Файл</translation>
     </message>
     <message>
-        <location filename="src/model/logtablemodel.cpp" line="53"/>
+        <location filename="src/model/logtablemodel.cpp" line="55"/>
         <source>Line</source>
         <translation>Строка</translation>
     </message>
     <message>
-        <location filename="src/model/logtablemodel.cpp" line="55"/>
+        <location filename="src/model/logtablemodel.cpp" line="57"/>
         <source>Severity</source>
         <translation>Важность</translation>
     </message>
     <message>
-        <location filename="src/model/logtablemodel.cpp" line="57"/>
+        <location filename="src/model/logtablemodel.cpp" line="59"/>
         <source>Time stamp</source>
         <translation>Метка (реального) времени</translation>
     </message>
     <message>
-        <location filename="src/model/logtablemodel.cpp" line="59"/>
+        <location filename="src/model/logtablemodel.cpp" line="61"/>
         <source>Message</source>
         <translation>Сообщение</translation>
     </message>
     <message>
-        <location filename="src/model/logtablemodel.cpp" line="61"/>
+        <location filename="src/model/logtablemodel.cpp" line="63"/>
         <source>Function</source>
         <translation>Функция</translation>
     </message>
     <message>
-        <location filename="src/model/logtablemodel.cpp" line="63"/>
+        <location filename="src/model/logtablemodel.cpp" line="65"/>
         <source>Data</source>
         <translation>Данные</translation>
     </message>
@@ -56,14 +56,14 @@
 <context>
     <name>qf::core::model::SqlTableModel</name>
     <message>
-        <location filename="src/model/sqltablemodel.cpp" line="231"/>
+        <location filename="src/model/sqltablemodel.cpp" line="234"/>
         <source>numRowsAffected() = %1, should be 1
 %2</source>
         <translation>numRowsAffected() = %1, должно быть 1
 %2</translation>
     </message>
     <message>
-        <location filename="src/model/sqltablemodel.cpp" line="257"/>
+        <location filename="src/model/sqltablemodel.cpp" line="260"/>
         <source>Error executing query: %1
  %2</source>
         <translation>Ошибка выполнения запроса: %1
@@ -73,65 +73,65 @@
 <context>
     <name>qf::core::model::TableModel</name>
     <message>
-        <location filename="src/model/tablemodel.cpp" line="330"/>
-        <location filename="src/model/tablemodel.cpp" line="428"/>
-        <location filename="src/model/tablemodel.cpp" line="459"/>
-        <location filename="src/model/tablemodel.cpp" line="563"/>
+        <location filename="src/model/tablemodel.cpp" line="338"/>
+        <location filename="src/model/tablemodel.cpp" line="436"/>
+        <location filename="src/model/tablemodel.cpp" line="467"/>
+        <location filename="src/model/tablemodel.cpp" line="571"/>
         <source>Cannot find table field index for column index: %1</source>
         <translation>Не удается найти индекс поля таблицы для индекса столбца:% 1</translation>
     </message>
     <message>
-        <location filename="src/model/tablemodel.cpp" line="424"/>
-        <location filename="src/model/tablemodel.cpp" line="455"/>
-        <location filename="src/model/tablemodel.cpp" line="559"/>
+        <location filename="src/model/tablemodel.cpp" line="432"/>
+        <location filename="src/model/tablemodel.cpp" line="463"/>
+        <location filename="src/model/tablemodel.cpp" line="567"/>
         <source>Invalid table row: %1</source>
         <translation>Недопустимая строка таблицы:% 1</translation>
     </message>
     <message>
-        <location filename="src/model/tablemodel.cpp" line="431"/>
-        <location filename="src/model/tablemodel.cpp" line="462"/>
-        <location filename="src/model/tablemodel.cpp" line="566"/>
+        <location filename="src/model/tablemodel.cpp" line="439"/>
+        <location filename="src/model/tablemodel.cpp" line="470"/>
+        <location filename="src/model/tablemodel.cpp" line="574"/>
         <source>Invalid table field index: %1</source>
         <translation>Недопустимый индекс поля таблицы:% 1</translation>
     </message>
     <message>
-        <location filename="src/model/tablemodel.cpp" line="447"/>
-        <location filename="src/model/tablemodel.cpp" line="492"/>
-        <location filename="src/model/tablemodel.cpp" line="516"/>
-        <location filename="src/model/tablemodel.cpp" line="551"/>
-        <location filename="src/model/tablemodel.cpp" line="577"/>
+        <location filename="src/model/tablemodel.cpp" line="455"/>
+        <location filename="src/model/tablemodel.cpp" line="500"/>
+        <location filename="src/model/tablemodel.cpp" line="524"/>
+        <location filename="src/model/tablemodel.cpp" line="559"/>
+        <location filename="src/model/tablemodel.cpp" line="585"/>
         <source>Cannot find column index for name: &apos;%1&apos;</source>
         <translation>Не удается найти индекс столбца для имени: &apos;% 1&apos;</translation>
     </message>
     <message>
-        <location filename="src/model/tablemodel.cpp" line="478"/>
+        <location filename="src/model/tablemodel.cpp" line="486"/>
         <source>%2 Cannot find table field for column index: %1 (row index: %3)</source>
         <translation>% 2 Не удается найти поле таблицы для индекса столбца:% 1 (индекс строки:% 3)</translation>
     </message>
     <message>
-        <location filename="src/model/tablemodel.cpp" line="503"/>
-        <location filename="src/model/tablemodel.cpp" line="538"/>
+        <location filename="src/model/tablemodel.cpp" line="511"/>
+        <location filename="src/model/tablemodel.cpp" line="546"/>
         <source>Cannot find table field for column index: %1</source>
         <translation>Не удается найти поле таблицы для индекса столбца:% 1</translation>
     </message>
     <message>
-        <location filename="src/model/tablemodel.cpp" line="622"/>
-        <location filename="src/model/tablemodel.cpp" line="683"/>
+        <location filename="src/model/tablemodel.cpp" line="630"/>
+        <location filename="src/model/tablemodel.cpp" line="691"/>
         <source>Invalid column index: %1</source>
         <translation>Недопустимый индекс столбца:% 1</translation>
     </message>
     <message>
-        <location filename="src/model/tablemodel.cpp" line="631"/>
+        <location filename="src/model/tablemodel.cpp" line="639"/>
         <source>Invalid field for column index: %1</source>
         <translation>Недопустимое поле для индекса столбца:% 1</translation>
     </message>
     <message>
-        <location filename="src/model/tablemodel.cpp" line="672"/>
+        <location filename="src/model/tablemodel.cpp" line="680"/>
         <source>Column named &apos;%1&apos; not found in column list. Existing columns: [%2]</source>
         <translation>Столбец с именем &apos;% 1&apos; не найден в списке столбцов. Существующие столбцы: [% 2]</translation>
     </message>
     <message>
-        <location filename="src/model/tablemodel.cpp" line="702"/>
+        <location filename="src/model/tablemodel.cpp" line="710"/>
         <source>Cannot find table field for column index: %1, table index: %2</source>
         <translation>Не удается найти поле таблицы для индекса столбца:% 1, индекс таблицы:% 2</translation>
     </message>
@@ -147,8 +147,8 @@
 <context>
     <name>qf::core::sql::FieldInfoList</name>
     <message>
-        <location filename="src/sql/catalog.cpp" line="301"/>
-        <location filename="src/sql/catalog.cpp" line="319"/>
+        <location filename="src/sql/catalog.cpp" line="306"/>
+        <location filename="src/sql/catalog.cpp" line="324"/>
         <source>Found info for nonexisting field &apos;%1&apos;</source>
         <translation>Найдена информация для несуществующего поля &apos;% 1&apos;</translation>
     </message>
