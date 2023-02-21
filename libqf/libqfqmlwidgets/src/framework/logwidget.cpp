@@ -99,7 +99,7 @@ LogWidget::LogWidget(QWidget *parent)
 
 	{
 		QAction *a = new QAction(tr("Maximal log length"), this);
-		connect(a, &QAction::triggered, [this]() {
+		connect(a, &QAction::triggered, this, [this]() {
 			qf::core::model::LogTableModel *m = this->logTableModel();
 			int max_rows = m->maximumRowCount();
 			bool ok;
@@ -122,11 +122,14 @@ LogWidget::LogWidget(QWidget *parent)
 	m_filterModel->setDynamicSortFilter(false);
 	ui->tableView->setModel(m_filterModel);
 
+	int info_index = -1;
 	for (int i = static_cast<int>(NecroLog::Level::Error); i <= static_cast<int>(NecroLog::Level::Debug); i++) {
+		if(i == static_cast<int>(NecroLog::Level::Info))
+			info_index = ui->severityTreshold->count();
 		ui->severityTreshold->addItem(NecroLog::levelToString(static_cast<NecroLog::Level>(i)), QVariant::fromValue(i));
 	}
-	connect(ui->severityTreshold, SIGNAL(currentIndexChanged(int)), this, SLOT(onSeverityTresholdIndexChanged(int)));
-	ui->severityTreshold->setCurrentIndex(static_cast<int>(NecroLog::Level::Info));
+	ui->severityTreshold->setCurrentIndex(info_index);
+	connect(ui->severityTreshold, &QComboBox::currentIndexChanged, this, &LogWidget::onSeverityTresholdIndexChanged);
 
 	connect(ui->edFilter, &QLineEdit::textChanged, this, &LogWidget::filterStringChanged);
 }
