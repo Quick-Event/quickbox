@@ -129,7 +129,7 @@ LogWidget::LogWidget(QWidget *parent)
 		ui->severityTreshold->addItem(NecroLog::levelToString(static_cast<NecroLog::Level>(i)), QVariant::fromValue(i));
 	}
 	ui->severityTreshold->setCurrentIndex(info_index);
-	connect(ui->severityTreshold, &QComboBox::currentIndexChanged, this, &LogWidget::onSeverityTresholdIndexChanged);
+	connect(ui->severityTreshold, qOverload<int>(&QComboBox::currentIndexChanged), this, &LogWidget::onSeverityTresholdIndexChanged);
 
 	connect(ui->edFilter, &QLineEdit::textChanged, this, &LogWidget::filterStringChanged);
 }
