@@ -60,6 +60,7 @@
 #include <QProgressDialog>
 #include <QTimer>
 #include <QSerialPortInfo>
+#include <QTcpSocket>
 
 namespace qfc = qf::core;
 namespace qfm = qf::core::model;

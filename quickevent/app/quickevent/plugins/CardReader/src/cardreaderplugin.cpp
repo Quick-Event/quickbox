@@ -4,6 +4,7 @@
 #include "cardreaderwidget.h"
 #include "cardreadersettingspage.h"
 #include "services/racomclient.h"
+#include "services/webapi.h"
 
 #include "../../Core/src/coreplugin.h"
 #include "../../Core/src/widgets/settingsdialog.h"
@@ -61,6 +62,8 @@ void CardReaderPlugin::onInstalled()
 
 	services::RacomClient *racom_client = new services::RacomClient(this);
 	Event::services::Service::addService(racom_client);
+	services::WebApi *web_api = new services::WebApi(this);
+	Event::services::Service::addService(web_api);
 
 	auto core_plugin = getPlugin<Core::CorePlugin>();
 	core_plugin->settingsDialog()->addPage(new CardReaderSettingsPage());

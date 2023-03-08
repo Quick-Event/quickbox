@@ -105,6 +105,7 @@ private:
 	CardReaderSettings::ReaderMode currentReaderMode() const;
 
 	void onTestButtonClicked();
+	void onTcpReadoutReceived(const QVariant &data);
 private:
 	Ui::CardReaderWidget *ui;
 	qf::qmlwidgets::Action *m_actAssignCard = nullptr;
