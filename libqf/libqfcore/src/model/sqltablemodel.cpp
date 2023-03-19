@@ -145,7 +145,7 @@ bool SqlTableModel::postRow(int row_no, bool throw_exc)
 		qf::core::sql::Connection sql_conn = sqlConnection();
 		QSqlDriver *sqldrv = sql_conn.driver();
 		const QStringList table_ids = tableIdsSortedAccordingToForeignKeys();
-		for(QString table_id : table_ids) {
+		for(const QString &table_id : table_ids) {
 			qfDebug() << "\ttable:" << table_id;
 			QSqlRecord rec;
 			int i = -1;
@@ -677,7 +677,7 @@ bool SqlTableModel::reloadTable(const QString &query_str)
 		return false;
 	}
 	if(m_recentlyExecutedQuery.isSelect()) {
-		bool retype_null_values = sql_conn.driverName().endsWith(QLatin1String("SQLITE"), Qt::CaseInsensitive);
+		bool retype_sqlite_null_values = sql_conn.driverName().endsWith(QLatin1String("SQLITE"), Qt::CaseInsensitive);
 		qfu::Table::FieldList table_fields;
 		QSqlRecord rec = m_recentlyExecutedQuery.record();
 		int fld_cnt = rec.count();
@@ -700,13 +700,13 @@ bool SqlTableModel::reloadTable(const QString &query_str)
 			for(int i=0; i<fld_cnt; i++) {
 				QVariant v = m_recentlyExecutedQuery.value(i);
 				//qfInfo() << table_fields.value(i).name() << table_fields.value(i).type() << i << v << "null:" << v.isNull();
-				if(retype_null_values) {
+				if(retype_sqlite_null_values) {
 					// SQLite driver reports NULL values as QString()
 					if(v.isNull())
 #if QT_VERSION_MAJOR >= 6
 						v = QVariant(table_fields.value(i).type());
 #else
-						v = QVariant(table_fields.value(i).type().id());
+						v = QVariant(static_cast<QVariant::Type>(table_fields.value(i).type().id()));
 #endif
 				}
 				//qfWarning() << table_fields.value(i).name() << table_fields.value(i).type() << i << v << "null:" << v.isNull();

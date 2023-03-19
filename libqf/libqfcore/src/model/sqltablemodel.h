@@ -5,7 +5,6 @@
 #include "../core/utils.h"
 #include "../sql/querybuilder.h"
 #include "../sql/query.h"
-#include "../sql/dbenumcache.h"
 
 #include <QMap>
 #include <QString>
