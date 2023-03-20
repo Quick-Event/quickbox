@@ -241,7 +241,7 @@ qf::core::utils::TreeTable RelaysPlugin::nLegsClassResultsTable(int class_id, in
 	{
 		qfs::QueryBuilder qb;
 		qb.select2("competitors", "id, registration")
-				.select2("runs", "id, relayId, leg")
+				.select2("runs", "id, relayId, leg, isRunning")
 				.select2("competitors", "firstName, lastName")
 				.select("COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName")
 				.from("runs")
@@ -252,6 +252,8 @@ qf::core::utils::TreeTable RelaysPlugin::nLegsClassResultsTable(int class_id, in
 				.orderBy("runs.relayId, runs.leg");
 		q.execThrow(qb.toString());
 		while(q.next()) {
+			if (!q.value("isRunning").toBool())
+				continue;
 			int relay_id = q.value("runs.relayId").toInt();
 			for (int i = 0; i < relays.count(); ++i) {
 				if(relays[i].relayId == relay_id) {
@@ -277,8 +279,6 @@ qf::core::utils::TreeTable RelaysPlugin::nLegsClassResultsTable(int class_id, in
 								"relays.classId=" QF_IARG(class_id)
 								" AND runs.leg=" QF_IARG(legno)
 								" AND runs.isRunning"
-								" AND NOT runs.notCompeting"
-								" AND runs.finishTimeMs>0"
 								, qfs::QueryBuilder::INNER_JOIN)
 				.orderBy("runs.disqualified, runs.timeMs");
 		q.execThrow(qb.toString());
@@ -296,8 +296,10 @@ qf::core::utils::TreeTable RelaysPlugin::nLegsClassResultsTable(int class_id, in
 					else {
 						leg.runStatus = quickevent::core::RunStatus::fromQuery(q);
 						leg.time = q.value("timeMs").toInt();
-						leg.pos = leg.runStatus.isOk()? run_pos : 0;
-						run_pos++;
+						if (leg.runStatus.isOk() && leg.time > 0) {
+							leg.pos = run_pos;
+							run_pos++;
+						}
 					}
 					break;
 				}
@@ -310,7 +312,7 @@ qf::core::utils::TreeTable RelaysPlugin::nLegsClassResultsTable(int class_id, in
 		for (int i = 0; i < relays.count(); ++i) {
 			Relay &relay = relays[i];
 			Leg &leg = relay.legs[legno - 1];
-			if(leg.runStatus.isOk()) {
+			if(leg.runStatus.isOk() && leg.time > 0) {
 				if(legno == 1)
 					leg.stime = leg.time;
 				else if(relay.legs[legno-2].stime > 0)
@@ -581,6 +583,10 @@ QString RelaysPlugin::resultsIofXml30()
 				int leg = k + 1;
 				QF_TIME_SCOPE("exporting leg: " + QString::number(leg));
 				const qf::core::utils::TreeTableRow tt_leg_row = tt_legs.row(k);
+				auto time = quickevent::core::og::TimeMs::fromVariant(tt_leg_row.value("time"));
+				// omit from export if leg does not exist (rundId == 0) or runner with OK status did not finish yet
+				if (tt_leg_row.value("runId").toInt() == 0 || (time.isValid() && time.msec() == 0))
+					continue;
 				QVariantList member_result{"TeamMemberResult"};
 				append_list(member_result,
 							QVariantList{"Person",
