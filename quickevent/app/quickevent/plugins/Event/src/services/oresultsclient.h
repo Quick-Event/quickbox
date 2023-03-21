@@ -15,7 +15,6 @@ class OResultsClientSettings : public ServiceSettings
 {
 	using Super = ServiceSettings;
 
-	QF_VARIANTMAP_FIELD(QString, a, setA, piKey)
 	QF_VARIANTMAP_FIELD2(int, e, setE, xportIntervalSec, 60)
 public:
 	OResultsClientSettings(const QVariantMap &o = QVariantMap()) : Super(o) {}
@@ -39,7 +38,8 @@ public:
 	void exportStartListIofXml3();
 	void loadSettings() override;
 	void onDbEventNotify(const QString &domain, int connection_id, const QVariant &data);
-
+	QString apiKey() const;
+	void setApiKey(QString apiKey);
 private:
 	QTimer *m_exportTimer = nullptr;
 	QNetworkAccessManager *m_networkManager = nullptr;

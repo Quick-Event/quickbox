@@ -115,9 +115,8 @@ void OResultsClient::sendFile(QString name, QString request_path, QString file) 
 	QHttpMultiPart *multi_part = new QHttpMultiPart(QHttpMultiPart::FormDataType);
 
 	QHttpPart api_key_part;
-	auto api_key = settings().apiKey();
 	api_key_part.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data; name=\"apiKey\""));
-	api_key_part.setBody(api_key.toUtf8());
+	api_key_part.setBody(apiKey().toUtf8());
 
 	QHttpPart file_part;
 	file_part.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("application/gzip"));
@@ -163,10 +162,21 @@ void OResultsClient::onDbEventNotify(const QString &domain, int connection_id, c
 	}
 }
 
+QString OResultsClient::apiKey() const
+{
+	return getPlugin<EventPlugin>()->eventConfig()->value("oresults.apiKey").toString();
+}
+
+void OResultsClient::setApiKey(QString apiKey)
+{
+	getPlugin<EventPlugin>()->eventConfig()->setValue("oresults.apiKey", apiKey);
+	getPlugin<EventPlugin>()->eventConfig()->save("oresults");
+}
+
 void OResultsClient::sendCompetitorChange(QString xml) {
 	QUrl url(API_URL + "/meos");
 	QNetworkRequest request(url);
-	request.setRawHeader("pwd", settings().apiKey().toUtf8());
+	request.setRawHeader("pwd", apiKey().toUtf8());
 	request.setHeader( QNetworkRequest::ContentTypeHeader, "application/gzip" );
 	QNetworkReply *reply = m_networkManager->post(request, gzipCompress(xml.toUtf8()));
 
