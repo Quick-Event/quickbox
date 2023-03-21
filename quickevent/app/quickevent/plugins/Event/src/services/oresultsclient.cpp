@@ -120,9 +120,9 @@ void OResultsClient::sendFile(QString name, QString request_path, QString file) 
 	api_key_part.setBody(api_key.toUtf8());
 
 	QHttpPart file_part;
-	file_part.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("application/xml"));
+	file_part.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("application/gzip"));
 	file_part.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data; name=\"file\""));
-	file_part.setBody(file.toUtf8());
+	file_part.setBody(gzipCompress(file.toUtf8()));
 
 	multi_part->append(api_key_part);
 	multi_part->append(file_part);
@@ -167,8 +167,8 @@ void OResultsClient::sendCompetitorChange(QString xml) {
 	QUrl url(API_URL + "/meos");
 	QNetworkRequest request(url);
 	request.setRawHeader("pwd", settings().apiKey().toUtf8());
-	request.setHeader( QNetworkRequest::ContentTypeHeader, "application/xml" );
-	QNetworkReply *reply = m_networkManager->post(request, xml.toUtf8());
+	request.setHeader( QNetworkRequest::ContentTypeHeader, "application/gzip" );
+	QNetworkReply *reply = m_networkManager->post(request, gzipCompress(xml.toUtf8()));
 
 	connect(reply, &QNetworkReply::finished, reply, [reply]()
 	{
@@ -313,6 +313,51 @@ void OResultsClient::onCompetitorChanged(int competitor_id)
 		auto xml_paylaod = qf::core::utils::HtmlUtils::fromXmlList(xml_root, opts);
 		sendCompetitorChange(xml_paylaod);
 	}
+}
+
+QByteArray OResultsClient::gzipCompress(QByteArray data)
+{
+	// calc crc32 helper func
+	auto crc32 = [](char *buf, uint32_t len){
+		uint32_t val, crc;
+		uint8_t i;
+
+		crc = 0xFFFFFFFF;
+		while(len--){
+			val=(crc^*buf++)&0xFF;
+			for(i=0; i<8; i++){
+				val = val & 1 ? (val>>1)^0xEDB88320 : val>>1;
+			}
+			crc = val^crc>>8;
+		}
+		return crc^0xFFFFFFFF;
+	};
+
+	QByteArray compressedData = qCompress(data);
+	//  Strip the first six bytes (a 4-byte length put on by qCompress and a 2-byte zlib header)
+	// and the last four bytes (a zlib integrity check).
+	compressedData.remove(0, 6);
+	compressedData.chop(4);
+
+	QByteArray header;
+	QDataStream ds1(&header, QIODevice::WriteOnly);
+	// Prepend a generic 10-byte gzip header (see RFC 1952),
+	ds1 << quint16(0x1f8b)
+		<< quint16(0x0800)
+		<< quint16(0x0000)
+		<< quint16(0x0000)
+		<< quint16(0x000b);
+
+
+	// Append a four-byte CRC-32 of the uncompressed data
+	// Append 4 bytes uncompressed input size modulo 2^32
+	QByteArray footer;
+	QDataStream ds2(&footer, QIODevice::WriteOnly);
+	ds2.setByteOrder(QDataStream::LittleEndian);
+	ds2 << crc32(data.data(), data.length())
+		<< quint32(data.size());
+
+	return header + compressedData + footer;
 }
 
 }}

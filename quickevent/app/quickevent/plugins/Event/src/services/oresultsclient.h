@@ -51,6 +51,7 @@ private:
 	void sendFile(QString name, QString request_path, QString file);
 	void sendCompetitorChange(QString xml);
 	void onCompetitorChanged(int competitor_id);
+	QByteArray gzipCompress(QByteArray data);
 };
 
 }}
