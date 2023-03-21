@@ -53,7 +53,8 @@ QString OResultsClient::serviceName()
 
 void OResultsClient::run() {
 	Super::run();
-	onExportTimerTimeOut();
+	exportStartListIofXml3();
+	exportResultsIofXml3();
 	m_exportTimer->start();
 }
 
