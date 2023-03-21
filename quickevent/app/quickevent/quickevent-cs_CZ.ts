@@ -182,198 +182,198 @@
     <message>
         <location filename="plugins/CardReader/src/cardreadersettingspage.ui" line="14"/>
         <source>CuteCom</source>
-        <translation type="unfinished">Nastavení vyčítání čipů</translation>
+        <translation>Nastavení vyčítání čipů</translation>
     </message>
     <message>
         <location filename="plugins/CardReader/src/cardreadersettingspage.ui" line="20"/>
         <source>Connection</source>
-        <translation type="unfinished">Připojení</translation>
+        <translation>Připojení</translation>
     </message>
     <message>
         <location filename="plugins/CardReader/src/cardreadersettingspage.ui" line="26"/>
         <source>De&amp;vice</source>
-        <translation type="unfinished"></translation>
+        <translation>Zaří&amp;zení</translation>
     </message>
     <message>
         <location filename="plugins/CardReader/src/cardreadersettingspage.ui" line="39"/>
         <source>Baud rate</source>
-        <translation type="unfinished"></translation>
+        <translation>Přenosová rychlost (v baudech)</translation>
     </message>
     <message>
         <location filename="plugins/CardReader/src/cardreadersettingspage.ui" line="53"/>
         <source>38400</source>
-        <translation type="unfinished">38400</translation>
+        <translation>38400</translation>
     </message>
     <message>
         <location filename="plugins/CardReader/src/cardreadersettingspage.ui" line="58"/>
         <source>4800</source>
-        <translation type="unfinished">4800</translation>
+        <translation>4800</translation>
     </message>
     <message>
         <location filename="plugins/CardReader/src/cardreadersettingspage.ui" line="66"/>
         <source>Data bits</source>
-        <translation type="unfinished"></translation>
+        <translation>Datové bity</translation>
     </message>
     <message>
         <location filename="plugins/CardReader/src/cardreadersettingspage.ui" line="80"/>
         <source>8</source>
-        <translation type="unfinished">8</translation>
+        <translation>8</translation>
     </message>
     <message>
         <location filename="plugins/CardReader/src/cardreadersettingspage.ui" line="85"/>
         <source>7</source>
-        <translation type="unfinished">7</translation>
+        <translation>7</translation>
     </message>
     <message>
         <location filename="plugins/CardReader/src/cardreadersettingspage.ui" line="90"/>
         <source>6</source>
-        <translation type="unfinished">6</translation>
+        <translation>6</translation>
     </message>
     <message>
         <location filename="plugins/CardReader/src/cardreadersettingspage.ui" line="95"/>
         <source>5</source>
-        <translation type="unfinished">5</translation>
+        <translation>5</translation>
     </message>
     <message>
         <location filename="plugins/CardReader/src/cardreadersettingspage.ui" line="103"/>
         <source>Stop bits</source>
-        <translation type="unfinished"></translation>
+        <translation>Stop bity</translation>
     </message>
     <message>
         <location filename="plugins/CardReader/src/cardreadersettingspage.ui" line="114"/>
         <source>1</source>
-        <translation type="unfinished">1</translation>
+        <translation>1</translation>
     </message>
     <message>
         <location filename="plugins/CardReader/src/cardreadersettingspage.ui" line="119"/>
         <source>2</source>
-        <translation type="unfinished">2</translation>
+        <translation>2</translation>
     </message>
     <message>
         <location filename="plugins/CardReader/src/cardreadersettingspage.ui" line="127"/>
         <source>Parity</source>
-        <translation type="unfinished"></translation>
+        <translation>Parita</translation>
     </message>
     <message>
         <location filename="plugins/CardReader/src/cardreadersettingspage.ui" line="138"/>
         <source>None</source>
-        <translation type="unfinished">Žádná</translation>
+        <translation>Žádná</translation>
     </message>
     <message>
         <location filename="plugins/CardReader/src/cardreadersettingspage.ui" line="143"/>
         <source>Odd</source>
-        <translation type="unfinished">Lichá</translation>
+        <translation>Lichá</translation>
     </message>
     <message>
         <location filename="plugins/CardReader/src/cardreadersettingspage.ui" line="148"/>
         <source>Even</source>
-        <translation type="unfinished">Sudá</translation>
+        <translation>Sudá</translation>
     </message>
     <message>
         <location filename="plugins/CardReader/src/cardreadersettingspage.ui" line="153"/>
         <source>Mark</source>
-        <translation type="unfinished">1 (mark)</translation>
+        <translation>1 (mark)</translation>
     </message>
     <message>
         <location filename="plugins/CardReader/src/cardreadersettingspage.ui" line="158"/>
         <source>Space</source>
-        <translation type="unfinished">0 (space)</translation>
+        <translation>0 (space)</translation>
     </message>
     <message>
         <location filename="plugins/CardReader/src/cardreadersettingspage.ui" line="179"/>
         <source>Test connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Otestovat připojení</translation>
     </message>
     <message>
         <location filename="plugins/CardReader/src/cardreadersettingspage.ui" line="186"/>
         <source>Debugging</source>
-        <translation type="unfinished">Ladění</translation>
+        <translation>Ladění</translation>
     </message>
     <message>
         <location filename="plugins/CardReader/src/cardreadersettingspage.ui" line="202"/>
         <source>show raw data</source>
-        <translation type="unfinished">zobrazit nezpracovaná data</translation>
+        <translation>zobrazit nezpracovaná data</translation>
     </message>
     <message>
         <location filename="plugins/CardReader/src/cardreadersettingspage.ui" line="209"/>
         <source>disable CRC check</source>
-        <translation type="unfinished">zakázat CRC kontrolu</translation>
+        <translation>zakázat CRC kontrolu</translation>
     </message>
     <message>
         <location filename="plugins/CardReader/src/cardreadersettingspage.ui" line="222"/>
         <source>Reader</source>
-        <translation type="unfinished">Vyčítací jednotka</translation>
+        <translation>Vyčítací jednotka</translation>
     </message>
     <message>
         <location filename="plugins/CardReader/src/cardreadersettingspage.ui" line="241"/>
         <source>Check type</source>
-        <translation type="unfinished"></translation>
+        <translation>Typ kontroly ražení</translation>
     </message>
     <message>
         <location filename="plugins/CardReader/src/cardreadersettingspage.ui" line="254"/>
         <source>Reader mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Mód vyčítací jednotky</translation>
     </message>
     <message>
         <location filename="plugins/CardReader/src/cardreadersettingspage.cpp" line="35"/>
         <source>Card reader</source>
-        <translation type="unfinished">Vyčítání SI čipů</translation>
+        <translation>Vyčítací jednotka</translation>
     </message>
     <message>
         <location filename="plugins/CardReader/src/cardreadersettingspage.cpp" line="44"/>
         <source>Readout</source>
-        <translation type="unfinished">Vyčítání</translation>
+        <translation>Vyčítání</translation>
     </message>
     <message>
         <location filename="plugins/CardReader/src/cardreadersettingspage.cpp" line="46"/>
         <source>Readout mode - default</source>
-        <translation type="unfinished">Mód vyčítání čipů – výchozí</translation>
+        <translation>Mód vyčítání čipů – výchozí</translation>
     </message>
     <message>
         <location filename="plugins/CardReader/src/cardreadersettingspage.cpp" line="47"/>
         <source>Edit on punch</source>
-        <translation type="unfinished">Upravit po oražení</translation>
+        <translation>Upravit po oražení</translation>
     </message>
     <message>
         <location filename="plugins/CardReader/src/cardreadersettingspage.cpp" line="49"/>
         <source>Show Edit/Insert competitor dialog when SI Card is inserted into the reader station</source>
-        <translation type="unfinished">Zobrazit formulář pro upravení nebo přidání závodníka po vložení SI čipu do vyčítací jednotky</translation>
+        <translation>Zobrazit formulář pro upravení nebo přidání závodníka po vložení SI čipu do vyčítací jednotky</translation>
     </message>
     <message>
         <location filename="plugins/CardReader/src/cardreadersettingspage.cpp" line="151"/>
         <source>Loading SI station info ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Načítání informací o vyčítací jednotce...</translation>
     </message>
     <message>
         <location filename="plugins/CardReader/src/cardreadersettingspage.cpp" line="151"/>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>Zrušit</translation>
     </message>
     <message>
         <location filename="plugins/CardReader/src/cardreadersettingspage.cpp" line="166"/>
         <source>Information</source>
-        <translation type="unfinished">Informace</translation>
+        <translation>Informace</translation>
     </message>
     <message>
         <location filename="plugins/CardReader/src/cardreadersettingspage.cpp" line="166"/>
         <source>SI reader config:%1</source>
-        <translation type="unfinished"></translation>
+        <translation>Nastavení vyčítací jednotky: %1</translation>
     </message>
     <message>
         <location filename="plugins/CardReader/src/cardreadersettingspage.cpp" line="169"/>
         <location filename="plugins/CardReader/src/cardreadersettingspage.cpp" line="185"/>
         <source>Warning</source>
-        <translation type="unfinished">Varování</translation>
+        <translation>Varování</translation>
     </message>
     <message>
         <location filename="plugins/CardReader/src/cardreadersettingspage.cpp" line="169"/>
         <source>Device %1 is not SI reader</source>
-        <translation type="unfinished"></translation>
+        <translation>Zařízení %1 není vyčítací jednotka</translation>
     </message>
     <message>
         <location filename="plugins/CardReader/src/cardreadersettingspage.cpp" line="185"/>
         <source>Error open device %1 - %2</source>
-        <translation type="unfinished">Chyba při otevírání zařízení %1 - %2</translation>
+        <translation>Chyba při otevírání zařízení %1 - %2</translation>
     </message>
 </context>
 <context>
@@ -404,7 +404,7 @@
     <message>
         <location filename="plugins/CardReader/src/services/racomclientwidget.ui" line="20"/>
         <source>Network communication</source>
-        <translation type="unfinished"></translation>
+        <translation>Síťová komunikace</translation>
     </message>
     <message>
         <location filename="plugins/CardReader/src/services/racomclientwidget.ui" line="26"/>
@@ -419,37 +419,37 @@
     <message>
         <location filename="plugins/CardReader/src/services/racomclientwidget.ui" line="83"/>
         <source>Read Text Splits File (format &quot;rawsplits&quot; from Racom)</source>
-        <translation type="unfinished"></translation>
+        <translation>Načítat mezičasy z textového souboru (formát &quot;rawsplits&quot; z RACOMu)</translation>
     </message>
     <message>
         <location filename="plugins/CardReader/src/services/racomclientwidget.ui" line="95"/>
         <source>File Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Název souboru</translation>
     </message>
     <message>
         <location filename="plugins/CardReader/src/services/racomclientwidget.ui" line="102"/>
         <source>Finish code (in file)</source>
-        <translation type="unfinished"></translation>
+        <translation>Číslo cílové kontroly (v souboru)</translation>
     </message>
     <message>
         <location filename="plugins/CardReader/src/services/racomclientwidget.ui" line="122"/>
         <source>Import interval</source>
-        <translation type="unfinished"></translation>
+        <translation>Interval pro importování</translation>
     </message>
     <message>
         <location filename="plugins/CardReader/src/services/racomclientwidget.ui" line="132"/>
         <source> sec</source>
-        <translation type="unfinished"> sek</translation>
+        <translation> sek</translation>
     </message>
     <message>
         <location filename="plugins/CardReader/src/services/racomclientwidget.ui" line="153"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="plugins/CardReader/src/services/racomclientwidget.cpp" line="88"/>
         <source>Open txt splits file</source>
-        <translation type="unfinished"></translation>
+        <translation>Otevřít soubor s mezičasy (*.txt)</translation>
     </message>
 </context>
 <context>
@@ -467,7 +467,7 @@
     <message>
         <location filename="plugins/CardReader/src/cardreaderwidget.ui" line="89"/>
         <source>Test</source>
-        <translation type="unfinished"></translation>
+        <translation>Otestovat</translation>
     </message>
     <message>
         <location filename="plugins/CardReader/src/cardreaderwidget.cpp" line="262"/>
@@ -504,7 +504,7 @@
     <message>
         <location filename="plugins/CardReader/src/cardreaderwidget.cpp" line="177"/>
         <source>Open COM to connect SI reader</source>
-        <translation type="unfinished"></translation>
+        <translation>Připojit vyčítací jednotku</translation>
     </message>
     <message>
         <location filename="plugins/CardReader/src/cardreaderwidget.cpp" line="298"/>
@@ -1471,7 +1471,7 @@ Zvažte nastavení intervalu pro všechny kategorie.</translation>
     <message>
         <location filename="plugins/Competitors/src/competitorswidget.cpp" line="68"/>
         <source>Ranking pos</source>
-        <translation type="unfinished"></translation>
+        <translation>Ranking umístění</translation>
     </message>
     <message>
         <location filename="plugins/Competitors/src/competitorswidget.cpp" line="127"/>
@@ -1615,7 +1615,7 @@ Zvažte nastavení intervalu pro všechny kategorie.</translation>
     <message>
         <location filename="plugins/Core/src/widgets/appstatusbar.cpp" line="51"/>
         <source>E%1</source>
-        <translation type="unfinished">E%1</translation>
+        <translation>E%1</translation>
     </message>
 </context>
 <context>
@@ -1638,7 +1638,7 @@ Zvažte nastavení intervalu pro všechny kategorie.</translation>
     <message>
         <location filename="plugins/Core/src/coreplugin.cpp" line="67"/>
         <source>&amp;Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Nastavení</translation>
     </message>
     <message>
         <location filename="plugins/Core/src/coreplugin.cpp" line="75"/>
@@ -1766,38 +1766,38 @@ Zvažte nastavení intervalu pro všechny kategorie.</translation>
     <message>
         <location filename="plugins/Core/src/widgets/reportssettingspage.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished">Formulář</translation>
+        <translation>Formulář</translation>
     </message>
     <message>
         <location filename="plugins/Core/src/widgets/reportssettingspage.ui" line="20"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Custom reports directory is an overlay directory, where QuickEvent is looking for additional or modified reports. QuicEvent is shipped with read-only reports bundled in application binary. This makes the installation process trivial and it also enables shipping QuicEvent as AppImage. When a user wants to use custom reports, the simplest way is to push the &lt;span style=&quot; font-weight:700; font-style:italic;&quot;&gt;Create&lt;/span&gt; button. QuicEvent creates a copy of bundled report files in a directory selected by the user and starts to use reports from it. Every change in reports files from the custom directory is immediately visible in reports generated by QuickEvent, no other action is needed.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Vlastní adresář s reporty je adresář, kde QuickEvent hledá uživatelem nově vytvořené nebo upravené reporty. Výchozí vzhled a obsah reportů je umístěn přímo ve spustitelném souboru QuickEventu, díky čemuž je proces instalace jednoduchý a také díky tomu může být QuickEvent vydáván jako AppImage. Pokud si uživatel chce upravit reporty, stačí kliknout na tlačítko &lt;span style=&quot; font-weight:700; font-style:italic;&quot;&gt;Vytvořit&lt;/span&gt;. QuickEvent vytvoří kopii výchozích reportů do zvoleného adresáře a pro všechny nově generované reporty bude využívat šablony z tohoto adresáře. Každá změna souborů v tomto adresáři se tedy bez dalších akcí okamžitě projeví v nově generovaných reportech.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="plugins/Core/src/widgets/reportssettingspage.ui" line="23"/>
         <source>&amp;Custom reports directory</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Vlastní adresář s reporty</translation>
     </message>
     <message>
         <location filename="plugins/Core/src/widgets/reportssettingspage.ui" line="47"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="plugins/Core/src/widgets/reportssettingspage.ui" line="56"/>
         <source>Create</source>
-        <translation type="unfinished"></translation>
+        <translation>Vytvořit</translation>
     </message>
     <message>
         <location filename="plugins/Core/src/widgets/reportssettingspage.cpp" line="23"/>
         <source>Reports</source>
-        <translation type="unfinished"></translation>
+        <translation>Reporty</translation>
     </message>
     <message>
         <location filename="plugins/Core/src/widgets/reportssettingspage.cpp" line="37"/>
         <location filename="plugins/Core/src/widgets/reportssettingspage.cpp" line="56"/>
         <source>Open Directory</source>
-        <translation type="unfinished">Otevřít adresář</translation>
+        <translation>Otevřít adresář</translation>
     </message>
 </context>
 <context>
@@ -1805,12 +1805,12 @@ Zvažte nastavení intervalu pro všechny kategorie.</translation>
     <message>
         <location filename="plugins/Core/src/widgets/settingsdialog.ui" line="14"/>
         <source>Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Nastavení</translation>
     </message>
     <message>
         <location filename="plugins/Core/src/widgets/settingsdialog.cpp" line="74"/>
         <source>settings</source>
-        <translation type="unfinished"></translation>
+        <translation>nastavení</translation>
     </message>
 </context>
 <context>
@@ -2448,7 +2448,7 @@ Použij: Soubor --&gt; Importovat --&gt; Závod (*.qbe) pro konverzi dat do aktu
     <message>
         <location filename="plugins/Event/src/eventplugin.cpp" line="1172"/>
         <source>PostgreSQL schema must start with small letter and it may contain small letters, digits and underscores only.</source>
-        <translation type="unfinished"></translation>
+        <translation>Název PostgreSQL schématu musí začínat malým písmenem a může obsahovat pouze malá písmena, číslovky a podtržítka.</translation>
     </message>
     <message>
         <source>PostgreSql schema must start with letter and it may contain letters, digits and underscores only.</source>
@@ -2590,39 +2590,41 @@ Použij: Soubor --&gt; Importovat --&gt; Závod (*.qbe) pro konverzi dat do aktu
     <message>
         <location filename="plugins/Event/src/services/oresultsclientwidget.ui" line="14"/>
         <source>Results upload service for OResults.eu</source>
-        <translation type="unfinished"></translation>
+        <translation>Služba pro nahrávání výsledků na OResults.eu</translation>
     </message>
     <message>
         <location filename="plugins/Event/src/services/oresultsclientwidget.ui" line="22"/>
         <source>Export interval</source>
-        <translation type="unfinished"></translation>
+        <translation>Interval pro exportování</translation>
     </message>
     <message>
         <location filename="plugins/Event/src/services/oresultsclientwidget.ui" line="32"/>
         <source> sec</source>
-        <translation type="unfinished"> sek</translation>
+        <translation> sek</translation>
     </message>
     <message>
         <location filename="plugins/Event/src/services/oresultsclientwidget.ui" line="51"/>
         <source>API key</source>
-        <translation type="unfinished"></translation>
+        <translation>API klíč</translation>
     </message>
     <message>
         <location filename="plugins/Event/src/services/oresultsclientwidget.ui" line="69"/>
         <source>Results are exported at given interval.
 Both Results and Start list can be exported manualy using the buttons bellow. In addition, if the service is running, individual competitor data is send after reaout and after saving competitor dialog. 
 In case of unexpected errors, contact support@oresults.eu </source>
-        <translation type="unfinished"></translation>
+        <translation>Výsledky jsou automaticky exportovány dle zadaného intervalu.
+Startovní listiny a výsledky mohou být též exportovány pomocí tlačítek níže. Pokud je služba zapnutá, jsou navíc výsledky konkrétního závodníka zasílány po vyčtení čipu a při uložení formuláře pro úpravu závodníka.
+V případě chyb neváhejte napsat na support@oresults.eu </translation>
     </message>
     <message>
         <location filename="plugins/Event/src/services/oresultsclientwidget.ui" line="96"/>
         <source>Export start list</source>
-        <translation type="unfinished">Exportovat startovní listinu</translation>
+        <translation>Exportovat startovní listinu</translation>
     </message>
     <message>
         <location filename="plugins/Event/src/services/oresultsclientwidget.ui" line="103"/>
         <source>Export results</source>
-        <translation type="unfinished">Exportovat výsledky</translation>
+        <translation>Exportovat výsledky</translation>
     </message>
 </context>
 <context>
@@ -3071,27 +3073,27 @@ In case of unexpected errors, contact support@oresults.eu </source>
     <message>
         <location filename="plugins/Competitors/src/lentcardssettingspage.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished">Formulář</translation>
+        <translation>Formulář</translation>
     </message>
     <message>
         <location filename="plugins/Competitors/src/lentcardssettingspage.cpp" line="16"/>
         <source>Cards to rent</source>
-        <translation type="unfinished">Čipy k zapůjčení</translation>
+        <translation>Čipy k zapůjčení</translation>
     </message>
     <message>
         <location filename="plugins/Competitors/src/lentcardssettingspage.cpp" line="21"/>
         <source>SI</source>
-        <translation type="unfinished">SI</translation>
+        <translation>SI</translation>
     </message>
     <message>
         <location filename="plugins/Competitors/src/lentcardssettingspage.cpp" line="22"/>
         <source>Ignored</source>
-        <translation type="unfinished">Ignorovat</translation>
+        <translation>Ignorovat</translation>
     </message>
     <message>
         <location filename="plugins/Competitors/src/lentcardssettingspage.cpp" line="23"/>
         <source>Note</source>
-        <translation type="unfinished">Poznámka</translation>
+        <translation>Poznámka</translation>
     </message>
 </context>
 <context>
@@ -3405,42 +3407,42 @@ In case of unexpected errors, contact support@oresults.eu </source>
     <message>
         <location filename="plugins/Receipts/src/receiptssettingspage.ui" line="14"/>
         <source>CuteCom</source>
-        <translation type="unfinished">Nastavení vyčítání čipů</translation>
+        <translation>Mezičasy</translation>
     </message>
     <message>
         <location filename="plugins/Receipts/src/receiptssettingspage.ui" line="20"/>
         <source>Print receipt automatically, when SI card is read.</source>
-        <translation type="unfinished"></translation>
+        <translation>Vytisknout automaticky mezičasy po vyčtení čipu.</translation>
     </message>
     <message>
         <location filename="plugins/Receipts/src/receiptssettingspage.ui" line="23"/>
         <source>Auto print</source>
-        <translation type="unfinished">Automatický tisk</translation>
+        <translation>Automatický tisk</translation>
     </message>
     <message>
         <location filename="plugins/Receipts/src/receiptssettingspage.ui" line="43"/>
         <source>Print receipts only for reader used by this application.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tisknout mezičasy pouze na tiskárně nastavené v této aplikaci.</translation>
     </message>
     <message>
         <location filename="plugins/Receipts/src/receiptssettingspage.ui" line="46"/>
         <source>This reader only</source>
-        <translation type="unfinished">Pouze tato tiskárna</translation>
+        <translation>Pouze tato tiskárna</translation>
     </message>
     <message>
         <location filename="plugins/Receipts/src/receiptssettingspage.ui" line="53"/>
         <source>When runner is not found</source>
-        <translation type="unfinished"></translation>
+        <translation>Pokud závodník není nalezen tisknout</translation>
     </message>
     <message>
         <location filename="plugins/Receipts/src/receiptssettingspage.ui" line="63"/>
         <source>Receipt</source>
-        <translation type="unfinished">Mezičas</translation>
+        <translation>Mezičas</translation>
     </message>
     <message>
         <location filename="plugins/Receipts/src/receiptssettingspage.ui" line="73"/>
         <source>Printer</source>
-        <translation type="unfinished">Tiskárna</translation>
+        <translation>Tiskárna</translation>
     </message>
     <message>
         <location filename="plugins/Receipts/src/receiptssettingspage.ui" line="80"/>
@@ -3450,17 +3452,17 @@ In case of unexpected errors, contact support@oresults.eu </source>
     <message>
         <location filename="plugins/Receipts/src/receiptssettingspage.cpp" line="19"/>
         <source>Receipts</source>
-        <translation type="unfinished">Mezičasy</translation>
+        <translation>Mezičasy</translation>
     </message>
     <message>
         <location filename="plugins/Receipts/src/receiptssettingspage.cpp" line="21"/>
         <source>Error info</source>
-        <translation type="unfinished">Informaci o chybě</translation>
+        <translation>Informaci o chybě</translation>
     </message>
     <message>
         <location filename="plugins/Receipts/src/receiptssettingspage.cpp" line="22"/>
         <source>Receipt without name</source>
-        <translation type="unfinished">Lísteček beze jména</translation>
+        <translation>Lísteček beze jména</translation>
     </message>
 </context>
 <context>
@@ -3608,12 +3610,12 @@ In case of unexpected errors, contact support@oresults.eu </source>
     <message>
         <location filename="plugins/Receipts/src/receiptssettings.cpp" line="70"/>
         <source>Graphics</source>
-        <translation type="unfinished">Graficky</translation>
+        <translation>Graficky</translation>
     </message>
     <message>
         <location filename="plugins/Receipts/src/receiptssettings.cpp" line="73"/>
         <source>Character</source>
-        <translation type="unfinished">Znakově</translation>
+        <translation>Znakově</translation>
     </message>
 </context>
 <context>
@@ -3854,7 +3856,7 @@ In case of unexpected errors, contact support@oresults.eu </source>
         <location filename="plugins/Relays/src/relaysplugin.cpp" line="695"/>
         <location filename="plugins/Relays/src/relaysplugin.cpp" line="832"/>
         <source>Relays IOF-XML 3.0 results</source>
-        <translation type="unfinished">Výsledky štafet ve formátu IOF XML 3.0</translation>
+        <translation>Výsledky štafet ve formátu IOF XML 3.0</translation>
     </message>
 </context>
 <context>
@@ -4050,27 +4052,27 @@ In case of unexpected errors, contact support@oresults.eu </source>
     <message>
         <location filename="plugins/Runs/src/cardflagsdialog.ui" line="22"/>
         <source>status:</source>
-        <translation type="unfinished"></translation>
+        <translation>Status:</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/cardflagsdialog.ui" line="29"/>
         <source>Not a rented card</source>
-        <translation type="unfinished"></translation>
+        <translation>Nejedná se o půjčený čip</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/cardflagsdialog.ui" line="45"/>
         <source>Card rented ( or rent requested )</source>
-        <translation type="unfinished"></translation>
+        <translation>Půjčený čip (nebo vyžádáno zapůjčení)</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/cardflagsdialog.ui" line="52"/>
         <source>Card exists in cards to rent table, File-&gt;Settings-&gt;Cards to rent</source>
-        <translation type="unfinished"></translation>
+        <translation>Číslo čipu je zadáno v tabulce čipů k zapůjčení (Soubor → Nastavení → Čipy k zapůjčení)</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/cardflagsdialog.ui" line="55"/>
         <source>Card rented ( from rent table )</source>
-        <translation type="unfinished"></translation>
+        <translation>Půjčený čip (z tabulky čipů k zapůjčení)</translation>
     </message>
     <message>
         <source>Card rented / rent requested</source>
@@ -4160,17 +4162,17 @@ In case of unexpected errors, contact support@oresults.eu </source>
     <message>
         <location filename="plugins/Runs/src/runflagsdialog.ui" line="22"/>
         <source>status:</source>
-        <translation type="unfinished"></translation>
+        <translation>Status:</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/runflagsdialog.ui" line="29"/>
         <source>OK</source>
-        <translation type="unfinished">OK</translation>
+        <translation>OK</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/runflagsdialog.ui" line="45"/>
         <source>Miss punch</source>
-        <translation type="unfinished"></translation>
+        <translation>Chybné ražení</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/runflagsdialog.ui" line="52"/>
@@ -4195,12 +4197,12 @@ In case of unexpected errors, contact support@oresults.eu </source>
     <message>
         <location filename="plugins/Runs/src/runflagsdialog.ui" line="76"/>
         <source>Other (dsq by organiser)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ostatní (diskvalifikace organizátorem)</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/runflagsdialog.ui" line="83"/>
         <source>Over time</source>
-        <translation type="unfinished"></translation>
+        <translation>Překročen časový limit</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/runflagsdialog.ui" line="97"/>
@@ -4466,17 +4468,17 @@ In case of unexpected errors, contact support@oresults.eu </source>
     <message>
         <location filename="plugins/Runs/src/services/resultsexporterwidget.ui" line="144"/>
         <source>CSV separator</source>
-        <translation type="unfinished"></translation>
+        <translation>CSV oddělovač</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/services/resultsexporterwidget.ui" line="153"/>
         <source>Char :</source>
-        <translation type="unfinished"></translation>
+        <translation>Znak:</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/services/resultsexporterwidget.ui" line="166"/>
         <source>Tabulator</source>
-        <translation type="unfinished"></translation>
+        <translation>Tabulátor</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/services/resultsexporterwidget.ui" line="86"/>
@@ -4520,12 +4522,12 @@ In case of unexpected errors, contact support@oresults.eu </source>
     <message>
         <location filename="plugins/Runs/src/services/resultsexporterwidget.cpp" line="24"/>
         <source>CSV one file</source>
-        <translation type="unfinished"></translation>
+        <translation>CSV (jeden soubor)</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/services/resultsexporterwidget.cpp" line="25"/>
         <source>CSV multi file (file per class)</source>
-        <translation type="unfinished"></translation>
+        <translation>CSV (soubor pro každou kategorii)</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/services/resultsexporterwidget.cpp" line="26"/>
@@ -4594,72 +4596,72 @@ In case of unexpected errors, contact support@oresults.eu </source>
     <message>
         <location filename="plugins/Competitors/src/competitorwidget.cpp" line="77"/>
         <source>Run flags</source>
-        <translation type="unfinished">Příznaky závodníka</translation>
+        <translation>Příznaky závodníka</translation>
     </message>
     <message>
         <location filename="plugins/Competitors/src/competitorwidget.cpp" line="78"/>
         <source>Card flags</source>
-        <translation type="unfinished">Příznaky čipu</translation>
+        <translation>Příznaky čipu</translation>
     </message>
     <message>
         <location filename="plugins/Competitors/src/competitorwidget.cpp" line="372"/>
         <source>DIS</source>
         <comment>Disqualified</comment>
-        <translation type="unfinished">DISK</translation>
+        <translation>DISK</translation>
     </message>
     <message>
         <location filename="plugins/Competitors/src/competitorwidget.cpp" line="374"/>
         <source>DO</source>
         <comment>disqualifiedByOrganizer</comment>
-        <translation type="unfinished">DO</translation>
+        <translation>DO</translation>
     </message>
     <message>
         <location filename="plugins/Competitors/src/competitorwidget.cpp" line="376"/>
         <source>MP</source>
         <comment>MisPunch</comment>
-        <translation type="unfinished">CHR</translation>
+        <translation>MP</translation>
     </message>
     <message>
         <location filename="plugins/Competitors/src/competitorwidget.cpp" line="378"/>
         <source>BC</source>
         <comment>BadCheck</comment>
-        <translation type="unfinished">PK</translation>
+        <translation>PK</translation>
     </message>
     <message>
         <location filename="plugins/Competitors/src/competitorwidget.cpp" line="380"/>
         <source>NC</source>
         <comment>NotCompeting</comment>
-        <translation type="unfinished">MS</translation>
+        <translation>MS</translation>
     </message>
     <message>
         <location filename="plugins/Competitors/src/competitorwidget.cpp" line="382"/>
         <source>NS</source>
         <comment>DidNotStart</comment>
-        <translation type="unfinished">NS</translation>
+        <translation>NS</translation>
     </message>
     <message>
         <location filename="plugins/Competitors/src/competitorwidget.cpp" line="384"/>
         <source>NF</source>
         <comment>DidNotFinish</comment>
-        <translation type="unfinished">ND</translation>
+        <translation>NF</translation>
     </message>
     <message>
         <location filename="plugins/Competitors/src/competitorwidget.cpp" line="397"/>
         <source>CR</source>
         <comment>Card rent requested</comment>
-        <translation type="unfinished">VP</translation>
+        <translation>VP</translation>
     </message>
     <message>
         <location filename="plugins/Competitors/src/competitorwidget.cpp" line="399"/>
         <source>CT</source>
         <comment>Card in lent cards table</comment>
-        <translation type="unfinished">ČT</translation>
+        <translation>ČT</translation>
     </message>
     <message>
         <location filename="plugins/Competitors/src/competitorwidget.cpp" line="401"/>
         <source>RET</source>
         <comment>Card returned</comment>
-        <translation type="unfinished">ČV</translation>
+        <translation>ČV</translation>
     </message>
     <message>
         <source>NC</source>
@@ -4867,7 +4869,7 @@ In case of unexpected errors, contact support@oresults.eu </source>
         <location filename="plugins/Runs/src/runstablemodel.cpp" line="82"/>
         <source>MP</source>
         <comment>MisPunch</comment>
-        <translation>CHR</translation>
+        <translation>MP</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/runstablemodel.cpp" line="84"/>
@@ -4918,25 +4920,25 @@ In case of unexpected errors, contact support@oresults.eu </source>
         <location filename="plugins/Runs/src/runstablemodel.cpp" line="86"/>
         <source>DNS</source>
         <comment>DidNotStart</comment>
-        <translation type="unfinished"></translation>
+        <translation>DNS</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/runstablemodel.cpp" line="88"/>
         <source>DNF</source>
         <comment>DidNotFinish</comment>
-        <translation type="unfinished"></translation>
+        <translation>DNF</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/runstablemodel.cpp" line="92"/>
         <source>OT</source>
         <comment>OverTime</comment>
-        <translation type="unfinished"></translation>
+        <translation>OT</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/runstablemodel.cpp" line="94"/>
         <source>DSQ</source>
         <comment>Disqualified</comment>
-        <translation type="unfinished"></translation>
+        <translation>DISK</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/runstablemodel.cpp" line="132"/>
@@ -5244,12 +5246,12 @@ In case of unexpected errors, contact support@oresults.eu </source>
     <message>
         <location filename="plugins/Runs/src/runswidget.cpp" line="267"/>
         <source>&amp;CSV</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;CSV</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/runswidget.cpp" line="270"/>
         <source>&amp;SIME startlist (Starter Clock)</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;SIME (startovní hodiny)</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/runswidget.cpp" line="276"/>
