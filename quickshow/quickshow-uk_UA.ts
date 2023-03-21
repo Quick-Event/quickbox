@@ -19,7 +19,7 @@
     <message>
         <location filename="src/mainwindow.cpp" line="26"/>
         <source>Toggle full screen</source>
-        <translation>Перемикання на весь екран</translation>
+        <translation>Перемкнути на весь екран</translation>
     </message>
     <message>
         <location filename="src/mainwindow.cpp" line="39"/>
