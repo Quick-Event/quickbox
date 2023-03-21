@@ -369,7 +369,7 @@ QVariant CompetitorRunsModel::value(int row_ix, int column_ix) const
 		bool not_competing = row.value(QStringLiteral("runs.notCompeting")).toBool();
 		QStringList sl;
 		if(is_disqualified)
-			sl << tr("DIS", "Disqualified");
+			sl << tr("DISQ", "Disqualified");
 		if(is_disqualified_by_organizer)
 			sl << tr("DO", "disqualifiedByOrganizer");
 		if(mis_punch)
@@ -379,9 +379,9 @@ QVariant CompetitorRunsModel::value(int row_ix, int column_ix) const
 		if(not_competing)
 			sl << tr("NC", "NotCompeting");
 		if(not_start)
-			sl << tr("NS", "DidNotStart");
+			sl << tr("DNS", "DidNotStart");
 		if(not_finish)
-			sl << tr("NF", "DidNotFinish");
+			sl << tr("DNF", "DidNotFinish");
 		if(sl.isEmpty())
 			return QStringLiteral("");
 		else

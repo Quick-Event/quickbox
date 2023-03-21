@@ -71,7 +71,7 @@ void SettingsDialog::addPage(SettingsPage *page)
 	m_buttonGroup->addButton(btn, page_index);
 	auto *frame = new QFrame();
 	frame->setFrameStyle(QFrame::Box);
-	auto *label = new QLabel("  " + caption + ' ' + tr("settings"));
+	auto *label = new QLabel("  " + caption);
 	label->setObjectName("CaptionFrame"); // important for CSS
 	auto *ly = new QVBoxLayout(frame);
 	ly->setMargin(0);
