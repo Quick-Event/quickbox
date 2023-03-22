@@ -19,7 +19,7 @@
      <item>
       <widget class="QLabel" name="label_2">
        <property name="text">
-        <string>status:</string>
+        <string>Status:</string>
        </property>
       </widget>
      </item>
@@ -42,7 +42,7 @@
    <item>
     <widget class="QCheckBox" name="cbxCardLent">
      <property name="text">
-      <string>Card rented ( or rent requested )</string>
+      <string>Card rented (or rent requested)</string>
      </property>
     </widget>
    </item>
@@ -52,7 +52,7 @@
       <string>Card exists in cards to rent table, File-&gt;Settings-&gt;Cards to rent</string>
      </property>
      <property name="text">
-      <string>Card rented ( from rent table )</string>
+      <string>Card rented (from rent table)</string>
      </property>
     </widget>
    </item>
