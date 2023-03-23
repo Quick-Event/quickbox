@@ -596,14 +596,6 @@
         <source>Question</source>
         <translation>Вопрос</translation>
     </message>
-    <message>
-        <source>&amp;Yes</source>
-        <translation type="vanished">&amp;Да</translation>
-    </message>
-    <message>
-        <source>&amp;No</source>
-        <translation type="vanished">&amp; Нет</translation>
-    </message>
 </context>
 <context>
     <name>qf::qmlwidgets::dialogs::PreviewDialog</name>

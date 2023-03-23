@@ -112,13 +112,6 @@
     </message>
 </context>
 <context>
-    <name>AppStatusBar</name>
-    <message>
-        <source>E%1</source>
-        <translation type="vanished">E%1</translation>
-    </message>
-</context>
-<context>
     <name>CardReader::CardCheckerClassicCpp</name>
     <message>
         <location filename="plugins/CardReader/src/cardcheckerclassiccpp.cpp" line="16"/>
@@ -460,11 +453,6 @@
         <translation>Formulář</translation>
     </message>
     <message>
-        <location filename="plugins/CardReader/src/cardreaderwidget.ui" line="69"/>
-        <source>TextLabel</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="plugins/CardReader/src/cardreaderwidget.ui" line="89"/>
         <source>Test</source>
         <translation>Otestovat</translation>
@@ -522,30 +510,6 @@
         <translation>Informace o vyčítací jednotce</translation>
     </message>
     <message>
-        <source>Station number: {{StationNumber}}
-Extended mode: {{ExtendedMode}}
-Auto send: {{AutoSend}}
-Handshake: {{HandShake}}
-Password access: {{PasswordAccess}}
-Read out after punch: {{ReadOutAfterPunch}}
-</source>
-        <translation type="vanished">Jednotka číslo: {{StationNumber}}
-Extended mód: {{ExtendedMode}}
-Auto send: {{AutoSend}}
-Handshake: {{HandShake}}
-Password access: {{PasswordAccess}}
-Vyčítat po oražení: {{ReadOutAfterPunch}}
-</translation>
-    </message>
-    <message>
-        <source>True</source>
-        <translation type="vanished">Zapnuto</translation>
-    </message>
-    <message>
-        <source>False</source>
-        <translation type="vanished">Vypnuto</translation>
-    </message>
-    <message>
         <location filename="plugins/CardReader/src/cardreaderwidget.cpp" line="340"/>
         <source>Read station memory</source>
         <translation>Načíst paměť kontroly</translation>
@@ -576,22 +540,10 @@ Vyčítat po oražení: {{ReadOutAfterPunch}}
         <translation>Otestovat zvuk</translation>
     </message>
     <message>
-        <source> Check type </source>
-        <translation type="vanished"> Typ kontroly ražení </translation>
-    </message>
-    <message>
-        <source> Reader mode </source>
-        <translation type="vanished"> Mód vyčítací jednotky </translation>
-    </message>
-    <message>
         <location filename="plugins/CardReader/src/cardreaderwidget.cpp" line="180"/>
         <location filename="plugins/CardReader/src/cardreaderwidget.cpp" line="490"/>
         <source>SI station not connected</source>
         <translation>SI jednotka není připojena</translation>
-    </message>
-    <message>
-        <source>Open COM</source>
-        <translation type="vanished">Otevřít COM</translation>
     </message>
     <message>
         <location filename="plugins/CardReader/src/cardreaderwidget.cpp" line="442"/>
@@ -607,26 +559,6 @@ Vyčítat po oražení: {{ReadOutAfterPunch}}
         <location filename="plugins/CardReader/src/cardreaderwidget.cpp" line="484"/>
         <source>Error set SI station to direct mode.</source>
         <translation>Při nastavování SI jednotky do přímého módu došlo k chybě.</translation>
-    </message>
-    <message>
-        <source>possible solution:
-Wait at least 10 seconds and then try again.</source>
-        <translation type="vanished">možné řešení:
-Počkejte alespoň 10 sekund a potom to zkuste znovu.</translation>
-    </message>
-    <message>
-        <source>There are no ports available.</source>
-        <translation type="vanished">Nejsou k dispozici žádné porty.</translation>
-    </message>
-    <message>
-        <source>Selected port %1 is not available.
-List of accessible ports:
-
-</source>
-        <translation type="vanished">Vybraný port %1 není k dispozici.
-Seznam dostupných portů:
-
-</translation>
     </message>
     <message>
         <location filename="plugins/CardReader/src/cardreaderwidget.cpp" line="506"/>
@@ -711,30 +643,6 @@ Pokud budete pokračovat, toto označení bude odebráno.</translation>
         <location filename="plugins/CardReader/src/cardreaderwidget.cpp" line="1133"/>
         <source>Station backup memory</source>
         <translation>Paměť SI kontroly</translation>
-    </message>
-    <message>
-        <source>punch: %1 %2</source>
-        <translation type="vanished">ražení: %1 %2</translation>
-    </message>
-    <message>
-        <source>Readout</source>
-        <translation type="vanished">Vyčítání</translation>
-    </message>
-    <message>
-        <source>Readout mode - default</source>
-        <translation type="vanished">Mód vyčítání čipů – výchozí</translation>
-    </message>
-    <message>
-        <source>Edit on punch</source>
-        <translation type="vanished">Upravit po oražení</translation>
-    </message>
-    <message>
-        <source>Show Edit/Insert competitor dialog when SI Card is inserted into the reader station</source>
-        <translation type="vanished">Zobrazit formulář pro upravení nebo přidání závodníka po vložení SI čipu do vyčítací jednotky</translation>
-    </message>
-    <message>
-        <source>Card reader settings</source>
-        <translation type="vanished">Nastavení vyčítací jednotky</translation>
     </message>
     <message>
         <location filename="plugins/CardReader/src/cardreaderwidget.cpp" line="630"/>
@@ -1435,10 +1343,6 @@ Zvažte nastavení intervalu pro všechny kategorie.</translation>
         <translation>SI</translation>
     </message>
     <message>
-        <source>Ranking</source>
-        <translation type="vanished">Ranking</translation>
-    </message>
-    <message>
         <location filename="plugins/Competitors/src/competitorswidget.cpp" line="69"/>
         <source>Note</source>
         <translation>Poznámka</translation>
@@ -1460,18 +1364,14 @@ Zvažte nastavení intervalu pro všechny kategorie.</translation>
         <translation>Statistiky závodníků</translation>
     </message>
     <message>
-        <source>&amp;Cards</source>
-        <translation type="vanished">Či&amp;py</translation>
-    </message>
-    <message>
-        <source>Cards to rent</source>
-        <oldsource>Lent cards</oldsource>
-        <translation type="vanished">Čipy k zapůjčení</translation>
-    </message>
-    <message>
         <location filename="plugins/Competitors/src/competitorswidget.cpp" line="68"/>
         <source>Ranking pos</source>
         <translation>Ranking umístění</translation>
+    </message>
+    <message>
+        <location filename="plugins/Competitors/src/competitorswidget.cpp" line="68"/>
+        <source>Runner&apos;s position in CZ ranking.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="plugins/Competitors/src/competitorswidget.cpp" line="127"/>
@@ -1769,22 +1669,22 @@ Zvažte nastavení intervalu pro všechny kategorie.</translation>
         <translation>Formulář</translation>
     </message>
     <message>
-        <location filename="plugins/Core/src/widgets/reportssettingspage.ui" line="20"/>
+        <location filename="plugins/Core/src/widgets/reportssettingspage.ui" line="62"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Custom reports directory is an overlay directory, where QuickEvent is looking for additional or modified reports. QuicEvent is shipped with read-only reports bundled in application binary. This makes the installation process trivial and it also enables shipping QuicEvent as AppImage. When a user wants to use custom reports, the simplest way is to push the &lt;span style=&quot; font-weight:700; font-style:italic;&quot;&gt;Create&lt;/span&gt; button. QuicEvent creates a copy of bundled report files in a directory selected by the user and starts to use reports from it. Every change in reports files from the custom directory is immediately visible in reports generated by QuickEvent, no other action is needed.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Vlastní adresář s reporty je adresář, kde QuickEvent hledá uživatelem nově vytvořené nebo upravené reporty. Výchozí vzhled a obsah reportů je umístěn přímo ve spustitelném souboru QuickEventu, díky čemuž je proces instalace jednoduchý a také díky tomu může být QuickEvent vydáván jako AppImage. Pokud si uživatel chce upravit reporty, stačí kliknout na tlačítko &lt;span style=&quot; font-weight:700; font-style:italic;&quot;&gt;Vytvořit&lt;/span&gt;. QuickEvent vytvoří kopii výchozích reportů do zvoleného adresáře a pro všechny nově generované reporty bude využívat šablony z tohoto adresáře. Každá změna souborů v tomto adresáři se tedy bez dalších akcí okamžitě projeví v nově generovaných reportech.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="plugins/Core/src/widgets/reportssettingspage.ui" line="23"/>
+        <location filename="plugins/Core/src/widgets/reportssettingspage.ui" line="20"/>
         <source>&amp;Custom reports directory</source>
         <translation>&amp;Vlastní adresář s reporty</translation>
     </message>
     <message>
-        <location filename="plugins/Core/src/widgets/reportssettingspage.ui" line="47"/>
+        <location filename="plugins/Core/src/widgets/reportssettingspage.ui" line="44"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="plugins/Core/src/widgets/reportssettingspage.ui" line="56"/>
+        <location filename="plugins/Core/src/widgets/reportssettingspage.ui" line="53"/>
         <source>Create</source>
         <translation>Vytvořit</translation>
     </message>
@@ -1806,11 +1706,6 @@ Zvažte nastavení intervalu pro všechny kategorie.</translation>
         <location filename="plugins/Core/src/widgets/settingsdialog.ui" line="14"/>
         <source>Settings</source>
         <translation>Nastavení</translation>
-    </message>
-    <message>
-        <location filename="plugins/Core/src/widgets/settingsdialog.cpp" line="74"/>
-        <source>settings</source>
-        <translation>nastavení</translation>
     </message>
 </context>
 <context>
@@ -1982,106 +1877,6 @@ Zvažte nastavení intervalu pro všechny kategorie.</translation>
         <location filename="plugins/Receipts/qml/reports/receipts/Default.qml" line="555"/>
         <source>extra punches = </source>
         <translation>navíc oraženo = </translation>
-    </message>
-</context>
-<context>
-    <name>DlgSettings</name>
-    <message>
-        <source>CuteCom</source>
-        <translation type="vanished">Nastavení vyčítání čipů</translation>
-    </message>
-    <message>
-        <source>Reader</source>
-        <translation type="vanished">Vyčítací jednotka</translation>
-    </message>
-    <message>
-        <source>Connection</source>
-        <translation type="vanished">Připojení</translation>
-    </message>
-    <message>
-        <source>De&amp;vice:</source>
-        <oldsource>Device:</oldsource>
-        <translation type="vanished">&amp;Zařízení:</translation>
-    </message>
-    <message>
-        <source>Baud rate:</source>
-        <translation type="vanished">Přenosová rychlost (v baudech):</translation>
-    </message>
-    <message>
-        <source>38400</source>
-        <translation type="vanished">38400</translation>
-    </message>
-    <message>
-        <source>4800</source>
-        <translation type="vanished">4800</translation>
-    </message>
-    <message>
-        <source>Data bits:</source>
-        <translation type="vanished">Datové bity:</translation>
-    </message>
-    <message>
-        <source>8</source>
-        <translation type="vanished">8</translation>
-    </message>
-    <message>
-        <source>7</source>
-        <translation type="vanished">7</translation>
-    </message>
-    <message>
-        <source>6</source>
-        <translation type="vanished">6</translation>
-    </message>
-    <message>
-        <source>5</source>
-        <translation type="vanished">5</translation>
-    </message>
-    <message>
-        <source>Stop bits:</source>
-        <translation type="vanished">Stop bity:</translation>
-    </message>
-    <message>
-        <source>1</source>
-        <translation type="vanished">1</translation>
-    </message>
-    <message>
-        <source>2</source>
-        <translation type="vanished">2</translation>
-    </message>
-    <message>
-        <source>Parity:</source>
-        <translation type="vanished">Parita:</translation>
-    </message>
-    <message>
-        <source>None</source>
-        <translation type="vanished">Žádná</translation>
-    </message>
-    <message>
-        <source>Odd</source>
-        <translation type="vanished">Lichá</translation>
-    </message>
-    <message>
-        <source>Even</source>
-        <translation type="vanished">Sudá</translation>
-    </message>
-    <message>
-        <source>Mark</source>
-        <translation type="vanished">1 (mark)</translation>
-    </message>
-    <message>
-        <source>Space</source>
-        <translation type="vanished">0 (space)</translation>
-    </message>
-    <message>
-        <source>Debugging</source>
-        <translation type="vanished">Ladění</translation>
-    </message>
-    <message>
-        <source>show raw data</source>
-        <translation type="vanished">zobrazit nezpracovaná data</translation>
-    </message>
-    <message>
-        <source>disable CRC check</source>
-        <translation type="vanished">zakázat CRC kontrolu</translation>
     </message>
 </context>
 <context>
@@ -2451,10 +2246,6 @@ Použij: Soubor --&gt; Importovat --&gt; Závod (*.qbe) pro konverzi dat do aktu
         <translation>Název PostgreSQL schématu musí začínat malým písmenem a může obsahovat pouze malá písmena, číslovky a podtržítka.</translation>
     </message>
     <message>
-        <source>PostgreSql schema must start with letter and it may contain letters, digits and underscores only.</source>
-        <translation type="vanished">Jméno PostgreSQL schématu musí začínat písmenem a může obsahovat pouze písmena, číslice a podtržítka.</translation>
-    </message>
-    <message>
         <location filename="plugins/Event/src/eventplugin.cpp" line="1177"/>
         <source>Event ID &apos;%1&apos; exists already!</source>
         <translation>Závod s ID &apos;%1&apos; již existuje!</translation>
@@ -2610,9 +2401,12 @@ Použij: Soubor --&gt; Importovat --&gt; Závod (*.qbe) pro konverzi dat do aktu
     <message>
         <location filename="plugins/Event/src/services/oresultsclientwidget.ui" line="69"/>
         <source>Results are exported at given interval.
+Both Results and Start list can be exported manually using the buttons bellow. In addition, if the service is running, individual competitor data is send after readout and after saving competitor dialog.
+In case of unexpected errors, contact support@oresults.eu</source>
+        <oldsource>Results are exported at given interval.
 Both Results and Start list can be exported manualy using the buttons bellow. In addition, if the service is running, individual competitor data is send after reaout and after saving competitor dialog. 
-In case of unexpected errors, contact support@oresults.eu </source>
-        <translation>Výsledky jsou automaticky exportovány dle zadaného intervalu.
+In case of unexpected errors, contact support@oresults.eu </oldsource>
+        <translation type="unfinished">Výsledky jsou automaticky exportovány dle zadaného intervalu.
 Startovní listiny a výsledky mohou být též exportovány pomocí tlačítek níže. Pokud je služba zapnutá, jsou navíc výsledky konkrétního závodníka zasílány po vyčtení čipu a při uložení formuláře pro úpravu závodníka.
 V případě chyb neváhejte napsat na support@oresults.eu </translation>
     </message>
@@ -3097,30 +2891,6 @@ V případě chyb neváhejte napsat na support@oresults.eu </translation>
     </message>
 </context>
 <context>
-    <name>LentCardsWidget</name>
-    <message>
-        <source>Form</source>
-        <translation type="vanished">Formulář</translation>
-    </message>
-    <message>
-        <source>Cards to rent</source>
-        <oldsource>Lent cards</oldsource>
-        <translation type="vanished">Čipy k zapůjčení</translation>
-    </message>
-    <message>
-        <source>SI</source>
-        <translation type="vanished">SI</translation>
-    </message>
-    <message>
-        <source>Ignored</source>
-        <translation type="vanished">Ignorovat</translation>
-    </message>
-    <message>
-        <source>Note</source>
-        <translation type="vanished">Poznámka</translation>
-    </message>
-</context>
-<context>
     <name>LoggerWidget</name>
     <message>
         <location filename="src/loggerwidget.cpp" line="11"/>
@@ -3445,11 +3215,6 @@ V případě chyb neváhejte napsat na support@oresults.eu </translation>
         <translation>Tiskárna</translation>
     </message>
     <message>
-        <location filename="plugins/Receipts/src/receiptssettingspage.ui" line="80"/>
-        <source>printer options</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="plugins/Receipts/src/receiptssettingspage.cpp" line="19"/>
         <source>Receipts</source>
         <translation>Mezičasy</translation>
@@ -3463,17 +3228,6 @@ V případě chyb neváhejte napsat na support@oresults.eu </translation>
         <location filename="plugins/Receipts/src/receiptssettingspage.cpp" line="22"/>
         <source>Receipt without name</source>
         <translation>Lísteček beze jména</translation>
-    </message>
-</context>
-<context>
-    <name>ReceiptsPrinterOptions</name>
-    <message>
-        <source>Graphics</source>
-        <translation type="vanished">Graficky</translation>
-    </message>
-    <message>
-        <source>Character</source>
-        <translation type="vanished">Znakově</translation>
     </message>
 </context>
 <context>
@@ -3631,39 +3385,6 @@ V případě chyb neváhejte napsat na support@oresults.eu </translation>
         <translation>Vytisknout nové</translation>
     </message>
     <message>
-        <source>Automatically print receipt when the card is read.</source>
-        <translation type="vanished">Automaticky vytisknout lísteček po vyčtení čipu.</translation>
-    </message>
-    <message>
-        <source>Auto print</source>
-        <translation type="vanished">Automatický tisk</translation>
-    </message>
-    <message>
-        <source>Print only cards read on this application card reader.</source>
-        <translation type="vanished">Tisknout pouze čipy, které jsou vyčteny v krabičce, jež je nastavená v této aplikaci.</translation>
-    </message>
-    <message>
-        <source>This reader only</source>
-        <translation type="vanished">Pouze tato tiskárna</translation>
-    </message>
-    <message>
-        <source>When runner is not found, print</source>
-        <oldsource>Print when runner not found</oldsource>
-        <translation type="vanished">Pokud není závodník nalezen vytisknout</translation>
-    </message>
-    <message>
-        <source>Receipt</source>
-        <translation type="vanished">Mezičas</translation>
-    </message>
-    <message>
-        <source>Printer</source>
-        <translation type="vanished">Tiskárna</translation>
-    </message>
-    <message>
-        <source>Printer options</source>
-        <translation type="vanished">Nastavení tiskárny</translation>
-    </message>
-    <message>
         <location filename="plugins/Receipts/src/receiptswidget.cpp" line="67"/>
         <source>SI</source>
         <translation>SI</translation>
@@ -3697,14 +3418,6 @@ V případě chyb neváhejte napsat na support@oresults.eu </translation>
         <location filename="plugins/Receipts/src/receiptswidget.cpp" line="79"/>
         <source>printer</source>
         <translation>Tiskárna</translation>
-    </message>
-    <message>
-        <source>Error info</source>
-        <translation type="vanished">Informaci o chybě</translation>
-    </message>
-    <message>
-        <source>Receipt without name</source>
-        <translation type="vanished">Lísteček beze jména</translation>
     </message>
     <message>
         <location filename="plugins/Receipts/src/receiptswidget.cpp" line="218"/>
@@ -3853,8 +3566,8 @@ V případě chyb neváhejte napsat na support@oresults.eu </translation>
         <translation>&amp;Štafety</translation>
     </message>
     <message>
-        <location filename="plugins/Relays/src/relaysplugin.cpp" line="695"/>
-        <location filename="plugins/Relays/src/relaysplugin.cpp" line="832"/>
+        <location filename="plugins/Relays/src/relaysplugin.cpp" line="701"/>
+        <location filename="plugins/Relays/src/relaysplugin.cpp" line="838"/>
         <source>Relays IOF-XML 3.0 results</source>
         <translation>Výsledky štafet ve formátu IOF XML 3.0</translation>
     </message>
@@ -4028,18 +3741,6 @@ V případě chyb neváhejte napsat na support@oresults.eu </translation>
         <source>Save as %1</source>
         <translation>Uložit jako %1</translation>
     </message>
-    <message>
-        <source>Exporting result file...</source>
-        <translation type="vanished">Exportuji soubor s výsledky...</translation>
-    </message>
-    <message>
-        <source>Abort</source>
-        <translation type="vanished">Zrušit</translation>
-    </message>
-    <message>
-        <source>Relays IOF-XML 3.0 results</source>
-        <translation type="vanished">Výsledky štafet ve formátu IOF XML 3.0</translation>
-    </message>
 </context>
 <context>
     <name>Runs::CardFlagsDialog</name>
@@ -4051,8 +3752,9 @@ V případě chyb neváhejte napsat na support@oresults.eu </translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/cardflagsdialog.ui" line="22"/>
-        <source>status:</source>
-        <translation>Status:</translation>
+        <source>Status:</source>
+        <oldsource>status:</oldsource>
+        <translation type="unfinished">Status:</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/cardflagsdialog.ui" line="29"/>
@@ -4061,8 +3763,9 @@ V případě chyb neváhejte napsat na support@oresults.eu </translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/cardflagsdialog.ui" line="45"/>
-        <source>Card rented ( or rent requested )</source>
-        <translation>Půjčený čip (nebo vyžádáno zapůjčení)</translation>
+        <source>Card rented (or rent requested)</source>
+        <oldsource>Card rented ( or rent requested )</oldsource>
+        <translation type="unfinished">Půjčený čip (nebo vyžádáno zapůjčení)</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/cardflagsdialog.ui" line="52"/>
@@ -4071,21 +3774,9 @@ V případě chyb neváhejte napsat na support@oresults.eu </translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/cardflagsdialog.ui" line="55"/>
-        <source>Card rented ( from rent table )</source>
-        <translation>Půjčený čip (z tabulky čipů k zapůjčení)</translation>
-    </message>
-    <message>
-        <source>Card rented / rent requested</source>
-        <oldsource>Card rent requested</oldsource>
-        <translation type="vanished">Půjčen čip / vyžádáno půjčení čipu</translation>
-    </message>
-    <message>
-        <source>Card exists in cards to rent table, see Competitors-&gt;Cards-&gt;Cards to rent</source>
-        <translation type="vanished">Čip je uveden v tabulce čipů k zapůjčení (Závodníci --&gt; Čipy --&gt; Čipy k zapůjčení)</translation>
-    </message>
-    <message>
-        <source>Card rented from rent table</source>
-        <translation type="vanished">Čip je uveden v tabulce čipů k zapůjčení</translation>
+        <source>Card rented (from rent table)</source>
+        <oldsource>Card rented ( from rent table )</oldsource>
+        <translation type="unfinished">Půjčený čip (z tabulky čipů k zapůjčení)</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/cardflagsdialog.ui" line="62"/>
@@ -4146,18 +3837,6 @@ V případě chyb neváhejte napsat na support@oresults.eu </translation>
         <source>Run flags</source>
         <oldsource>Run flags dialog</oldsource>
         <translation>Příznaky závodníka</translation>
-    </message>
-    <message>
-        <source>Disqualified</source>
-        <translation type="vanished">Diskvalifikace</translation>
-    </message>
-    <message>
-        <source>Disqualified by organiser</source>
-        <translation type="vanished">Diskvalifikace organizátorem</translation>
-    </message>
-    <message>
-        <source>Missed punch</source>
-        <translation type="vanished">Chybné ražení</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/runflagsdialog.ui" line="22"/>
@@ -4472,8 +4151,9 @@ V případě chyb neváhejte napsat na support@oresults.eu </translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/services/resultsexporterwidget.ui" line="153"/>
-        <source>Char :</source>
-        <translation>Znak:</translation>
+        <source>Char:</source>
+        <oldsource>Char :</oldsource>
+        <translation type="unfinished">Znak:</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/services/resultsexporterwidget.ui" line="166"/>
@@ -4514,10 +4194,6 @@ V případě chyb neváhejte napsat na support@oresults.eu </translation>
         <location filename="plugins/Runs/src/services/resultsexporterwidget.cpp" line="23"/>
         <source>CSOS fixed column sizes</source>
         <translation>ČSOS fixní šířka sloupců</translation>
-    </message>
-    <message>
-        <source>CSV</source>
-        <translation type="vanished">CSV</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/services/resultsexporterwidget.cpp" line="24"/>
@@ -4605,9 +4281,10 @@ V případě chyb neváhejte napsat na support@oresults.eu </translation>
     </message>
     <message>
         <location filename="plugins/Competitors/src/competitorwidget.cpp" line="372"/>
-        <source>DIS</source>
+        <source>DISQ</source>
+        <oldsource>DIS</oldsource>
         <comment>Disqualified</comment>
-        <translation>DISK</translation>
+        <translation type="unfinished">DISK</translation>
     </message>
     <message>
         <location filename="plugins/Competitors/src/competitorwidget.cpp" line="374"/>
@@ -4635,15 +4312,17 @@ V případě chyb neváhejte napsat na support@oresults.eu </translation>
     </message>
     <message>
         <location filename="plugins/Competitors/src/competitorwidget.cpp" line="382"/>
-        <source>NS</source>
+        <source>DNS</source>
+        <oldsource>NS</oldsource>
         <comment>DidNotStart</comment>
-        <translation>NS</translation>
+        <translation type="unfinished">NS</translation>
     </message>
     <message>
         <location filename="plugins/Competitors/src/competitorwidget.cpp" line="384"/>
-        <source>NF</source>
+        <source>DNF</source>
+        <oldsource>NF</oldsource>
         <comment>DidNotFinish</comment>
-        <translation>NF</translation>
+        <translation type="unfinished">NF</translation>
     </message>
     <message>
         <location filename="plugins/Competitors/src/competitorwidget.cpp" line="397"/>
@@ -4662,63 +4341,6 @@ V případě chyb neváhejte napsat na support@oresults.eu </translation>
         <source>RET</source>
         <comment>Card returned</comment>
         <translation>ČV</translation>
-    </message>
-    <message>
-        <source>NC</source>
-        <comment>runs.notCompeting</comment>
-        <translation type="vanished">MS</translation>
-    </message>
-    <message>
-        <source>Not competing</source>
-        <translation type="vanished">Mimo soutěž</translation>
-    </message>
-    <message>
-        <source>D</source>
-        <comment>runs.disqualified</comment>
-        <translation type="vanished">D</translation>
-    </message>
-    <message>
-        <source>Disqualified</source>
-        <translation type="vanished">Diskvalifikace</translation>
-    </message>
-    <message>
-        <source>E</source>
-        <comment>runs.misPunch</comment>
-        <translation type="vanished">E</translation>
-    </message>
-    <message>
-        <source>Card mispunch</source>
-        <translation type="vanished">Chybné ražení</translation>
-    </message>
-    <message>
-        <source>RR</source>
-        <oldsource>LR</oldsource>
-        <comment>runs.cardLent</comment>
-        <translation type="vanished">VP</translation>
-    </message>
-    <message>
-        <source>Card rent requested</source>
-        <translation type="vanished">Vyžádáno půjčení čipu</translation>
-    </message>
-    <message>
-        <source>RT</source>
-        <oldsource>LT</oldsource>
-        <comment>cardInLentTable</comment>
-        <translation type="vanished">ČT</translation>
-    </message>
-    <message>
-        <source>Card in rent table</source>
-        <oldsource>Card in lent table</oldsource>
-        <translation type="vanished">Čip z tabulky čipů k zapůjčení</translation>
-    </message>
-    <message>
-        <source>R</source>
-        <comment>runs.cardReturned</comment>
-        <translation type="vanished">ČV</translation>
-    </message>
-    <message>
-        <source>Card returned</source>
-        <translation type="vanished">Čip vrácen</translation>
     </message>
 </context>
 <context>
@@ -4855,11 +4477,6 @@ V případě chyb neváhejte napsat na support@oresults.eu </translation>
         <translation>Příznaky čipu</translation>
     </message>
     <message>
-        <source>DIS</source>
-        <comment>Disqualified</comment>
-        <translation type="vanished">DISK</translation>
-    </message>
-    <message>
         <location filename="plugins/Runs/src/runstablemodel.cpp" line="90"/>
         <source>DO</source>
         <comment>disqualifiedByOrganizer</comment>
@@ -4882,16 +4499,6 @@ V případě chyb neváhejte napsat na support@oresults.eu </translation>
         <source>NC</source>
         <comment>NotCompeting</comment>
         <translation>MS</translation>
-    </message>
-    <message>
-        <source>NS</source>
-        <comment>DidNotStart</comment>
-        <translation type="vanished">NS</translation>
-    </message>
-    <message>
-        <source>NF</source>
-        <comment>DidNotFinish</comment>
-        <translation type="vanished">ND</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/runstablemodel.cpp" line="107"/>
@@ -5699,18 +5306,6 @@ Přejete si uložit změny?</translation>
         <source>Results</source>
         <translation>Výsledky</translation>
     </message>
-    <message>
-        <source>DISQ</source>
-        <translation type="vanished">DISK</translation>
-    </message>
-    <message>
-        <source>NC</source>
-        <translation type="vanished">MS</translation>
-    </message>
-    <message>
-        <source>---</source>
-        <translation type="vanished">---</translation>
-    </message>
 </context>
 <context>
     <name>results_condensed</name>
@@ -5718,18 +5313,6 @@ Přejete si uložit změny?</translation>
         <location filename="plugins/Relays/qml/reports/results_condensed.qml" line="9"/>
         <source>Results</source>
         <translation>Výsledky</translation>
-    </message>
-    <message>
-        <source>DISQ</source>
-        <translation type="vanished">DISK</translation>
-    </message>
-    <message>
-        <source>NC</source>
-        <translation type="vanished">MS</translation>
-    </message>
-    <message>
-        <source>---</source>
-        <translation type="vanished">---</translation>
     </message>
 </context>
 <context>
@@ -5820,14 +5403,6 @@ Přejete si uložit změny?</translation>
         <source>climb: </source>
         <translation>převýšení: </translation>
     </message>
-    <message>
-        <source>DISQ</source>
-        <translation type="vanished">DISK</translation>
-    </message>
-    <message>
-        <source>NC</source>
-        <translation type="vanished">MS</translation>
-    </message>
 </context>
 <context>
     <name>results_stageSpeaker</name>
@@ -5845,14 +5420,6 @@ Přejete si uložit změny?</translation>
         <location filename="plugins/Runs/qml/reports/results_stageSpeaker.qml" line="88"/>
         <source>climb: </source>
         <translation>převýšení: </translation>
-    </message>
-    <message>
-        <source>DISQ</source>
-        <translation type="vanished">DISK</translation>
-    </message>
-    <message>
-        <source>NC</source>
-        <translation type="vanished">MS</translation>
     </message>
 </context>
 <context>

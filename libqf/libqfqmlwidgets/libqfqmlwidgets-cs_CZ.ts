@@ -597,14 +597,6 @@
         <source>Question</source>
         <translation>Otázka</translation>
     </message>
-    <message>
-        <source>&amp;Yes</source>
-        <translation type="vanished">&amp;Ano</translation>
-    </message>
-    <message>
-        <source>&amp;No</source>
-        <translation type="vanished">&amp;Ne</translation>
-    </message>
 </context>
 <context>
     <name>qf::qmlwidgets::dialogs::PreviewDialog</name>

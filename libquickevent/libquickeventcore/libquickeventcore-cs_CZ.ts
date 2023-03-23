@@ -139,14 +139,6 @@
         <translation>Status</translation>
     </message>
     <message>
-        <source>NC</source>
-        <translation type="vanished">MS</translation>
-    </message>
-    <message>
-        <source>DISQ</source>
-        <translation type="vanished">DISK</translation>
-    </message>
-    <message>
         <location filename="src/exporters/stageresultshtmlexporter.cpp" line="101"/>
         <source>Results %1</source>
         <translation>Výsledky %1</translation>
