@@ -40,7 +40,13 @@ Handshake: {{HandShake}}
 Password access: {{PasswordAccess}}
 Read out after punch: {{ReadOutAfterPunch}}
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Jednotka číslo: {{StationNumber}}
+Extended mód: {{ExtendedMode}}
+Auto send: {{AutoSend}}
+Handshake: {{HandShake}}
+Password access: {{PasswordAccess}}
+Vyčítat po oražení: {{ReadOutAfterPunch}}
+</translation>
     </message>
     <message>
         <location filename="src/device/sitask.cpp" line="107"/>
@@ -49,7 +55,7 @@ Read out after punch: {{ReadOutAfterPunch}}
         <location filename="src/device/sitask.cpp" line="110"/>
         <location filename="src/device/sitask.cpp" line="111"/>
         <source>True</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapnuto</translation>
     </message>
     <message>
         <location filename="src/device/sitask.cpp" line="107"/>
@@ -58,7 +64,7 @@ Read out after punch: {{ReadOutAfterPunch}}
         <location filename="src/device/sitask.cpp" line="110"/>
         <location filename="src/device/sitask.cpp" line="111"/>
         <source>False</source>
-        <translation type="unfinished"></translation>
+        <translation>Vypnuto</translation>
     </message>
 </context>
 <context>
@@ -92,12 +98,13 @@ Read out after punch: {{ReadOutAfterPunch}}
         <location filename="src/device/commport.cpp" line="91"/>
         <source>possible solution:
 Wait at least 10 seconds and then try again.</source>
-        <translation type="unfinished"></translation>
+        <translation>možné řešení:
+Počkejte alespoň 10 sekund a potom to zkuste znovu.</translation>
     </message>
     <message>
         <location filename="src/device/commport.cpp" line="100"/>
         <source>There are no ports available.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nejsou k dispozici žádné porty.</translation>
     </message>
     <message>
         <location filename="src/device/commport.cpp" line="103"/>
@@ -105,7 +112,10 @@ Wait at least 10 seconds and then try again.</source>
 List of accessible ports:
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Vybraný port %1 není k dispozici.
+Seznam dostupných portů:
+
+</translation>
     </message>
 </context>
 <context>
