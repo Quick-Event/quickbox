@@ -20,7 +20,7 @@ The QuickBox is built upon the Qt framework, targeted for Linux and Windows and 
 * QuickHttpd - show start lists and results via webserver
 
 ### Features
-* competitors managment
+* competitors management
 * SI card readout
 * receipts print
 * course import (OCAD TXT | [IOF XML](https://github.com/international-orienteering-federation/datastandard-v3))
