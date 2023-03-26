@@ -132,6 +132,8 @@ LogWidget::LogWidget(QWidget *parent)
 	connect(ui->severityTreshold, qOverload<int>(&QComboBox::currentIndexChanged), this, &LogWidget::onSeverityTresholdIndexChanged);
 
 	connect(ui->edFilter, &QLineEdit::textChanged, this, &LogWidget::filterStringChanged);
+	connect(ui->btClearLog, &QToolButton::clicked, this, &LogWidget::on_btClearLog_clicked);
+	connect(ui->btResizeColumns, &QToolButton::clicked, this, &LogWidget::on_btResizeColumns_clicked);
 }
 
 LogWidget::~LogWidget()
