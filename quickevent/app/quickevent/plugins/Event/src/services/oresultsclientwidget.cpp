@@ -24,7 +24,7 @@ OResultsClientWidget::OResultsClientWidget(QWidget *parent)
 	if(svc) {
 		OResultsClientSettings ss = svc->settings();
 		ui->edExportInterval->setValue(ss.exportIntervalSec());
-		ui->edApiKey->setText(ss.apiKey());
+		ui->edApiKey->setText(svc->apiKey());
 	}
 
 	connect(ui->btExportResultsXml30, &QPushButton::clicked, this, &OResultsClientWidget::onBtExportResultsXml30Clicked);
@@ -59,8 +59,7 @@ bool OResultsClientWidget::saveSettings()
 	if(svc) {
 		OResultsClientSettings ss = svc->settings();
 		ss.setExportIntervalSec(ui->edExportInterval->value());
-		ss.setApiKey(ui->edApiKey->text().trimmed());
-
+		svc->setApiKey(ui->edApiKey->text().trimmed());
 		svc->setSettings(ss);
 	}
 	return true;
