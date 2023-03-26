@@ -9,6 +9,7 @@
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/dialogs/dialog.h>
 #include <plugins/Event/src/eventplugin.h>
+#include <plugins/Relays/src/relaysplugin.h>
 
 #include <qf/core/log.h>
 #include <qf/core/assert.h>
@@ -23,6 +24,7 @@
 using qf::qmlwidgets::framework::getPlugin;
 using Event::EventPlugin;
 using Runs::RunsPlugin;
+using Relays::RelaysPlugin;
 
 namespace Runs {
 namespace services {
@@ -71,8 +73,17 @@ bool ResultsExporter::exportResults()
 	}
 	if(ss.outputFormat() == static_cast<int>(ResultsExporterSettings::OutputFormat::IofXml3)) {
 		int current_stage = getPlugin<EventPlugin>()->currentStageId();
-		QString fn = ss.exportDir() + "/results-csos.txt";
-		getPlugin<RunsPlugin>()->exportResultsIofXml30Stage(current_stage, fn);
+		QString file_name = ss.exportDir() + "/" + getPlugin<EventPlugin>()->eventName() + ".results.iof30.xml";
+		bool is_relays = getPlugin<EventPlugin>()->eventConfig()->isRelays();
+
+		QString str = is_relays
+				? getPlugin<RelaysPlugin>()->resultsIofXml30()
+				: getPlugin<RunsPlugin>()->resultsIofXml30Stage(current_stage);
+
+		QFile f(file_name);
+		if(f.open(QFile::WriteOnly)) {
+			f.write(str.toUtf8());
+		}
 		return true;
 	}
 	else if(ss.outputFormat() == static_cast<int>(ResultsExporterSettings::OutputFormat::HtmlMulti)) {
