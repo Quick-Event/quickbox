@@ -218,6 +218,7 @@ qf::core::utils::TreeTable RelaysPlugin::nLegsClassResultsTable(int class_id, in
 		qfs::QueryBuilder qb;
 		qb.select2("relays", "id, club, name, number")
 				.select2("clubs", "name, abbr")
+				.select("COALESCE(relays.club, '') || ' ' || COALESCE(relays.name, '') AS relayName")
 				.from("relays")
 				.join("relays.club", "clubs.abbr")
 				.where("relays.classId=" QF_IARG(class_id));
@@ -226,7 +227,7 @@ qf::core::utils::TreeTable RelaysPlugin::nLegsClassResultsTable(int class_id, in
 			Relay r;
 			r.relayId = q.value("relays.id").toInt();
 			r.relayNumber = q.value("relays.number").toInt();
-			r.name = (q.value("relays.club").toString() + ' ' + q.value("relays.number").toString()).trimmed();
+			r.name = q.value("relayName").toString();
 			r.org = {
 				.name = q.value("clubs.name").toString(),
 				.shortName = q.value("clubs.abbr").toString()
