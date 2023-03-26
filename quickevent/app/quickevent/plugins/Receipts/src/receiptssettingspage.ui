@@ -77,7 +77,7 @@
    <item row="3" column="1">
     <widget class="QPushButton" name="btPrinterOptions">
      <property name="text">
-      <string>printer options</string>
+      <string notr="true">printer options</string>
      </property>
     </widget>
    </item>

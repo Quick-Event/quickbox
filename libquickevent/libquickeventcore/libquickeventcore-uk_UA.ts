@@ -139,14 +139,6 @@
         <translation>Статус</translation>
     </message>
     <message>
-        <source>NC</source>
-        <translation type="vanished">NC</translation>
-    </message>
-    <message>
-        <source>DISQ</source>
-        <translation type="vanished">Дискв</translation>
-    </message>
-    <message>
         <location filename="src/exporters/stageresultshtmlexporter.cpp" line="101"/>
         <source>Results %1</source>
         <translation>Результати</translation>

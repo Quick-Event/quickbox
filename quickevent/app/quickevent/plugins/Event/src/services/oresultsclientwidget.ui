@@ -67,8 +67,8 @@
        <widget class="QLabel" name="label">
         <property name="text">
          <string>Results are exported at given interval.
-Both Results and Start list can be exported manualy using the buttons bellow. In addition, if the service is running, individual competitor data is send after reaout and after saving competitor dialog. 
-In case of unexpected errors, contact support@oresults.eu </string>
+Both Results and Start list can be exported manually using the buttons bellow. In addition, if the service is running, individual competitor data is send after readout and after saving competitor dialog.
+In case of unexpected errors, contact support@oresults.eu</string>
         </property>
         <property name="wordWrap">
          <bool>true</bool>

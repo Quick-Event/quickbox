@@ -1,5 +1,6 @@
 <!-- PROJECT SHIELDS -->
 [![Build status][build-shield]][build-url]
+[![Translation status][weblate-shield]][weblate-url]
 [![Stargazers][stars-shield]][stars-url]
 [![Contributors][contributors-shield]][contributors-url]
 [![Issues][issues-shield]][issues-url]
@@ -19,7 +20,7 @@ The QuickBox is built upon the Qt framework, targeted for Linux and Windows and 
 * QuickHttpd - show start lists and results via webserver
 
 ### Features
-* competitors managment
+* competitors management
 * SI card readout
 * receipts print
 * course import (OCAD TXT | [IOF XML](https://github.com/international-orienteering-federation/datastandard-v3))
@@ -127,11 +128,13 @@ Distributed under the GNU GPL v2.0 License. See `LICENSE` for more information.
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 [build-shield]: https://github.com/Quick-Event/quickbox/actions/workflows/c-cpp.yml/badge.svg?branch=master
 [build-url]: https://github.com/Quick-Event/quickbox/actions?query=branch%3Amaster
-[contributors-shield]: https://img.shields.io/github/contributors/Quick-Event/quickbox?style=flat-square
+[weblate-shield]: https://hosted.weblate.org/widgets/quickbox/-/svg-badge.svg
+[weblate-url]: https://hosted.weblate.org/engage/quickbox/
+[contributors-shield]: https://img.shields.io/github/contributors/Quick-Event/quickbox
 [contributors-url]: https://github.com/Quick-Event/quickbox/graphs/contributors
-[stars-shield]: https://img.shields.io/github/stars/Quick-Event/quickbox?style=flat-square
+[stars-shield]: https://img.shields.io/github/stars/Quick-Event/quickbox
 [stars-url]: https://github.com/Quick-Event/quickbox/stargazers
-[issues-shield]: https://img.shields.io/github/issues/Quick-Event/quickbox?style=flat-square
+[issues-shield]: https://img.shields.io/github/issues/Quick-Event/quickbox
 [issues-url]: https://github.com/Quick-Event/quickbox/issues
-[license-shield]: https://img.shields.io/github/license/Quick-Event/quickbox?style=flat-square
+[license-shield]: https://img.shields.io/github/license/Quick-Event/quickbox
 [license-url]: https://github.com/Quick-Event/quickbox/blob/master/LICENSE

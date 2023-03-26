@@ -150,7 +150,7 @@
      <item>
       <widget class="QRadioButton" name="rbCsvSeparatorChar">
        <property name="text">
-        <string>Char :</string>
+        <string>Char:</string>
        </property>
        <property name="checked">
         <bool>true</bool>
