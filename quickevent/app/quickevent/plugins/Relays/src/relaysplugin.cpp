@@ -564,6 +564,9 @@ QString RelaysPlugin::resultsIofXml30()
 			const qf::core::utils::TreeTableRow tt_teams_row = tt_teams.row(j);
 			QF_TIME_SCOPE("exporting team: " + tt_teams_row.value(QStringLiteral("name")).toString());
 			append_list(team_result,
+				QVariantList{"EntryId", tt_teams_row.value(QStringLiteral("id")) }
+			);
+			append_list(team_result,
 				QVariantList{"Name", tt_teams_row.value(QStringLiteral("name")) }
 			);
 
@@ -767,6 +770,9 @@ QString RelaysPlugin::startListIofXml30()
 			QVariantList team_start{"TeamStart"};
 			const qf::core::utils::TreeTableRow tt_teams_row = tt_teams.row(j);
 			QF_TIME_SCOPE("exporting team: " + tt_teams_row.value(QStringLiteral("relayName")).toString());
+			append_list(team_start,
+				QVariantList{"EntryId", tt_teams_row.value(QStringLiteral("id")) }
+			);
 			append_list(team_start,
 				QVariantList{"Name", tt_teams_row.value(QStringLiteral("relayName")) }
 			);
