@@ -1251,7 +1251,7 @@ void EventPlugin::importEvent_qbe()
 		qfd::MessageBox::showError(fwk, err_str);
 		return;
 	}
-	if(qfd::MessageBox::askYesNo(fwk, tr("Open imported event '%1'?").arg(event_name))) {
+	if(qfd::MessageBox::askYesNo(fwk, tr("Open imported event '%1'?").arg(event_name), false)) {
 		openEvent(event_name);
 	}
 }
