@@ -92,7 +92,7 @@ Vyčítat po oražení: {{ReadOutAfterPunch}}
     <message>
         <location filename="src/device/commport.cpp" line="74"/>
         <source>%1 closed</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 odpojeno</translation>
     </message>
     <message>
         <location filename="src/device/commport.cpp" line="91"/>
@@ -128,22 +128,22 @@ Seznam dostupných portů:
     <message>
         <location filename="src/device/sidevicedriver.cpp" line="141"/>
         <source>NAK received</source>
-        <translation type="unfinished"></translation>
+        <translation>Přijato NAK</translation>
     </message>
     <message>
         <location filename="src/device/sidevicedriver.cpp" line="147"/>
         <source>Legacy protocol is not supported, switch station to extended one.</source>
-        <translation type="unfinished"></translation>
+        <translation>Legacy protokol není podporován, přepněte jednotku na extended protokol.</translation>
     </message>
     <message>
         <location filename="src/device/sidevicedriver.cpp" line="154"/>
         <source>Valid message shall end with ETX or NAK, throwing data away</source>
-        <translation type="unfinished"></translation>
+        <translation>Validní zpráva musí končit s ETX nebo NAK, přeskakuji data</translation>
     </message>
     <message>
         <location filename="src/device/sidevicedriver.cpp" line="170"/>
         <source>SIDeviceDriver::sendCommand() - ERROR Sending of EXT commands only is supported for sending.</source>
-        <translation type="unfinished"></translation>
+        <translation>SIDeviceDriver::sendCommand() - CHYBA - je podporováno pouze odesílání EXT příkazů.</translation>
     </message>
 </context>
 <context>
@@ -151,7 +151,7 @@ Seznam dostupných portů:
     <message>
         <location filename="src/device/sitask.cpp" line="24"/>
         <source>SiCommand timeout after %1 sec.</source>
-        <translation type="unfinished"></translation>
+        <translation>SiCommand timeout po %1 sek.</translation>
     </message>
 </context>
 </TS>
