@@ -1371,7 +1371,7 @@ Zvažte nastavení intervalu pro všechny kategorie.</translation>
     <message>
         <location filename="plugins/Competitors/src/competitorswidget.cpp" line="68"/>
         <source>Runner&apos;s position in CZ ranking.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pozice závodníka v CZ rankingu.</translation>
     </message>
     <message>
         <location filename="plugins/Competitors/src/competitorswidget.cpp" line="127"/>
@@ -2406,9 +2406,9 @@ In case of unexpected errors, contact support@oresults.eu</source>
         <oldsource>Results are exported at given interval.
 Both Results and Start list can be exported manualy using the buttons bellow. In addition, if the service is running, individual competitor data is send after reaout and after saving competitor dialog. 
 In case of unexpected errors, contact support@oresults.eu </oldsource>
-        <translation type="unfinished">Výsledky jsou automaticky exportovány dle zadaného intervalu.
+        <translation>Výsledky jsou automaticky exportovány dle zadaného intervalu.
 Startovní listiny a výsledky mohou být též exportovány pomocí tlačítek níže. Pokud je služba zapnutá, jsou navíc výsledky konkrétního závodníka zasílány po vyčtení čipu a při uložení formuláře pro úpravu závodníka.
-V případě chyb neváhejte napsat na support@oresults.eu </translation>
+V případě chyb neváhejte napsat na support@oresults.eu</translation>
     </message>
     <message>
         <location filename="plugins/Event/src/services/oresultsclientwidget.ui" line="96"/>
@@ -3754,7 +3754,7 @@ V případě chyb neváhejte napsat na support@oresults.eu </translation>
         <location filename="plugins/Runs/src/cardflagsdialog.ui" line="22"/>
         <source>Status:</source>
         <oldsource>status:</oldsource>
-        <translation type="unfinished">Status:</translation>
+        <translation>Status:</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/cardflagsdialog.ui" line="29"/>
@@ -3765,7 +3765,7 @@ V případě chyb neváhejte napsat na support@oresults.eu </translation>
         <location filename="plugins/Runs/src/cardflagsdialog.ui" line="45"/>
         <source>Card rented (or rent requested)</source>
         <oldsource>Card rented ( or rent requested )</oldsource>
-        <translation type="unfinished">Půjčený čip (nebo vyžádáno zapůjčení)</translation>
+        <translation>Půjčený čip (nebo vyžádáno zapůjčení)</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/cardflagsdialog.ui" line="52"/>
@@ -3776,7 +3776,7 @@ V případě chyb neváhejte napsat na support@oresults.eu </translation>
         <location filename="plugins/Runs/src/cardflagsdialog.ui" line="55"/>
         <source>Card rented (from rent table)</source>
         <oldsource>Card rented ( from rent table )</oldsource>
-        <translation type="unfinished">Půjčený čip (z tabulky čipů k zapůjčení)</translation>
+        <translation>Půjčený čip (z tabulky čipů k zapůjčení)</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/cardflagsdialog.ui" line="62"/>
@@ -4153,7 +4153,7 @@ V případě chyb neváhejte napsat na support@oresults.eu </translation>
         <location filename="plugins/Runs/src/services/resultsexporterwidget.ui" line="153"/>
         <source>Char:</source>
         <oldsource>Char :</oldsource>
-        <translation type="unfinished">Znak:</translation>
+        <translation>Znak:</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/services/resultsexporterwidget.ui" line="166"/>
@@ -4284,7 +4284,7 @@ V případě chyb neváhejte napsat na support@oresults.eu </translation>
         <source>DISQ</source>
         <oldsource>DIS</oldsource>
         <comment>Disqualified</comment>
-        <translation type="unfinished">DISK</translation>
+        <translation>DISK</translation>
     </message>
     <message>
         <location filename="plugins/Competitors/src/competitorwidget.cpp" line="374"/>
@@ -4315,14 +4315,14 @@ V případě chyb neváhejte napsat na support@oresults.eu </translation>
         <source>DNS</source>
         <oldsource>NS</oldsource>
         <comment>DidNotStart</comment>
-        <translation type="unfinished">NS</translation>
+        <translation>DNS</translation>
     </message>
     <message>
         <location filename="plugins/Competitors/src/competitorwidget.cpp" line="384"/>
         <source>DNF</source>
         <oldsource>NF</oldsource>
         <comment>DidNotFinish</comment>
-        <translation type="unfinished">NF</translation>
+        <translation>DNF</translation>
     </message>
     <message>
         <location filename="plugins/Competitors/src/competitorwidget.cpp" line="397"/>
