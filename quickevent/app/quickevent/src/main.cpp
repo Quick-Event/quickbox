@@ -74,7 +74,6 @@ int main(int argc, char *argv[])
 
 	AppCliOptions cli_opts;
 	cli_opts.parse(args);
-	cli_opts.parse(args);
 	if(cli_opts.isParseError()) {
 		foreach(QString err, cli_opts.parseErrors())
 			qfError() << err;
@@ -94,6 +93,7 @@ int main(int argc, char *argv[])
 		return EXIT_FAILURE;
 	}
 
+	qfInfo() << "Is abort on exception:" << qf::core::Exception::isAbortOnException();
 	qDebug() << "creating application instance";
 	Application app(argc, argv, &cli_opts);
 
