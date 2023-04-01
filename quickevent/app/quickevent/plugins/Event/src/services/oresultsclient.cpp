@@ -54,7 +54,7 @@ QString OResultsClient::serviceName()
 void OResultsClient::run() {
 	Super::run();
 	exportStartListIofXml3();
-	exportResultsIofXml3();
+	QTimer::singleShot(1000, this, &OResultsClient::exportResultsIofXml3);
 	m_exportTimer->start();
 }
 
