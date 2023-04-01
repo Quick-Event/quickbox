@@ -716,7 +716,6 @@ QString RelaysPlugin::startListIofXml30()
 		"StartList",
 		QVariantMap{
 			{"xmlns", "http://www.orienteering.org/datastandard/3.0"},
-			{"status", "Complete"},
 			{"iofVersion", "3.0"},
 			{"creator", "QuickEvent"},
 			{"createTime", datetime_to_string(QDateTime::currentDateTime())},
