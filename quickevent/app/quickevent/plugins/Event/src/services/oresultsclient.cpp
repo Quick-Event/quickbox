@@ -53,8 +53,11 @@ QString OResultsClient::serviceName()
 
 void OResultsClient::run() {
 	Super::run();
-	exportStartListIofXml3();
-	QTimer::singleShot(1000, this, &OResultsClient::exportResultsIofXml3);
+	setStageId(getPlugin<EventPlugin>()->eventConfig()->currentStageId());
+	exportStartListIofXml3(stageId());
+	QTimer::singleShot(1000, this, [=](){
+		exportResultsIofXml3(stageId());
+	});
 	m_exportTimer->start();
 }
 
@@ -63,27 +66,24 @@ void OResultsClient::stop() {
 	m_exportTimer->stop();
 }
 
-void OResultsClient::exportResultsIofXml3()
+void OResultsClient::exportResultsIofXml3(int stage_id)
 {
-	int current_stage = getPlugin<EventPlugin>()->currentStageId();
 	bool is_relays = getPlugin<EventPlugin>()->eventConfig()->isRelays();
 
 	QString str = is_relays
 			? getPlugin<RelaysPlugin>()->resultsIofXml30()
-			: getPlugin<RunsPlugin>()->resultsIofXml30Stage(current_stage);
+			: getPlugin<RunsPlugin>()->resultsIofXml30Stage(stage_id);
 
 	sendFile("results upload", "/results", str);
 }
 
-void OResultsClient::exportStartListIofXml3()
+void OResultsClient::exportStartListIofXml3(int stage_id)
 {
-
-	int current_stage = getPlugin<EventPlugin>()->currentStageId();
 	bool is_relays = getPlugin<EventPlugin>()->eventConfig()->isRelays();
 
 	QString str = is_relays
 			? getPlugin<RelaysPlugin>()->startListIofXml30()
-			: getPlugin<RunsPlugin>()->startListStageIofXml30(current_stage);
+			: getPlugin<RunsPlugin>()->startListStageIofXml30(stage_id);
 
 	sendFile("start list upload", "/start-lists", str);
 }
@@ -102,7 +102,7 @@ void OResultsClient::init()
 
 void OResultsClient::onExportTimerTimeOut()
 {
-	exportResultsIofXml3();
+	exportResultsIofXml3(stageId());
 }
 
 void OResultsClient::loadSettings()
@@ -171,6 +171,21 @@ QString OResultsClient::apiKey() const
 void OResultsClient::setApiKey(QString apiKey)
 {
 	getPlugin<EventPlugin>()->eventConfig()->setValue("oresults.apiKey", apiKey);
+	getPlugin<EventPlugin>()->eventConfig()->save("oresults");
+}
+
+int OResultsClient::stageId() const
+{
+	// retrieve stage_id that was saved when the service was started
+	int stage_id = getPlugin<EventPlugin>()->eventConfig()->value("oresults.stageId").toInt();
+	if (!stage_id)
+		return getPlugin<EventPlugin>()->eventConfig()->currentStageId();
+	return stage_id;
+}
+
+void OResultsClient::setStageId(int stage_id)
+{
+	getPlugin<EventPlugin>()->eventConfig()->setValue("oresults.stageId", stage_id);
 	getPlugin<EventPlugin>()->eventConfig()->save("oresults");
 }
 
