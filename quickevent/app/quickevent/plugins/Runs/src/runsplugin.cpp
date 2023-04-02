@@ -597,7 +597,7 @@ qf::core::utils::TreeTable RunsPlugin::stageResultsTable(int stage_id, const QSt
 
 	{
 		qf::core::sql::QueryBuilder qb;
-		qb.select2("competitors", "registration, lastName, firstName")
+		qb.select2("competitors", "registration, lastName, firstName, startNumber")
 			.select("COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName")
 			.select2("runs", "*")
 			.select2("clubs", "name, abbr")
@@ -897,6 +897,9 @@ QString RunsPlugin::resultsIofXml30Stage(int stage_id)
 			auto run_status = quickevent::core::RunStatus::fromTreeTableRow(tt2_row);
 
 			QVariantList result{"Result"};
+			auto bib_number = tt2_row.value(QStringLiteral("competitors.startNumber"));
+			if(!bib_number.isNull())
+				result.insert(result.count(), QVariantList{"BibNumber", bib_number});
 			//int run_id = tt2_row.value(QStringLiteral("runs.id")).toInt();
 			int stime = tt2_row.value(QStringLiteral("startTimeMs")).toInt();
 			int ftime = tt2_row.value(QStringLiteral("finishTimeMs")).toInt();
