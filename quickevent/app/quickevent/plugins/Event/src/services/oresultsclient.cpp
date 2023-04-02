@@ -261,7 +261,6 @@ void OResultsClient::onCompetitorChanged(int competitor_id)
 	if (competitor_id == 0)
 		return;
 
-	int stage_id = getPlugin<RunsPlugin>()->selectedStageId();
 	qf::core::sql::Query q;
 	q.exec("SELECT competitors.registration, "
 		   "competitors.startNumber, "
@@ -281,7 +280,7 @@ void OResultsClient::onCompetitorChanged(int competitor_id)
 		   "INNER JOIN competitors ON competitors.id = runs.competitorId "
 		   "LEFT JOIN relays ON relays.id = runs.relayId  "
 		   "INNER JOIN classes ON classes.id = competitors.classId OR classes.id = relays.classId  "
-		   "WHERE competitors.id=" QF_IARG(competitor_id) " AND runs.stageId=" QF_IARG(stage_id), qf::core::Exception::Throw);
+		   "WHERE competitors.id=" QF_IARG(competitor_id) " AND runs.stageId=" QF_IARG(stageId()), qf::core::Exception::Throw);
 	if(q.next()) {
 		QString registration = q.value("registration").toString();
 		int start_num = q.value("startNumber").toInt();
