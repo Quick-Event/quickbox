@@ -161,6 +161,7 @@ Schema {
 				Field { name: 'firstName'; type: String {} },
 				Field { name: 'lastName'; type: String {} },
 				Field { name: 'registration'; type: String { length: 10 } },
+ 				Field { name: 'iofId'; type: Int {} },
 				Field { name: 'licence'; type: String { length: 1 } },
 				Field { name: 'club'; type: String { } },
 				Field { name: 'country'; type: String { } },

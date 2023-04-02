@@ -551,6 +551,7 @@ void OrisImporter::syncEventEntries(int event_id, std::function<void ()> success
 					}
 				}
 				QString reg_no = competitor_o.value(QStringLiteral("RegNo")).toString();
+				QString iof_id = competitor_o.value(QStringLiteral("IOFID")).toString();
 				fwk->showProgress("Importing: " + reg_no + ' ' + last_name + ' ' + first_name, items_processed, items_count);
 				int class_id = competitor_o.value(QStringLiteral("ClassID")).toString().toInt();
 				if(!classes_map.contains(class_id)) {
@@ -562,6 +563,7 @@ void OrisImporter::syncEventEntries(int event_id, std::function<void ()> success
 				doc->setValue("firstName", first_name);
 				doc->setValue("lastName", last_name);
 				doc->setValue("registration", reg_no);
+                doc->setValue("iofId", !iof_id.isEmpty() ? iof_id : QVariant(QVariant::Int));
 				doc->setValue("licence", competitor_o.value(QStringLiteral("Licence")).toString());
 				doc->setValue("note", note);
 				doc->setValue("importId", import_id);
@@ -580,6 +582,7 @@ void OrisImporter::syncEventEntries(int event_id, std::function<void ()> success
 											  << QStringLiteral("lastName")
 											  << QStringLiteral("firstName")
 											  << QStringLiteral("registration")
+                                              << QStringLiteral("iofId")
 											  << QStringLiteral("siId")
 											  << QStringLiteral("licence")
 											  << KEY_RUNS
@@ -692,7 +695,6 @@ void OrisImporter::syncEventEntries(int event_id, std::function<void ()> success
 				qfLogScope("importEventEntries");
 				qf::core::sql::Transaction transaction;
 				//QMap<int, int> cid_sid_changes; // competitorId->siId
-				const auto SIID = QStringLiteral("siId");
 				for(Competitors::CompetitorDocument *doc : doc_lst) {
 					doc->setEmitDbEventsOnSave(false);
 					if(doc->mode() == doc->ModeInsert || doc->mode() == doc->ModeEdit) {
