@@ -53,11 +53,9 @@ QString OResultsClient::serviceName()
 
 void OResultsClient::run() {
 	Super::run();
-	setStageId(getPlugin<EventPlugin>()->eventConfig()->currentStageId());
-	exportStartListIofXml3(stageId());
-	QTimer::singleShot(1000, this, [=](){
-		exportResultsIofXml3(stageId());
-	});
+	int current_stage = getPlugin<EventPlugin>()->eventConfig()->currentStageId();
+	setStageId(current_stage);
+	exportStartListIofXml3(current_stage, [=](){exportResultsIofXml3(current_stage);});
 	m_exportTimer->start();
 }
 
@@ -77,7 +75,7 @@ void OResultsClient::exportResultsIofXml3(int stage_id)
 	sendFile("results upload", "/results", str);
 }
 
-void OResultsClient::exportStartListIofXml3(int stage_id)
+void OResultsClient::exportStartListIofXml3(int stage_id, std::function<void()> on_success)
 {
 	bool is_relays = getPlugin<EventPlugin>()->eventConfig()->isRelays();
 
@@ -85,7 +83,7 @@ void OResultsClient::exportStartListIofXml3(int stage_id)
 			? getPlugin<RelaysPlugin>()->startListIofXml30()
 			: getPlugin<RunsPlugin>()->startListStageIofXml30(stage_id);
 
-	sendFile("start list upload", "/start-lists", str);
+	sendFile("start list upload", "/start-lists", str, on_success);
 }
 
 qf::qmlwidgets::framework::DialogWidget *OResultsClient::createDetailWidget()
@@ -111,7 +109,7 @@ void OResultsClient::loadSettings()
 	init();
 }
 
-void OResultsClient::sendFile(QString name, QString request_path, QString file) {
+void OResultsClient::sendFile(QString name, QString request_path, QString file, std::function<void()> on_success) {
 
 	QHttpMultiPart *multi_part = new QHttpMultiPart(QHttpMultiPart::FormDataType);
 
@@ -131,7 +129,7 @@ void OResultsClient::sendFile(QString name, QString request_path, QString file) 
 	QNetworkRequest request(url);
 	QNetworkReply *reply = m_networkManager->post(request, multi_part);
 
-	connect(reply, &QNetworkReply::finished, reply, [reply, name]()
+	connect(reply, &QNetworkReply::finished, reply, [reply, name, on_success]()
 	{
 		if(reply->error()) {
 			auto err_msg = "OReuslts.eu [" + name + "]: ";
@@ -142,6 +140,8 @@ void OResultsClient::sendFile(QString name, QString request_path, QString file) 
 		}
 		else {
 			qfInfo() << "OReuslts.eu [" + name + "]: success";
+			if (on_success)
+				on_success();
 		}
 		reply->deleteLater();
 	});
