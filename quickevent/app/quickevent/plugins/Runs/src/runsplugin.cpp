@@ -2278,7 +2278,6 @@ QString RunsPlugin::startListStageIofXml30(int stage_id)
 	QVariantList xml_root{"StartList" ,
 		QVariantMap {
 			{"xmlns", "http://www.orienteering.org/datastandard/3.0"},
-			{"xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance"},
 			{"iofVersion", "3.0"},
 			{"creator", "QuickEvent"},
 			{"createTime", datetime_to_string(QDateTime::currentDateTime())}
