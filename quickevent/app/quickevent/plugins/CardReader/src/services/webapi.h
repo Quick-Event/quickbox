@@ -5,6 +5,7 @@
 #include <siut/sidevicedriver.h>
 
 #include <QTcpServer>
+#include <fstream>
 
 class QTcpSocket;
 
@@ -16,6 +17,8 @@ class WebApiSettings : public Event::services::ServiceSettings
 	using Super = Event::services::ServiceSettings;
 
 	QF_VARIANTMAP_FIELD(int, t, setT, cpListenPort)
+	QF_VARIANTMAP_FIELD(bool, is, set, WriteLogFile)
+	QF_VARIANTMAP_FIELD(QString, l, setL, ogFileName)
 
 public:
 	WebApiSettings(const QVariantMap &o = QVariantMap()) : Super(o) {}
@@ -44,6 +47,7 @@ private:
 	std::unique_ptr<QTcpServer> m_tcpServer;
 	std::unordered_map<QTcpSocket*, std::unique_ptr<QByteArray>> m_tcpClients;
 	std::unique_ptr<siut::DeviceDriver> m_siDriver;
+	std::ofstream m_ofs;
 };
 
 }}
