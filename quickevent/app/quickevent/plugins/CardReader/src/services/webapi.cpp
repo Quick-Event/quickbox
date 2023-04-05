@@ -62,6 +62,17 @@ void WebApi::init()
 	} else {
 		qfInfo() << "TCP server started listening port " << port;
 	}
+	if (ss.isWriteLogFile()) {
+		m_ofs.close();
+		m_ofs.open(ss.logFileName().toLocal8Bit(), std::ios_base::app);
+		if (!m_ofs) {
+			qfError() << "Failed to open file for logging: " << ss.logFileName();
+		} else {
+			qfInfo() << "Opened file for logging: " << ss.logFileName();
+		}
+	} else {
+		m_ofs.close();
+	}
 }
 
 void WebApi::onNewConnection()
@@ -144,6 +155,10 @@ void WebApi::onReadyRead()
 
 		// Process POST /card
 		QByteArray data{buffer->mid(dataIdx, len)};
+		if (m_ofs) {
+			m_ofs.write(data.constData(), data.size());
+			m_ofs << std::endl;
+		}
 		QJsonParseError parseError{};
 		QJsonDocument jsonDoc = QJsonDocument::fromJson(data, &parseError);
 		if (jsonDoc.isNull()) {

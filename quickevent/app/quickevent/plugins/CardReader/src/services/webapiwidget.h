@@ -23,6 +23,7 @@ private:
 	bool acceptDialogDone(int result) override;
 	WebApi* service();
 	void saveSettings();
+	void onBtChooseLogFileClicked();
 private:
 	Ui::WebApiWidget *ui;
 };
