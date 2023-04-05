@@ -563,7 +563,7 @@ void OrisImporter::syncEventEntries(int event_id, std::function<void ()> success
 				doc->setValue("firstName", first_name);
 				doc->setValue("lastName", last_name);
 				doc->setValue("registration", reg_no);
-                doc->setValue("iofId", !iof_id.isEmpty() ? iof_id : QVariant(QVariant::Int));
+				doc->setValue("iofId", !iof_id.isEmpty() ? iof_id : QVariant(QVariant::Int));
 				doc->setValue("licence", competitor_o.value(QStringLiteral("Licence")).toString());
 				doc->setValue("note", note);
 				doc->setValue("importId", import_id);
@@ -582,7 +582,7 @@ void OrisImporter::syncEventEntries(int event_id, std::function<void ()> success
 											  << QStringLiteral("lastName")
 											  << QStringLiteral("firstName")
 											  << QStringLiteral("registration")
-                                              << QStringLiteral("iofId")
+											  << QStringLiteral("iofId")
 											  << QStringLiteral("siId")
 											  << QStringLiteral("licence")
 											  << KEY_RUNS

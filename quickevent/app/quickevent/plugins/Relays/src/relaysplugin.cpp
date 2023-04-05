@@ -110,6 +110,7 @@ struct Leg
 	QString firstName;
 	QString lastName;
 	QString reg;
+	QString iofId;
 	int runId = 0;
 	//int courseId = 0;
 	int time = 0;
@@ -241,7 +242,7 @@ qf::core::utils::TreeTable RelaysPlugin::nLegsClassResultsTable(int class_id, in
 	}
 	{
 		qfs::QueryBuilder qb;
-		qb.select2("competitors", "id, registration")
+		qb.select2("competitors", "id, registration, iofId")
 				.select2("runs", "id, relayId, leg, isRunning")
 				.select2("competitors", "firstName, lastName")
 				.select("COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName")
@@ -266,6 +267,7 @@ qf::core::utils::TreeTable RelaysPlugin::nLegsClassResultsTable(int class_id, in
 					leg.lastName = q.value("lastName").toString();
 					leg.runId = q.value("runs.id").toInt();
 					leg.reg = q.value("competitors.registration").toString();
+					leg.iofId = q.value("competitors.iofId").toString();
 					//leg.courseId = getPlugin<RunsPlugin>()->courseForRun(leg.runId);
 					break;
 				}
@@ -387,6 +389,7 @@ qf::core::utils::TreeTable RelaysPlugin::nLegsClassResultsTable(int class_id, in
 		tt2.appendColumn("firstName", QMetaType(QMetaType::QString));
 		tt2.appendColumn("lastName", QMetaType(QMetaType::QString));
 		tt2.appendColumn("registration", QMetaType(QMetaType::QString));
+		tt2.appendColumn("iofId", QMetaType(QMetaType::QString));
 		tt2.appendColumn("time", QMetaType(QMetaType::Int));
 		tt2.appendColumn("pos", QMetaType(QMetaType::Int));
 		tt2.appendColumn("status", QMetaType(QMetaType::QString));
@@ -403,6 +406,7 @@ qf::core::utils::TreeTable RelaysPlugin::nLegsClassResultsTable(int class_id, in
 			tt2_row.setValue("firstName", leg.firstName);
 			tt2_row.setValue("lastName", leg.lastName);
 			tt2_row.setValue("registration", leg.reg);
+			tt2_row.setValue("iofId", leg.iofId);
 			tt2_row.setValue("time", leg.runStatus.isOk() ? leg.time : leg.runStatus.toTime());
 			tt2_row.setValue("pos", leg.pos);
 			tt2_row.setValue("status", leg.runStatus.toXmlExportString());
@@ -454,7 +458,7 @@ QVariant RelaysPlugin::startListByClassesTableData(const QString &class_filter)
 	}
 	{
 		qf::core::sql::QueryBuilder qb;
-		qb.select2("competitors", "registration")
+		qb.select2("competitors", "registration, iofId")
 			.select("competitors.firstName, competitors.lastName, COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName")
 			.select2("runs", "leg, siId, startTimeMs")
 			.from("runs")
@@ -592,14 +596,16 @@ QString RelaysPlugin::resultsIofXml30()
 				if (tt_leg_row.value("runId").toInt() == 0 || (time.isValid() && time.msec() == 0))
 					continue;
 				QVariantList member_result{"TeamMemberResult"};
-				append_list(member_result,
-							QVariantList{"Person",
-								QVariantList{"Id", QVariantMap{{"type", "CZE"}}, tt_leg_row.value(QStringLiteral("registration"))},
-								QVariantList{"Name",
-								   QVariantList{"Family", tt_leg_row.value(QStringLiteral("lastName"))},
-								   QVariantList{"Given", tt_leg_row.value(QStringLiteral("firstName"))},
-								}
-							} );
+				QVariantList person{"Person"};
+				append_list(person, QVariantList{"Id", QVariantMap{{"type", "CZE"}}, tt_leg_row.value(QStringLiteral("registration"))});
+				auto iof_id = tt_leg_row.value(QStringLiteral("iofId"));
+				if (!iof_id.isNull())
+					append_list(person, QVariantList{"Id", QVariantMap{{"type", "IOF"}}, iof_id});
+				auto family = tt_leg_row.value(QStringLiteral("lastName"));
+				auto given = tt_leg_row.value(QStringLiteral("firstName"));
+				append_list(person, QVariantList{"Name", QVariantList{"Family", family}, QVariantList{"Given", given}});
+				append_list(member_result, person);
+
 				QVariantList person_result{"Result"};
 				append_list(person_result, QVariantList{"Leg", k+1 } );
 				append_list(person_result, QVariantList{"BibNumber", QString::number(relay_number) + '.' + QString::number(k+1)});
@@ -795,14 +801,16 @@ QString RelaysPlugin::startListIofXml30()
 				QF_TIME_SCOPE("exporting leg: " + QString::number(leg));
 				const qf::core::utils::TreeTableRow tt_leg_row = tt_legs.row(k);
 				QVariantList member_start{"TeamMemberStart"};
-				append_list(member_start,
-							QVariantList{"Person",
-								QVariantList{"Id", QVariantMap{{"type", "CZE"}}, tt_leg_row.value(QStringLiteral("registration"))},
-								QVariantList{"Name",
-								   QVariantList{"Family", tt_leg_row.value(QStringLiteral("lastName"))},
-								   QVariantList{"Given", tt_leg_row.value(QStringLiteral("firstName"))},
-								}
-							} );
+				QVariantList person{"Person"};
+				append_list(person, QVariantList{"Id", QVariantMap{{"type", "CZE"}}, tt_leg_row.value(QStringLiteral("registration"))});
+				auto iof_id = tt_leg_row.value(QStringLiteral("iofId"));
+				if (!iof_id.isNull())
+					append_list(person, QVariantList{"Id", QVariantMap{{"type", "IOF"}}, iof_id});
+				auto family = tt_leg_row.value(QStringLiteral("lastName"));
+				auto given = tt_leg_row.value(QStringLiteral("firstName"));
+				append_list(person, QVariantList{"Name", QVariantList{"Family", family}, QVariantList{"Given", given}});
+				append_list(member_start, person);
+
 				QVariantList start{"Start"};
 				append_list(start, QVariantList{"Leg", k+1 } );
 				append_list(start, QVariantList{"BibNumber", QString::number(relay_number) + '.' + QString::number(k+1)});
