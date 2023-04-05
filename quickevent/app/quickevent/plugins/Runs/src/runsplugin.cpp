@@ -597,7 +597,7 @@ qf::core::utils::TreeTable RunsPlugin::stageResultsTable(int stage_id, const QSt
 
 	{
 		qf::core::sql::QueryBuilder qb;
-		qb.select2("competitors", "registration, iofId, lastName, firstName")
+		qb.select2("competitors", "registration, iofId, lastName, firstName, startNumber")
 			.select("COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName")
 			.select2("runs", "*")
 			.select2("clubs", "name, abbr")
@@ -900,6 +900,9 @@ QString RunsPlugin::resultsIofXml30Stage(int stage_id)
 			auto run_status = quickevent::core::RunStatus::fromTreeTableRow(tt2_row);
 
 			QVariantList result{"Result"};
+			auto bib_number = tt2_row.value(QStringLiteral("competitors.startNumber"));
+			if(!bib_number.isNull())
+				result.insert(result.count(), QVariantList{"BibNumber", bib_number});
 			//int run_id = tt2_row.value(QStringLiteral("runs.id")).toInt();
 			int stime = tt2_row.value(QStringLiteral("startTimeMs")).toInt();
 			int ftime = tt2_row.value(QStringLiteral("finishTimeMs")).toInt();
@@ -2280,7 +2283,6 @@ QString RunsPlugin::startListStageIofXml30(int stage_id)
 	QVariantList xml_root{"StartList" ,
 		QVariantMap {
 			{"xmlns", "http://www.orienteering.org/datastandard/3.0"},
-			{"xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance"},
 			{"iofVersion", "3.0"},
 			{"creator", "QuickEvent"},
 			{"createTime", datetime_to_string(QDateTime::currentDateTime())}

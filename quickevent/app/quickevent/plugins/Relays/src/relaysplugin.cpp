@@ -115,6 +115,8 @@ struct Leg
 	//int courseId = 0;
 	int time = 0;
 	int pos = 0;
+	int loss = 0;
+	int lossOverall = 0;
 	int stime = 0;
 	int spos = 0;
 	quickevent::core::RunStatus runStatus;
@@ -132,7 +134,6 @@ struct Relay
 	QVector<Leg> legs;
 	int relayNumber = 0;
 	int relayId = 0;
-	int loss = 0;
 
 	int time(int leg_cnt) const
 	{
@@ -286,10 +287,14 @@ qf::core::utils::TreeTable RelaysPlugin::nLegsClassResultsTable(int class_id, in
 				.orderBy("runs.disqualified, runs.timeMs");
 		q.execThrow(qb.toString());
 		int run_pos = 1;
+		int winner_time = 0;
 		while(q.next()) {
 			int relay_id = q.value("runs.relayId").toInt();
 			for (int i = 0; i < relays.count(); ++i) {
 				if(relays[i].relayId == relay_id) {
+					if(run_pos == 1) {
+						winner_time = q.value("timeMs").toInt();
+					}
 					int run_id = q.value("runs.id").toInt();
 					Relay &relay = relays[i];
 					Leg &leg = relay.legs[legno - 1];
@@ -299,6 +304,7 @@ qf::core::utils::TreeTable RelaysPlugin::nLegsClassResultsTable(int class_id, in
 					else {
 						leg.runStatus = quickevent::core::RunStatus::fromQuery(q);
 						leg.time = q.value("timeMs").toInt();
+						leg.loss = leg.time - winner_time;
 						if (leg.runStatus.isOk() && leg.time > 0) {
 							leg.pos = run_pos;
 							run_pos++;
@@ -326,6 +332,7 @@ qf::core::utils::TreeTable RelaysPlugin::nLegsClassResultsTable(int class_id, in
 		}
 		std::sort(relay_stime.begin(), relay_stime.end(), [](const QPair<int, int> &a, const QPair<int, int> &b) {return a.second < b.second;});
 		int pos = 0;
+		int winner_time = relay_stime.begin()->second;
 		for(const QPair<int, int> &p : relay_stime) {
 			int relay_id = p.first;
 			for (int i = 0; i < relays.count(); ++i) {
@@ -333,6 +340,7 @@ qf::core::utils::TreeTable RelaysPlugin::nLegsClassResultsTable(int class_id, in
 					Relay &relay = relays[i];
 					Leg &leg = relay.legs[legno - 1];
 					leg.spos = ++pos;
+					leg.lossOverall = p.second - winner_time;
 					break;
 				}
 			}
@@ -357,22 +365,18 @@ qf::core::utils::TreeTable RelaysPlugin::nLegsClassResultsTable(int class_id, in
 		return a.time(leg_count) < b.time(leg_count);
 	});
 
-	int time0 = 0;
 	qf::core::utils::TreeTable tt;
 	tt.appendColumn("pos", QMetaType(QMetaType::Int));
 	tt.appendColumn("name", QMetaType(QMetaType::QString));
 	tt.appendColumn("relayNumber", QMetaType(QMetaType::Int));
 	tt.appendColumn("id", QMetaType(QMetaType::Int));
 	tt.appendColumn("time", QMetaType(QMetaType::Int));
-	tt.appendColumn("loss", QMetaType(QMetaType::Int));
 	tt.appendColumn("status", QMetaType(QMetaType::QString));
 	for (int i = 0; i < relays.count() && i < max_places; ++i) {
 		int ix = tt.appendRow();
 		qf::core::utils::TreeTableRow tt_row = tt.row(ix);
 		const Relay &relay = relays[i];
 		int time = relay.time(leg_count);
-		if(i == 0)
-			time0 = time;
 		int prev_time = (i > 0)? relays[i-1].time(leg_count): 0;
 		tt_row.setValue("pos", (time <= qog::TimeMs::MAX_REAL_TIME_MSEC && time > prev_time)? i+1: 0);
 		tt_row.setValue("name", relay.name);
@@ -381,7 +385,6 @@ qf::core::utils::TreeTable RelaysPlugin::nLegsClassResultsTable(int class_id, in
 		tt_row.setValue("orgShortName", relay.org.shortName);
 		tt_row.setValue("id", relay.relayId);
 		tt_row.setValue("time", time);
-		tt_row.setValue("loss", (time <= qog::TimeMs::MAX_REAL_TIME_MSEC)?time - time0: 0);
 		tt_row.setValue("status", relay.status(relay.legs.count()));
 		qfDebug() << tt.rowCount() << relay.name;
 		qf::core::utils::TreeTable tt2;
@@ -392,6 +395,8 @@ qf::core::utils::TreeTable RelaysPlugin::nLegsClassResultsTable(int class_id, in
 		tt2.appendColumn("iofId", QMetaType(QMetaType::QString));
 		tt2.appendColumn("time", QMetaType(QMetaType::Int));
 		tt2.appendColumn("pos", QMetaType(QMetaType::Int));
+		tt2.appendColumn("loss", QMetaType(QMetaType::Int));
+		tt2.appendColumn("lossOverall", QMetaType(QMetaType::Int));
 		tt2.appendColumn("status", QMetaType(QMetaType::QString));
 		tt2.appendColumn("stime", QMetaType(QMetaType::Int));
 		tt2.appendColumn("spos", QMetaType(QMetaType::Int));
@@ -409,6 +414,8 @@ qf::core::utils::TreeTable RelaysPlugin::nLegsClassResultsTable(int class_id, in
 			tt2_row.setValue("iofId", leg.iofId);
 			tt2_row.setValue("time", leg.runStatus.isOk() ? leg.time : leg.runStatus.toTime());
 			tt2_row.setValue("pos", leg.pos);
+			tt2_row.setValue("loss", leg.loss);
+			tt2_row.setValue("lossOverall", leg.lossOverall);
 			tt2_row.setValue("status", leg.runStatus.toXmlExportString());
 			tt2_row.setValue("stime", leg.stime);
 			tt2_row.setValue("spos", leg.spos);
@@ -627,10 +634,11 @@ QString RelaysPlugin::resultsIofXml30()
 						qfWarning() << "Cannot load run for id:" << run_id;
 					}
 				}
+
 				append_list(person_result, QVariantList{"StartTime", datetime_to_string(start00.addMSecs(stime))});
 				append_list(person_result, QVariantList{"FinishTime", datetime_to_string(start00.addMSecs(ftime))});
 				append_list(person_result, QVariantList{"Time", time_msec / 1000});
-				 // MISSING TimeBehind
+				append_list(person_result, QVariantList{"TimeBehind", tt_leg_row.value(QStringLiteral("loss")).toInt() / 1000});
 				append_list(person_result, QVariantList{"Position", QVariantMap{{"type", "Leg"}}, tt_leg_row.value(QStringLiteral("pos"))});
 				// MISSING position course append_list(person_result, QVariantList{"Position", QVariantMap{{"type", "course"}}, tt_laps_row.value(QStringLiteral("pos"))});
 				append_list(person_result, QVariantList{"Status", tt_leg_row.value(QStringLiteral("status"))});
@@ -639,7 +647,7 @@ QString RelaysPlugin::resultsIofXml30()
 					append_list(overall_result, QVariantList{"Time", tt_leg_row.value(QStringLiteral("stime")).toInt() / 1000});
 					append_list(overall_result, QVariantList{"Position", tt_leg_row.value(QStringLiteral("spos"))});
 					append_list(overall_result, QVariantList{"Status", tt_leg_row.value(QStringLiteral("sstatus"))});
-					 // MISSING TimeBehind
+					append_list(overall_result, QVariantList{"TimeBehind", tt_leg_row.value(QStringLiteral("lossOverall")).toInt() / 1000});
 				}
 				append_list(person_result, overall_result);
 				int course_id = getPlugin<RunsPlugin>()->courseForRelay(relay_number, leg);
@@ -722,7 +730,6 @@ QString RelaysPlugin::startListIofXml30()
 		"StartList",
 		QVariantMap{
 			{"xmlns", "http://www.orienteering.org/datastandard/3.0"},
-			{"status", "Complete"},
 			{"iofVersion", "3.0"},
 			{"creator", "QuickEvent"},
 			{"createTime", datetime_to_string(QDateTime::currentDateTime())},
