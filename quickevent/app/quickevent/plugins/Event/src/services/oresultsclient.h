@@ -34,8 +34,8 @@ public:
 
 	static QString serviceName();
 
-	void exportResultsIofXml3(int stage_id);
-	void exportStartListIofXml3(int stage_id, std::function<void()> on_success = nullptr);
+	void exportResultsIofXml3();
+	void exportStartListIofXml3(std::function<void()> on_success = nullptr);
 	void loadSettings() override;
 	void onDbEventNotify(const QString &domain, int connection_id, const QVariant &data);
 	QString apiKey() const;
@@ -52,8 +52,6 @@ private:
 	void sendCompetitorChange(QString xml);
 	void onCompetitorChanged(int competitor_id);
 	QByteArray zlibCompress(QByteArray data);
-	void setStageId(int stage_id);
-	int stageId() const;
 };
 
 }}

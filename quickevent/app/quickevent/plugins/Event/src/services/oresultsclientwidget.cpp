@@ -72,8 +72,7 @@ void OResultsClientWidget::onBtExportResultsXml30Clicked()
 	OResultsClient *svc = service();
 	if(svc) {
 		saveSettings();
-		int current_stage = getPlugin<EventPlugin>()->eventConfig()->currentStageId();
-		svc->exportResultsIofXml3(current_stage);
+		svc->exportResultsIofXml3();
 	}
 }
 
@@ -82,8 +81,7 @@ void OResultsClientWidget::onBtExportStartListXml30Clicked()
 	OResultsClient *svc = service();
 	if(svc) {
 		saveSettings();
-		int current_stage = getPlugin<EventPlugin>()->eventConfig()->currentStageId();
-		svc->exportStartListIofXml3(current_stage);
+		svc->exportStartListIofXml3();
 	}
 }
 }}

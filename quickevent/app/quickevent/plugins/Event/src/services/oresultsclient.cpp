@@ -53,9 +53,7 @@ QString OResultsClient::serviceName()
 
 void OResultsClient::run() {
 	Super::run();
-	int current_stage = getPlugin<EventPlugin>()->eventConfig()->currentStageId();
-	setStageId(current_stage);
-	exportStartListIofXml3(current_stage, [=](){exportResultsIofXml3(current_stage);});
+	exportStartListIofXml3([=](){exportResultsIofXml3();});
 	m_exportTimer->start();
 }
 
@@ -64,24 +62,26 @@ void OResultsClient::stop() {
 	m_exportTimer->stop();
 }
 
-void OResultsClient::exportResultsIofXml3(int stage_id)
+void OResultsClient::exportResultsIofXml3()
 {
+	int current_stage = getPlugin<EventPlugin>()->currentStageId();
 	bool is_relays = getPlugin<EventPlugin>()->eventConfig()->isRelays();
 
 	QString str = is_relays
 			? getPlugin<RelaysPlugin>()->resultsIofXml30()
-			: getPlugin<RunsPlugin>()->resultsIofXml30Stage(stage_id);
+			: getPlugin<RunsPlugin>()->resultsIofXml30Stage(current_stage);
 
 	sendFile("results upload", "/results", str);
 }
 
-void OResultsClient::exportStartListIofXml3(int stage_id, std::function<void()> on_success)
+void OResultsClient::exportStartListIofXml3(std::function<void()> on_success)
 {
+	int current_stage = getPlugin<EventPlugin>()->currentStageId();
 	bool is_relays = getPlugin<EventPlugin>()->eventConfig()->isRelays();
 
 	QString str = is_relays
 			? getPlugin<RelaysPlugin>()->startListIofXml30()
-			: getPlugin<RunsPlugin>()->startListStageIofXml30(stage_id);
+			: getPlugin<RunsPlugin>()->startListStageIofXml30(current_stage);
 
 	sendFile("start list upload", "/start-lists", str, on_success);
 }
@@ -100,7 +100,7 @@ void OResultsClient::init()
 
 void OResultsClient::onExportTimerTimeOut()
 {
-	exportResultsIofXml3(stageId());
+	exportResultsIofXml3();
 }
 
 void OResultsClient::loadSettings()
@@ -165,27 +165,14 @@ void OResultsClient::onDbEventNotify(const QString &domain, int connection_id, c
 
 QString OResultsClient::apiKey() const
 {
-	return getPlugin<EventPlugin>()->eventConfig()->value("oresults.apiKey").toString();
+	int current_stage = getPlugin<EventPlugin>()->currentStageId();
+	return getPlugin<EventPlugin>()->eventConfig()->value("oresults.apiKey.E" + QString::number(current_stage)).toString();
 }
 
 void OResultsClient::setApiKey(QString apiKey)
 {
-	getPlugin<EventPlugin>()->eventConfig()->setValue("oresults.apiKey", apiKey);
-	getPlugin<EventPlugin>()->eventConfig()->save("oresults");
-}
-
-int OResultsClient::stageId() const
-{
-	// retrieve stage_id that was saved when the service was started
-	int stage_id = getPlugin<EventPlugin>()->eventConfig()->value("oresults.stageId").toInt();
-	if (!stage_id)
-		return getPlugin<EventPlugin>()->eventConfig()->currentStageId();
-	return stage_id;
-}
-
-void OResultsClient::setStageId(int stage_id)
-{
-	getPlugin<EventPlugin>()->eventConfig()->setValue("oresults.stageId", stage_id);
+	int current_stage = getPlugin<EventPlugin>()->currentStageId();
+	getPlugin<EventPlugin>()->eventConfig()->setValue("oresults.apiKey.E" + QString::number(current_stage), apiKey);
 	getPlugin<EventPlugin>()->eventConfig()->save("oresults");
 }
 
@@ -224,7 +211,7 @@ static bool is_csos_reg(QString &reg)
 }
 
 static int mop_start(int runner_start_ms) {
-	int stage_id = getPlugin<RunsPlugin>()->selectedStageId();
+	int stage_id = getPlugin<EventPlugin>()->currentStageId();
 	QDateTime event_start = getPlugin<EventPlugin>()->stageStartDateTime(stage_id);
 	QDateTime runner_start = event_start.addMSecs(runner_start_ms);
 	return event_start.date().startOfDay().msecsTo(runner_start) / 100;
@@ -261,6 +248,7 @@ void OResultsClient::onCompetitorChanged(int competitor_id)
 	if (competitor_id == 0)
 		return;
 
+	int stage_id = getPlugin<EventPlugin>()->currentStageId();
 	qf::core::sql::Query q;
 	q.exec("SELECT competitors.registration, "
 		   "competitors.startNumber, "
@@ -280,7 +268,7 @@ void OResultsClient::onCompetitorChanged(int competitor_id)
 		   "INNER JOIN competitors ON competitors.id = runs.competitorId "
 		   "LEFT JOIN relays ON relays.id = runs.relayId  "
 		   "INNER JOIN classes ON classes.id = competitors.classId OR classes.id = relays.classId  "
-		   "WHERE competitors.id=" QF_IARG(competitor_id) " AND runs.stageId=" QF_IARG(stageId()), qf::core::Exception::Throw);
+		   "WHERE competitors.id=" QF_IARG(competitor_id) " AND runs.stageId=" QF_IARG(stage_id), qf::core::Exception::Throw);
 	if(q.next()) {
 		QString registration = q.value("registration").toString();
 		int start_num = q.value("startNumber").toInt();
