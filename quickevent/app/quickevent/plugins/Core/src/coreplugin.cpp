@@ -14,6 +14,7 @@
 #include <QProcess>
 #include <QMessageBox>
 #include <QSettings>
+#include <QSslSocket>
 
 namespace qfw = qf::qmlwidgets;
 namespace qff = qf::qmlwidgets::framework;
@@ -189,11 +190,13 @@ void CorePlugin::aboutQuickEvent()
 							"<br/><br/>"
 							"version: %1<br/>"
 							"min. db version: %2<br/>"
-							"build: %3 %4"
+							"build: %3 %4<br/>"
+							"SSL: %5"
 							)
 					   .arg(version_string)
 					   .arg(db_version_string)
 					   .arg(__DATE__).arg(__TIME__)
+					   .arg(QSslSocket::sslLibraryBuildVersionString())
 					   );
 }
 
