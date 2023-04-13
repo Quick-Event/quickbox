@@ -53,8 +53,7 @@ QString OResultsClient::serviceName()
 
 void OResultsClient::run() {
 	Super::run();
-	exportStartListIofXml3();
-	exportResultsIofXml3();
+	exportStartListIofXml3([=](){exportResultsIofXml3();});
 	m_exportTimer->start();
 }
 
@@ -75,9 +74,8 @@ void OResultsClient::exportResultsIofXml3()
 	sendFile("results upload", "/results", str);
 }
 
-void OResultsClient::exportStartListIofXml3()
+void OResultsClient::exportStartListIofXml3(std::function<void()> on_success)
 {
-
 	int current_stage = getPlugin<EventPlugin>()->currentStageId();
 	bool is_relays = getPlugin<EventPlugin>()->eventConfig()->isRelays();
 
@@ -85,7 +83,7 @@ void OResultsClient::exportStartListIofXml3()
 			? getPlugin<RelaysPlugin>()->startListIofXml30()
 			: getPlugin<RunsPlugin>()->startListStageIofXml30(current_stage);
 
-	sendFile("start list upload", "/start-lists", str);
+	sendFile("start list upload", "/start-lists", str, on_success);
 }
 
 qf::qmlwidgets::framework::DialogWidget *OResultsClient::createDetailWidget()
@@ -111,7 +109,7 @@ void OResultsClient::loadSettings()
 	init();
 }
 
-void OResultsClient::sendFile(QString name, QString request_path, QString file) {
+void OResultsClient::sendFile(QString name, QString request_path, QString file, std::function<void()> on_success) {
 
 	QHttpMultiPart *multi_part = new QHttpMultiPart(QHttpMultiPart::FormDataType);
 
@@ -131,7 +129,7 @@ void OResultsClient::sendFile(QString name, QString request_path, QString file) 
 	QNetworkRequest request(url);
 	QNetworkReply *reply = m_networkManager->post(request, multi_part);
 
-	connect(reply, &QNetworkReply::finished, reply, [reply, name]()
+	connect(reply, &QNetworkReply::finished, reply, [reply, name, on_success]()
 	{
 		if(reply->error()) {
 			auto err_msg = "OReuslts.eu [" + name + "]: ";
@@ -142,6 +140,8 @@ void OResultsClient::sendFile(QString name, QString request_path, QString file) 
 		}
 		else {
 			qfInfo() << "OReuslts.eu [" + name + "]: success";
+			if (on_success)
+				on_success();
 		}
 		reply->deleteLater();
 	});
@@ -165,12 +165,14 @@ void OResultsClient::onDbEventNotify(const QString &domain, int connection_id, c
 
 QString OResultsClient::apiKey() const
 {
-	return getPlugin<EventPlugin>()->eventConfig()->value("oresults.apiKey").toString();
+	int current_stage = getPlugin<EventPlugin>()->currentStageId();
+	return getPlugin<EventPlugin>()->eventConfig()->value("oresults.apiKey.E" + QString::number(current_stage)).toString();
 }
 
 void OResultsClient::setApiKey(QString apiKey)
 {
-	getPlugin<EventPlugin>()->eventConfig()->setValue("oresults.apiKey", apiKey);
+	int current_stage = getPlugin<EventPlugin>()->currentStageId();
+	getPlugin<EventPlugin>()->eventConfig()->setValue("oresults.apiKey.E" + QString::number(current_stage), apiKey);
 	getPlugin<EventPlugin>()->eventConfig()->save("oresults");
 }
 
@@ -209,7 +211,7 @@ static bool is_csos_reg(QString &reg)
 }
 
 static int mop_start(int runner_start_ms) {
-	int stage_id = getPlugin<RunsPlugin>()->selectedStageId();
+	int stage_id = getPlugin<EventPlugin>()->currentStageId();
 	QDateTime event_start = getPlugin<EventPlugin>()->stageStartDateTime(stage_id);
 	QDateTime runner_start = event_start.addMSecs(runner_start_ms);
 	return event_start.date().startOfDay().msecsTo(runner_start) / 100;
@@ -246,7 +248,7 @@ void OResultsClient::onCompetitorChanged(int competitor_id)
 	if (competitor_id == 0)
 		return;
 
-	int stage_id = getPlugin<RunsPlugin>()->selectedStageId();
+	int stage_id = getPlugin<EventPlugin>()->currentStageId();
 	qf::core::sql::Query q;
 	q.exec("SELECT competitors.registration, "
 		   "competitors.startNumber, "

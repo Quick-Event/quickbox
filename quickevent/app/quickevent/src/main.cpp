@@ -66,6 +66,7 @@ int main(int argc, char *argv[])
 	qfInfo() << "========================================================";
 	qfInfo() << QDateTime::currentDateTime().toString(Qt::ISODate) << "starting" << QCoreApplication::applicationName() << "ver:" << QCoreApplication::applicationVersion();
 	qfInfo() << "Log tresholds:" << NecroLog::thresholdsLogInfo();
+	qfInfo() << "Open SSL:" << QSslSocket::sslLibraryBuildVersionString();
 	qfInfo() << "========================================================";
 
 	qRegisterMetaType<qf::core::LogEntryMap>();
