@@ -77,8 +77,8 @@ jobs:
       uses: actions/cache@v2
       with:
         path: |
-          C:/Windows/System32/libssl-1_1-x64.dll
-          C:/Windows/System32/libcrypto-1_1-x64.dll
+          C:/Program Files/OpenSSL-Win64/libssl-1_1-x64.dll
+          C:/Program Files/OpenSSL-Win64/libcrypto-1_1-x64.dll
           C:/msys64/mingw64/bin/libiconv-2.dll
           C:/msys64/mingw64/bin/libintl-8.dll
           C:/msys64/mingw64/bin/libxml2-2.dll
@@ -123,7 +123,7 @@ jobs:
     - name: Create installer
       run: |
         choco install innosetup --no-progress
-        "C:\Program Files (x86)\Inno Setup 6\iscc.exe" "/DVERSION=%VERSION%" "/DQT_DIR=%Qt5_Dir%" "/DPSQL_DIR=C:\msys64\mingw64" "/DSSL_DIR=C:\Windows\System32" quickevent/quickevent.iss
+        "C:\Program Files (x86)\Inno Setup 6\iscc.exe" "/DVERSION=%VERSION%" "/DQT_DIR=%Qt5_Dir%" "/DPSQL_DIR=C:\msys64\mingw64" "/DSSL_DIR=C:\Program Files\OpenSSL-Win64" quickevent/quickevent.iss
       shell: cmd
 
     - name: Save setup
