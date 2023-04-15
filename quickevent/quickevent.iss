@@ -59,8 +59,8 @@ Source: {#SRC_DIR}\quickevent\app\quickevent\datafiles\*; DestDir: {app}\quickev
 
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
-Source: {#SSL_DIR}\bin\libcrypto-3-x64.dll; DestDir: {app}; Flags: ignoreversion
-Source: {#SSL_DIR}\bin\libssl-3-x64.dll; DestDir: {app}; Flags: ignoreversion
+Source: {#SSL_DIR}\libcrypto-1_1-x64.dll; DestDir: {app}; Flags: ignoreversion
+Source: {#SSL_DIR}\libssl-1_1-x64.dll; DestDir: {app}; Flags: ignoreversion
 
 Source: {#PSQL_DIR}\bin\libpq.dll; DestDir: {app}; Flags: ignoreversion
 Source: {#PSQL_DIR}\bin\libintl-8.dll; DestDir: {app}; Flags: ignoreversion
