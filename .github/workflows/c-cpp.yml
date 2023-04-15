@@ -77,8 +77,8 @@ jobs:
       uses: actions/cache@v2
       with:
         path: |
-          C:/Program Files/OpenSSL-Win64/bin/libssl-1_1-x64.dll
-          C:/Program Files/OpenSSL-Win64/bin/libcrypto-1_1-x64.dll
+          C:/openssl/bin/libssl-1_1-x64.dll
+          C:/openssl/bin/libcrypto-1_1-x64.dll
           C:/msys64/mingw64/bin/libiconv-2.dll
           C:/msys64/mingw64/bin/libintl-8.dll
           C:/msys64/mingw64/bin/libxml2-2.dll
@@ -90,7 +90,7 @@ jobs:
     - name: Get OpenSSL and PostgreSQL libraries
       if: steps.cache-libs.outputs.cache-hit != 'true'
       run: |
-        choco install openssl --version 1.1.1.2000 -y
+        choco install openssl.light --params "/InstallDir:C:\openssl" --version 1.1.1 -y
         C:/msys64/usr/bin/pacman -Sy --noconfirm
         C:/msys64/usr/bin/pacman -S mingw-w64-x86_64-postgresql --noconfirm
       shell: cmd
@@ -127,7 +127,7 @@ jobs:
     - name: Create installer
       run: |
         choco install innosetup --no-progress
-        "C:\Program Files (x86)\Inno Setup 6\iscc.exe" "/DVERSION=%VERSION%" "/DQT_DIR=%Qt5_Dir%" "/DPSQL_DIR=C:\msys64\mingw64" "/DSSL_DIR=C:\Program Files\OpenSSL-Win64\bin" quickevent/quickevent.iss
+        "C:\Program Files (x86)\Inno Setup 6\iscc.exe" "/DVERSION=%VERSION%" "/DQT_DIR=%Qt5_Dir%" "/DPSQL_DIR=C:\msys64\mingw64" "/DSSL_DIR=C:\openssl\bin" quickevent/quickevent.iss
       shell: cmd
 
     - name: Save setup
