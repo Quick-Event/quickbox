@@ -97,12 +97,12 @@ jobs:
 
     - name: Cache Qt
       id: cache-qt
+      uses: actions/cache@v2
+      with:
         path: ${{ runner.workspace }}\Qt
         key: ${{ runner.os }}-Qt-${{ env.QT_VERSION }}
 
     - name: Install Qt
-      uses: actions/cache@v2
-      with:
       uses: jurplel/install-qt-action@v2
       with:
         cached: ${{ steps.cache-qt.outputs.cache-hit }}
