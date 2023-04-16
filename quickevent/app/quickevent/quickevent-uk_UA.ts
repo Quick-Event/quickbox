@@ -4029,7 +4029,7 @@ In case of unexpected errors, contact support@oresults.eu </oldsource>
         <location filename="plugins/Runs/src/runsplugin.cpp" line="1940"/>
         <location filename="plugins/Runs/src/runsplugin.cpp" line="2065"/>
         <source>Club</source>
-        <translation>Група</translation>
+		<translation>Клуб</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/runsplugin.cpp" line="1941"/>
@@ -5326,7 +5326,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="plugins/Runs/qml/reports/results_nstagesSpeaker.qml" line="130"/>
         <source>Club</source>
-        <translation>Група</translation>
+		<translation>Клуб</translation>
     </message>
     <message>
         <location filename="plugins/Runs/qml/reports/results_nstagesSpeaker.qml" line="133"/>
