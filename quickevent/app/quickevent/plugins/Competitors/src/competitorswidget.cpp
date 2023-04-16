@@ -64,7 +64,7 @@ CompetitorsWidget::CompetitorsWidget(QWidget *parent) :
 	m->addColumn("competitors.startNumber", tr("SN", "start number")).setToolTip(tr("Start number"));
 	m->addColumn("competitorName", tr("Name"));
 	m->addColumn("registration", tr("Reg")).setToolTip(tr("Czech registration number"));;
-	m->addColumn("iofId", tr("IofId")).setToolTip(tr("IOF ID number"));;
+	m->addColumn("iofId", tr("IOF ID")).setToolTip(tr("IOF ID number"));;
 	m->addColumn("siId", tr("SI")).setReadOnly(true).setCastType(qMetaTypeId<quickevent::core::si::SiId>());
 	m->addColumn("ranking", tr("Ranking pos")).setToolTip(tr("Runner's position in CZ ranking."));
 	m->addColumn("note", tr("Note"));

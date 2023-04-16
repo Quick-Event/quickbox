@@ -1115,6 +1115,7 @@ qf::core::utils::TreeTable RunsPlugin::startListClassesTable(const QString &wher
 	tt.setValue("event", getPlugin<EventPlugin>()->eventConfig()->value("event"));
 	tt.setValue("stageStart", getPlugin<EventPlugin>()->stageStartDateTime(stage_id));
 	tt.appendColumn("courses.numberOfControls", QMetaType(QMetaType::Int));
+	tt.appendColumn("courses.startNumber", QMetaType(QMetaType::Int));
 
 	qfs::QueryBuilder qb2;
 	qb2.select2("competitors", "lastName, firstName, registration, iofId, startNumber")
@@ -1128,19 +1129,38 @@ qf::core::utils::TreeTable RunsPlugin::startListClassesTable(const QString &wher
 		.orderBy("runs.startTimeMs, competitors.lastName");
 	for(int i=0; i<tt.rowCount(); i++) {
 		qf::core::utils::TreeTableRow tt_row = tt.row(i);
-		// add number of controls
-		QString query_str = "SELECT COUNT(*) FROM codes,coursecodes"
-					" WHERE codes.id=coursecodes.codeId"
-					" AND codes.code>=" QF_IARG(quickevent::core::CodeDef::PUNCH_CODE_MIN)
-					" AND codes.code<=" QF_IARG(quickevent::core::CodeDef::PUNCH_CODE_MAX)
-					" AND coursecodes.courseId=" QF_IARG(tt_row.value("courses.id").toInt());
-		qf::core::sql::Query q;
-		q.exec(query_str, qf::core::Exception::Throw);
-		if (q.next()) {
-			QVariant num_of_controls = q.value(0).toInt();
-			tt_row.setValue(QStringLiteral("courses.numberOfControls"), num_of_controls);
-			tt.setRow(i, tt_row);
+		using CodeDef = quickevent::core::CodeDef;
+		{
+			// add number of controls
+			QString query_str = "SELECT COUNT(*) FROM codes,coursecodes"
+						" WHERE codes.id=coursecodes.codeId"
+						" AND codes.code>=" QF_IARG(CodeDef::PUNCH_CODE_MIN)
+						" AND codes.code<=" QF_IARG(CodeDef::PUNCH_CODE_MAX)
+						" AND coursecodes.courseId=" QF_IARG(tt_row.value("courses.id").toInt());
+			qf::core::sql::Query q;
+			q.exec(query_str, qf::core::Exception::Throw);
+			if (q.next()) {
+				auto num_of_controls = q.value(0).toInt();
+				tt_row.setValue(QStringLiteral("courses.numberOfControls"), num_of_controls);
+			}
 		}
+		{
+			// add course start number
+			QString query_str = "SELECT codes.code FROM codes,coursecodes"
+						" WHERE codes.id=coursecodes.codeId"
+						" AND coursecodes.courseId=" QF_IARG(tt_row.value("courses.id").toInt())
+						" ORDER BY coursecodes.position"
+						" LIMIT 1";
+			qf::core::sql::Query q;
+			q.exec(query_str, qf::core::Exception::Throw);
+			if (q.next()) {
+				auto code = q.value(0).toInt();
+				if(auto n = CodeDef::codeToStartNumber(code); n.has_value()) {
+					tt_row.setValue(QStringLiteral("courses.startNumber"), n.value());
+				}
+			}
+		}
+		tt.setRow(i, tt_row);
 
 		int class_id = tt_row.value(QStringLiteral("classes.id")).toInt();
 		//console.debug("class id:", class_id);
@@ -2330,7 +2350,8 @@ QString RunsPlugin::startListStageIofXml30(int stage_id)
 		append_list(class_start, QVariantList{"Course", QVariantList{"Length", tt1_row.value(QStringLiteral("courses.length"))},
 								QVariantList{"Climb", tt1_row.value(QStringLiteral("courses.climb"))},
 								QVariantList{"NumberOfControls", tt1_row.value(QStringLiteral("courses.numberOfControls"))}});
-		append_list(class_start, QVariantList{"StartName", "Start1"});
+		auto course_start_number = tt1_row.value(QStringLiteral("courses.startNumber")).toInt();
+		append_list(class_start, QVariantList{"StartName", QStringLiteral("Start%1").arg(course_start_number)});
 		qf::core::utils::TreeTable tt2 = tt1_row.table();
 		for(int j=0; j<tt2.rowCount(); j++) {
 			auto tt2_row = tt2.row(j);

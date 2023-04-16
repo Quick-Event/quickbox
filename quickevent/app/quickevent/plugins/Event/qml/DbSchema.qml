@@ -447,7 +447,7 @@ Schema {
 				},
 				Field { name: 'runTimeMs'; type: Int {}
 					comment: 'in miliseconds since runner event start'
-                }
+				}
 			]
 			indexes: [
 				Index {fields: ['stageId', 'code']; unique: false },
