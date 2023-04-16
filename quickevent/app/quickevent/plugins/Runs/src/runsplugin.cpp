@@ -1394,7 +1394,7 @@ void RunsPlugin::report_startListClasses()
 	dlg.setPersistentSettingsId("startListClassesReportOptions");
 	dlg.loadPersistentSettings();
 	dlg.setStartListOptionsVisible(true);
-	dlg.setPageLayoutVisible(false);
+	dlg.setPageLayoutVisible(true);
 	dlg.setStartTimeFormatVisible(true);
 	if(dlg.exec()) {
 		auto tt = startListClassesTable(dlg.sqlWhereExpression(), dlg.isStartListPrintVacants(), dlg.startTimeFormat());
@@ -1421,7 +1421,7 @@ void RunsPlugin::report_startListClubs()
 	dlg.setClassFilterVisible(false);
 	dlg.setStartListOptionsVisible(true);
 	dlg.setStartListPrintVacantsVisible(false);
-	dlg.setPageLayoutVisible(false);
+	dlg.setPageLayoutVisible(true);
 	dlg.setStartTimeFormatVisible(true);
 	if(dlg.exec()) {
 		auto tt = startListClubsTable( dlg.startTimeFormat());
