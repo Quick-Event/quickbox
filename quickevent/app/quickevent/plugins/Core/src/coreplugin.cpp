@@ -191,12 +191,14 @@ void CorePlugin::aboutQuickEvent()
 							"version: %1<br/>"
 							"min. db version: %2<br/>"
 							"build: %3 %4<br/>"
-							"SSL: %5"
+							"SSL build: %5<br/>"
+							"SSL run: %6"
 							)
 					   .arg(version_string)
 					   .arg(db_version_string)
 					   .arg(__DATE__).arg(__TIME__)
 					   .arg(QSslSocket::sslLibraryBuildVersionString())
+					   .arg(QSslSocket::sslLibraryVersionString())
 					   );
 }
 
