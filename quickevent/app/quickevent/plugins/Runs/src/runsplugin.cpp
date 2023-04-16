@@ -597,7 +597,7 @@ qf::core::utils::TreeTable RunsPlugin::stageResultsTable(int stage_id, const QSt
 
 	{
 		qf::core::sql::QueryBuilder qb;
-		qb.select2("competitors", "registration, lastName, firstName, startNumber")
+		qb.select2("competitors", "registration, iofId, lastName, firstName, startNumber")
 			.select("COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName")
 			.select2("runs", "*")
 			.select2("clubs", "name, abbr")
@@ -863,16 +863,19 @@ QString RunsPlugin::resultsIofXml30Stage(int stage_id)
 		for(int j=0; j<tt2.rowCount(); j++) {
 			const qf::core::utils::TreeTableRow tt2_row = tt2.row(j);
 			//pos++;
-			QVariantList person_result{"PersonResult"};
-			person_result.insert(person_result.count(),
-				 QVariantList{"Person",
-					 QVariantList{"Id", QVariantMap{{"type", "CZE"}}, tt2_row.value(QStringLiteral("competitors.registration"))},
-					 QVariantList{"Name",
-						QVariantList{"Family", tt2_row.value(QStringLiteral("competitors.lastName"))},
-						QVariantList{"Given", tt2_row.value(QStringLiteral("competitors.firstName"))},
-					 }
-				 }
-			);
+		QVariantList person_result{"PersonResult"};
+		QVariantList person{"Person"};
+		person.insert(person.count(),
+			QVariantList{"Id", QVariantMap{{"type", "CZE"}}, tt2_row.value(QStringLiteral("competitors.registration"))});
+		auto iof_id = tt2_row.value(QStringLiteral("competitors.iofId"));
+		if (!iof_id.isNull())
+			person.insert(person.count(), QVariantList{"Id", QVariantMap{{"type", "IOF"}}, iof_id});
+		person.insert(person.count(),QVariantList{"Name",
+			QVariantList{"Family", tt2_row.value(QStringLiteral("competitors.lastName"))},
+			QVariantList{"Given", tt2_row.value(QStringLiteral("competitors.firstName"))},
+			}
+		);
+		person_result.insert(person_result.count(),person);
 
 			auto club_abbr = tt2_row.value(QStringLiteral("clubs.abbr")).toString();
 			if (!club_abbr.isEmpty()) {
@@ -1114,7 +1117,7 @@ qf::core::utils::TreeTable RunsPlugin::startListClassesTable(const QString &wher
 	tt.appendColumn("courses.numberOfControls", QMetaType(QMetaType::Int));
 
 	qfs::QueryBuilder qb2;
-	qb2.select2("competitors", "lastName, firstName, registration, startNumber")
+	qb2.select2("competitors", "lastName, firstName, registration, iofId, startNumber")
 		.select("COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName")
 		.select2("runs", "siId, startTimeMs")
 		.select2("clubs","name, abbr")
@@ -2257,7 +2260,6 @@ void RunsPlugin::exportResultsHtmlStageWithLaps(const QString &laps_file_name, c
 	append_list(body, table);
 
 	if(QDir().mkpath(QFileInfo(laps_file_name).absolutePath())) {
-		QVariantMap options;
 		qf::core::utils::HtmlUtils::FromHtmlListOptions opts;
 		opts.setDocumentTitle(tr("Stage results"));
 		QString str = qf::core::utils::HtmlUtils::fromHtmlList(body, opts);
@@ -2330,13 +2332,14 @@ QString RunsPlugin::startListStageIofXml30(int stage_id)
 								QVariantList{"NumberOfControls", tt1_row.value(QStringLiteral("courses.numberOfControls"))}});
 		append_list(class_start, QVariantList{"StartName", "Start1"});
 		qf::core::utils::TreeTable tt2 = tt1_row.table();
-		int pos = 0;
 		for(int j=0; j<tt2.rowCount(); j++) {
-			pos++;
 			auto tt2_row = tt2.row(j);
 			QVariantList xml_person{"PersonStart"};
 			QVariantList person{"Person"};
 			append_list(person, QVariantList{"Id", QVariantMap{{"type", "CZE"}}, tt2_row.value(QStringLiteral("competitors.registration"))});
+			auto iof_id = tt2_row.value(QStringLiteral("competitors.iofId"));
+			if (!iof_id.isNull())
+				append_list(person, QVariantList{"Id", QVariantMap{{"type", "IOF"}}, iof_id});
 			auto family = tt2_row.value(QStringLiteral("competitors.lastName"));
 			auto given = tt2_row.value(QStringLiteral("competitors.firstName"));
 			append_list(person, QVariantList{"Name", QVariantList{"Family", family}, QVariantList{"Given", given}});
