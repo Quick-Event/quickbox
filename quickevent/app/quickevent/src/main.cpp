@@ -95,7 +95,6 @@ int main(int argc, char *argv[])
 	}
 
 	qfInfo() << "Is abort on exception:" << qf::core::Exception::isAbortOnException();
-	qDebug() << "creating application instance";
 	Application app(argc, argv, &cli_opts);
 
 	old_message_handler = NecroLog::setMessageHandler(send_log_entry_handler);
