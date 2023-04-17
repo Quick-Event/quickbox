@@ -156,7 +156,8 @@ void WebApi::onReadyRead()
 		// Process POST /card
 		QByteArray data{buffer->mid(dataIdx, len)};
 		if (m_ofs) {
-			m_ofs.write(data.constData(), data.size());
+			m_ofs << QDateTime::currentDateTime().toString("\ndd.MM.yyyy hh:mm:ss\n").toUtf8().constData();
+			m_ofs.write(buffer->constData(), dataIdx + len);
 			m_ofs << std::endl;
 		}
 		QJsonParseError parseError{};
@@ -166,7 +167,7 @@ void WebApi::onReadyRead()
 			socket->write("JSON error at the offset ");
 			socket->write(std::to_string(parseError.offset).c_str());
 			socket->write(":\n");
-			socket->write(parseError.errorString().toLocal8Bit());
+			socket->write(parseError.errorString().toUtf8());
 			socket->flush();
 			socket->waitForBytesWritten(3000);
 			socket->close();
