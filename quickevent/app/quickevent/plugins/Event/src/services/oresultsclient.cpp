@@ -128,8 +128,9 @@ void OResultsClient::sendFile(QString name, QString request_path, QString file, 
 	QUrl url(API_URL + request_path);
 	QNetworkRequest request(url);
 	QNetworkReply *reply = m_networkManager->post(request, multi_part);
+	multi_part->setParent(reply);
 
-	connect(reply, &QNetworkReply::finished, reply, [reply, name, on_success]()
+	connect(reply, &QNetworkReply::finished, this, [=]()
 	{
 		if(reply->error()) {
 			auto err_msg = "OReuslts.eu [" + name + "]: ";
@@ -183,7 +184,7 @@ void OResultsClient::sendCompetitorChange(QString xml) {
 	request.setHeader( QNetworkRequest::ContentTypeHeader, "application/zlib" );
 	QNetworkReply *reply = m_networkManager->post(request, zlibCompress(xml.toUtf8()));
 
-	connect(reply, &QNetworkReply::finished, reply, [reply]()
+	connect(reply, &QNetworkReply::finished, this, [=]()
 	{
 		if(reply->error()) {
 			qfError() << "OReuslts.eu [competitor change]:" << reply->errorString();
