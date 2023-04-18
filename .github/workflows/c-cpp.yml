@@ -17,17 +17,10 @@ jobs:
       with:
         submodules: 'recursive'
 
-    - name: Cache Qt
-      id: cache-qt
-      uses: actions/cache@v3
-      with:
-        path: ${{ runner.workspace }}/Qt
-        key: ${{ runner.os }}-Qt-${{ env.QT_VERSION }}
-
     - name: Install Qt
       uses: jurplel/install-qt-action@v3
       with:
-        cached: ${{ steps.cache-qt.outputs.cache-hit }}
+        cache: 'true'
         version: ${{ env.QT_VERSION }}
         host: 'linux'
 
@@ -95,17 +88,10 @@ jobs:
         C:/msys64/usr/bin/pacman -S mingw-w64-x86_64-postgresql --noconfirm
       shell: cmd
 
-    - name: Cache Qt
-      id: cache-qt
-      uses: actions/cache@v3
-      with:
-        path: ${{ runner.workspace }}\Qt
-        key: ${{ runner.os }}-Qt-${{ env.QT_VERSION }}
-
     - name: Install Qt
       uses: jurplel/install-qt-action@v3
       with:
-        cached: ${{ steps.cache-qt.outputs.cache-hit }}
+        cache: 'true'
         version: ${{ env.QT_VERSION }}
         host: 'windows'
         arch: 'win64_mingw81'
