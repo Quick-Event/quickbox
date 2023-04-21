@@ -1215,7 +1215,8 @@ qf::core::utils::TreeTable RunsPlugin::startListClassesTable(const QString &wher
 
 }
 
-qf::core::utils::TreeTable RunsPlugin::startListClubsTable(const quickevent::gui::ReportOptionsDialog::StartTimeFormat start_time_format)
+qf::core::utils::TreeTable RunsPlugin::startListClubsTable(const quickevent::gui::ReportOptionsDialog::StartTimeFormat start_time_format,
+														   const quickevent::gui::ReportOptionsDialog::StartlistOrderFirstBy order_first_by)
 {
 	int stage_id = selectedStageId();
 	auto start00_epoch_sec = getPlugin<EventPlugin>()->stageStartDateTime(stage_id).toSecsSinceEpoch();
@@ -1238,6 +1239,21 @@ qf::core::utils::TreeTable RunsPlugin::startListClubsTable(const quickevent::gui
 	}
 	//console.info(tt.toString());
 
+	QString order_sql_part;
+	switch (order_first_by)
+	{
+	case quickevent::gui::ReportOptionsDialog::StartlistOrderFirstBy::Names:
+		order_sql_part = "competitors.lastName, classes.name, runs.startTimeMs";
+		break;
+	case quickevent::gui::ReportOptionsDialog::StartlistOrderFirstBy::StartTime:
+		order_sql_part = "runs.startTimeMs, classes.name, competitors.lastName";
+		break;
+	case quickevent::gui::ReportOptionsDialog::StartlistOrderFirstBy::ClassName:
+	default:
+		order_sql_part = "classes.name, runs.startTimeMs, competitors.lastName";
+		break;
+	}
+
 	qfs::QueryBuilder qb;
 	qb.select2("competitors", "registration, startNumber")
 		.select("COALESCE(competitors.lastName, '') || ' '  || COALESCE(competitors.firstName, '') AS competitorName")
@@ -1249,7 +1265,7 @@ qf::core::utils::TreeTable RunsPlugin::startListClubsTable(const quickevent::gui
 		.joinRestricted("runs.siid", "lentcards.siid", "NOT lentcards.ignored")
 		.join("competitors.classId", "classes.id")
 		.where("COALESCE(substr(competitors.registration, 1, 3), '')='{{club_abbr}}'")
-		.orderBy("classes.name, runs.startTimeMs, competitors.lastName");
+		.orderBy(order_sql_part);
 	QVariantMap qpm;
 	qpm["stage_id"] = stage_id;
 	qf::core::model::SqlTableModel m2;
@@ -1443,8 +1459,9 @@ void RunsPlugin::report_startListClubs()
 	dlg.setStartListPrintVacantsVisible(false);
 	dlg.setPageLayoutVisible(true);
 	dlg.setStartTimeFormatVisible(true);
+	dlg.setStartlistOrderFirstByVisible(true);
 	if(dlg.exec()) {
-		auto tt = startListClubsTable( dlg.startTimeFormat());
+		auto tt = startListClubsTable( dlg.startTimeFormat(), dlg.startlistOrderFirstBy());
 		auto opts = dlg.optionsMap();
 		QVariantMap props;
 		props["options"] = opts;
@@ -1527,8 +1544,6 @@ void RunsPlugin::report_startListClubsNStages()
 	dlg.setStartListOptionsVisible(true);
 	dlg.setVacantsVisible(false);
 	dlg.setStagesOptionVisible(true);
-	dlg.setClassFilterVisible(false);
-	dlg.setClassFilterVisible(true);
 	dlg.setClassFilterVisible(false);
 	dlg.setColumnCountEnable(false);
 	dlg.setStartTimeFormatVisible(true);
@@ -1803,7 +1818,7 @@ void RunsPlugin::export_startListClassesHtml()
 
 void RunsPlugin::export_startListClubsHtml()
 {
-	qf::core::utils::TreeTable tt1 = startListClubsTable(quickevent::gui::ReportOptionsDialog::StartTimeFormat::DayTime);
+	qf::core::utils::TreeTable tt1 = startListClubsTable(quickevent::gui::ReportOptionsDialog::StartTimeFormat::DayTime,quickevent::gui::ReportOptionsDialog::StartlistOrderFirstBy::ClassName);
 	QVariantList body{QStringLiteral("body")};
 	QString h1_str = "{{documentTitle}}";
 	QVariantMap event = tt1.value("event").toMap();
