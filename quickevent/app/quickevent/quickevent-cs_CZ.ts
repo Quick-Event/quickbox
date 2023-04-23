@@ -1203,7 +1203,7 @@ Zvažte nastavení intervalu pro všechny kategorie.</translation>
     <message>
         <location filename="plugins/Competitors/src/competitorwidget.ui" line="94"/>
         <source>IO&amp;F ID</source>
-        <translation type="unfinished"></translation>
+        <translation>IO&amp;F ID</translation>
     </message>
     <message>
         <location filename="plugins/Competitors/src/competitorwidget.ui" line="182"/>
@@ -1376,17 +1376,17 @@ Zvažte nastavení intervalu pro všechny kategorie.</translation>
     <message>
         <location filename="plugins/Competitors/src/competitorswidget.cpp" line="66"/>
         <source>Czech registration number</source>
-        <translation type="unfinished"></translation>
+        <translation>Registrační číslo ČSOS</translation>
     </message>
     <message>
         <location filename="plugins/Competitors/src/competitorswidget.cpp" line="67"/>
         <source>IOF ID</source>
-        <translation type="unfinished"></translation>
+        <translation>IOF ID</translation>
     </message>
     <message>
         <location filename="plugins/Competitors/src/competitorswidget.cpp" line="67"/>
         <source>IOF ID number</source>
-        <translation type="unfinished"></translation>
+        <translation>IOF ID registrační číslo</translation>
     </message>
     <message>
         <location filename="plugins/Competitors/src/competitorswidget.cpp" line="69"/>
@@ -1673,7 +1673,7 @@ Zvažte nastavení intervalu pro všechny kategorie.</translation>
     <message>
         <location filename="plugins/Core/src/coreplugin.cpp" line="189"/>
         <source>The &lt;b&gt;Quick Event&lt;/b&gt; is an application which helps you to organize the orienteering events.&lt;br/&gt;&lt;br/&gt;version: %1&lt;br/&gt;min. db version: %2&lt;br/&gt;build: %3 %4&lt;br/&gt;SSL build: %5&lt;br/&gt;SSL run: %6</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Quick Event&lt;/b&gt; je aplikace na pořádání závodů v orientačním běhu.&lt;br/&gt;&lt;br/&gt;Verze aplikace: %1&lt;br/&gt;Minimální verze databáze: %2&lt;br/&gt;Datum a čas sestavení: %3 %4&lt;br/&gt;Verze SSL knihovny při sestavení: %5&lt;br/&gt;Verze aktuálně využívané SSL knihovny: %6</translation>
     </message>
     <message>
         <location filename="plugins/Core/src/coreplugin.cpp" line="208"/>
@@ -2148,7 +2148,7 @@ Zadejte platnou cestu k pracovnímu adresáři.</translation>
     <message>
         <location filename="plugins/Event/src/eventplugin.cpp" line="760"/>
         <source>Create event</source>
-        <translation type="unfinished"></translation>
+        <translation>Vytvořit závod</translation>
     </message>
     <message>
         <location filename="plugins/Event/src/eventplugin.cpp" line="770"/>
@@ -2184,7 +2184,7 @@ Zadejte platnou cestu k pracovnímu adresáři.</translation>
     <message>
         <location filename="plugins/Event/src/eventplugin.cpp" line="862"/>
         <source>Edit event</source>
-        <translation type="unfinished"></translation>
+        <translation>Upravit závod</translation>
     </message>
     <message>
         <location filename="plugins/Event/src/eventplugin.cpp" line="898"/>
@@ -5224,7 +5224,7 @@ V případě chyb neváhejte napsat na support@oresults.eu</translation>
         <location filename="plugins/Classes/src/drawing/classitem.cpp" line="262"/>
         <source>, clash with: %1&lt;br/&gt;</source>
         <oldsource>clash with: %1&lt;br/&gt;</oldsource>
-        <translation type="unfinished">koliduje s: %1&lt;br/&gt;</translation>
+        <translation>, koliduje s: %1&lt;br/&gt;</translation>
     </message>
     <message>
         <location filename="plugins/Classes/src/drawing/classitem.cpp" line="453"/>
