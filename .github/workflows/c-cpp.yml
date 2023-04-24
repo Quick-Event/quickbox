@@ -107,7 +107,7 @@ jobs:
     - name: Create installer
       run: |
         choco install innosetup --no-progress
-        "C:\Program Files (x86)\Inno Setup 6\iscc.exe" "/DVERSION=%VERSION%" "/DQT_DIR=%Qt5_Dir%" "/DPSQL_DIR=C:/Program Files/PostgreSQL/14/bin/" "/DSSL_DIR=C:\openssl\bin" quickevent/quickevent.iss
+        "C:\Program Files (x86)\Inno Setup 6\iscc.exe" "/DVERSION=%VERSION%" "/DQT_DIR=%Qt5_Dir%" "/DPSQL_DIR=C:/Program Files/PostgreSQL/14" "/DSSL_DIR=C:\openssl\bin" quickevent/quickevent.iss
       shell: cmd
 
     - name: Save setup
