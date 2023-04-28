@@ -14,7 +14,7 @@
     <message>
         <location filename="src/mainwindow.ui" line="14"/>
         <source>MainWindow</source>
-        <translation type="unfinished">MainWindow</translation>
+        <translation>Главное окно</translation>
     </message>
     <message>
         <location filename="src/mainwindow.cpp" line="26"/>
