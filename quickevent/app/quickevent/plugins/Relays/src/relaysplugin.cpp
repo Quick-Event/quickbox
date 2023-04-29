@@ -521,7 +521,7 @@ QString RelaysPlugin::resultsIofXml30()
 			{"xmlns", "http://www.orienteering.org/datastandard/3.0"},
 			{"status", "Complete"},
 			{"iofVersion", "3.0"},
-			{"creator", "QuickEvent"},
+			{"creator", QStringLiteral("QuickEvent %1").arg(QCoreApplication::applicationVersion())},
 			{"createTime", datetime_to_string(QDateTime::currentDateTime())},
 		}
 	};
@@ -731,7 +731,7 @@ QString RelaysPlugin::startListIofXml30()
 		QVariantMap{
 			{"xmlns", "http://www.orienteering.org/datastandard/3.0"},
 			{"iofVersion", "3.0"},
-			{"creator", "QuickEvent"},
+			{"creator", QStringLiteral("QuickEvent %1").arg(QCoreApplication::applicationVersion())},
 			{"createTime", datetime_to_string(QDateTime::currentDateTime())},
 		}
 	};

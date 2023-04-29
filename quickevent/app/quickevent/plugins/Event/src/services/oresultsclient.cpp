@@ -307,7 +307,7 @@ void OResultsClient::onCompetitorChanged(int competitor_id)
 		QVariantList xml_root{"MOPDiff",
 			QVariantMap {
 				{"xmlns", "http://www.melin.nu/mop"},
-				{"creator", "QuickEvent"},
+				{"creator", QStringLiteral("QuickEvent %1").arg(QCoreApplication::applicationVersion())},
 				{"createTime", QDateTime::currentDateTimeUtc().toString(Qt::ISODate)}
 			}
 		};
