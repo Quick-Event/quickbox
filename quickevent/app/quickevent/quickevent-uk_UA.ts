@@ -2242,7 +2242,7 @@ Use: File --&gt; Import --&gt; Event (*.qbe) to convert event to current version
     <message>
         <location filename="plugins/Event/src/eventplugin.cpp" line="1254"/>
         <source>Open imported event &apos;%1&apos;?</source>
-        <translation>Візкрити імпортовану подію «%1»?</translation>
+        <translation>Відкрити імпортовану подію «%1»?</translation>
     </message>
 </context>
 <context>
@@ -4839,7 +4839,7 @@ In case of unexpected errors, contact support@oresults.eu </oldsource>
     <message>
         <location filename="plugins/Runs/src/runswidget.cpp" line="289"/>
         <source>HTML with &amp;laps</source>
-        <translation>HTML з &amp;етапами</translation>
+        <translation>HTML із &amp;проміжками</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/runswidget.cpp" line="293"/>
@@ -4870,7 +4870,7 @@ In case of unexpected errors, contact support@oresults.eu </oldsource>
     <message>
         <location filename="plugins/Runs/src/runswidget.cpp" line="341"/>
         <source>&amp;Leg </source>
-        <translation>&amp;Етап </translation>
+        <translation>&amp;Проміжок </translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/runswidget.cpp" line="365"/>
