@@ -82,9 +82,9 @@ int CardChecker::startTimeSec(int run_id)
 	return ret;
 }
 
-int CardChecker::cardCheckCheckTimeSec()
+std::optional<int> CardChecker::maximumCardCheckAdvanceSec()
 {
-	return getPlugin<EventPlugin>()->eventConfig()->cardCheckCheckTimeSec();
+	return getPlugin<EventPlugin>()->eventConfig()->maximumCardCheckAdvanceSec();
 }
 
 quickevent::core::CourseDef CardChecker::courseCodesForRunId(int run_id)

@@ -35,7 +35,7 @@ public:
 	static QString serviceName();
 
 	void exportResultsIofXml3();
-	void exportStartListIofXml3();
+	void exportStartListIofXml3(std::function<void()> on_success = nullptr);
 	void loadSettings() override;
 	void onDbEventNotify(const QString &domain, int connection_id, const QVariant &data);
 	QString apiKey() const;
@@ -48,7 +48,7 @@ private:
 	qf::qmlwidgets::framework::DialogWidget *createDetailWidget() override;
 	void onExportTimerTimeOut();
 	void init();
-	void sendFile(QString name, QString request_path, QString file);
+	void sendFile(QString name, QString request_path, QString file, std::function<void()> on_success = nullptr);
 	void sendCompetitorChange(QString xml);
 	void onCompetitorChanged(int competitor_id);
 	QByteArray zlibCompress(QByteArray data);

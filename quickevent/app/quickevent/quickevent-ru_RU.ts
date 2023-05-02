@@ -1194,52 +1194,57 @@ Consider setting &quot;Interval&quot; column for all classes before continuing.<
         <translation>&amp;Класс</translation>
     </message>
     <message>
-        <location filename="plugins/Competitors/src/competitorwidget.ui" line="81"/>
+        <location filename="plugins/Competitors/src/competitorwidget.ui" line="94"/>
+        <source>IO&amp;F ID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugins/Competitors/src/competitorwidget.ui" line="182"/>
         <source>&amp;SI</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Competitors/src/competitorwidget.ui" line="101"/>
+        <location filename="plugins/Competitors/src/competitorwidget.ui" line="74"/>
         <source>First na&amp;me</source>
         <translation>&amp;Имя</translation>
     </message>
     <message>
-        <location filename="plugins/Competitors/src/competitorwidget.ui" line="118"/>
+        <location filename="plugins/Competitors/src/competitorwidget.ui" line="172"/>
         <source>&amp;Last name</source>
         <translation>&amp;Фамилия</translation>
     </message>
     <message>
-        <location filename="plugins/Competitors/src/competitorwidget.ui" line="135"/>
+        <location filename="plugins/Competitors/src/competitorwidget.ui" line="84"/>
         <source>&amp;Registration</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Competitors/src/competitorwidget.ui" line="145"/>
+        <location filename="plugins/Competitors/src/competitorwidget.ui" line="192"/>
         <source>Licenc&amp;e</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Competitors/src/competitorwidget.ui" line="162"/>
+        <location filename="plugins/Competitors/src/competitorwidget.ui" line="104"/>
         <source>Clu&amp;b</source>
         <translation>Клу&amp;б</translation>
     </message>
     <message>
-        <location filename="plugins/Competitors/src/competitorwidget.ui" line="179"/>
+        <location filename="plugins/Competitors/src/competitorwidget.ui" line="202"/>
         <source>Co&amp;untry</source>
         <translation>Ст&amp;рана</translation>
     </message>
     <message>
-        <location filename="plugins/Competitors/src/competitorwidget.ui" line="196"/>
+        <location filename="plugins/Competitors/src/competitorwidget.ui" line="114"/>
         <source>&amp;Note</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Competitors/src/competitorwidget.ui" line="223"/>
+        <location filename="plugins/Competitors/src/competitorwidget.ui" line="246"/>
         <source>Start times</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Competitors/src/competitorwidget.ui" line="236"/>
+        <location filename="plugins/Competitors/src/competitorwidget.ui" line="259"/>
         <source>Runs</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1331,88 +1336,103 @@ Consider setting &quot;Interval&quot; column for all classes before continuing.<
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Competitors/src/competitorswidget.cpp" line="67"/>
+        <location filename="plugins/Competitors/src/competitorswidget.cpp" line="68"/>
         <source>SI</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Competitors/src/competitorswidget.cpp" line="69"/>
+        <location filename="plugins/Competitors/src/competitorswidget.cpp" line="70"/>
         <source>Note</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Competitors/src/competitorswidget.cpp" line="97"/>
+        <location filename="plugins/Competitors/src/competitorswidget.cpp" line="98"/>
         <source>&amp;Class </source>
         <translation>&amp;Класс </translation>
     </message>
     <message>
-        <location filename="plugins/Competitors/src/competitorswidget.cpp" line="118"/>
+        <location filename="plugins/Competitors/src/competitorswidget.cpp" line="119"/>
         <source>&amp;Print</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Competitors/src/competitorswidget.cpp" line="120"/>
-        <location filename="plugins/Competitors/src/competitorswidget.cpp" line="392"/>
+        <location filename="plugins/Competitors/src/competitorswidget.cpp" line="121"/>
+        <location filename="plugins/Competitors/src/competitorswidget.cpp" line="393"/>
         <source>Competitors statistics</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Competitors/src/competitorswidget.cpp" line="68"/>
+        <location filename="plugins/Competitors/src/competitorswidget.cpp" line="69"/>
         <source>Ranking pos</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Competitors/src/competitorswidget.cpp" line="68"/>
+        <location filename="plugins/Competitors/src/competitorswidget.cpp" line="66"/>
+        <source>Czech registration number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugins/Competitors/src/competitorswidget.cpp" line="67"/>
+        <source>IOF ID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugins/Competitors/src/competitorswidget.cpp" line="67"/>
+        <source>IOF ID number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugins/Competitors/src/competitorswidget.cpp" line="69"/>
         <source>Runner&apos;s position in CZ ranking.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Competitors/src/competitorswidget.cpp" line="127"/>
+        <location filename="plugins/Competitors/src/competitorswidget.cpp" line="128"/>
         <source>&amp;Stations</source>
         <translation>&amp;Станции</translation>
     </message>
     <message>
-        <location filename="plugins/Competitors/src/competitorswidget.cpp" line="129"/>
+        <location filename="plugins/Competitors/src/competitorswidget.cpp" line="130"/>
         <source>Backup memory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Competitors/src/competitorswidget.cpp" line="153"/>
+        <location filename="plugins/Competitors/src/competitorswidget.cpp" line="154"/>
         <source>--- all ---</source>
         <translation>--- все ---</translation>
     </message>
     <message>
-        <location filename="plugins/Competitors/src/competitorswidget.cpp" line="210"/>
+        <location filename="plugins/Competitors/src/competitorswidget.cpp" line="211"/>
         <source>Edit Competitor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Competitors/src/competitorswidget.cpp" line="214"/>
+        <location filename="plugins/Competitors/src/competitorswidget.cpp" line="215"/>
         <source>Save and &amp;next</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Competitors/src/competitorswidget.cpp" line="260"/>
+        <location filename="plugins/Competitors/src/competitorswidget.cpp" line="261"/>
         <source>Really delete all the selected competitors? This action cannot be reverted.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Competitors/src/competitorswidget.cpp" line="273"/>
+        <location filename="plugins/Competitors/src/competitorswidget.cpp" line="274"/>
         <source>Confirm deletion of %1 competitors.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Competitors/src/competitorswidget.cpp" line="303"/>
+        <location filename="plugins/Competitors/src/competitorswidget.cpp" line="304"/>
         <source>Set class in selected rows</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Competitors/src/competitorswidget.cpp" line="315"/>
+        <location filename="plugins/Competitors/src/competitorswidget.cpp" line="316"/>
         <source>Dialog</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Competitors/src/competitorswidget.cpp" line="316"/>
+        <location filename="plugins/Competitors/src/competitorswidget.cpp" line="317"/>
         <source>Select class</source>
         <translation>Выбрать класс</translation>
     </message>
@@ -1513,142 +1533,142 @@ Consider setting &quot;Interval&quot; column for all classes before continuing.<
 <context>
     <name>Core::CorePlugin</name>
     <message>
-        <location filename="plugins/Core/src/coreplugin.cpp" line="57"/>
+        <location filename="plugins/Core/src/coreplugin.cpp" line="58"/>
         <source>&amp;File</source>
         <translation type="unfinished">&amp;Файл</translation>
     </message>
     <message>
-        <location filename="plugins/Core/src/coreplugin.cpp" line="59"/>
+        <location filename="plugins/Core/src/coreplugin.cpp" line="60"/>
         <source>&amp;Import</source>
         <translation type="unfinished">&amp;Импорт</translation>
     </message>
     <message>
-        <location filename="plugins/Core/src/coreplugin.cpp" line="62"/>
+        <location filename="plugins/Core/src/coreplugin.cpp" line="63"/>
         <source>&amp;Export</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Core/src/coreplugin.cpp" line="67"/>
+        <location filename="plugins/Core/src/coreplugin.cpp" line="68"/>
         <source>&amp;Settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Core/src/coreplugin.cpp" line="75"/>
+        <location filename="plugins/Core/src/coreplugin.cpp" line="76"/>
         <source>&amp;Quit</source>
         <translation type="unfinished">&amp;Выйти</translation>
     </message>
     <message>
-        <location filename="plugins/Core/src/coreplugin.cpp" line="82"/>
+        <location filename="plugins/Core/src/coreplugin.cpp" line="83"/>
         <source>&amp;Tools</source>
         <translation type="unfinished">&amp;Инструменты</translation>
     </message>
     <message>
-        <location filename="plugins/Core/src/coreplugin.cpp" line="84"/>
+        <location filename="plugins/Core/src/coreplugin.cpp" line="85"/>
         <source>&amp;SQL tool</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Core/src/coreplugin.cpp" line="90"/>
+        <location filename="plugins/Core/src/coreplugin.cpp" line="91"/>
         <source>&amp;Locale</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Core/src/coreplugin.cpp" line="92"/>
+        <location filename="plugins/Core/src/coreplugin.cpp" line="93"/>
         <source>&amp;Language</source>
         <translation type="unfinished">&amp;Язык</translation>
     </message>
     <message>
-        <location filename="plugins/Core/src/coreplugin.cpp" line="94"/>
+        <location filename="plugins/Core/src/coreplugin.cpp" line="95"/>
         <source>System</source>
         <translation type="unfinished">Система</translation>
     </message>
     <message>
-        <location filename="plugins/Core/src/coreplugin.cpp" line="95"/>
+        <location filename="plugins/Core/src/coreplugin.cpp" line="96"/>
         <source>Czech</source>
         <translation type="unfinished">Чешский</translation>
     </message>
     <message>
-        <location filename="plugins/Core/src/coreplugin.cpp" line="96"/>
+        <location filename="plugins/Core/src/coreplugin.cpp" line="97"/>
         <source>English</source>
         <translation type="unfinished">Английский</translation>
     </message>
     <message>
-        <location filename="plugins/Core/src/coreplugin.cpp" line="97"/>
+        <location filename="plugins/Core/src/coreplugin.cpp" line="98"/>
         <source>Flemish</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Core/src/coreplugin.cpp" line="98"/>
+        <location filename="plugins/Core/src/coreplugin.cpp" line="99"/>
         <source>French</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Core/src/coreplugin.cpp" line="99"/>
+        <location filename="plugins/Core/src/coreplugin.cpp" line="100"/>
         <source>Norwegian</source>
         <translation type="unfinished">Норвежский</translation>
     </message>
     <message>
-        <location filename="plugins/Core/src/coreplugin.cpp" line="100"/>
+        <location filename="plugins/Core/src/coreplugin.cpp" line="101"/>
         <source>Polish</source>
         <translation type="unfinished">Польский</translation>
     </message>
     <message>
-        <location filename="plugins/Core/src/coreplugin.cpp" line="101"/>
+        <location filename="plugins/Core/src/coreplugin.cpp" line="102"/>
         <source>Russian</source>
         <translation type="unfinished">Русский</translation>
     </message>
     <message>
-        <location filename="plugins/Core/src/coreplugin.cpp" line="102"/>
+        <location filename="plugins/Core/src/coreplugin.cpp" line="103"/>
         <source>Ukrainian</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Core/src/coreplugin.cpp" line="120"/>
+        <location filename="plugins/Core/src/coreplugin.cpp" line="121"/>
         <source>Information</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Core/src/coreplugin.cpp" line="121"/>
+        <location filename="plugins/Core/src/coreplugin.cpp" line="122"/>
         <source>Language change to &apos;%1&apos; will be applied after application restart.</source>
         <translation type="unfinished">Изменение языка на &apos;%1&apos; будет применено после перезапуска приложения.</translation>
     </message>
     <message>
-        <location filename="plugins/Core/src/coreplugin.cpp" line="129"/>
+        <location filename="plugins/Core/src/coreplugin.cpp" line="130"/>
         <source>&amp;View</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Core/src/coreplugin.cpp" line="133"/>
+        <location filename="plugins/Core/src/coreplugin.cpp" line="134"/>
         <source>&amp;Toolbar</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Core/src/coreplugin.cpp" line="137"/>
+        <location filename="plugins/Core/src/coreplugin.cpp" line="138"/>
         <source>&amp;Help</source>
         <translation type="unfinished">&amp;Справка</translation>
     </message>
     <message>
-        <location filename="plugins/Core/src/coreplugin.cpp" line="139"/>
+        <location filename="plugins/Core/src/coreplugin.cpp" line="140"/>
         <source>&amp;About Quick event</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Core/src/coreplugin.cpp" line="144"/>
+        <location filename="plugins/Core/src/coreplugin.cpp" line="145"/>
         <source>About &amp;Qt</source>
         <translation type="unfinished">О &amp;Qt</translation>
     </message>
     <message>
-        <location filename="plugins/Core/src/coreplugin.cpp" line="187"/>
+        <location filename="plugins/Core/src/coreplugin.cpp" line="188"/>
         <source>About Quick Event</source>
         <translation type="unfinished">О Quick Event</translation>
     </message>
     <message>
-        <location filename="plugins/Core/src/coreplugin.cpp" line="188"/>
-        <source>The &lt;b&gt;Quick Event&lt;/b&gt; is an application which helps you to organize the orienteering events.&lt;br/&gt;&lt;br/&gt;version: %1&lt;br/&gt;min. db version: %2&lt;br/&gt;build: %3 %4</source>
+        <location filename="plugins/Core/src/coreplugin.cpp" line="189"/>
+        <source>The &lt;b&gt;Quick Event&lt;/b&gt; is an application which helps you to organize the orienteering events.&lt;br/&gt;&lt;br/&gt;version: %1&lt;br/&gt;min. db version: %2&lt;br/&gt;build: %3 %4&lt;br/&gt;SSL build: %5&lt;br/&gt;SSL run: %6</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Core/src/coreplugin.cpp" line="203"/>
+        <location filename="plugins/Core/src/coreplugin.cpp" line="208"/>
         <source>About Qt</source>
         <translation type="unfinished">О Qt</translation>
     </message>
@@ -1777,7 +1797,7 @@ Consider setting &quot;Interval&quot; column for all classes before continuing.<
 <context>
     <name>DbSchema</name>
     <message>
-        <location filename="plugins/Event/qml/DbSchema.qml" line="484"/>
+        <location filename="plugins/Event/qml/DbSchema.qml" line="485"/>
         <source>Data version</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2109,6 +2129,11 @@ Enter a valid path to the working directory.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="760"/>
+        <source>Create event</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="plugins/Event/src/eventplugin.cpp" line="770"/>
         <source>Event ID cannot be empty.</source>
         <translation type="unfinished"></translation>
@@ -2137,6 +2162,11 @@ Enter a valid path to the working directory.</source>
     <message>
         <location filename="plugins/Event/src/eventplugin.cpp" line="847"/>
         <source>Cannot create event, database is not open: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="862"/>
+        <source>Edit event</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2851,17 +2881,17 @@ In case of unexpected errors, contact support@oresults.eu </oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Competitors/src/lentcardssettingspage.cpp" line="21"/>
+        <location filename="plugins/Competitors/src/lentcardssettingspage.cpp" line="22"/>
         <source>SI</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Competitors/src/lentcardssettingspage.cpp" line="22"/>
+        <location filename="plugins/Competitors/src/lentcardssettingspage.cpp" line="23"/>
         <source>Ignored</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Competitors/src/lentcardssettingspage.cpp" line="23"/>
+        <location filename="plugins/Competitors/src/lentcardssettingspage.cpp" line="24"/>
         <source>Note</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3062,47 +3092,47 @@ In case of unexpected errors, contact support@oresults.eu </oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Oris/src/orisimporter.cpp" line="667"/>
+        <location filename="plugins/Oris/src/orisimporter.cpp" line="670"/>
         <source>New entries</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Oris/src/orisimporter.cpp" line="668"/>
+        <location filename="plugins/Oris/src/orisimporter.cpp" line="671"/>
         <source>Edited entries</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Oris/src/orisimporter.cpp" line="669"/>
+        <location filename="plugins/Oris/src/orisimporter.cpp" line="672"/>
         <source>Deleted entries</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Oris/src/orisimporter.cpp" line="672"/>
+        <location filename="plugins/Oris/src/orisimporter.cpp" line="675"/>
         <source>Oris import report</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Oris/src/orisimporter.cpp" line="682"/>
+        <location filename="plugins/Oris/src/orisimporter.cpp" line="685"/>
         <source>Save without drops</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Oris/src/orisimporter.cpp" line="742"/>
+        <location filename="plugins/Oris/src/orisimporter.cpp" line="744"/>
         <source>Import ORIS Registrations</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Oris/src/orisimporter.cpp" line="742"/>
+        <location filename="plugins/Oris/src/orisimporter.cpp" line="744"/>
         <source>Year of registration:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Oris/src/orisimporter.cpp" line="756"/>
+        <location filename="plugins/Oris/src/orisimporter.cpp" line="758"/>
         <source>Importing registrations</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Oris/src/orisimporter.cpp" line="816"/>
+        <location filename="plugins/Oris/src/orisimporter.cpp" line="818"/>
         <source>Importing clubs</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3530,8 +3560,8 @@ In case of unexpected errors, contact support@oresults.eu </oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Relays/src/relaysplugin.cpp" line="701"/>
-        <location filename="plugins/Relays/src/relaysplugin.cpp" line="838"/>
+        <location filename="plugins/Relays/src/relaysplugin.cpp" line="719"/>
+        <location filename="plugins/Relays/src/relaysplugin.cpp" line="860"/>
         <source>Relays IOF-XML 3.0 results</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3864,30 +3894,30 @@ In case of unexpected errors, contact support@oresults.eu </oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="950"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2373"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="956"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2399"/>
         <source>E%1 IOF XML stage results</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1401"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1766"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1427"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1792"/>
         <source>Start list by classes</source>
         <translation type="unfinished">Стартовый список по классам</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1428"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1866"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1454"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1892"/>
         <source>Start list by clubs</source>
         <translation type="unfinished">Стартовый список по клубам</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1453"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1479"/>
         <source>Start list for starters</source>
         <translation type="unfinished"></translation>
     </message>
     <message numerus="yes">
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1486"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1512"/>
         <source>Start list by classes for %n stage(s)</source>
         <translation type="unfinished">
             <numerusform>Стартовый список по классам</numerusform>
@@ -3896,7 +3926,7 @@ In case of unexpected errors, contact support@oresults.eu </oldsource>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1520"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1546"/>
         <source>Start list by clubs for %n stage(s)</source>
         <translation type="unfinished">
             <numerusform>Стартовый список по клубам</numerusform>
@@ -3905,19 +3935,19 @@ In case of unexpected errors, contact support@oresults.eu </oldsource>
         </translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1543"/>
         <location filename="plugins/Runs/src/runsplugin.cpp" line="1569"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1595"/>
         <source>Results by classes</source>
         <translation type="unfinished">Результаты по классам</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1592"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1618"/>
         <source>Stage awards</source>
         <translation type="unfinished"></translation>
     </message>
     <message numerus="yes">
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1619"/>
         <location filename="plugins/Runs/src/runsplugin.cpp" line="1645"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1671"/>
         <source>Results after %n stage(s)</source>
         <oldsource>Results after %1 stages</oldsource>
         <translation type="unfinished">
@@ -3927,164 +3957,164 @@ In case of unexpected errors, contact support@oresults.eu </oldsource>
         </translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1667"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1693"/>
         <source>Awards after %1 stages</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1717"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1924"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1743"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1950"/>
         <source>length:</source>
         <translation type="unfinished">длина:</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1719"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1926"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1745"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1952"/>
         <source>climb:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1722"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1820"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1930"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2055"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1748"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1846"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1956"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2081"/>
         <source>Top</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1735"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1833"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1761"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1859"/>
         <source>St. Num</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1736"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1835"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1938"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2063"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2164"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1762"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1861"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1964"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2089"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2190"/>
         <source>Name</source>
         <translation type="unfinished">Имя</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1737"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1836"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1939"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2064"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2179"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1763"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1862"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1965"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2090"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2205"/>
         <source>Registration</source>
         <translation type="unfinished">Регистрация</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1738"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1837"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1764"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1863"/>
         <source>SI</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1739"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1838"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1765"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1864"/>
         <source>Start</source>
         <translation type="unfinished">Старт</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1834"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1860"/>
         <source>Class</source>
         <translation type="unfinished">Класс</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1881"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1907"/>
         <source>Preparing data</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1910"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2041"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1936"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2067"/>
         <source>Procesing class %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1929"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1955"/>
         <source>Laps</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1937"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2062"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2163"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1963"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2088"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2189"/>
         <source>Place</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1940"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2065"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1966"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2091"/>
         <source>Club</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1941"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2073"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2165"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1967"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2099"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2191"/>
         <source>Time</source>
         <translation type="unfinished">Время</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1942"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2074"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2166"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1968"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2100"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2192"/>
         <source>Loss</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2113"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2139"/>
         <source>NC</source>
         <comment>Not Competing</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2116"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2142"/>
         <source>DISQ</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1979"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2130"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2259"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2005"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2156"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2284"/>
         <source>Stage results</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1998"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2024"/>
         <source>Warning</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1998"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2024"/>
         <source>Export error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2000"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2026"/>
         <source>Information</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2000"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2026"/>
         <source>Results exported to %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2020"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2046"/>
         <source>Overall results after stage %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2070"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2096"/>
         <source>Stage %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2172"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2198"/>
         <source>FIN</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5145,7 +5175,8 @@ In case of unexpected errors, contact support@oresults.eu </oldsource>
     </message>
     <message>
         <location filename="plugins/Classes/src/drawing/classitem.cpp" line="262"/>
-        <source>clash with: %1&lt;br/&gt;</source>
+        <source>, clash with: %1&lt;br/&gt;</source>
+        <oldsource>clash with: %1&lt;br/&gt;</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>

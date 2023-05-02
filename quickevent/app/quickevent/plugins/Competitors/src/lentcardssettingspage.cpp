@@ -15,6 +15,7 @@ LentCardsSettingsPage::LentCardsSettingsPage(QWidget *parent)
 {
 	m_caption = tr("Cards to rent");
 	ui->setupUi(this);
+
 	ui->tblCardsTB->setTableView(ui->tblCards);
 	{
 		qfm::SqlTableModel *m = new qfm::SqlTableModel(this);
