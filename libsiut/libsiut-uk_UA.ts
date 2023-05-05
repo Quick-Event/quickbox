@@ -40,7 +40,13 @@ Handshake: {{HandShake}}
 Password access: {{PasswordAccess}}
 Read out after punch: {{ReadOutAfterPunch}}
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Номер станції: {{StationNumber}}
+Розширений режим: {{ExtendedMode}}
+Авто надсилання: {{AutoSend}}
+Рукопотискання: {{HandShake}}
+Доступ з паролем: {{PasswordAccess}}
+Зчитати після проколу: {{ReadOutAfterPunch}}
+</translation>
     </message>
     <message>
         <location filename="src/device/sitask.cpp" line="107"/>
@@ -49,7 +55,7 @@ Read out after punch: {{ReadOutAfterPunch}}
         <location filename="src/device/sitask.cpp" line="110"/>
         <location filename="src/device/sitask.cpp" line="111"/>
         <source>True</source>
-        <translation type="unfinished"></translation>
+        <translation>Так</translation>
     </message>
     <message>
         <location filename="src/device/sitask.cpp" line="107"/>
@@ -58,7 +64,7 @@ Read out after punch: {{ReadOutAfterPunch}}
         <location filename="src/device/sitask.cpp" line="110"/>
         <location filename="src/device/sitask.cpp" line="111"/>
         <source>False</source>
-        <translation type="unfinished"></translation>
+        <translation>Ні</translation>
     </message>
 </context>
 <context>
@@ -71,17 +77,17 @@ Read out after punch: {{ReadOutAfterPunch}}
     <message>
         <location filename="src/device/commport.cpp" line="50"/>
         <source>Connecting to %1 - baudrate: %2, data bits: %3, parity: %4, stop bits: %5</source>
-        <translation>Під&apos;єднання до %1 - швидкість передачі даних: %2, біти даних: %3, парність: %4, стоп-біти: %5</translation>
+        <translation>Під’єднання до %1 - швидкість передачі даних: %2, біти даних: %3, парність: %4, стоп-біти: %5</translation>
     </message>
     <message>
         <location filename="src/device/commport.cpp" line="60"/>
         <source>%1 connected OK</source>
-        <translation>%1 під&apos;єднано ВДАЛО</translation>
+        <translation>%1 під’єднано ВДАЛО</translation>
     </message>
     <message>
         <location filename="src/device/commport.cpp" line="64"/>
         <source>%1 connect ERROR: %2</source>
-        <translation>%1 ПОМИЛКА під&apos;єднання: %2</translation>
+        <translation>%1 ПОМИЛКА під’єднання: %2</translation>
     </message>
     <message>
         <location filename="src/device/commport.cpp" line="74"/>
@@ -92,12 +98,13 @@ Read out after punch: {{ReadOutAfterPunch}}
         <location filename="src/device/commport.cpp" line="91"/>
         <source>possible solution:
 Wait at least 10 seconds and then try again.</source>
-        <translation type="unfinished"></translation>
+        <translation>можливе вирішення:
+Зачекати щонайменше 10 секунд і тоді спробувате знову.</translation>
     </message>
     <message>
         <location filename="src/device/commport.cpp" line="100"/>
         <source>There are no ports available.</source>
-        <translation type="unfinished"></translation>
+        <translation>Немає доступних портів.</translation>
     </message>
     <message>
         <location filename="src/device/commport.cpp" line="103"/>
@@ -105,7 +112,10 @@ Wait at least 10 seconds and then try again.</source>
 List of accessible ports:
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Вибраний порт %1 не придатний.
+Список доступних портів:
+
+</translation>
     </message>
 </context>
 <context>
@@ -118,17 +128,17 @@ List of accessible ports:
     <message>
         <location filename="src/device/sidevicedriver.cpp" line="141"/>
         <source>NAK received</source>
-        <translation>НАК отримано</translation>
+        <translation>отримано НАК</translation>
     </message>
     <message>
         <location filename="src/device/sidevicedriver.cpp" line="147"/>
         <source>Legacy protocol is not supported, switch station to extended one.</source>
-        <translation>Старий протокол не підтримується, перемикніть станцію на розширену.</translation>
+        <translation>Старий протокол не підтримується, перемкніть станцію на розширений.</translation>
     </message>
     <message>
         <location filename="src/device/sidevicedriver.cpp" line="154"/>
         <source>Valid message shall end with ETX or NAK, throwing data away</source>
-        <translation>Дійсне повідомлення закінчується ETX або NAK, викидаючи дані</translation>
+        <translation>Коректне повідомлення закінчується ETX або NAK, дані відкинуто</translation>
     </message>
     <message>
         <location filename="src/device/sidevicedriver.cpp" line="170"/>
@@ -141,7 +151,7 @@ List of accessible ports:
     <message>
         <location filename="src/device/sitask.cpp" line="24"/>
         <source>SiCommand timeout after %1 sec.</source>
-        <translation>Час очікування SiCommand через %1 сек.</translation>
+        <translation>Не отримано SiCommand через %1 сек.</translation>
     </message>
 </context>
 </TS>
