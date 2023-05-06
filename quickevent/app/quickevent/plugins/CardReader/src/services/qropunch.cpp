@@ -1,5 +1,5 @@
-#include "webapi.h"
-#include "webapiwidget.h"
+#include "qropunch.h"
+#include "qropunchwidget.h"
 
 #include "../cardreaderplugin.h"
 
@@ -18,44 +18,44 @@ using qf::qmlwidgets::framework::getPlugin;
 namespace CardReader {
 namespace services {
 
-WebApi::WebApi(QObject *parent)
-	: Super(WebApi::serviceName(), parent)
+QrOPunch::QrOPunch(QObject *parent)
+	: Super(QrOPunch::serviceName(), parent)
 {
-	connect(this, &WebApi::settingsChanged, this, &WebApi::init, Qt::QueuedConnection);
+	connect(this, &QrOPunch::settingsChanged, this, &QrOPunch::init, Qt::QueuedConnection);
 }
 
-void WebApi::run()
+void QrOPunch::run()
 {
 	init();
 	Super::run();
 }
 
-void WebApi::stop()
+void QrOPunch::stop()
 {
 	Super::stop();
 	m_tcpClients.clear();
 	m_tcpServer.reset();
 }
 
-QString WebApi::serviceName()
+QString QrOPunch::serviceName()
 {
-	return QStringLiteral("WebApi");
+	return QStringLiteral("QrOPunch");
 }
 
-qf::qmlwidgets::framework::DialogWidget *WebApi::createDetailWidget()
+qf::qmlwidgets::framework::DialogWidget *QrOPunch::createDetailWidget()
 {
-	auto *w = new WebApiWidget();
+	auto *w = new QrOPunchWidget();
 	return w;
 }
 
-void WebApi::init()
+void QrOPunch::init()
 {
-	WebApiSettings ss = settings();
+	QrOPunchSettings ss = settings();
 	int port = ss.tcpListenPort();
 
 	m_tcpClients.clear();
 	m_tcpServer.reset(new QTcpServer(this));
-	connect(m_tcpServer.get(), &QTcpServer::newConnection, this, &WebApi::onNewConnection);
+	connect(m_tcpServer.get(), &QTcpServer::newConnection, this, &QrOPunch::onNewConnection);
 
 	if (!m_tcpServer->listen(QHostAddress::Any, port)) {
 		qfError() << "Server could not start listening port " << port << ": " << m_tcpServer->errorString().toLocal8Bit();
@@ -75,13 +75,13 @@ void WebApi::init()
 	}
 }
 
-void WebApi::onNewConnection()
+void QrOPunch::onNewConnection()
 {
 	while (m_tcpServer->hasPendingConnections())
 	{
 		QTcpSocket *socket = m_tcpServer->nextPendingConnection();
 
-		connect(socket, &QTcpSocket::readyRead, this, &WebApi::onReadyRead);
+		connect(socket, &QTcpSocket::readyRead, this, &QrOPunch::onReadyRead);
 		connect(socket, &QTcpSocket::disconnected, this, [this] {
 			QTcpSocket *socket = static_cast<QTcpSocket*>(sender());
 			m_tcpClients.erase(socket);
@@ -91,7 +91,7 @@ void WebApi::onNewConnection()
 	}
 }
 
-void WebApi::onReadyRead()
+void QrOPunch::onReadyRead()
 {
 	QTcpSocket *socket = static_cast<QTcpSocket*>(sender());
 	auto sendError = [socket](const char *error) {
@@ -182,7 +182,7 @@ void WebApi::onReadyRead()
 	}
 }
 
-void WebApi::onTcpReadoutReceived(const QVariant &data)
+void QrOPunch::onTcpReadoutReceived(const QVariant &data)
 {
 	if (!m_siDriver) {
 		m_siDriver.reset(new siut::DeviceDriver(this));

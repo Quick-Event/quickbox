@@ -1,6 +1,6 @@
-#include "webapiwidget.h"
-#include "ui_webapiwidget.h"
-#include "webapi.h"
+#include "qropunchwidget.h"
+#include "ui_qropunchwidget.h"
+#include "qropunch.h"
 
 #include <qf/core/assert.h>
 
@@ -10,20 +10,20 @@
 namespace CardReader {
 namespace services {
 
-WebApiWidget::WebApiWidget(QWidget *parent)
+QrOPunchWidget::QrOPunchWidget(QWidget *parent)
 	: Super(parent)
-	, ui(new Ui::WebApiWidget)
+	, ui(new Ui::QrOPunchWidget)
 {
-	setPersistentSettingsId("WebApiWidget");
+	setPersistentSettingsId("QrOPunchWidget");
 	ui->setupUi(this);
 
-	WebApi *svc = service();
+	QrOPunch *svc = service();
 	if (svc) {
-		WebApiSettings ss = svc->settings();
+		QrOPunchSettings ss = svc->settings();
 		ui->edTcpListenPort->setValue(ss.tcpListenPort());
 		ui->chkLogRequests->setChecked(ss.isWriteLogFile());
 		ui->edLogFile->setText(ss.logFileName());
-    }
+	}
 	auto updateLogFileUI = [this] {
 		bool isEnabled = ui->chkLogRequests->isChecked();
 		ui->btChooseLogFile->setEnabled(isEnabled);
@@ -31,15 +31,15 @@ WebApiWidget::WebApiWidget(QWidget *parent)
 	};
 	updateLogFileUI();
 	connect(ui->chkLogRequests, &QCheckBox::clicked, updateLogFileUI);
-	connect(ui->btChooseLogFile, &QPushButton::clicked, this, &WebApiWidget::onBtChooseLogFileClicked);
+	connect(ui->btChooseLogFile, &QPushButton::clicked, this, &QrOPunchWidget::onBtChooseLogFileClicked);
 }
 
-WebApiWidget::~WebApiWidget()
+QrOPunchWidget::~QrOPunchWidget()
 {
 	delete ui;
 }
 
-bool WebApiWidget::acceptDialogDone(int result)
+bool QrOPunchWidget::acceptDialogDone(int result)
 {
 	if (result == QDialog::Accepted) {
 		saveSettings();
@@ -47,18 +47,18 @@ bool WebApiWidget::acceptDialogDone(int result)
 	return true;
 }
 
-WebApi *WebApiWidget::service()
+QrOPunch *QrOPunchWidget::service()
 {
-	WebApi *svc = qobject_cast<WebApi*>(Event::services::Service::serviceByName(WebApi::serviceName()));
-	QF_ASSERT(svc, WebApi::serviceName() + " doesn't exist", return nullptr);
+	QrOPunch *svc = qobject_cast<QrOPunch*>(Event::services::Service::serviceByName(QrOPunch::serviceName()));
+	QF_ASSERT(svc, QrOPunch::serviceName() + " doesn't exist", return nullptr);
 	return svc;
 }
 
-void WebApiWidget::saveSettings()
+void QrOPunchWidget::saveSettings()
 {
-	WebApi *svc = service();
+	QrOPunch *svc = service();
 	if (svc) {
-		WebApiSettings ss = svc->settings();
+		QrOPunchSettings ss = svc->settings();
 		ss.setTcpListenPort(ui->edTcpListenPort->value());
 		ss.setWriteLogFile(ui->chkLogRequests->isChecked());
 		ss.setLogFileName(ui->edLogFile->text());
@@ -66,11 +66,11 @@ void WebApiWidget::saveSettings()
 	}
 }
 
-void WebApiWidget::onBtChooseLogFileClicked()
+void QrOPunchWidget::onBtChooseLogFileClicked()
 {
-	WebApi *svc = service();
+	QrOPunch *svc = service();
 	if (svc) {
-		WebApiSettings ss = svc->settings();
+		QrOPunchSettings ss = svc->settings();
 		QString file = QFileDialog::getSaveFileName(this, tr("Choose file to log requests"), ss.logFileName(),
 		                                            {}, nullptr, QFileDialog::DontConfirmOverwrite);
 		if (!file.isEmpty())

@@ -6,26 +6,26 @@ namespace CardReader {
 namespace services {
 
 namespace Ui {
-	class WebApiWidget;
+	class QrOPunchWidget;
 }
 
-class WebApi;
+class QrOPunch;
 
-class WebApiWidget : public qf::qmlwidgets::framework::DialogWidget
+class QrOPunchWidget : public qf::qmlwidgets::framework::DialogWidget
 {
 	Q_OBJECT
 
 	using Super = qf::qmlwidgets::framework::DialogWidget;
 public:
-	explicit WebApiWidget(QWidget *parent = nullptr);
-	~WebApiWidget() override;
+	explicit QrOPunchWidget(QWidget *parent = nullptr);
+	~QrOPunchWidget() override;
 private:
 	bool acceptDialogDone(int result) override;
-	WebApi* service();
+	QrOPunch* service();
 	void saveSettings();
 	void onBtChooseLogFileClicked();
 private:
-	Ui::WebApiWidget *ui;
+	Ui::QrOPunchWidget *ui;
 };
 
 }}
