@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>CardReader::services::WebApiWidget</class>
- <widget class="QWidget" name="CardReader::services::WebApiWidget">
+ <class>CardReader::services::QrOPunchWidget</class>
+ <widget class="QWidget" name="CardReader::services::QrOPunchWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -78,7 +78,7 @@
         </sizepolicy>
        </property>
        <property name="text">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This service will listen for HTTP requests for integration with web services.&lt;/p&gt;&lt;p&gt;For example, &lt;a href=&quot;https://github.com/sakhnik/qr-o-code&quot;&gt;qr-o-code&lt;/a&gt;.&lt;/p&gt;&lt;p&gt;Supported methods and endpoints:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;code&gt;POST /card&lt;/code&gt; — upload a card readout&lt;/li&gt;&lt;/ul&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This service will listen for HTTP requests for integration with web services.&lt;/p&gt;&lt;p&gt;For example, &lt;a href=&quot;https://github.com/sakhnik/qr-o-punch&quot;&gt;qr-o-punch&lt;/a&gt;.&lt;/p&gt;&lt;p&gt;Supported methods and endpoints:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;code&gt;POST /card&lt;/code&gt; — upload a card readout&lt;/li&gt;&lt;/ul&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
       </widget>
      </item>

@@ -12,7 +12,7 @@ class QTcpSocket;
 namespace CardReader {
 namespace services {
 
-class WebApiSettings : public Event::services::ServiceSettings
+class QrOPunchSettings : public Event::services::ServiceSettings
 {
 	using Super = Event::services::ServiceSettings;
 
@@ -21,20 +21,20 @@ class WebApiSettings : public Event::services::ServiceSettings
 	QF_VARIANTMAP_FIELD(QString, l, setL, ogFileName)
 
 public:
-	WebApiSettings(const QVariantMap &o = QVariantMap()) : Super(o) {}
+	QrOPunchSettings(const QVariantMap &o = QVariantMap()) : Super(o) {}
 };
 
-class WebApi : public Event::services::Service
+class QrOPunch : public Event::services::Service
 {
 	Q_OBJECT
 
 	using Super = Service;
 public:
-	WebApi(QObject *parent);
+	QrOPunch(QObject *parent);
 
 	void run() override;
 	void stop() override;
-	WebApiSettings settings() const {return WebApiSettings(m_settings);}
+	QrOPunchSettings settings() const {return QrOPunchSettings(m_settings);}
 
 	static QString serviceName();
 private:
