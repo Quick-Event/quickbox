@@ -20,10 +20,10 @@ private:
 
 public:
 	explicit LentCardsSettingsPage(QWidget *parent = 0);
-	~LentCardsSettingsPage() Q_DECL_OVERRIDE;
+	~LentCardsSettingsPage() override;
 protected:
-	void load();
-	void save();
+	void load() override;
+	void save() override;
 
 private:
 	Ui::LentCardsSettingsPage *ui;

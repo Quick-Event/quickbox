@@ -13,21 +13,14 @@ jobs:
   build_linux:
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         submodules: 'recursive'
 
-    - name: Cache Qt
-      id: cache-qt
-      uses: actions/cache@v2
-      with:
-        path: ${{ runner.workspace }}/Qt
-        key: ${{ runner.os }}-Qt-${{ env.QT_VERSION }}
-
     - name: Install Qt
-      uses: jurplel/install-qt-action@v2
+      uses: jurplel/install-qt-action@v3
       with:
-        cached: ${{ steps.cache-qt.outputs.cache-hit }}
+        cache: 'true'
         version: ${{ env.QT_VERSION }}
         host: 'linux'
 
@@ -49,13 +42,13 @@ jobs:
         ./quickevent/make-dist.sh --src-dir . --qt-dir ${Qt5_DIR} --work-dir ./build --appimage-tool /opt/appimagetool-x86_64.AppImage 
 
     - name: Save AppImage
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: quickevent-${{ env.VERSION }}-linux64.Appimage
         path: build/artifacts/quickevent-*-linux64.AppImage
 
     - name: Save gzip
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: quickevent-${{ env.VERSION }}-linux64.tgz
         path: build/artifacts/quickevent-*-linux64.tgz
@@ -68,43 +61,35 @@ jobs:
         shell: bash
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         submodules: 'recursive'
 
     - name: Cache Libs
       id: cache-libs
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: |
-          C:/msys64/mingw64/bin/libcrypto-3-x64.dll
-          C:/msys64/mingw64/bin/libssl-3-x64.dll
-          C:/msys64/mingw64/bin/libiconv-2.dll
-          C:/msys64/mingw64/bin/libintl-8.dll
-          C:/msys64/mingw64/bin/libxml2-2.dll
-          C:/msys64/mingw64/bin/liblzma-5.dll
-          C:/msys64/mingw64/bin/zlib1.dll
-          C:/msys64/mingw64/bin/libpq.dll
+          C:/openssl/bin/libssl-1_1-x64.dll
+          C:/openssl/bin/libcrypto-1_1-x64.dll
+          C:/Program Files/PostgreSQL/14/bin/libiconv-2.dll
+          C:/Program Files/PostgreSQL/14/bin/libintl-9.dll
+          C:/Program Files/PostgreSQL/14/bin/liblz4.dll
+          C:/Program Files/PostgreSQL/14/bin/zlib1.dll
+          C:/Program Files/PostgreSQL/14/bin/libpq.dll
         key: ${{ runner.os }}-Libraries
 
     - name: Get OpenSSL and PostgreSQL libraries
       if: steps.cache-libs.outputs.cache-hit != 'true'
       run: |
-        C:/msys64/usr/bin/pacman -Sy --noconfirm
-        C:/msys64/usr/bin/pacman -S mingw-w64-x86_64-openssl mingw-w64-x86_64-postgresql --noconfirm
+        choco install openssl.light --params "/InstallDir:C:\openssl" --version 1.1.1 -y
+        choco install postgresql14 --version 14.5.1 -y
       shell: cmd
 
-    - name: Cache Qt
-      id: cache-qt
-      uses: actions/cache@v2
-      with:
-        path: ${{ runner.workspace }}\Qt
-        key: ${{ runner.os }}-Qt-${{ env.QT_VERSION }}
-
     - name: Install Qt
-      uses: jurplel/install-qt-action@v2
+      uses: jurplel/install-qt-action@v3
       with:
-        cached: ${{ steps.cache-qt.outputs.cache-hit }}
+        cache: 'true'
         version: ${{ env.QT_VERSION }}
         host: 'windows'
         arch: 'win64_mingw81'
@@ -122,11 +107,11 @@ jobs:
     - name: Create installer
       run: |
         choco install innosetup --no-progress
-        "C:\Program Files (x86)\Inno Setup 6\iscc.exe" "/DVERSION=%VERSION%" "/DQT_DIR=%Qt5_Dir%" "/DPSQL_DIR=C:\msys64\mingw64" "/DSSL_DIR=C:\msys64\mingw64" quickevent/quickevent.iss 
+        "C:\Program Files (x86)\Inno Setup 6\iscc.exe" "/DVERSION=%VERSION%" "/DQT_DIR=%Qt5_Dir%" "/DPSQL_DIR=C:/Program Files/PostgreSQL/14" "/DSSL_DIR=C:\openssl\bin" quickevent/quickevent.iss
       shell: cmd
 
     - name: Save setup
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: quickevent-${{ env.VERSION }}-win64-setup.exe
         path: _inno\quickevent\quickevent-${{ env.VERSION }}-win64-setup.exe

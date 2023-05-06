@@ -84,10 +84,10 @@ int CodeDef::codeFromString(const QString &code_str)
 
 QString CodeDef::codeToString(int code)
 {
-	if(code >= START_PUNCH_CODE && code < PUNCH_CODE_MIN)
-		return 'S' + QString::number(code - START_PUNCH_CODE);
-	if(code >= FINISH_PUNCH_CODE)
-		return 'F' + QString::number(code - FINISH_PUNCH_CODE);
+	if(auto n = codeToStartNumber(code); n.has_value())
+		return 'S' + QString::number(n.value());
+	if(auto n = codeToFinishNumber(code); n.has_value())
+		return 'F' + QString::number(n.value());
 	return QString::number(code);
 }
 
@@ -100,6 +100,20 @@ CodeDef::Type CodeDef::codeToType(int code)
 	if(code >= PUNCH_CODE_MIN && code <= PUNCH_CODE_MAX)
 		return Type::Control;
 	return Type::Invalid;
+}
+
+std::optional<int> CodeDef::codeToStartNumber(int code)
+{
+	if(CodeDef::codeToType(code) == CodeDef::Type::Start)
+		return code - START_PUNCH_CODE;
+	return {};
+}
+
+std::optional<int> CodeDef::codeToFinishNumber(int code)
+{
+	if(CodeDef::codeToType(code) == CodeDef::Type::Finish)
+		return code - FINISH_PUNCH_CODE;
+	return {};
 }
 
 QString CodeDef::toString() const

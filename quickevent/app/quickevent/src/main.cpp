@@ -66,6 +66,7 @@ int main(int argc, char *argv[])
 	qfInfo() << "========================================================";
 	qfInfo() << QDateTime::currentDateTime().toString(Qt::ISODate) << "starting" << QCoreApplication::applicationName() << "ver:" << QCoreApplication::applicationVersion();
 	qfInfo() << "Log tresholds:" << NecroLog::thresholdsLogInfo();
+	qfInfo() << "Open SSL:" << QSslSocket::sslLibraryBuildVersionString();
 	qfInfo() << "========================================================";
 
 	qRegisterMetaType<qf::core::LogEntryMap>();
@@ -73,7 +74,6 @@ int main(int argc, char *argv[])
 	quickevent::core::si::SiId::registerQVariantFunctions();
 
 	AppCliOptions cli_opts;
-	cli_opts.parse(args);
 	cli_opts.parse(args);
 	if(cli_opts.isParseError()) {
 		foreach(QString err, cli_opts.parseErrors())
@@ -94,7 +94,7 @@ int main(int argc, char *argv[])
 		return EXIT_FAILURE;
 	}
 
-	qDebug() << "creating application instance";
+	qfInfo() << "Is abort on exception:" << qf::core::Exception::isAbortOnException();
 	Application app(argc, argv, &cli_opts);
 
 	old_message_handler = NecroLog::setMessageHandler(send_log_entry_handler);

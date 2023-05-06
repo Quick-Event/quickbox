@@ -241,10 +241,13 @@ int EventConfig::dbVersion() const
 	return value(QStringLiteral("db.version")).toInt();
 }
 
-int EventConfig::cardCheckCheckTimeSec() const
+std::optional<int> EventConfig::maximumCardCheckAdvanceSec() const
 {
-	return value(QStringLiteral("event.cardChechCheckTimeSec")).toInt();
+	if(auto sec = value(QStringLiteral("event.cardChechCheckTimeSec")).toInt(); sec > 0)
+		return sec;
+	return {};
 }
+
 /*
 const QSet<QString> &EventConfig::knownKeys()
 {

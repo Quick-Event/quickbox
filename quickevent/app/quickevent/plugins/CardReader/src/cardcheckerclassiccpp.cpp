@@ -50,7 +50,11 @@ quickevent::core::si::CheckedCard CardCheckerClassicCpp::checkCard(const quickev
 	//checked_card.setCheckTimeMs = null;
 	//checked_card.startTimeMs = null;
 	if(read_card.checkTime() != 0xEEEE) {
-		checked_card.setCheckTimeMs(msecIntervalAM(start00sec * 1000, read_card.checkTime() * 1000));
+		// temporaryly shift start for 10 min to enable negative chceckTime for runners starting in 00 and 01
+		static constexpr int MIN_10_MSEC = 10 * 60 * 1000;
+		auto shifted_start00 = start00sec * 1000 - MIN_10_MSEC;
+		auto shifted_interval = msecIntervalAM(shifted_start00, read_card.checkTime() * 1000);
+		checked_card.setCheckTimeMs(shifted_interval - MIN_10_MSEC);
 	}
 	//var start_time_sec = null;
 	if(read_card.startTime() == 0xEEEE) {        //take start record from start list
@@ -82,14 +86,18 @@ quickevent::core::si::CheckedCard CardCheckerClassicCpp::checkCard(const quickev
 		}
 	}
 
-	int max_check_diff_msec = cardCheckCheckTimeSec() * 1000;
-	if(cardCheckCheckTimeSec() > 0 && read_card.startTime() == 0xEEEE) {
-		if(checked_card.checkTimeMs() > 0) {
-			int diff_msec = checked_card.startTimeMs() - checked_card.checkTimeMs();
-			checked_card.setBadCheck(diff_msec > max_check_diff_msec);
-		}
-		else {
-			checked_card.setBadCheck(true);
+	if(read_card.startTime() == 0xEEEE) {
+		if(auto card_check_sec = maximumCardCheckAdvanceSec(); card_check_sec.has_value()) {
+			if(read_card.checkTime() == 0xEEEE) {
+				checked_card.setBadCheck(true);
+			}
+			else {
+				auto max_card_check_diff_msec = card_check_sec.value() * 1000;
+				auto start_time = checked_card.startTimeMs();
+				auto check_time = checked_card.checkTimeMs();
+				int diff_msec = start_time - check_time;
+				checked_card.setBadCheck(diff_msec > max_card_check_diff_msec);
+			}
 		}
 	}
 

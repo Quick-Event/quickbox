@@ -35,6 +35,7 @@ ReportOptionsDialog::ReportOptionsDialog(QWidget *parent)
 	ui->grpLegs->setVisible(false);
 	ui->grpResultOptions->setVisible(false);
 	ui->grpStartTimes->setVisible(false);
+	ui->grpStartlistOrderBy->setVisible(false);
 	ui->btRegExp->setEnabled(QSqlDatabase::database().driverName().endsWith(QLatin1String("PSQL"), Qt::CaseInsensitive));
 
 	connect(ui->btSaveAsDefault, &QPushButton::clicked, [this]() {
@@ -54,6 +55,7 @@ ReportOptionsDialog::ReportOptionsDialog(QWidget *parent)
 	connect(this, &ReportOptionsDialog::columnCountEnableChanged, ui->edColumnCount, &QGroupBox::setEnabled);
 	connect(this, &ReportOptionsDialog::resultOptionsVisibleChanged, ui->grpResultOptions, &QGroupBox::setVisible);
 	connect(this, &ReportOptionsDialog::startTimeFormatVisibleChanged, ui->grpStartTimes, &QGroupBox::setVisible);
+	connect(this, &ReportOptionsDialog::startlistOrderFirstByVisibleChanged, ui->grpStartlistOrderBy, &QGroupBox::setVisible);
 
 	//connect(ui->edStagesCount, &QSpinBox::valueChanged, [this](int n) {
 	//	qfInfo() << "stage cnt value changed:" << n;
@@ -210,6 +212,10 @@ void ReportOptionsDialog::setOptions(const ReportOptionsDialog::Options &options
 	StartTimeFormat start_time_format = (StartTimeFormat)options.startTimeFormat();
 	ui->btStartTimes1->setChecked(start_time_format == StartTimeFormat::RelativeToClassStart);
 	ui->btStartTimes2->setChecked(start_time_format == StartTimeFormat::DayTime);
+	StartlistOrderFirstBy start_order_by = (StartlistOrderFirstBy)options.startlistOrderFirstBy();
+	ui->btStartOrder1->setChecked(start_order_by == StartlistOrderFirstBy::ClassName);
+	ui->btStartOrder2->setChecked(start_order_by == StartlistOrderFirstBy::StartTime);
+	ui->btStartOrder3->setChecked(start_order_by == StartlistOrderFirstBy::Names);
 }
 
 ReportOptionsDialog::Options ReportOptionsDialog::options() const
@@ -242,6 +248,8 @@ ReportOptionsDialog::Options ReportOptionsDialog::options() const
 	opts.setResultExcludeDisq(ui->chkExcludeDisq->isChecked());
 	StartTimeFormat start_time_format =  ui->btStartTimes1->isChecked()? StartTimeFormat::RelativeToClassStart: StartTimeFormat::DayTime;
 	opts.setStartTimeFormat((int)start_time_format);
+	StartlistOrderFirstBy start_order_by = startlistOrderFirstBy();
+	opts.setStartlistOrderFirstBy((int)start_order_by);
 	return opts;
 }
 
@@ -311,5 +319,16 @@ ReportOptionsDialog::StartTimeFormat ReportOptionsDialog::startTimeFormat() cons
 	return ui->btStartTimes1->isChecked()? StartTimeFormat::RelativeToClassStart: StartTimeFormat::DayTime;
 }
 
+ReportOptionsDialog::StartlistOrderFirstBy ReportOptionsDialog::startlistOrderFirstBy() const
+{
+	StartlistOrderFirstBy start_order_by = StartlistOrderFirstBy::ClassName;
+	if (ui->btStartOrder2->isChecked())
+		start_order_by = StartlistOrderFirstBy::StartTime;
+	else if (ui->btStartOrder3->isChecked())
+		start_order_by = StartlistOrderFirstBy::Names;
+	return start_order_by;
+}
+
 
 }}
+

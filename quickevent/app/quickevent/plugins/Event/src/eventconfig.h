@@ -6,6 +6,8 @@
 #include <QSet>
 #include <QDateTime>
 
+#include <optional>
+
 namespace Event {
 
 class EventConfig : public QObject
@@ -24,7 +26,7 @@ public:
 						  };
 public:
 	explicit EventConfig(QObject *parent = nullptr);
-public slots:
+public:
 	QVariantMap values() const {return m_data;}
 	//void setValues(const QVariantMap &vals);
 	QVariant value(const QStringList &path, const QVariant &default_value = QVariant()) const;
@@ -48,7 +50,7 @@ public slots:
 	QString mainReferee() const;
 	QDateTime eventDateTime() const;
 	int dbVersion() const;
-	int cardCheckCheckTimeSec() const;
+	std::optional<int> maximumCardCheckAdvanceSec() const;
 private:
 	void save_helper(QVariantMap &ret, const QString &current_path, const QVariant &val);
 	QVariantMap setValue_helper(const QVariantMap &m, const QStringList &path, const QVariant &val);

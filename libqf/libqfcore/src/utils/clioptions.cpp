@@ -175,7 +175,7 @@ QVariant CLIOptions::value_helper(const QString &name, bool throw_exception) con
 #if QT_VERSION_MAJOR >= 6
 		ret = QVariant(opt.type());
 #else
-		ret = QVariant(opt.type().id());
+		ret = QVariant(static_cast<QVariant::Type>(opt.type().id()));
 #endif
 	return ret;
 }

@@ -259,7 +259,7 @@ void ClassItem::updateToolTip()
 		for(auto *cl : clst) {
 			sl << cl->data().className();
 		}
-		tool_tip += tr("clash with: %1<br/>").arg(sl.join(", "));
+		tool_tip += tr(", clash with: %1<br/>").arg(sl.join(", "));
 	}
 	tool_tip += "</body></html>";
 	tool_tip.replace(' ', "&nbsp;");
