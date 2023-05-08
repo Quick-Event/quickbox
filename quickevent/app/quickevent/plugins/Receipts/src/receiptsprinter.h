@@ -17,6 +17,7 @@ public:
 private:
 	QList<QByteArray> createPrinterData(const QDomElement &body, const ReceiptsSettings &receipts_settings);
 	void createPrinterData_helper(const QDomElement &el, DirectPrintContext *print_context, const QString &text_encoding);
+	QByteArray encodeText(const QString text, const QString &text_encoding) const;
 };
 
 #endif // RECEIPTSPRINTER_H

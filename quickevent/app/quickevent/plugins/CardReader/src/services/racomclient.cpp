@@ -180,8 +180,8 @@ void RacomReadSplitFile::readAndProcessFile()
 				continue;
 
 			siut::SIPunch punch;
-			punch.setCardNumber(text[i].leftRef(8).toInt());
-			int code = text[i].midRef(9,4).toInt();
+			punch.setCardNumber(text[i].left(8).toInt());
+			int code = text[i].mid(9,4).toInt();
 			if (code == m_finishCode)
 				code = quickevent::core::CodeDef::FINISH_PUNCH_CODE;
 			punch.setCode(code);

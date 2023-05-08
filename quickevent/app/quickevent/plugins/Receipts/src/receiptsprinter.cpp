@@ -15,7 +15,11 @@
 #include <QTcpSocket>
 #include <QUdpSocket>
 #include <QFile>
+#if QT_VERSION_MAJOR >= 6
+#include <QStringEncoder>
+#else
 #include <QTextCodec>
+#endif
 
 //#define QF_TIMESCOPE_ENABLED
 #include <qf/core/utils/fileutils.h>
@@ -197,7 +201,7 @@ bool ReceiptsPrinter::printReceipt(const QString &report_file_name, const QVaria
 	return false;
 }
 
-static const QByteArray epson_commands[] =
+static const std::vector<QByteArray> epson_commands =
 {
 	QByteArray("\033E\x01"),		//    BoldOn
 	QByteArray("\033E\x00", 3),		//    BoldOff
@@ -349,16 +353,7 @@ void ReceiptsPrinter::createPrinterData_helper(const QDomElement &el, DirectPrin
 			text_align = Qt::AlignRight;
 		else if(ta == QLatin1String("center"))
 			text_align = Qt::AlignHCenter;
-		QByteArray text;
-		QTextCodec *tc = nullptr;
-		if(text_encoding != QLatin1String("ASCII7")) {
-			QByteArray ba = text_encoding.toUtf8();
-			tc = QTextCodec::codecForName(ba);
-		}
-		if(tc)
-			text = tc->fromUnicode(el.text());
-		else
-			text = qf::core::Collator::toAscii7(QLocale::Czech, el.text(), false);
+		QByteArray text = encodeText(el.text(), text_encoding);
 		print_context->line << PrintData(PrintData::Command::Text, text, text_width, text_align);
 	}
 	{
@@ -376,6 +371,33 @@ void ReceiptsPrinter::createPrinterData_helper(const QDomElement &el, DirectPrin
 	print_context->line << post_commands;
 	if(is_halign)
 		print_context->horizontalLayoutNestCount--;
+}
+
+QByteArray ReceiptsPrinter::encodeText(const QString text, const QString &text_encoding) const
+{
+#if QT_VERSION_MAJOR >= 6
+	auto ba = text_encoding.toUtf8();
+	auto enc = QStringConverter::encodingForName(ba.constData());
+	if(enc) {
+		auto from_utf16 = QStringEncoder(enc.value());
+		return from_utf16(text);
+	}
+	else {
+		return qf::core::Collator::toAscii7(QLocale::Czech, text, false);
+	}
+#else
+	QByteArray ret;
+	QTextCodec *tc = nullptr;
+	if(text_encoding != QLatin1String("ASCII7")) {
+		QByteArray ba = text_encoding.toUtf8();
+		tc = QTextCodec::codecForName(ba);
+	}
+	if(tc)
+		ret = tc->fromUnicode(text);
+	else
+		ret = qf::core::Collator::toAscii7(QLocale::Czech, text, false);
+	return ret;
+#endif
 }
 
 static QList<PrintLine> alignPrinterData(DirectPrintContext *print_context, const ReceiptsSettings &receipts_settings)
@@ -444,7 +466,6 @@ static QList<QByteArray> interpretControlCodes(const QList<PrintLine> &lines, co
 	QList<QByteArray> ret;
 	int line_length = receipts_settings.characterPrinterLineLength();
 	bool include_escapes = receipts_settings.isCharacterPrinterGenerateControlCodes();
-	const int cmd_length = sizeof(epson_commands) / sizeof(char*);
 	for(const PrintLine& line : lines) {
 		QByteArray ba;
 		int line_text_len = 0;
@@ -466,8 +487,8 @@ static QList<QByteArray> interpretControlCodes(const QList<PrintLine> &lines, co
 				}
 			}
 			else if(include_escapes) {
-				int ix = (int)pd.command;
-				QF_ASSERT(ix < cmd_length, QString("%1 - Bad command index!").arg(ix), continue);
+				auto ix = (size_t)pd.command;
+				QF_ASSERT(ix < epson_commands.size(), QString("%1 - Bad command index!").arg(ix), continue);
 				ba += epson_commands[ix];
 			}
 		}

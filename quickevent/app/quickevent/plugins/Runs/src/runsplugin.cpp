@@ -1242,7 +1242,11 @@ qf::core::utils::TreeTable RunsPlugin::startListClubsTable(const quickevent::gui
 	tt.setValue("stageStart", getPlugin<EventPlugin>()->stageStartDateTime(stage_id));
 	{
 		qf::core::utils::TreeTableColumn c = tt.column(0);
+#if QT_VERSION_MAJOR >= 6
+		c.setType(qMetaTypeId<QString>()); // sqlite returns clubAbbr column as QVariant::Invalid, set correct type
+#else
 		c.setType(QVariant::String); // sqlite returns clubAbbr column as QVariant::Invalid, set correct type
+#endif
 		tt.setColumn(0, c);
 	}
 	//console.info(tt.toString());
@@ -1392,7 +1396,11 @@ qf::core::utils::TreeTable RunsPlugin::startListClubsNStagesTable(const int stag
 	tt.setValue("stageStart", getPlugin<EventPlugin>()->stageStartDateTime(sel_stage_id));
 	{
 		qf::core::utils::TreeTableColumn c = tt.column(0);
+#if QT_VERSION_MAJOR >= 6
+		c.setType(qMetaTypeId<QString>()); // sqlite returns clubAbbr column as QVariant::Invalid, set correct type
+#else
 		c.setType(QVariant::String); // sqlite returns clubAbbr column as QVariant::Invalid, set correct type
+#endif
 		tt.setColumn(0, c);
 	}
 	//console.info(tt.toString());
@@ -2481,7 +2489,9 @@ bool RunsPlugin::exportStartListCurrentStageCsvSime(const QString &file_name, bo
 	}
 	const QString separator = ";";
 	QTextStream csv(&f);
+#if QT_VERSION_MAJOR < 6
 	csv.setCodec("UTF-8");
+#endif
 #ifdef Q_OS_WINDOWS
 	// enable BOM for Windows
 	csv.setGenerateByteOrderMark(true);

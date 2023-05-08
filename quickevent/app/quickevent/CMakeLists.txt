@@ -110,10 +110,10 @@ add_executable(quickevent
     plugins/Relays/Relays.qrc
     plugins/Runs/Runs.qrc
     plugins/CardReader/CardReader.qrc
-    app.rc
+    quickevent.rc
     )
 
-qt5_add_translation(QM_FILES
+qt6_add_translation(QM_FILES
     quickevent-cs_CZ.ts
     quickevent-fr_FR.ts
     quickevent-nb_NO.ts

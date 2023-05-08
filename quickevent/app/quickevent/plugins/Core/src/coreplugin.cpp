@@ -15,6 +15,7 @@
 #include <QMessageBox>
 #include <QSettings>
 #include <QSslSocket>
+#include <QActionGroup>
 
 namespace qfw = qf::qmlwidgets;
 namespace qff = qf::qmlwidgets::framework;

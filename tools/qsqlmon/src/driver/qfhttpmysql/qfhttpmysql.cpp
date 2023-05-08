@@ -231,7 +231,12 @@ bool QFHttpMySqlDriverResult::reset(const QString & qs)
 			foreach(QVariant v, resultset.value("fields").toList()) {
 				QVariantMap m = v.toMap();
 				qfDebug() << "field name:" << m.value("name").toString() << "type:" << m.value("type").toString();
+#if QT_VERSION_MAJOR >= 6
+				auto ba = m.value("type").toString().toUtf8();
+				QSqlField fld(m.value("name").toString(), QMetaType::fromName(ba));
+#else
 				QSqlField fld(m.value("name").toString(), QVariant::nameToType(m.value("type").toString().toLatin1().constData()));
+#endif
 				fields.append(fld);
 			}
 			foreach(QVariant v, resultset.value("rows").toList()) {

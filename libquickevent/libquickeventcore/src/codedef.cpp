@@ -52,7 +52,11 @@ int CodeDef::codeFromString(const QString &code_str)
 	const static QRegularExpression rx_start(R"RX(S[A-Za-z]*([1-9][0-9]*)?)RX");
 	const static QRegularExpression rx_finish(R"RX(F[A-Za-z]*([1-9][0-9]*)?)RX");
 	auto get_code = [](const QRegularExpression &rx, const QString &s) {
+#if QT_VERSION_MAJOR >= 6
+		QRegularExpressionMatch match = rx.match(s, 0, QRegularExpression::NormalMatch, QRegularExpression::AnchorAtOffsetMatchOption);
+#else
 		QRegularExpressionMatch match = rx.match(s, 0, QRegularExpression::NormalMatch, QRegularExpression::AnchoredMatchOption);
+#endif
 		if(match.hasMatch()) {
 			QString ns = match.captured(1);
 			if(ns.isNull())

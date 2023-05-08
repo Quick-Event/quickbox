@@ -65,7 +65,11 @@ void SettingsDialog::addPage(SettingsPage *page)
 	auto *btn = new QPushButton(caption);
 	// set widget minimum width to show all buttons, default behavior is to srt width of widget
 	// according to width of first button added
+#if QT_VERSION_MAJOR >= 6
+	ui->buttonsWidget->setMinimumWidth(std::max(ui->buttonsWidget->minimumWidth(), btn->sizeHint().width() + layout->contentsMargins().left() * 5));
+#else
 	ui->buttonsWidget->setMinimumWidth(std::max(ui->buttonsWidget->minimumWidth(), btn->sizeHint().width() + layout->margin() * 5));
+#endif
 	btn->setCheckable(true);
 	layout->insertWidget(page_index, btn);
 	m_buttonGroup->addButton(btn, page_index);
@@ -74,7 +78,11 @@ void SettingsDialog::addPage(SettingsPage *page)
 	auto *label = new QLabel("  " + caption);
 	label->setObjectName("CaptionFrame"); // important for CSS
 	auto *ly = new QVBoxLayout(frame);
+#if QT_VERSION_MAJOR >= 6
+	ly->setContentsMargins({0, 0, 0, 0});
+#else
 	ly->setMargin(0);
+#endif
 	ly->addWidget(label);
 	ly->addWidget(page);
 	ui->stackedWidget->addWidget(frame);

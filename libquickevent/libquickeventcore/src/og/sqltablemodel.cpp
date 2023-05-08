@@ -77,12 +77,20 @@ QVariant SqlTableModel::editValueToRaw(int column_index, const QVariant &val) co
 	int type = columnType(column_index);
 	if(type == qMetaTypeId<TimeMs>()) {
 		TimeMs t = val.value<TimeMs>();
+#if QT_VERSION_MAJOR >= 6
+		ret = t.isValid()? t.msec(): QVariant(QMetaType(QMetaType::Int));
+#else
 		ret = t.isValid()? t.msec(): QVariant(QVariant::Int);
+#endif
 	}
 	else if(type == qMetaTypeId<si::SiId>()) {
 		auto id = (int)val.value<si::SiId>();
 		if(id == 0)
+#if QT_VERSION_MAJOR >= 6
+			ret = QVariant(QMetaType(QMetaType::Int));
+#else
 			ret = QVariant(QVariant::Int);
+#endif
 		else
 			ret = id;
 	}

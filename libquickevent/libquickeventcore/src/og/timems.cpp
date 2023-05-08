@@ -22,7 +22,7 @@ TimeMs::TimeMs(int msec)
 
 TimeMs TimeMs::fromVariant(const QVariant &time_v)
 {
-	if(time_v.type() == QVariant::Int)
+	if(time_v.userType() == QMetaType::Int)
 		return TimeMs(time_v.toInt());
 	return TimeMs();
 }
