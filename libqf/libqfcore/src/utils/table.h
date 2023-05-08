@@ -59,7 +59,7 @@ public:
 		QVariantMap columnCaptions() const {return value("columnCaptions").toMap();}
 		TextExportOptions& setColumnCaptions(const QVariantMap &cc) {this->operator[]("columnCaptions") = cc; return *this;}
 
-		FieldQuoting fieldQuotingPolicy() const {return (FieldQuoting)(value("fieldQuotingPolicy", IfNecessary).toInt());}
+		FieldQuoting fieldQuotingPolicy() const {return static_cast<FieldQuoting>(value("fieldQuotingPolicy", IfNecessary).toInt());}
 		TextExportOptions& setFieldQuotingPolicy(FieldQuoting fq) {this->operator[]("fieldQuotingPolicy") = fq; return *this;}
 
 		//QF_VARIANTMAP_FIELD(FieldQuoting, f, setF, ieldQuotingPolicy, IfNecessary)
@@ -137,8 +137,8 @@ public:
 		QString tableId() const;
 		QString toString() const;
 
-		QVariant::Type type() const {return (QVariant::Type)d->userType;}
-		void setType(QVariant::Type t) {d->userType = t;}
+		QMetaType type() const {return QMetaType(d->userType);}
+		void setType(QMetaType::Type t) {d->userType = t;}
 		void setUserType(int t) {d->userType = t;}
 		QF_SHARED_CLASS_FIELD_RW(QString, n, setN, ame)
 		QF_SHARED_CLASS_BIT_FIELD_RW(bool, c, setC, anUpdate)
@@ -258,8 +258,8 @@ public:
 	}
 public:
 	virtual int columnCount() const;
-	Field& insertColumn(int ix, const QString &name, QVariant::Type t);
-	Field& appendColumn(const QString &name, QVariant::Type t) {return insertColumn(columnCount(), name, t);}
+	Field& insertColumn(int ix, const QString &name, QMetaType::Type t);
+	Field& appendColumn(const QString &name, QMetaType::Type t) {return insertColumn(columnCount(), name, t);}
 
 	//! return empty row which is not inserted in the table rows
 	TableRow isolatedRow();
@@ -385,11 +385,11 @@ public:
 
 
 	//! returns number of fields in the row.
-	int fieldCount() const {return fields().count();}
+	int fieldCount() const;
 	//! returns number of values in the row, Shoul be the same as \a fieldCount() .
-	int count() const {return d->values.count();}
-	bool isInsert() const {return d->flags.insert;}
-	void setInsert(bool b) {d->flags.insert = b;}
+	int count() const;
+	bool isInsert() const;
+	void setInsert(bool b);
 	//bool isForcedInsert() const {return d->flags.forcedInsert;}
 	/// forcedInsert se pouziva v pripadech, kdy se data zaznamu nachazi ve vice linkovanych tabulkach a behem loadData() se zjisti, ze zaznam v nekterych tabulkach chybi
 	/// viz. napr. PPKlientKartaDataFormDocument::loadData()

@@ -8,7 +8,7 @@ QT += gui sql widgets
 
 CONFIG += warn_on qt thread
 
-CONFIG += c++11
+CONFIG += c++17
 
 TARGET = $$MY_SUBPROJECT
 

@@ -67,6 +67,14 @@ qf--qmlwidgets--dialogs--internal--CaptionFrame {
 /* 	background: lightsteelblue; */
  	background: darkorange;
 }
+QWidget#CaptionFrame {
+	/*background: #FDE364; yellow */
+	/*background: #FFA842; orange */
+/* 	background: lightsteelblue; */
+	background: darkorange;
+	color:black;
+	font-weight: bold;
+}
 qf--qmlwidgets--dialogs--internal--CaptionFrame[alert="true"] {
 	background: salmon;
 	/*background: #FFA842;*/

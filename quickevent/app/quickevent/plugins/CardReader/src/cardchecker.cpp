@@ -1,7 +1,7 @@
 #include "cardchecker.h"
-#include "cardreaderplugin.h"
 
-//#include <Classes/classesplugin.h>
+#include "../../Event/src/eventplugin.h"
+#include "../../Runs/src/runsplugin.h"
 
 #include <quickevent/core/og/timems.h>
 #include <quickevent/core/codedef.h>
@@ -11,8 +11,6 @@
 
 #include <qf/qmlwidgets/framework/mainwindow.h>
 
-#include <plugins/Event/src/eventplugin.h>
-#include <plugins/Runs/src/runsplugin.h>
 #include <qf/core/assert.h>
 #include <qf/core/log.h>
 #include <qf/core/sql/query.h>
@@ -84,9 +82,9 @@ int CardChecker::startTimeSec(int run_id)
 	return ret;
 }
 
-int CardChecker::cardCheckCheckTimeSec()
+std::optional<int> CardChecker::maximumCardCheckAdvanceSec()
 {
-	return getPlugin<EventPlugin>()->eventConfig()->cardCheckCheckTimeSec();
+	return getPlugin<EventPlugin>()->eventConfig()->maximumCardCheckAdvanceSec();
 }
 
 quickevent::core::CourseDef CardChecker::courseCodesForRunId(int run_id)

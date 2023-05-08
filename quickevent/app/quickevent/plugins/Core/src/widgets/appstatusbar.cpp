@@ -3,6 +3,8 @@
 #include <QProgressBar>
 #include <QLabel>
 
+namespace Core {
+
 AppStatusBar::AppStatusBar(QWidget *parent)
 	: Super(parent)
 {
@@ -61,3 +63,4 @@ void AppStatusBar::showProgress(const QString &msg, int completed, int total)
 	m_lblMessage->setText(message);
 }
 
+}

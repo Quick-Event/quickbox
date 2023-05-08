@@ -113,7 +113,7 @@ public:
 	static int columnIndex(const QVariantList &cols, const QString &col_name);
 	int columnIndex(const QString &col_name) const {return columnIndex(columns(), col_name);}
 	int columnCount() const {return m_values.toMap().value(KEY_COLUMNS).toList().count();}
-	void appendColumn(const QString &name, QVariant::Type type = QVariant::String, const QString &caption = QString());
+	void appendColumn(const QString &name, QMetaType type = QMetaType(QMetaType::QString), const QString &caption = QString());
 	void appendColumn(const TreeTableColumn &c);
 
 	TreeTableColumn column(int col_ix) const;

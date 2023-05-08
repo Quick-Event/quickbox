@@ -38,11 +38,11 @@ protected:
 	QString m_stackTrace;
 protected:
 	void init(const QString& _msg, const QString& _where);
-public:
 	void log();
-	virtual QString message() const {return m_msg;}
-	virtual QString where() const {return m_where;}
-	virtual QString stackTrace() const {return m_stackTrace;}
+public:
+	QString message() const {return m_msg;}
+	QString where() const {return m_where;}
+	QString stackTrace() const {return m_stackTrace;}
 	virtual QString toString() const;
 	const char* what() const throw() Q_DECL_OVERRIDE;
 	operator const char *() const  throw(){return what();}

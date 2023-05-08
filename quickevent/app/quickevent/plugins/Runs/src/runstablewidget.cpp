@@ -177,7 +177,7 @@ void RunsTableWidget::reload(int stage_id, int class_id, bool show_offrace, cons
 			qb.where("runs.leg=" QF_IARG(leg));
 	}
 	else {
-		qb.select("competitors.startNumber");
+		qb.select("competitors.startNumber AS competitors__startNumber");
 		qb.join("competitors.classId", "classes.id");
 		qb.where("runs.stageId=" QF_IARG(stage_id));
 	}
@@ -266,17 +266,28 @@ void RunsTableWidget::onCustomContextMenuRequest(const QPoint &pos)
 		<< &a_clear_start_times;
 	QAction *a = QMenu::exec(lst, ui->tblRuns->viewport()->mapToGlobal(pos));
 	if(a == &a_load_card) {
-		//qf::qmlwidgets::dialogs::MessageBox::showError(this, "Not implemented yet.");
 		qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 		int curr_ix = 0;
 		QList<int> sel_ixs = ui->tblRuns->selectedRowsIndexes();
+		QList<int> runid_to_reload;
 		for(int ix : sel_ixs) {
 			qf::core::utils::TableRow row = ui->tblRuns->tableRow(ix);
 			int run_id = row.value(QStringLiteral("runs.id")).toInt();
 			fwk->showProgress(tr("Reloading times for %1").arg(row.value(QStringLiteral("competitorName")).toString()), ++curr_ix, sel_ixs.count());
 			bool ok = getPlugin<RunsPlugin>()->reloadTimesFromCard(run_id);
+			//qfInfo() << ix << run_id << ok << row.value(QStringLiteral("competitorName")).toString();
 			if(ok)
-				ui->tblRuns->reloadRow(ix);
+				runid_to_reload << run_id;
+		}
+		auto *m = ui->tblRuns->tableModel();
+		for(int runid : runid_to_reload) {
+			// we cannot reload row-ix, because proxy-model might be sorted according to reloaded value
+			for(int i = 0; i < m->rowCount(); ++i) {
+				int id = m->value(i, QStringLiteral("runs.id")).toInt();
+				if(id == runid) {
+					m->reloadRow(i);
+				}
+			}
 		}
 		fwk->hideProgress();
 	}

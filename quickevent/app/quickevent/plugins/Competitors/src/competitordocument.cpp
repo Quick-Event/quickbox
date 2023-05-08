@@ -41,7 +41,7 @@ bool CompetitorDocument::saveData()
 			qfDebug() << "inserting runs";
 			competitor_id = dataId().toInt();
 			int stage_count = getPlugin<EventPlugin>()->stageCount();
-			qf::core::sql::Query q(model()->connectionName());
+			qf::core::sql::Query q(sqlModel()->connectionName());
 			q.prepare("INSERT INTO runs (competitorId, stageId, siId) VALUES (:competitorId, :stageId, :siId)");
 			m_lastInsertedRunsIds.clear();
 			for(int i=0; i<stage_count; i++) {
@@ -61,7 +61,7 @@ bool CompetitorDocument::saveData()
 				qfDebug() << "updating SIID in run tables";
 				if(siid_dirty) {
 					int competitor_id = dataId().toInt();
-					qf::core::sql::Query q(model()->connectionName());
+					qf::core::sql::Query q(sqlModel()->connectionName());
 					q.prepare("UPDATE runs SET siId=:siId WHERE competitorId=:competitorId", qf::core::Exception::Throw);
 					q.bindValue(":competitorId", competitor_id);
 					q.bindValue(":siId", siid());
@@ -85,7 +85,7 @@ bool CompetitorDocument::dropData()
 	bool ret = false;
 	auto id = dataId();
 	{
-		qf::core::sql::Query q(model()->connectionName());
+		qf::core::sql::Query q(sqlModel()->connectionName());
 		q.prepare("DELETE FROM runs WHERE competitorId = :competitorId");
 		q.bindValue(":competitorId", id);
 		ret = q.exec();

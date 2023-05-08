@@ -78,6 +78,7 @@ bool ReportViewWidget::showReport2(QWidget *parent
 	w->setWindowTitle(window_title);
 	if(!persistent_settings_id.isEmpty())
 		w->setPersistentSettingsId(persistent_settings_id);
+	qfInfo() << "Show report:" << report_qml_file;
 	w->setReport(report_qml_file, report_init_properties);
 	QMapIterator<QString, QVariant> it(multiple_table_data);
 	while(it.hasNext()) {

@@ -9,6 +9,9 @@
 #include <QUrl>
 #include <QTextEdit>
 #include <QTextStream>
+#if QT_VERSION_MAJOR < 6
+#include <QTextCodec>
+#endif
 
 using namespace qf::qmlwidgets::dialogs;
 

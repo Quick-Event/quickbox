@@ -22,7 +22,7 @@ SqlDataDocument::~SqlDataDocument()
 
 bool SqlDataDocument::load()
 {
-	qfm::SqlTableModel *m = model();
+	qfm::SqlTableModel *m = sqlModel();
 	if(m && m_qmlQueryBuilder) {
 		m->setQueryBuilder(m_qmlQueryBuilder->coreBuilder(), false);
 	}

@@ -2,8 +2,6 @@
 #include "ui_competitorwidget.h"
 
 #include "competitordocument.h"
-#include "competitorsplugin.h"
-#include "registrationswidget.h"
 
 #include <quickevent/gui/og/itemdelegate.h>
 
@@ -19,6 +17,8 @@
 #include <qf/core/sql/transaction.h>
 #include <qf/core/assert.h>
 #include <plugins/Event/src/eventplugin.h>
+#include <plugins/Runs/src/cardflagsdialog.h>
+#include <plugins/Runs/src/runflagsdialog.h>
 #include <plugins/Runs/src/runsplugin.h>
 
 #include <QMenu>
@@ -54,14 +54,12 @@ public:
 		col_runs_siId,
 		col_runs_startTimeMs,
 		col_runs_timeMs,
-		col_runs_notCompeting,
-		col_runs_misPunch,
-		col_runs_disqualified,
-		col_runs_cardRentRequested,
-		col_cardInLentTable,
-		col_runs_cardReturned,
+		col_runs_runFlags,
+		col_runs_cardFlags,
 		col_COUNT
 	};
+private:
+	QVariant value(int row_ix, int column_ix) const override;
 };
 
 CompetitorRunsModel::CompetitorRunsModel(QObject *parent)
@@ -76,12 +74,8 @@ CompetitorRunsModel::CompetitorRunsModel(QObject *parent)
 	setColumn(col_runs_siId, ColumnDefinition("runs.siid", tr("SI")).setReadOnly(false).setCastType(qMetaTypeId<quickevent::core::si::SiId>()));
 	setColumn(col_runs_startTimeMs, ColumnDefinition("runs.startTimeMs", tr("Start")).setCastType(qMetaTypeId<quickevent::core::og::TimeMs>()).setReadOnly(true));
 	setColumn(col_runs_timeMs, ColumnDefinition("runs.timeMs", tr("Time")).setCastType(qMetaTypeId<quickevent::core::og::TimeMs>()).setReadOnly(true));
-	setColumn(col_runs_notCompeting, ColumnDefinition("runs.notCompeting", tr("NC", "runs.notCompeting")).setToolTip(tr("Not competing")));
-	setColumn(col_runs_disqualified, ColumnDefinition("runs.disqualified", tr("D", "runs.disqualified")).setToolTip(tr("Disqualified")));
-	setColumn(col_runs_misPunch, ColumnDefinition("runs.misPunch", tr("E", "runs.misPunch")).setToolTip(tr("Card mispunch")));
-	setColumn(col_runs_cardRentRequested, ColumnDefinition("runs.cardLent", tr("RR", "runs.cardLent")).setToolTip(tr("Card rent requested")));
-	setColumn(col_cardInLentTable, ColumnDefinition("cardInLentTable", tr("RT", "cardInLentTable")).setToolTip(tr("Card in rent table")));
-	setColumn(col_runs_cardReturned, ColumnDefinition("runs.cardReturned", tr("R", "runs.cardReturned")).setToolTip(tr("Card returned")));
+	setColumn(col_runs_runFlags, ColumnDefinition("runFlags", tr("Run flags")).setReadOnly(true));
+	setColumn(col_runs_cardFlags, ColumnDefinition("cardFlags", tr("Card flags")).setReadOnly(true));
 }
 
 }
@@ -115,7 +109,7 @@ CompetitorWidget::CompetitorWidget(QWidget *parent) :
 	connect(ui->edFind, &FindRegistrationEdit::registrationSelected, this, &CompetitorWidget::onRegistrationSelected);
 
 	dataController()->setDocument(new Competitors::CompetitorDocument(this));
-	m_runsModel = new CompetitorRunsModel(this);
+	m_runsModel = (RunsTableModel*) new CompetitorRunsModel(this);
 	ui->tblRuns->setTableModel(m_runsModel);
 	ui->tblRuns->setPersistentSettingsId(ui->tblRuns->objectName());
 	ui->tblRuns->setInlineEditSaveStrategy(qf::qmlwidgets::TableView::OnManualSubmit);
@@ -147,6 +141,23 @@ CompetitorWidget::CompetitorWidget(QWidget *parent) :
 			ui->tblRuns->reset(); // reload ui to see the change
 		}
 	});
+
+	connect(ui->tblRuns, &qfw::TableView::editCellRequest, this, [this](QModelIndex index) {
+		auto col = index.column();
+		if(col == CompetitorRunsModel::col_runs_runFlags) {
+			Runs::RunFlagsDialog dlg(this);
+			dlg.load(m_runsModel, ui->tblRuns->toTableModelRowNo(ui->tblRuns->currentIndex().row()));
+			if(dlg.exec()) {
+				dlg.save();
+			}
+		} else if(col == CompetitorRunsModel::col_runs_cardFlags) {
+			Runs::CardFlagsDialog dlg(this);
+			dlg.load(m_runsModel, ui->tblRuns->toTableModelRowNo(ui->tblRuns->currentIndex().row()));
+			if(dlg.exec()) {
+				dlg.save();
+			}
+		}
+	}, Qt::QueuedConnection);
 }
 
 CompetitorWidget::~CompetitorWidget()
@@ -163,6 +174,8 @@ bool CompetitorWidget::loadRunsTable()
 			.select2("classes", "name")
 			.select("lentcards.siid IS NOT NULL AS cardInLentTable")
 			.select("COALESCE(relays.club, '') || ' ' || COALESCE(relays.name, '') AS relayName")
+			.select("'' AS runFlags")
+			.select("'' AS cardFlags")
 			.from("runs")
 			.join("runs.competitorId", "competitors.id")
 			.join("runs.relayId", "relays.id")
@@ -343,4 +356,54 @@ bool CompetitorWidget::saveData()
 	return false;
 }
 
+QVariant CompetitorRunsModel::value(int row_ix, int column_ix) const
+{
+	if(column_ix == col_runs_runFlags) {
+		qf::core::utils::TableRow row = tableRow(row_ix);
+		bool is_disqualified = row.value(QStringLiteral("runs.disqualified")).toBool();
+		bool is_disqualified_by_organizer = row.value(QStringLiteral("runs.disqualifiedByOrganizer")).toBool();
+		bool mis_punch = row.value(QStringLiteral("runs.misPunch")).toBool();
+		bool bad_check = row.value(QStringLiteral("runs.badCheck")).toBool();
+		bool not_start = row.value(QStringLiteral("runs.notStart")).toBool();
+		bool not_finish = row.value(QStringLiteral("runs.notFinish")).toBool();
+		bool not_competing = row.value(QStringLiteral("runs.notCompeting")).toBool();
+		QStringList sl;
+		if(is_disqualified)
+			sl << tr("DISQ", "Disqualified");
+		if(is_disqualified_by_organizer)
+			sl << tr("DO", "disqualifiedByOrganizer");
+		if(mis_punch)
+			sl << tr("MP", "MisPunch");
+		if(bad_check)
+			sl << tr("BC", "BadCheck");
+		if(not_competing)
+			sl << tr("NC", "NotCompeting");
+		if(not_start)
+			sl << tr("DNS", "DidNotStart");
+		if(not_finish)
+			sl << tr("DNF", "DidNotFinish");
+		if(sl.isEmpty())
+			return QStringLiteral("");
+		else
+			return sl.join(',');
+	}
+	else if(column_ix == col_runs_cardFlags) {
+		qf::core::utils::TableRow row = tableRow(row_ix);
+		bool card_rent_requested = row.value(QStringLiteral("runs.cardLent")).toBool();
+		bool card_returned = row.value(QStringLiteral("runs.cardReturned")).toBool();
+		bool card_in_lent_table = row.value(QStringLiteral("cardInLentTable")).toBool();
+		QStringList sl;
+		if(card_rent_requested)
+			sl << tr("CR", "Card rent requested");
+		if(card_in_lent_table)
+			sl << tr("CT", "Card in lent cards table");
+		if(card_returned)
+			sl << tr("RET", "Card returned");
+		if(sl.isEmpty())
+			return QStringLiteral("");
+		else
+			return sl.join(',');
+	}
+	return Super::value(row_ix, column_ix);
+}
 

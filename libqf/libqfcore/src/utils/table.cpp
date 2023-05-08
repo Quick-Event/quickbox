@@ -92,7 +92,11 @@ int Table::LessThan::cmp(const QVariant &l, const QVariant &r, const Table::Sort
 	if(!l.isValid() && !r.isValid())
 		return 0;
 	int ret = 1;
+#if QT_VERSION_MAJOR >= 6
+	if(l.typeId() == QMetaType::QString) {
+#else
 	if(l.type() == QVariant::String) {
+#endif
 		if(sd.ascii7bit) {
 			QByteArray la = qf::core::Collator::toAscii7(QLocale::Czech, l.toString(), !sd.caseSensitive);
 			QByteArray ra = qf::core::Collator::toAscii7(QLocale::Czech, r.toString(), !sd.caseSensitive);
@@ -110,44 +114,52 @@ int Table::LessThan::cmp(const QVariant &l, const QVariant &r, const Table::Sort
 	}
 	else {
 		if(l == r) ret = 0;
-		else switch (l.type()) {
-			case QVariant::Invalid:
+#if QT_VERSION_MAJOR >= 6
+		else switch (l.typeId()) {
+#else
+		else switch ((int)l.type()) {
+#endif
+			case QMetaType::UnknownType:
 				ret = -1;
 				break;
-			case QVariant::Bool:
-			case QVariant::Int:
+			case QMetaType::Bool:
+			case QMetaType::Int:
 				if(l.toInt() < r.toInt()) ret = -1;
 				break;
-			case QVariant::UInt:
+			case QMetaType::UInt:
 				if(l.toUInt() < r.toUInt()) ret = -1;
 				break;
-			case QVariant::LongLong:
+			case QMetaType::LongLong:
 				if(l.toLongLong() < r.toLongLong()) ret = -1;
 				break;
-			case QVariant::ULongLong:
+			case QMetaType::ULongLong:
 				if(l.toULongLong() < r.toULongLong()) ret = -1;
 				break;
-			case QVariant::Double:
+			case QMetaType::Double:
 				if(l.toDouble() < r.toDouble()) ret = -1;
 				//qfInfo() << "l:" << l.toDouble() << "lestThan" << "r:" << r.toDouble() << ret;
 				break;
-			case QVariant::Char:
+			case QMetaType::Char:
 				if(l.toChar() < r.toChar()) ret = -1;
 				break;
-			case QVariant::Date:
+			case QMetaType::QDate:
 				if(l.toDate() < r.toDate()) ret = -1;
 				break;
-			case QVariant::Time:
+			case QMetaType::QTime:
 				if(l.toTime() < r.toTime()) ret = -1;
 				break;
-			case QVariant::DateTime:
+			case QMetaType::QDateTime:
 				if(l.toDateTime() < r.toDateTime()) ret = -1;
 				break;
-			case QVariant::ByteArray:
+			case QMetaType::QByteArray:
 				if(l.toByteArray() < r.toByteArray()) ret = -1;
 				break;
 			default:
+#if QT_VERSION_MAJOR >= 6
+				qfWarning() << "unsupported variant comparison, variant type:" << l.typeId();
+#else
 				qfWarning() << "unsupported variant comparison, variant type:" << l.type();
+#endif
 				break;
 		}
 	}
@@ -199,7 +211,11 @@ QString Table::Field::tableId() const
 QString Table::Field::toString() const
 {
 	QString ret = "name: '%1', type: %2, canUpdate: %3, isPriKey: %4";
-	return ret.arg(name()).arg(QVariant::typeToName((int)type())).arg(canUpdate()).arg(isPriKey());
+#if QT_VERSION_MAJOR >= 6
+	return ret.arg(name()).arg(type().name()).arg(canUpdate()).arg(isPriKey());
+#else
+	return ret.arg(name()).arg(type().name().data()).arg(canUpdate()).arg(isPriKey());
+#endif
 }
 
 /*
@@ -459,7 +475,7 @@ void TableRow::setValue(int col, const QVariant &v)
 
 	QVariant new_val;
 	if(v.isValid())
-		new_val = Utils::retypeVariant(v, fields()[col].type());
+		new_val = Utils::retypeVariant(v, fields()[col].type().id());
 	QVariant orig_val = origValue(col);
 	//qfInfo() << new_val << "is null:" << new_val.isNull() << "==" << orig_val << "is null:" << orig_val.isNull() << "->" << (new_val == orig_val);
 	bool same_nullity = (new_val.isNull() && orig_val.isNull()) || (!new_val.isNull() && !orig_val.isNull());
@@ -589,7 +605,7 @@ Table::Table(const QStringList &col_names)
 {
 	d = new Data();
 	for(int i=0; i<col_names.count(); i++) {
-		Field fld(col_names[i], QVariant::String);
+		Field fld(col_names[i], QMetaType::QString);
 		fld.setCanUpdate(true);
 		fieldsRef().append(fld);
 	}
@@ -635,7 +651,7 @@ int Table::columnCount() const
 	return fields().count();
 }
 
-Table::Field &Table::insertColumn(int ix, const QString &name, QVariant::Type t)
+Table::Field &Table::insertColumn(int ix, const QString &name, QMetaType::Type t)
 {
 	FieldList &fields = fieldsRef();
 	fields.insert(ix, Field(name, t));
@@ -792,6 +808,27 @@ TableRow Table::lastRow() const
 	ret = row(rowCount() - 1);
 	return ret;
 }
+
+int TableRow::fieldCount() const
+{
+	return fields().count();
+}
+
+int TableRow::count() const
+{
+	return d->values.count();
+}
+
+bool TableRow::isInsert() const
+{
+	return d->flags.insert;
+}
+
+void TableRow::setInsert(bool b)
+{
+	d->flags.insert = b;
+}
+
 /*
 static QString quote_XML(const QString &s, const Table::TextExportOptions &opts)
 {
@@ -805,7 +842,11 @@ static QString quote_XML(const QString &s, const Table::TextExportOptions &opts)
 QString Table::quoteCSV(const QVariant &val, const Table::TextExportOptions &opts)
 {
 	QString ret;
+#if QT_VERSION_MAJOR >= 6
+	if(val.typeId() == QMetaType::Bool)
+#else
 	if(val.type() == QVariant::Bool)
+#endif
 		ret = val.toBool()? QStringLiteral("true"): QStringLiteral("false");
 	else
 		ret = val.toString();
@@ -911,7 +952,7 @@ void Table::importCSV(QTextStream &ts, TextImportOptions opts)
 		sl = reader.readCSVLineSplitted();
 		foreach(s, sl) {
 			//qfDebug() << "\tfield:" << s;
-			Field fld(s, QVariant::String);
+			Field fld(s, QMetaType::QString);
 			fieldsRef().append(fld);
 		}
 	}
@@ -928,7 +969,7 @@ void Table::importCSV(QTextStream &ts, TextImportOptions opts)
 				/// pokud nejsou vytvoreny fieldy, treba protoze se neimpoortovaly nazvy sloupcu, udelej je z tohoto radku
 				int colno = 0;
 				foreach(s, sl) {
-					Field fld(QString("col%1").arg(++colno), QVariant::String);
+					Field fld(QString("col%1").arg(++colno), QMetaType::QString);
 					fieldsRef().append(fld);
 				}
 			}
@@ -1245,11 +1286,11 @@ int Table::find(const QString &field_name, const QVariant &val) const
 
 QVariant Table::sumValue(int field_ix) const
 {
-	QVariant::Type type = field(field_ix).type();
+	auto type = field(field_ix).type().id();
 	QVariant ret;
 	switch(type) {
-		case QVariant::Int:
-		case QVariant::UInt:
+		case QMetaType::Int:
+		case QMetaType::UInt:
 		{
 			int d = 0;
 			Q_FOREACH(auto r, rows())
@@ -1257,7 +1298,7 @@ QVariant Table::sumValue(int field_ix) const
 			ret = d;
 			break;
 		}
-		case QVariant::Double:
+		case QMetaType::Double:
 		default:
 		{
 			double d = 0;
@@ -1362,7 +1403,7 @@ QVariantMap Table::toJson(const QString &col_names) const
 		QVariantMap fld_m;
 		Field f = field(ixs[i]);
 		fld_m["name"] = f.name();
-		fld_m["type"] = QVariant::typeToName(f.type());
+		fld_m["type"] = f.type().name();
 		flds_lst << fld_m;
 	}
 	obj_m["fields"] = flds_lst;

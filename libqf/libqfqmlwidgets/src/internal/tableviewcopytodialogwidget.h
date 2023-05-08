@@ -10,7 +10,7 @@ class TableView;
 
 namespace internal {
 
-namespace Ui {class TableViewCopyToDialogWidget;};
+namespace Ui {class TableViewCopyToDialogWidget;}
 
 class  TableViewCopyToDialogWidget : public framework::DialogWidget
 {

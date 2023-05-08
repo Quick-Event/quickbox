@@ -38,17 +38,23 @@ bool QmlSqlSingleton::addDatabase(const QString &type, const QString &connection
 	return ret;
 }
 
-QVariant QmlSqlSingleton::retypeVariant(const QVariant &val, QVariant::Type type)
+QVariant QmlSqlSingleton::retypeVariant(const QVariant &val, QMetaType::Type type)
 {
 	QVariant ret;
-	if(val.type() == type)
+#if QT_VERSION_MAJOR >= 6
+	int orig_type = val.typeId();
+#else
+	int orig_type = val.type();
+#endif
+
+	if(orig_type == type)
 		return val;
-	switch(val.type()) {
-	case QVariant::String: {
+	switch(orig_type) {
+	case QMetaType::QString: {
 		bool ok = true;
 		QString str_val = val.toString();
 		switch (type) {
-		case QVariant::Bool:
+		case QMetaType::Bool:
 			ret = true;
 			if(str_val.isEmpty())
 				ret = false;
@@ -61,13 +67,13 @@ QVariant QmlSqlSingleton::retypeVariant(const QVariant &val, QVariant::Type type
 				ret = false;
 			}
 			break;
-		case QVariant::Int:
+		case QMetaType::Int:
 			ret = str_val.toInt(&ok);
 			break;
-		case QVariant::Double:
+		case QMetaType::Double:
 			ret = str_val.toDouble(&ok);
 			break;
-		case QVariant::Date:
+		case QMetaType::QDate:
 		{
 			QDate d = QDate::fromString(str_val, Qt::ISODate);
 			if(!d.isValid())
@@ -93,8 +99,12 @@ QVariant QmlSqlSingleton::retypeVariant(const QVariant &val, QVariant::Type type
 QVariant QmlSqlSingleton::retypeStringValue(const QString &str_val, const QString &type_name)
 {
 	QByteArray ba = type_name.toLatin1();
-	QVariant::Type type = QVariant::nameToType(ba.constData());
-	QVariant ret = retypeVariant(str_val, type);
+#if QT_VERSION_MAJOR >= 6
+	int type = QMetaType::fromName(ba.constData()).id();
+#else
+	int type = QVariant::nameToType(ba.constData());
+#endif
+	QVariant ret = retypeVariant(str_val, static_cast<QMetaType::Type>(type));
 	return ret;
 }
 

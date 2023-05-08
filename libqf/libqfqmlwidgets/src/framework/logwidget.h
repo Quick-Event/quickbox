@@ -72,11 +72,11 @@ protected:
 
 	virtual void onDockWidgetVisibleChanged(bool visible);
 	void onVerticalScrollBarValueChanged();
-	Q_SLOT virtual void onSeverityTresholdIndexChanged(int index);
+	void onSeverityTresholdIndexChanged(int index);
 private:
-	Q_SLOT void filterStringChanged(const QString &filter_string);
-	Q_SLOT void on_btClearLog_clicked();
-	Q_SLOT void on_btResizeColumns_clicked();
+	void filterStringChanged(const QString &filter_string);
+	void on_btClearLog_clicked();
+	void on_btResizeColumns_clicked();
 
 	bool isAutoScroll();
 protected:

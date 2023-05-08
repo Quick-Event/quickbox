@@ -161,6 +161,7 @@ Schema {
 				Field { name: 'firstName'; type: String {} },
 				Field { name: 'lastName'; type: String {} },
 				Field { name: 'registration'; type: String { length: 10 } },
+ 				Field { name: 'iofId'; type: Int {} },
 				Field { name: 'licence'; type: String { length: 1 } },
 				Field { name: 'club'; type: String { } },
 				Field { name: 'country'; type: String { } },
@@ -219,7 +220,7 @@ Schema {
 					MissingPunch
 					DidNotStart
 					DidNotFinish
-					OverTime - can be computed
+					OverTime
 
 				not supported by QE
 					OK
@@ -236,7 +237,7 @@ Schema {
 					defaultValue: false;
 					notNull: true
 				},
-				Field { name: 'disqualifiedByOrganizer'; type: Boolean { } // NotCompeting
+				Field { name: 'disqualifiedByOrganizer'; type: Boolean { } // Disqualified by Org
 					defaultValue: false;
 					notNull: true
 					comment: "Competitor is disqualified by organizer for breaking rules, etc."
@@ -259,6 +260,10 @@ Schema {
 					notNull: true
 				},
 				Field { name: 'badCheck'; type: Boolean { } // Bad CHECK time in card, cheating on start
+					defaultValue: false;
+					notNull: true
+				},
+				Field { name: 'overTime'; type: Boolean { } // OverTime
 					defaultValue: false;
 					notNull: true
 				},
@@ -442,7 +447,7 @@ Schema {
 				},
 				Field { name: 'runTimeMs'; type: Int {}
 					comment: 'in miliseconds since runner event start'
-                }
+				}
 			]
 			indexes: [
 				Index {fields: ['stageId', 'code']; unique: false },

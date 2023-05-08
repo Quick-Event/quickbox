@@ -1,0 +1,33 @@
+Jednotný formát výsledků pro výpočet žebříčků, Rankingu a pro Internetovou stránku sekce OB:
+a)	Výsledky jsou zpracovány v TXT souboru (text bez formátování), soubor je v kódování ASCII nebo LATIN2 (cp852). 
+b)	Součástí výsledků v povinném formátu je i zkrácený protokol o závodě v následující struktuře: 
+Kód závodu: 
+Datum: 
+Druh závodu: 
+Pořadatel: Oblast: 
+Členové jury: 
+Závěr závodu (výběr z těchto možností): 
+–	Závod proběhl bez závad. 
+–	Jury konstatovala porušení Pravidel OB, SŘ Rankingu nebo SŘ soutěží příslušné pořádající složky v následujících podkategoriích: 
+–	Jury, resp. příslušná soutěžní komise shledala závod jako neregulérní z jiných důvodů v následujících kategoriích (podkategorie, důvod): 
+–	V závodě došlo k poškození závodníků (špatný zákres mapy, zcizení kontroly, apod.) v následujících podkategoriích (podkategorie, celkový počet závodníků, počet poškozených závodníků): 
+c)	Vlastní výsledky mají následující strukturu: 
+	KATEGORIE 10 znaků 	(1-10) 
+	PŘÍJMENÍ A JMÉNO 25 znaků 	(11-35) 
+	REG. ČÍSLO 	7 znaků (36-42) 
+	LICENCE 	1 znak (43) 
+	VÝSLEDEK 	6 znaků (44-49) 
+–	Výsledek je číslo ve tvaru XXX.XX, vodící 0 není nutná. 
+–	Pro průměr je použito číslo "999.99" a pro diskvalifikaci (i vzdání) "888.88". 
+–	Oddělovač mezi minutami a vteřinami může být použit jakýkoli. 
+–	Výsledky jsou pro přehlednost seřazeny podle kategorií a pořadí v kategorii. 
+–	Pro závodníky běžící mimo soutěž se uvádí licence M. 
+Vzor:
+H21C······Novák·Jaromír············JET6104A·89.30 
+H21C······Nováček·Petr·············OKU6301B100.30 
+H21C······Janík·Petr···············JEM7501B101.40 
+H21C······Nováková·Marcela·········ABA7750M130.20 
+H21C······Horký·František··········JSZ5802A888.88 
+H21C······Horáček·Marek············AKU7202B999.99 
+(· = mezera) 
+

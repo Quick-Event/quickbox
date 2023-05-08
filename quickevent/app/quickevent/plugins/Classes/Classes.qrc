@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/quickevent/Classes">
 	<file>images/feature.svg</file>
-	<file>qml/table.qml</file>
+	<file>qml/reports/table.qml</file>
     </qresource>
 </RCC>

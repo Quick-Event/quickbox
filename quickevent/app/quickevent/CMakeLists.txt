@@ -4,11 +4,12 @@ add_executable(quickevent
     plugins/CardReader/src/cardcheckerfreeordercpp.cpp
     plugins/CardReader/src/cardreaderplugin.cpp
     plugins/CardReader/src/cardreaderwidget.cpp
-    plugins/CardReader/src/dlgsettings.cpp
     plugins/CardReader/src/services/mqttpunches.cpp
     plugins/CardReader/src/services/mqttpuncheswidget.cpp
     plugins/CardReader/src/services/racomclient.cpp
     plugins/CardReader/src/services/racomclientwidget.cpp
+    plugins/CardReader/src/cardreadersettingspage.cpp
+    plugins/CardReader/src/cardreadersettings.cpp
     plugins/Classes/src/classdefdocument.cpp
     plugins/Classes/src/classdefwidget.cpp
     plugins/Classes/src/classdocument.cpp
@@ -33,11 +34,15 @@ add_executable(quickevent
     plugins/Competitors/src/competitorswidget.cpp
     plugins/Competitors/src/competitorwidget.cpp
     plugins/Competitors/src/findregistrationedit.cpp
-    plugins/Competitors/src/lentcardswidget.cpp
+    plugins/Competitors/src/lentcardssettingspage.cpp
     plugins/Competitors/src/registrationswidget.cpp
     plugins/Competitors/src/stationsbackupmemorywidget.cpp
     plugins/Core/src/coreplugin.cpp
+    plugins/Core/src/settings.cpp
+    plugins/Core/src/widgets/reportssettingspage.cpp
     plugins/Core/src/widgets/appstatusbar.cpp
+    plugins/Core/src/widgets/settingspage.cpp
+    plugins/Core/src/widgets/settingsdialog.cpp
     plugins/Event/src/connectdbdialogwidget.cpp
     plugins/Event/src/connectionsettings.cpp
     plugins/Event/src/dbschema.cpp
@@ -46,6 +51,8 @@ add_executable(quickevent
     plugins/Event/src/eventplugin.cpp
     plugins/Event/src/services/emmaclient.cpp
     plugins/Event/src/services/emmaclientwidget.cpp
+    plugins/Event/src/services/oresultsclient.cpp
+    plugins/Event/src/services/oresultsclientwidget.cpp
     plugins/Event/src/services/service.cpp
     plugins/Event/src/services/serviceswidget.cpp
     plugins/Event/src/services/servicewidget.cpp
@@ -58,9 +65,11 @@ add_executable(quickevent
     plugins/Oris/src/txtimporter.cpp
     plugins/Receipts/src/receiptsplugin.cpp
     plugins/Receipts/src/receiptsprinter.cpp
-    plugins/Receipts/src/receiptsprinteroptions.cpp
+    #plugins/Receipts/src/receiptsprinteroptions.cpp
     plugins/Receipts/src/receiptsprinteroptionsdialog.cpp
     plugins/Receipts/src/receiptswidget.cpp
+    plugins/Receipts/src/receiptssettings.cpp
+    plugins/Receipts/src/receiptssettingspage.cpp
     plugins/Relays/src/addlegdialogwidget.cpp
     plugins/Relays/src/relaydocument.cpp
     plugins/Relays/src/relaysplugin.cpp
@@ -101,37 +110,21 @@ add_executable(quickevent
     plugins/Relays/Relays.qrc
     plugins/Runs/Runs.qrc
     plugins/CardReader/CardReader.qrc
-	quickevent.rc
+    app.rc
     )
 
-if(USE_QT6)
-	qt6_add_translations(quickevent TS_FILES
-		quickevent-cs_CZ.ts
-		quickevent-fr_FR.ts
-		quickevent-nb_NO.ts
-		quickevent-nl_BE.ts
-		quickevent-pl_PL.ts
-		quickevent-ru_RU.ts
-		quickevent-uk_UA.ts
-		)
-else()
-	qt5_add_translation(QM_FILES
-		quickevent-cs_CZ.ts
-		quickevent-fr_FR.ts
-		quickevent-nb_NO.ts
-		quickevent-nl_BE.ts
-		quickevent-pl_PL.ts
-		quickevent-ru_RU.ts
-		quickevent-uk_UA.ts
-		)
-	target_sources(quickshow PRIVATE ${QM_FILES})
-endif()
+qt5_add_translation(QM_FILES
+    quickevent-cs_CZ.ts
+    quickevent-fr_FR.ts
+    quickevent-nb_NO.ts
+    quickevent-nl_BE.ts
+    quickevent-pl_PL.ts
+    quickevent-ru_RU.ts
+    quickevent-uk_UA.ts
+    )
 
 target_sources(quickevent PRIVATE ${QM_FILES})
 target_include_directories(quickevent PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(quickevent PRIVATE libquickeventcore libquickeventgui libqfqmlwidgets libsiut)
-if(USE_QT6)
-	target_link_libraries(quickevent PRIVATE Qt6::Core5Compat)
-endif()
+target_link_libraries(quickevent PUBLIC libquickeventcore libquickeventgui libqfqmlwidgets libsiut)
 
 install(TARGETS quickevent)

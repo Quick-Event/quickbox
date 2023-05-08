@@ -81,22 +81,33 @@ bool Utils::fieldNameCmp(const QString &fld_name1, const QString &fld_name2)
 
 QVariant Utils::retypeVariant(const QVariant &val, int meta_type_id)
 {
-	if(meta_type_id == QVariant::Invalid) {
+	if(meta_type_id == QMetaType::UnknownType) {
 		//qfWarning() << "Cannot convert" << val << "to QVariant::Invalid type!";
 		// retype whatever to invalid variant
 		return QVariant();
 	}
 	if(val.userType() == meta_type_id)
 		return val;
+#if QT_VERSION_MAJOR >= 6
+	if(val.canConvert(QMetaType(meta_type_id))) {
+#else
 	if(val.canConvert(meta_type_id)) {
+#endif
 		QVariant ret = val;
+#if QT_VERSION_MAJOR >= 6
+		ret.convert(QMetaType(meta_type_id));
+#else
 		ret.convert(meta_type_id);
+#endif
 		return ret;
 	}
 	if(meta_type_id < QMetaType::User) {
 		if(val.isNull()) {
-			QVariant::Type t = (QVariant::Type)meta_type_id;
-			return QVariant(t);
+#if QT_VERSION_MAJOR >= 6
+			return QVariant(QMetaType(meta_type_id));
+#else
+			return QVariant(QMetaType(meta_type_id).id());
+#endif
 		}
 	}
 	//if(meta_type_id >= QVariant::UserType) {
@@ -104,14 +115,22 @@ QVariant Utils::retypeVariant(const QVariant &val, int meta_type_id)
 	//		if()
 	//	}
 	//}
+#if QT_VERSION_MAJOR >= 6
+	qfWarning() << "Don't know, how to convert variant type" << val.typeName() << "to:" << meta_type_id << QMetaType(meta_type_id).name();
+#else
 	qfWarning() << "Don't know, how to convert variant type" << val.typeName() << "to:" << meta_type_id << QMetaType::typeName(meta_type_id);
+#endif
 	return val;
 }
 
 QVariant Utils::retypeStringValue(const QString &str_val, const QString &type_name)
 {
 	QByteArray ba = type_name.toLatin1();
-	QVariant::Type type = QVariant::nameToType(ba.constData());
+#if QT_VERSION_MAJOR >= 6
+	QMetaType::Type type = static_cast<QMetaType::Type>(QMetaType::fromName(ba.constData()).id());
+#else
+	QMetaType::Type type = static_cast<QMetaType::Type>(QVariant::nameToType(ba.constData()));
+#endif
 	QVariant ret = qf::core::Utils::retypeVariant(str_val, type);
 	return ret;
 }

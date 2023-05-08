@@ -30,6 +30,44 @@
     </message>
 </context>
 <context>
+    <name>SiStationConfig</name>
+    <message>
+        <location filename="src/device/sitask.cpp" line="98"/>
+        <source>Station number: {{StationNumber}}
+Extended mode: {{ExtendedMode}}
+Auto send: {{AutoSend}}
+Handshake: {{HandShake}}
+Password access: {{PasswordAccess}}
+Read out after punch: {{ReadOutAfterPunch}}
+</source>
+        <translation>Jednotka číslo: {{StationNumber}}
+Extended mód: {{ExtendedMode}}
+Auto send: {{AutoSend}}
+Handshake: {{HandShake}}
+Password access: {{PasswordAccess}}
+Vyčítat po oražení: {{ReadOutAfterPunch}}
+</translation>
+    </message>
+    <message>
+        <location filename="src/device/sitask.cpp" line="107"/>
+        <location filename="src/device/sitask.cpp" line="108"/>
+        <location filename="src/device/sitask.cpp" line="109"/>
+        <location filename="src/device/sitask.cpp" line="110"/>
+        <location filename="src/device/sitask.cpp" line="111"/>
+        <source>True</source>
+        <translation>Zapnuto</translation>
+    </message>
+    <message>
+        <location filename="src/device/sitask.cpp" line="107"/>
+        <location filename="src/device/sitask.cpp" line="108"/>
+        <location filename="src/device/sitask.cpp" line="109"/>
+        <location filename="src/device/sitask.cpp" line="110"/>
+        <location filename="src/device/sitask.cpp" line="111"/>
+        <source>False</source>
+        <translation>Vypnuto</translation>
+    </message>
+</context>
+<context>
     <name>siut::CommPort</name>
     <message>
         <location filename="src/device/commport.cpp" line="42"/>
@@ -54,7 +92,30 @@
     <message>
         <location filename="src/device/commport.cpp" line="74"/>
         <source>%1 closed</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 odpojeno</translation>
+    </message>
+    <message>
+        <location filename="src/device/commport.cpp" line="91"/>
+        <source>possible solution:
+Wait at least 10 seconds and then try again.</source>
+        <translation>možné řešení:
+Počkejte alespoň 10 sekund a potom to zkuste znovu.</translation>
+    </message>
+    <message>
+        <location filename="src/device/commport.cpp" line="100"/>
+        <source>There are no ports available.</source>
+        <translation>Nejsou k dispozici žádné porty.</translation>
+    </message>
+    <message>
+        <location filename="src/device/commport.cpp" line="103"/>
+        <source>Selected port %1 is not available.
+List of accessible ports:
+
+</source>
+        <translation>Vybraný port %1 není k dispozici.
+Seznam dostupných portů:
+
+</translation>
     </message>
 </context>
 <context>
@@ -67,22 +128,22 @@
     <message>
         <location filename="src/device/sidevicedriver.cpp" line="141"/>
         <source>NAK received</source>
-        <translation type="unfinished"></translation>
+        <translation>Přijato NAK</translation>
     </message>
     <message>
         <location filename="src/device/sidevicedriver.cpp" line="147"/>
         <source>Legacy protocol is not supported, switch station to extended one.</source>
-        <translation type="unfinished"></translation>
+        <translation>Legacy protokol není podporován, přepněte jednotku na extended protokol.</translation>
     </message>
     <message>
         <location filename="src/device/sidevicedriver.cpp" line="154"/>
         <source>Valid message shall end with ETX or NAK, throwing data away</source>
-        <translation type="unfinished"></translation>
+        <translation>Validní zpráva musí končit s ETX nebo NAK, přeskakuji data</translation>
     </message>
     <message>
         <location filename="src/device/sidevicedriver.cpp" line="170"/>
         <source>SIDeviceDriver::sendCommand() - ERROR Sending of EXT commands only is supported for sending.</source>
-        <translation type="unfinished"></translation>
+        <translation>SIDeviceDriver::sendCommand() - CHYBA - je podporováno pouze odesílání EXT příkazů.</translation>
     </message>
 </context>
 <context>
@@ -90,7 +151,7 @@
     <message>
         <location filename="src/device/sitask.cpp" line="24"/>
         <source>SiCommand timeout after %1 sec.</source>
-        <translation type="unfinished"></translation>
+        <translation>SiCommand timeout po %1 sek.</translation>
     </message>
 </context>
 </TS>

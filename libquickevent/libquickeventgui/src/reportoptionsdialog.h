@@ -31,6 +31,7 @@ class QUICKEVENTGUI_DECL_EXPORT ReportOptionsDialog : public QDialog, public qf:
 	Q_PROPERTY(bool columnCountEnable READ isColumnCountEnable WRITE setColumnCountEnable NOTIFY columnCountEnableChanged)
 	Q_PROPERTY(bool resultOptionsVisible READ isResultOptionsVisible WRITE setResultOptionsVisible NOTIFY resultOptionsVisibleChanged)
 	Q_PROPERTY(bool startTimeFormatVisible READ isStartTimeFormatVisible WRITE setStartTimeFormatVisible NOTIFY startTimeFormatVisibleChanged)
+	Q_PROPERTY(bool startlistOrderFirstByVisible READ isStartlistOrderFirstByVisible WRITE setStartlistOrderFirstByVisible NOTIFY startlistOrderFirstByVisibleChanged)
 
 	QF_PROPERTY_BOOL_IMPL2(c, C, lassFilterVisible, true)
 	QF_PROPERTY_BOOL_IMPL2(s, S, tartListOptionsVisible, false)
@@ -38,16 +39,18 @@ class QUICKEVENTGUI_DECL_EXPORT ReportOptionsDialog : public QDialog, public qf:
 	QF_PROPERTY_BOOL_IMPL2(v, V, acantsVisible, true)
 	QF_PROPERTY_BOOL_IMPL2(s, S, tagesOptionVisible, false)
 	QF_PROPERTY_BOOL_IMPL2(l, L, egsOptionVisible, false)
-	QF_PROPERTY_BOOL_IMPL2(p, P, ageLayoutVisible, false)
+	QF_PROPERTY_BOOL_IMPL2(p, P, ageLayoutVisible, true)
 	QF_PROPERTY_BOOL_IMPL2(c, C, olumnCountEnable, true)
 	QF_PROPERTY_BOOL_IMPL2(r, R, esultOptionsVisible, false)
 	QF_PROPERTY_BOOL_IMPL2(s, S, tartTimeFormatVisible, false)
+	QF_PROPERTY_BOOL_IMPL2(s, S, tartlistOrderFirstByVisible, false)
 private:
 	using Super = QDialog;
 public:
 	enum class BreakType : int {None = 0, Column, Page};
 	enum class FilterType : int {WildCard = 0, RegExp, ClassName};
 	enum class StartTimeFormat : int {RelativeToClassStart = 0, DayTime};
+	enum class StartlistOrderFirstBy : int { ClassName = 0, StartTime, Names };
 
 	class Options : public QVariantMap
 	{
@@ -71,6 +74,7 @@ public:
 		QF_VARIANTMAP_FIELD2(int, r, setR, esultNumPlaces, 9999)
 		QF_VARIANTMAP_FIELD2(bool, isR, setR, esultExcludeDisq, false)
 		QF_VARIANTMAP_FIELD2(int, s, setS, tartTimeFormat, 0)
+		QF_VARIANTMAP_FIELD2(int, s, setS, tartlistOrderFirstBy, 0)
 		public:
 			Options(const QVariantMap &o = QVariantMap()) : QVariantMap(o) {}
 	};
@@ -106,6 +110,7 @@ public:
 	void setResultExcludeDisq(bool b);
 
 	StartTimeFormat startTimeFormat() const;
+	StartlistOrderFirstBy startlistOrderFirstBy() const;
 	BreakType breakType() const;
 	Q_INVOKABLE bool isStartListPrintVacants() const;
 	Q_INVOKABLE bool isStartListPrintStartNumbers() const;

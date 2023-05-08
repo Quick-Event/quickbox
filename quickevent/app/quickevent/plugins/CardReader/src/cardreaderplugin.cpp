@@ -2,7 +2,11 @@
 #include "cardcheckerclassiccpp.h"
 #include "cardcheckerfreeordercpp.h"
 #include "cardreaderwidget.h"
+#include "cardreadersettingspage.h"
 #include "services/racomclient.h"
+
+#include "../../Core/src/coreplugin.h"
+#include "../../Core/src/widgets/settingsdialog.h"
 
 #include <quickevent/core/og/timems.h>
 #include <quickevent/core/si/punchrecord.h>
@@ -36,20 +40,17 @@ using Runs::RunsPlugin;
 
 namespace CardReader {
 
-const QLatin1String CardReaderPlugin::SETTINGS_PREFIX("plugins/CardReader");
-//const int CardReaderPlugin::FINISH_PUNCH_POS = quickevent::core::CodeDef::FINISH_PUNCH_CODE;
-
 CardReaderPlugin::CardReaderPlugin(QObject *parent)
 	: Super("CardReader", parent)
 {
 	connect(this, &CardReaderPlugin::installed, this, &CardReaderPlugin::onInstalled);
 }
 
-QString CardReaderPlugin::settingsPrefix()
-{
-	static const QString s = CardReaderPlugin::SETTINGS_PREFIX;
-	return s;
-}
+//QString CardReaderPlugin::settingsPrefix()
+//{
+//	static const QString s = CardReaderPlugin::SETTINGS_PREFIX;
+//	return s;
+//}
 
 void CardReaderPlugin::onInstalled()
 {
@@ -60,6 +61,9 @@ void CardReaderPlugin::onInstalled()
 
 	services::RacomClient *racom_client = new services::RacomClient(this);
 	Event::services::Service::addService(racom_client);
+
+	auto core_plugin = getPlugin<Core::CorePlugin>();
+	core_plugin->settingsDialog()->addPage(new CardReaderSettingsPage());
 }
 
 QQmlListProperty<CardReader::CardChecker> CardReaderPlugin::cardCheckersListProperty()
@@ -75,9 +79,13 @@ QQmlListProperty<CardReader::CardChecker> CardReaderPlugin::cardCheckersListProp
 
 CardChecker *CardReaderPlugin::currentCardChecker()
 {
-	auto ret = m_cardCheckers.value(currentCardCheckerIndex());
-	QF_ASSERT(ret != nullptr, QString("No card checker for index %1 installed").arg(currentCardCheckerIndex()), return nullptr);
-	return ret;
+	CardReaderSettings settings;
+	for (int i = 0; i < m_cardCheckers.count(); ++i) {
+		if(m_cardCheckers[i]->nameId() == settings.cardCheckType())
+			return m_cardCheckers[i];
+	}
+	QF_ASSERT(false, QString("No card checker for name '%1' installed").arg(settings.cardCheckType()), return nullptr);
+	return nullptr;
 }
 
 int CardReaderPlugin::currentStageId()
@@ -298,6 +306,17 @@ int CardReaderPlugin::savePunchRecordToSql(const quickevent::core::si::PunchReco
 
 	int code = resolveAltCode(punch.code(), punch.stageid());
 
+	// Check if punch isn't duplicate of existing saved punch
+	// The reason is, we don't want have duplicity in punches table. Because of Speaker module, which uses this table.
+	// If we don't check for duplicity on inserting in db, we need to check it on every shown in module Speaker.
+	// I think it is better to resolve duplicity on write, and not on every read.
+	if (q.exec("SELECT * FROM punches WHERE siId=" QF_IARG(punch.siid()) " AND code=" QF_IARG(code)
+			   " AND timeMs=" QF_IARG(punch.timems()) " AND stageId=" QF_IARG(punch.stageid()))) {
+		if(q.next()) {
+			return 0;
+		}
+	}
+
 	q.prepare(QStringLiteral("INSERT INTO punches (siId, code, time, msec, runId, stageId, timeMs, runTimeMs)"
 							 " VALUES (:siId, :code, :time, :msec, :runId, :stageId, :timeMs, :runTimeMs)")
 							, qf::core::Exception::Throw);
@@ -488,18 +507,27 @@ bool CardReaderPlugin::processCardToRunAssignment(int card_id, int run_id)
 		updateCheckedCardValuesSql(checked_card);
 		getPlugin<EventPlugin>()->emitDbEvent(Event::EventPlugin::DBEVENT_CARD_PROCESSED_AND_ASSIGNED, checked_card, true);
 
-		/// if next leg is finished and has not start time set, proces it too
-		/// This covers cases when next leg is read-out before this one
 		q.execThrow("SELECT id, startTimeMs, finishTimeMs FROM runs"
 				 " WHERE relayId=" + QString::number(relay_id)
 			   + " AND leg=" + QString::number(leg+1));
 		if(q.next()) {
-			start_time = q.value(1);
-			int finish_time = q.value(2).toInt();
-			if(finish_time > 0 && start_time.isNull()) {
-				run_id = q.value(0).toInt();
-				card_id = getPlugin<RunsPlugin>()->cardForRun(run_id);
-				processCardToRunAssignment(card_id, run_id);
+			int next_leg_run_id = q.value(0).toInt();
+			QVariant next_leg_start_time = q.value(1);
+			int next_leg_finish_time = q.value(2).toInt();
+			if(next_leg_start_time.isNull()) {
+				// if next leg is finished and has not start time set, proces it too
+				// This covers cases when next leg is read-out before this one
+				if(next_leg_finish_time > 0) {
+					int next_leg_card_id = getPlugin<RunsPlugin>()->cardForRun(next_leg_run_id);
+					processCardToRunAssignment(next_leg_card_id, next_leg_run_id);
+				}
+				// set start time for next leg, and publish the change
+				else {
+					int new_next_leg_start_time = checked_card.finishTimeMs();
+					setStartTime(relay_id, leg + 1, new_next_leg_start_time);
+					int competitor_id = getPlugin<RunsPlugin>()->competitorForRun(next_leg_run_id);
+					getPlugin<EventPlugin>()->emitDbEvent(Event::EventPlugin::DBEVENT_COMPETITOR_EDITED, competitor_id);
+				}
 			}
 		}
 	}

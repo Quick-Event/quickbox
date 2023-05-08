@@ -111,9 +111,9 @@ else()
         libqfqmlwidgets-ru_RU.ts
         libqfqmlwidgets-uk_UA.ts
         )
-
-    target_sources(libqfqmlwidgets PRIVATE ${QM_FILES})
 endif()
+
+target_sources(libqfqmlwidgets PRIVATE ${QM_FILES})
 
 target_link_libraries(libqfqmlwidgets PUBLIC Qt::Svg Qt::PrintSupport Qt::Sql Qt::Qml Qt::Widgets Qt::Xml libqfcore)
 target_include_directories(libqfqmlwidgets PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})

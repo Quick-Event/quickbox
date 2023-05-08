@@ -24,7 +24,11 @@ QColor Color::color()
 		setDirty(false);
 		QVariant v = definition();
 		//qfInfo() << v.toString() << "type:" << v.typeName();
+#if QT_VERSION_MAJOR >= 6
+		if(v.typeId() == QMetaType::QString) {
+#else
 		if(v.type() == QVariant::String) {
+#endif
 			m_color.setNamedColor(v.toString());
 			if(!m_color.isValid()) {
 				Sheet *ss = rootStyleSheet();
@@ -35,7 +39,11 @@ QColor Color::color()
 				}
 			}
 		}
+#if QT_VERSION_MAJOR >= 6
+		else if(v.typeId() == QMetaType::Int) {
+#else
 		else if(v.type() == QVariant::Int) {
+#endif
 			m_color = QColor((Qt::GlobalColor)v.toInt());
 		}
 		else {

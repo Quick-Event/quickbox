@@ -49,7 +49,7 @@ BandDataModel *ReportItemBand::model()
 		QVariant dta = modelData();
 		//qfInfo() << this << "creating data model";
 		//qfInfo() << "1:" << dta;
-		if(!dta.isValid() || dta.userType() == QVariant::String) {
+		if(!dta.isValid() || dta.userType() == QMetaType::QString) {
 			QString data_key = dta.toString();
 			ReportItemBand *pr = parentBand();
 			//qfInfo() << data_key << pr;

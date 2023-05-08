@@ -725,7 +725,11 @@ void TableView::editCellContentInEditor()
 		//qfInfo() << "model()->data(currentIndex(), Qt::EditRole)";
 		QVariant cell_value = model()->data(ix, Qt::EditRole);
 		QString cell_text;
+#if QT_VERSION_MAJOR >= 6
+		if(cell_value.typeId() == QMetaType::QByteArray)
+#else
 		if(cell_value.type() == QVariant::ByteArray)
+#endif
 			cell_text = QString::fromUtf8(cell_value.toByteArray());
 		else
 			cell_text = cell_value.toString();
@@ -748,10 +752,14 @@ void TableView::editCellContentInEditor()
 		dlg.loadPersistentSettingsRecursively();
 		//connect(w, &reports::PrintTableViewWidget::printRequest, this, &TableView::exportReport_helper);
 		if(dlg.exec()) {
-			QVariant::Type cell_type = cell_value.type();
+#if QT_VERSION_MAJOR >= 6
+			auto cell_type = cell_value.metaType().id();
+#else
+			int cell_type = cell_value.type();
+#endif
 			if(model()->flags(ix) & Qt::ItemIsEditable) {
 				cell_value = w->text();
-				if(cell_type == QVariant::ByteArray)
+				if(cell_type == QMetaType::QByteArray)
 					cell_value = QByteArray(cell_value.toString().toUtf8());
 				//qfInfo() << "text:" << v.toString();
 				model()->setData(ix, cell_value);
@@ -870,24 +878,24 @@ qf::core::utils::TreeTable TableView::toTreeTable(const QString &table_name, con
 		int ix = col.value("index").toInt();
 		qfu::TreeTableColumn cd;
 		if(col.value("origin") == QLatin1String("table")) {
-			QVariant::Type t = table.field(ix).type();
+			auto t = table.field(ix).type().id();
 			cd.setName(table.field(ix).name());
-			cd.setType((int)t);
+			cd.setType(t);
 			cd.setHeader(cap);
 			//ret.appendColumn(table.field(ix).name(), t, cap);
 		}
 		else {
-			QVariant::Type t;
+			int t;
 			if(raw_values) {
 				qfu::Table::Field fld = table_model->tableField(ix);
-				t = fld.type();
+				t = fld.type().id();
 				//qfWarning() << fld.toString();
 			}
 			else {
-				t = (QVariant::Type)proxy_model->headerData(ix, Qt::Horizontal, core::model::TableModel::FieldTypeRole).toInt();
+				t = proxy_model->headerData(ix, Qt::Horizontal, core::model::TableModel::FieldTypeRole).toInt();
 			}
 			cd.setName(proxy_model->headerData(ix, Qt::Horizontal, core::model::TableModel::FieldNameRole).toString());
-			cd.setType((int)t);
+			cd.setType(t);
 			cd.setHeader(cap);
 			//ret.appendColumn(proxy_model->headerData(ix, Qt::Horizontal, core::model::TableModel::FieldNameRole).toString(), t, cap);
 		}
@@ -1026,7 +1034,11 @@ void TableView::exportCSV_helper(const QVariant &export_options)
 				int col_ix = exported_columns[j];
 				QModelIndex ix = m->index(row_ix, col_ix);
 				QVariant val = m->data(ix, Qt::EditRole);
+#if QT_VERSION_MAJOR >= 6
+				if(val.typeId() != QMetaType::Bool)
+#else
 				if(val.type() != QVariant::Bool)
+#endif
 					val = m->data(ix, Qt::DisplayRole);
 				if(j > 0)
 					ts << text_export_opts.fieldSeparator();

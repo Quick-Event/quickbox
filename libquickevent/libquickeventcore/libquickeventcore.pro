@@ -4,7 +4,7 @@ TARGET = quickeventcore
 QT += core sql qml
 
 CONFIG += qt dll
-CONFIG += c++11 hide_symbols
+CONFIG += c++17 hide_symbols
 CONFIG += lrelease embed_translations
 
 DEFINES += QUICKEVENTCORE_BUILD_DLL

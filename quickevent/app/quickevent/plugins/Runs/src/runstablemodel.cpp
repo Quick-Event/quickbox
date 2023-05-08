@@ -68,27 +68,30 @@ QVariant RunsTableModel::value(int row_ix, int column_ix) const
 	if(column_ix == col_runFlags) {
 		qf::core::utils::TableRow row = tableRow(row_ix);
 		bool is_disqualified = row.value(QStringLiteral("runs.disqualified")).toBool();
-		bool is_disqualified_by_organizer = row.value(QStringLiteral("runs.disqualifiedByOrganizer")).toBool();
 		bool mis_punch = row.value(QStringLiteral("runs.misPunch")).toBool();
 		bool bad_check = row.value(QStringLiteral("runs.badCheck")).toBool();
 		bool not_start = row.value(QStringLiteral("runs.notStart")).toBool();
 		bool not_finish = row.value(QStringLiteral("runs.notFinish")).toBool();
+		bool is_disqualified_by_organizer = row.value(QStringLiteral("runs.disqualifiedByOrganizer")).toBool();
+		bool over_time = row.value(QStringLiteral("runs.overTime")).toBool();
 		bool not_competing = row.value(QStringLiteral("runs.notCompeting")).toBool();
 		QStringList sl;
-		if(is_disqualified)
-			sl << tr("DIS", "Disqualified");
-		if(is_disqualified_by_organizer)
-			sl << tr("DO", "disqualifiedByOrganizer");
+		if(not_competing)
+			sl << tr("NC", "NotCompeting");
 		if(mis_punch)
 			sl << tr("MP", "MisPunch");
 		if(bad_check)
 			sl << tr("BC", "BadCheck");
-		if(not_competing)
-			sl << tr("NC", "NotCompeting");
 		if(not_start)
-			sl << tr("NS", "DidNotStart");
+			sl << tr("DNS", "DidNotStart");
 		if(not_finish)
-			sl << tr("NF", "DidNotFinish");
+			sl << tr("DNF", "DidNotFinish");
+		if(is_disqualified_by_organizer)
+			sl << tr("DO", "disqualifiedByOrganizer");
+		if(over_time)
+			sl << tr("OT", "OverTime");
+		if(is_disqualified && !mis_punch && !bad_check && !not_start && !not_finish && !is_disqualified_by_organizer && !over_time)
+			sl << tr("DSQ", "Disqualified");
 		if(sl.isEmpty())
 			return QStringLiteral("");
 		else

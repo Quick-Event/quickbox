@@ -81,7 +81,7 @@ class QFCORE_DECL_EXPORT TreeItemBase
 
 }}}
 
-Q_DECLARE_METATYPE(qf::core::utils::TreeItemPath);
+Q_DECLARE_METATYPE(qf::core::utils::TreeItemPath)
 
 #endif // QF_CORE_UTILS_TREEITEMBASE_H
 

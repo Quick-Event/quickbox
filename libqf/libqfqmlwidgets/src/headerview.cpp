@@ -119,7 +119,11 @@ void HeaderView::mousePressEvent(QMouseEvent *event)
 {
 	if(orientation() == Qt::Horizontal) {
 		if(event->button() == Qt::LeftButton && event->modifiers() == Qt::ShiftModifier) {
+#if QT_VERSION_MAJOR >= 6
+			int ix = logicalIndexAt(event->position().x());
+#else
 			int ix = logicalIndexAt(event->x());
+#endif
 			//qfInfo() << "logical index:" << ix;
 			m_extraSortColumns << ix;
 			emit sortColumnAdded(ix);

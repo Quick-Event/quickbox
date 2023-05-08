@@ -1,7 +1,6 @@
 #include "runswidget.h"
 #include "ui_runswidget.h"
 #include "runstablemodel.h"
-#include "runstableitemdelegate.h"
 #include "runsplugin.h"
 
 #include <quickevent/core/og/sqltablemodel.h>
@@ -223,7 +222,7 @@ void RunsWidget::settleDownInPartWidget(quickevent::gui::PartWidget *part_widget
 			QVariantMap props;
 			props["stageId"] = selectedStageId();
 			qf::qmlwidgets::reports::ReportViewWidget::showReport(fwk
-										, getPlugin<RunsPlugin>()->qmlDir() + "/competitorsWithCardRent.qml"
+										, getPlugin<RunsPlugin>()->findReportFile("competitorsWithCardRent.qml")
 										, QVariant()
 										, tr("Competitors with rented cards")
 										, "printReport"
@@ -263,6 +262,14 @@ void RunsWidget::settleDownInPartWidget(quickevent::gui::PartWidget *part_widget
 			auto *a = new qfw::Action(tr("&IOF-XML 3.0"));
 			connect(a, &qfw::Action::triggered, this, &RunsWidget::export_startList_stage_iofxml30);
 			m_export_stlist_xml->addActionInto(a);
+		}
+	}
+	auto *m_export_stlist_csv = m_stlist->addMenuInto("csv", tr("&CSV"));
+	{
+		{
+			auto *a = new qfw::Action(tr("&SIME startlist (Starter Clock)"));
+			connect(a, &qfw::Action::triggered, this, &RunsWidget::export_startList_stage_csv_sime);
+			m_export_stlist_csv->addActionInto(a);
 		}
 	}
 
@@ -955,3 +962,22 @@ void RunsWidget::export_startList_stage_iofxml30()
 	getPlugin<RunsPlugin>()->exportStartListStageIofXml30(stage_id, fn);
 }
 
+
+void RunsWidget::export_startList_stage_csv_sime()
+{
+	qff::MainWindow *fwk = qff::MainWindow::frameWork();
+	quickevent::gui::ReportOptionsDialog dlg(fwk);
+	dlg.setPersistentSettingsId("startListCsvSimeReportOptions");
+	dlg.loadPersistentSettings();
+	dlg.setStartListOptionsVisible(true);
+	dlg.setVacantsVisible(false);
+	dlg.setPageLayoutVisible(false);
+	dlg.setStartTimeFormatVisible(false);
+	dlg.setColumnCountEnable(false);
+	if(dlg.exec()) {
+		QString fn = getSaveFileName("startlist.csv", selectedStageId());
+		if(fn.isEmpty())
+			return;
+		getPlugin<RunsPlugin>()->exportStartListCurrentStageCsvSime(fn, dlg.isStartListPrintStartNumbers(), dlg.sqlWhereExpression());
+	}
+}

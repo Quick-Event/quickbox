@@ -1,7 +1,6 @@
 #include "competitorswidget.h"
 #include "ui_competitorswidget.h"
 #include "competitorwidget.h"
-#include "lentcardswidget.h"
 #include "stationsbackupmemorywidget.h"
 
 #include "competitordocument.h"
@@ -64,9 +63,10 @@ CompetitorsWidget::CompetitorsWidget(QWidget *parent) :
 	m->addColumn("classes.name", tr("Class"));
 	m->addColumn("competitors.startNumber", tr("SN", "start number")).setToolTip(tr("Start number"));
 	m->addColumn("competitorName", tr("Name"));
-	m->addColumn("registration", tr("Reg"));
+	m->addColumn("registration", tr("Reg")).setToolTip(tr("Czech registration number"));;
+	m->addColumn("iofId", tr("IOF ID")).setToolTip(tr("IOF ID number"));;
 	m->addColumn("siId", tr("SI")).setReadOnly(true).setCastType(qMetaTypeId<quickevent::core::si::SiId>());
-	m->addColumn("ranking", tr("Ranking"));
+	m->addColumn("ranking", tr("Ranking pos")).setToolTip(tr("Runner's position in CZ ranking."));
 	m->addColumn("note", tr("Note"));
 	ui->tblCompetitors->setTableModel(m);
 	m_competitorsModel = m;
@@ -126,19 +126,6 @@ void CompetitorsWidget::settleDownInPartWidget(quickevent::gui::PartWidget *part
 		//a->setShortcut("ctrl+L");
 		connect(a, &qfw::Action::triggered, this, &CompetitorsWidget::report_competitorsStatistics);
 		act_print->addActionInto(a);
-	}
-
-	qf::qmlwidgets::Action *act_cards = part_widget->menuBar()->actionForPath("cards");
-	act_cards->setText(tr("&Cards"));
-	{
-		qf::qmlwidgets::Action *a = new qf::qmlwidgets::Action("lentCards", tr("Cards to rent"));
-		act_cards->addActionInto(a);
-		connect(a, &qf::qmlwidgets::Action::triggered, [this]() {
-			qf::qmlwidgets::dialogs::Dialog dlg(this);
-			auto *w = new LentCardsWidget();
-			dlg.setCentralWidget(w);
-			dlg.exec();
-		});
 	}
 
 	qf::qmlwidgets::Action *act_stations = part_widget->menuBar()->actionForPath("stations");
@@ -371,8 +358,8 @@ void CompetitorsWidget::report_competitorsStatistics()
 		QString prefix = "e" + QString::number(stage_id) + "_";
 		QString col_runs_count = prefix + "runCount";
 		QString col_map_count = prefix + "mapCount";
-		tt.appendColumn(col_runs_count, QVariant::Int);
-		tt.appendColumn(col_map_count, QVariant::Int);
+		tt.appendColumn(col_runs_count, QMetaType(QMetaType::Int));
+		tt.appendColumn(col_map_count, QMetaType(QMetaType::Int));
 		{
 			qfs::QueryBuilder qb;
 			qb.select2("classes", "name")
@@ -403,8 +390,9 @@ void CompetitorsWidget::report_competitorsStatistics()
 	//props["isBreakAfterEachClass"] = (opts.breakType() != (int)quickevent::gui::ReportOptionsDialog::BreakType::None);
 	//props["isColumnBreak"] = (opts.breakType() == (int)quickevent::gui::ReportOptionsDialog::BreakType::Column);
 	props["stageCount"] = stage_cnt;
+	QString rep_fn = getPlugin<CompetitorsPlugin>()->findReportFile("competitorsStatistics.qml");
 	qf::qmlwidgets::reports::ReportViewWidget::showReport(this
-								, getPlugin<CompetitorsPlugin>()->qmlDir() + "/competitorsStatistics.qml"
+								, rep_fn
 								, tt.toVariant()
 								, tr("Competitors statistics")
 								, "competitorsStatistics"

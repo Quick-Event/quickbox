@@ -156,8 +156,13 @@ QString Connection::info(int verbosity) const
 static QString formatValueForSql(const QVariant &val)
 {
 	QString ret = val.toString();
-	switch(val.type()) {
-	case QVariant::String:
+#if QT_VERSION_MAJOR >= 6
+	auto type = val.typeId();
+#else
+	int type = val.type();
+#endif
+	switch(type) {
+	case QMetaType::QString:
 		ret = "'" + ret + "'";
 		break;
 	default:
@@ -454,7 +459,7 @@ Connection::IndexList Connection::indexes(const QString& tbl_name) const
 				int ix = s.lastIndexOf('(');
 				if(ix > 0) {
 					s = s.mid(ix+1);
-					s = s.mid(0, s.count()-1);
+					s = s.mid(0, s.size()-1);
 					QStringList sl = s.split(',');
 					df.fields = sl;
 				}

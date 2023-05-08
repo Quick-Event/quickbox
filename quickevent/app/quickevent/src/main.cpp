@@ -16,9 +16,7 @@
 #include <QtQml>
 #include <QLocale>
 
-#include <iostream>
-
-namespace {
+//#include <iostream>
 
 NecroLog::MessageHandler old_message_handler;
 bool send_log_entry_recursion_lock = false;
@@ -43,10 +41,9 @@ void send_log_entry_handler(NecroLog::Level level, const NecroLog::LogContext &c
 	old_message_handler(level, context, msg);
 }
 
-}
-
 int main(int argc, char *argv[])
 {
+	//dump_resources();
 	QCoreApplication::setOrganizationName("quickbox");
 	QCoreApplication::setOrganizationDomain("quickbox.org");
 	QCoreApplication::setApplicationName("quickevent");
@@ -70,7 +67,8 @@ int main(int argc, char *argv[])
 
 	qfInfo() << "========================================================";
 	qfInfo() << QDateTime::currentDateTime().toString(Qt::ISODate) << "starting" << QCoreApplication::applicationName() << "ver:" << QCoreApplication::applicationVersion();
-	qfInfo() << "Log tresholds:" << NecroLog::tresholdsLogInfo();
+	qfInfo() << "Log tresholds:" << NecroLog::thresholdsLogInfo();
+	qfInfo() << "Open SSL:" << QSslSocket::sslLibraryBuildVersionString();
 	qfInfo() << "========================================================";
 
 	qRegisterMetaType<qf::core::LogEntryMap>();
@@ -78,7 +76,6 @@ int main(int argc, char *argv[])
 	quickevent::core::si::SiId::registerQVariantFunctions();
 
 	AppCliOptions cli_opts;
-	cli_opts.parse(args);
 	cli_opts.parse(args);
 	if(cli_opts.isParseError()) {
 		foreach(QString err, cli_opts.parseErrors())
@@ -99,7 +96,7 @@ int main(int argc, char *argv[])
 		return EXIT_FAILURE;
 	}
 
-	qDebug() << "creating application instance";
+	qfInfo() << "Is abort on exception:" << qf::core::Exception::isAbortOnException();
 	Application app(argc, argv, &cli_opts);
 
 	old_message_handler = NecroLog::setMessageHandler(send_log_entry_handler);

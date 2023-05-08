@@ -8,6 +8,7 @@ add_library(libquickeventcore SHARED
     src/exporters/stagestartlisthtmlexporter.cpp
     src/og/sqltablemodel.cpp
     src/og/timems.cpp
+    src/runstatus.cpp
     src/si/checkedcard.cpp
     src/si/checkedpunch.cpp
     src/si/punchrecord.cpp

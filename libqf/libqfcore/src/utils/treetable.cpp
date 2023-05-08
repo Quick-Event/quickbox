@@ -31,13 +31,21 @@ void TreeTableColumn::setName(const QString& n)
 QString TreeTableColumn::typeName() const
 {
 	int t = m_values.value(TreeTable::KEY_TYPE).toInt();
+#if QT_VERSION_MAJOR >= 6
+	const char *tn = QMetaType(t).name();
+#else
 	const char *tn = QMetaType::typeName(t);
+#endif
 	return QString::fromUtf8(tn);
 }
 
 void TreeTableColumn::setTypeName(const QString& tn)
 {
+#if QT_VERSION_MAJOR >= 6
+	int t = QMetaType::fromName(tn.toUtf8().constData()).id();
+#else
 	int t = QMetaType::type(tn.toUtf8().constData());
+#endif
 	if(t == 0) {
 		qfError() << "Invalid type name" << tn;
 		return;
@@ -52,7 +60,11 @@ int TreeTableColumn::type() const
 
 void TreeTableColumn::setType(int t)
 {
+#if QT_VERSION_MAJOR >= 6
+	const char *tn = QMetaType(t).name();
+#else
 	const char *tn = QMetaType::typeName(t);
+#endif
 	if(!tn) {
 		qfWarning() << "Invalid meta type id:" << t;
 		return;
@@ -103,11 +115,11 @@ QString TreeTableColumn::halign() const
 	if(ret.isEmpty()) {
 		/// pokud neni hodnota predepsana, vem ji z dat
 		switch(type()) {
-			case QVariant::Int:
-			case QVariant::UInt:
-			case QVariant::LongLong:
-			case QVariant::ULongLong:
-			case QVariant::Double:
+			case QMetaType::Int:
+			case QMetaType::UInt:
+			case QMetaType::LongLong:
+			case QMetaType::ULongLong:
+			case QMetaType::Double:
 				ret = "right";
 				break;
 			default:
@@ -126,7 +138,11 @@ QVariant TreeTableRow::value(int col_ix) const
 {
 	if(0 <= col_ix && col_ix < m_columns.count()) {
 		QVariant v;
+#if QT_VERSION_MAJOR >= 6
+		if(m_row.typeId() == QMetaType::QVariantMap) {
+#else
 		if(m_row.type() == QVariant::Map) {
+#endif
 			v = m_row.toMap().value(TreeTable::KEY_ROW).toList().value(col_ix);
 		}
 		else {
@@ -158,7 +174,11 @@ void TreeTableRow::setValue(int col_ix, const QVariant &val)
 		qfWarning() << "Invalid column index:" << col_ix << "of:" << columnCount();
 		return;
 	}
+#if QT_VERSION_MAJOR >= 6
+	if(m_row.typeId() == QMetaType::QVariantMap) {
+#else
 	if(m_row.type() == QVariant::Map) {
+#endif
 		QVariantMap rm = m_row.toMap();
 		QVariantList rvals = rm.value(TreeTable::KEY_ROW).toList();
 		while (rvals.count() <= col_ix)
@@ -181,7 +201,11 @@ void TreeTableRow::setValue(const QString &col_or_key_name, const QVariant &val)
 	int ix = columnIndex(col_or_key_name);
 	if(ix < 0) {
 		QVariantMap rm;
+#if QT_VERSION_MAJOR >= 6
+		if(m_row.typeId() != QMetaType::QVariantMap)
+#else
 		if(m_row.type() != QVariant::Map)
+#endif
 			rm = QVariantMap{ {TreeTable::KEY_ROW, m_row} };
 		else
 			rm = m_row.toMap();
@@ -212,7 +236,11 @@ QVariant TreeTableRow::retypeVariant(int col_ix, const QVariant &v) const
 
 int TreeTableRow::tablesCount() const
 {
+#if QT_VERSION_MAJOR >= 6
+	if(m_row.typeId() == QMetaType::QVariantMap) {
+#else
 	if(m_row.type() == QVariant::Map) {
+#endif
 		return m_row.toMap().value(TreeTable::KEY_TABLES).toList().count();
 	}
 	return 0;
@@ -220,7 +248,11 @@ int TreeTableRow::tablesCount() const
 
 TreeTable TreeTableRow::table(int ix) const
 {
+#if QT_VERSION_MAJOR >= 6
+	if(m_row.typeId() == QMetaType::QVariantMap) {
+#else
 	if(m_row.type() == QVariant::Map) {
+#endif
 		QVariant t = m_row.toMap().value(TreeTable::KEY_TABLES).toList().value(ix);
 		return TreeTable(t);
 	}
@@ -241,7 +273,11 @@ TreeTable TreeTableRow::table(const QString &table_name) const
 void TreeTableRow::appendTable(const TreeTable &t)
 {
 	QVariantMap rm;
+#if QT_VERSION_MAJOR >= 6
+	if(m_row.typeId() == QMetaType::QVariantList)
+#else
 	if(m_row.type() == QVariant::List)
+#endif
 		rm[TreeTable::KEY_ROW] = m_row;
 	else
 		rm = m_row.toMap();
@@ -313,11 +349,11 @@ void TreeTable::removeRow(int ix)
 	}
 }
 
-void TreeTable::appendColumn(const QString &name, QVariant::Type type, const QString &caption)
+void TreeTable::appendColumn(const QString &name, QMetaType type, const QString &caption)
 {
 	TreeTableColumn cc;
 	cc.setName(name);
-	cc.setType((int)type);
+	cc.setType(type.id());
 	cc.setHeader(caption);
 	appendColumn(cc);
 }
@@ -475,10 +511,14 @@ QVariant TreeTable::sum(int col_index) const
 	if(col_index < 0 || col_index >= columnCount())
 		return QVariant();
 	QString ts = columns().value(col_index).toMap().value(KEY_TYPE).toString();
-	QVariant::Type t = QVariant::nameToType(qPrintable(ts));
+#if QT_VERSION_MAJOR >= 6
+	auto t = QMetaType::fromName(qPrintable(ts)).id();
+#else
+	int t = QVariant::nameToType(qPrintable(ts));
+#endif
 	QVariant ret;
 	//qfInfo() << "type:" << QVariant::typeToName(t);
-	if(t == QVariant::Int) {
+	if(t == QMetaType::Int) {
 		int s = 0;
 		for(int i=0; i<rowCount(); i++) {
 			s += row(i).value(col_index).toInt();

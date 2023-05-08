@@ -1,9 +1,8 @@
 #include "cardreaderwidget.h"
 #include "ui_cardreaderwidget.h"
-#include "dlgsettings.h"
+#include "cardreadersettings.h"
 
 #include "cardreaderplugin.h"
-#include "cardchecker.h"
 #include "cardreaderplugin.h"
 
 #include <quickevent/gui/og/itemdelegate.h>
@@ -174,6 +173,19 @@ CardReaderWidget::CardReaderWidget(QWidget *parent)
 
 	createActions();
 
+	{
+		ui->btComPort->setToolTip(tr("Open COM to connect SI reader"));
+		connect(ui->btComPort, &QPushButton::toggled, this, &CardReaderWidget::onOpenCommTriggered);
+	}
+	ui->lblConnectionInfo->setText(tr("SI station not connected"));
+#ifdef QT_DEBUG
+	{
+		connect(ui->btTest, &QPushButton::clicked, this, &CardReaderWidget::onTestButtonClicked);
+	}
+#else
+	ui->btTest->hide();
+#endif
+
 	connect(getPlugin<CardReaderPlugin>(), &CardReader::CardReaderPlugin::siTaskFinished, this, &CardReaderWidget::onSiTaskFinished);
 	{
 		ui->tblCardsTB->setTableView(ui->tblCards);
@@ -189,15 +201,6 @@ CardReaderWidget::CardReaderWidget(QWidget *parent)
 	}
 	ui->tblCards->setContextMenuPolicy(Qt::CustomContextMenu);
 	connect(ui->tblCards, &qfw::TableView::customContextMenuRequested, this, &CardReaderWidget::onCustomContextMenuRequest);
-	/*
-	{
-		QTimer *t = new QTimer(this);
-		connect(t, &QTimer::timeout, [this]() {
-			qfInfo() << "CardReaderWidget visible:" << isVisible();
-		});
-		t->start(2000);
-	}
-	*/
 }
 
 CardReaderWidget::~CardReaderWidget()
@@ -238,11 +241,11 @@ void CardReaderWidget::onTestButtonClicked()
 	"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
 	"eeeeeeeeeeee07ac03");
 	QList<QByteArray> lst{data1, data2, data3};
-	Q_ASSERT(m_buttonTest);
+	Q_ASSERT(ui->btTest);
 	static int count = -1;
 	if(count < 0) {
 		++count;
-		m_buttonTest->setText("Send packet #" + QString::number(count));
+		ui->btTest->setText("Send packet #" + QString::number(count));
 		return;
 	}
 	QByteArray ba = lst[count];
@@ -250,7 +253,7 @@ void CardReaderWidget::onTestButtonClicked()
 	siDriver()->processData(ba);
 	count++;
 	count %= lst.size();
-	m_buttonTest->setText("Send packet #" + QString::number(count));
+	ui->btTest->setText("Send packet #" + QString::number(count));
 }
 
 void CardReaderWidget::onCustomContextMenuRequest(const QPoint & pos)
@@ -314,7 +317,7 @@ void CardReaderWidget::settleDownInPartWidget(quickevent::gui::PartWidget *part_
 	{
 		qfw::Action *a_station = part_widget->menuBar()->actionForPath("station", true);
 		a_station->setText(tr("&Station"));
-		a_station->addActionInto(m_actSettings);
+		//a_station->addActionInto(m_actSettings);
 		//a_station->addActionInto(m_actCommOpen);
 		{
 			QAction *a = new QAction(tr("Station info"));
@@ -325,20 +328,7 @@ void CardReaderWidget::settleDownInPartWidget(quickevent::gui::PartWidget *part_
 				connect(cmd, &siut::SiTaskStationConfig::finished, this, [this](bool ok, QVariant result) {
 					if(ok) {
 						siut::SiStationConfig cfg(result.toMap());
-						QString msg = tr(""
-										 "Station number: {{StationNumber}}\n"
-										 "Extended mode: {{ExtendedMode}}\n"
-										 "Auto send: {{AutoSend}}\n"
-										 "Handshake: {{HandShake}}\n"
-										 "Password access: {{PasswordAccess}}\n"
-										 "Read out after punch: {{ReadOutAfterPunch}}\n"
-										 "");
-						msg.replace("{{StationNumber}}", QString::number(cfg.stationNumber()));
-						msg.replace("{{ExtendedMode}}", (cfg.flags() & (unsigned)siut::SiStationConfig::Flag::ExtendedMode)? tr("True"): tr("False"));
-						msg.replace("{{AutoSend}}", (cfg.flags() & (unsigned)siut::SiStationConfig::Flag::AutoSend)? tr("True"): tr("False"));
-						msg.replace("{{HandShake}}", (cfg.flags() & (unsigned)siut::SiStationConfig::Flag::HandShake)? tr("True"): tr("False"));
-						msg.replace("{{PasswordAccess}}", (cfg.flags() & (unsigned)siut::SiStationConfig::Flag::PasswordAccess)? tr("True"): tr("False"));
-						msg.replace("{{ReadOutAfterPunch}}", (cfg.flags() & (unsigned)siut::SiStationConfig::Flag::ReadOutAfterPunch)? tr("True"): tr("False"));
+						QString msg = cfg.toString();
 						qf::qmlwidgets::dialogs::MessageBox::showInfo(this, msg);
 					}
 				}, Qt::QueuedConnection);
@@ -394,44 +384,6 @@ void CardReaderWidget::settleDownInPartWidget(quickevent::gui::PartWidget *part_
 			a_tools->addActionInto(a);
 		}
 	}
-	qfw::ToolBar *main_tb = part_widget->toolBar("main", true);
-	main_tb->addAction(m_actCommOpen);
-	{
-		QLabel *lbl = new QLabel(tr(" Check type "));
-		main_tb->addWidget(lbl);
-		m_cbxCardCheckers = new QComboBox();
-		for(auto checker : getPlugin<CardReaderPlugin>()->cardCheckers()) {
-			m_cbxCardCheckers->addItem(checker->caption());
-		}
-		main_tb->addWidget(m_cbxCardCheckers);
-		connect(m_cbxCardCheckers, SIGNAL(activated(int)), this, SLOT(onCbxCardCheckersActivated(int)));
-		onCbxCardCheckersActivated(m_cbxCardCheckers->currentIndex());
-	}
-	main_tb->addSeparator();
-	{
-		QLabel *lbl = new QLabel(tr(" Reader mode "));
-		main_tb->addWidget(lbl);
-		m_cbxPunchMode = new QComboBox();
-		m_cbxPunchMode->addItem(tr("Readout"), PunchMode::Readout);
-		m_cbxPunchMode->setItemData(0, tr("Readout mode - default"), Qt::ToolTipRole);
-		m_cbxPunchMode->addItem(tr("Edit on punch"), PunchMode::EditOnPunch);
-		m_cbxPunchMode->setItemData(1, tr("Show Edit/Insert competitor dialog when SI Card is inserted into the reader station"), Qt::ToolTipRole);
-		main_tb->addWidget(m_cbxPunchMode);
-	}
-	main_tb->addSeparator();
-	{
-		m_lblCommInfo = new QLabel(tr("SI station not connected"));
-		main_tb->addWidget(m_lblCommInfo);
-	}
-#ifdef QT_DEBUG
-	{
-		main_tb->addSeparator();
-		m_buttonTest = new QPushButton("Test");
-		m_buttonTest->setObjectName("btTest");
-		connect(m_buttonTest, &QPushButton::clicked, this, &CardReaderWidget::onTestButtonClicked);
-		main_tb->addWidget(m_buttonTest);
-	}
-#endif
 	connect(getPlugin<EventPlugin>(), &Event::EventPlugin::dbEventNotify, this, &CardReaderWidget::onDbEventNotify, Qt::QueuedConnection);
 }
 
@@ -486,42 +438,12 @@ void CardReaderWidget::onDbEventNotify(const QString &domain, int connection_id,
 
 void CardReaderWidget::createActions()
 {
-	//QStyle *sty = style();
-	{
-		QIcon ico(":/quickevent/CardReader/images/comm");
-		qf::qmlwidgets::Action *a = new qf::qmlwidgets::Action(ico, tr("Open COM"), this);
-		a->setCheckable(true);
-		connect(a, SIGNAL(triggered(bool)), this, SLOT(onOpenCommTriggered(bool)));
-		m_actCommOpen = a;
-	}
-	{
-		qf::qmlwidgets::Action *a = new qf::qmlwidgets::Action(tr("Card reader settings"), this);
-		connect(a, SIGNAL(triggered()), this, SLOT(openSettings()));
-		m_actSettings = a;
-	}
-	/*
-	{
-		QIcon ico(":/quickevent/CardReader/images/sql");
-		qf::qmlwidgets::Action *a = new qf::qmlwidgets::Action(ico, tr("Connect SQL"), this);
-		a->setCheckable(true);
-		connect(a, SIGNAL(triggered(bool)), this, SLOT(sqlConnect(bool)));
-		m_actSqlConnect = a;
-	}
-	*/
 	{
 		qf::qmlwidgets::Action *a = new qf::qmlwidgets::Action(tr("Assign card to runner\tCtrl + Enter"), this);
 		a->setShortcut(Qt::CTRL + Qt::Key_Return); // Qt::Key_Return is the main enter key, Qt::Key_Enter is on the numeric keyboard
 		addAction(a);
 		connect(a, &QAction::triggered, this, &CardReaderWidget::assignRunnerToSelectedCard);
 		m_actAssignCard = a;
-	}
-}
-
-void CardReaderWidget::openSettings()
-{
-	DlgSettings dlg(this);
-	if(dlg.exec()) {
-		//closeCardLog();
 	}
 }
 
@@ -556,16 +478,16 @@ void CardReaderWidget::onComOpenChanged(bool comm_is_open)
 		siut::SiTaskSetDirectRemoteMode *cmd = new siut::SiTaskSetDirectRemoteMode(siut::SiTaskSetDirectRemoteMode::Mode::Direct);
 		connect(cmd, &siut::SiTaskSetDirectRemoteMode::finished, this, [this](bool ok) {
 			if(ok) {
-				m_lblCommInfo->setText(tr("Connected to %1 in direct mode.").arg(this->commPort()->portName()));
+				ui->lblConnectionInfo->setText(tr("Connected to %1 in direct mode.").arg(this->commPort()->portName()));
 			}
 			else {
-				m_lblCommInfo->setText(tr("Error set SI station to direct mode."));
+				ui->lblConnectionInfo->setText(tr("Error set SI station to direct mode."));
 			}
 		});
 		siDriver()->setSiTask(cmd);
 	}
 	else {
-		m_lblCommInfo->setText(QString());
+		ui->lblConnectionInfo->setText(tr("SI station not connected"));
 	}
 }
 
@@ -573,41 +495,14 @@ void CardReaderWidget::onOpenCommTriggered(bool checked)
 {
 	qfLogFuncFrame() << "checked:" << checked;
 	if(checked) {
-		QSettings settings;
-		settings.beginGroup(CardReader::CardReaderPlugin::SETTINGS_PREFIX);
-		settings.beginGroup("comm");
-		settings.beginGroup("connection");
-		QString device = settings.value("device", "").toString();
-		int baud_rate = settings.value("baudRate", 38400).toInt();
-		int data_bits = settings.value("dataBits", 8).toInt();
-		int stop_bits = settings.value("stopBits", 1).toInt();
-		QString parity = settings.value("parity", "none").toString();
+		CardReaderSettings settings;
+		QString device = settings.device();
+		int baud_rate = settings.baudRate();
+		int data_bits = settings.dataBits();
+		int stop_bits = settings.stopBits();
+		QString parity = settings.parity();
 		if(!commPort()->openComm(device, baud_rate, data_bits, parity, stop_bits > 1)) {
-			QSerialPort::SerialPortError error_type = commPort()->error();
-			QString error_msg = commPort()->errorString();
-			if(error_type == QSerialPort::PermissionError) {
-				error_msg.append("\n\n")
-					 .append(tr(""
-						    "possible solution:\n"
-						    "Wait at least 10 seconds and then try again."
-						    ""));
-			}
-			if(error_type == QSerialPort::DeviceNotFoundError) {
-				error_msg.append("\n\n");
-				QList<QSerialPortInfo> port_list = QSerialPortInfo::availablePorts();
-				if(port_list.isEmpty()) {
-					error_msg.append(tr("There are no ports available."));
-				}
-				else {
-					error_msg.append(tr(""
-							    "Selected port %1 is not available.\n"
-							    "List of accessible ports:\n\n"
-							    "").arg(device));
-					for(auto port : port_list) {
-						error_msg.append(QChar(0x2022)).append(" ").append(port.systemLocation()).append("\n");
-					}
-				}
-			}
+			QString error_msg = commPort()->errorToUserHint();
 			qf::qmlwidgets::dialogs::MessageBox::showError(this, tr("Error open device %1 - %2").arg(device).arg(error_msg));
 		}
 		//theApp()->scriptDriver()->callExtensionFunction("onCommConnect", QVariantList() << device);
@@ -647,41 +542,10 @@ void CardReaderWidget::onSiTaskFinished(int task_type, QVariant result)
 	}
 }
 
-/*
-void CardReaderWidget::processSIMessage(const SIMessageData& msg_data)
-{
-	qfLogFuncFrame();
-	//appendLog(NecroLog::Level::Info, tr("processSIMessage command: %1 , type: %2").arg(SIMessageData::commandName(msg_data.command())).arg(msg_data.type()));
-	if(msg_data.type() == SIMessageData::MessageType::CardReadOut) {
-		SIMessageCardReadOut card(msg_data);
-		processSICard(card);
-	}
-	else if(msg_data.type() == SIMessageData::MessageType::CardEvent) {
-		appendLog(NecroLog::Level::Debug, msg_data.dump());
-		if(msg_data.command() == SIMessageData::Command::SICard5DetectedExt) {
-			emit sendSICommand((int)SIMessageData::Command::GetSICard5Ext, QByteArray());
-		}
-		else if(msg_data.command() == SIMessageData::Command::SICard6DetectedExt) {
-			emit sendSICommand((int)SIMessageData::Command::GetSICard6Ext, QByteArray("\x08", 1));
-		}
-		else if(msg_data.command() == SIMessageData::Command::SICard8AndHigherDetectedExt) {
-			emit sendSICommand((int)SIMessageData::Command::GetSICard8Ext, QByteArray("\x08", 1));
-		}
-	}
-	else if(msg_data.type() == SIMessageData::MessageType::Punch) {
-		SIMessageTransmitPunch rec(msg_data);
-		processSIPunch(rec);
-	}
-	else {
-		appendLog(NecroLog::Level::Debug, msg_data.dump());
-	}
-}
-*/
-
 void CardReaderWidget::processDriverInfo(NecroLog::Level level, const QString& msg)
 {
-	qf::core::utils::Settings settings;
-	if(settings.value(CardReader::CardReaderPlugin::SETTINGS_PREFIX + "/comm/debug/showRawComData").toBool()) {
+	CardReaderSettings settings;
+	if(settings.isShowRawComData()) {
 		if(level == NecroLog::Level::Debug)
 			level = NecroLog::Level::Info;
 	}
@@ -690,9 +554,8 @@ void CardReaderWidget::processDriverInfo(NecroLog::Level level, const QString& m
 
 void CardReaderWidget::logDriverRawData(const QByteArray& data)
 {
-	qf::core::utils::Settings settings;
-	//qInfo() << settings.value(CardReader::CardReaderPlugin::SETTINGS_PREFIX + "/comm/debug/showRawComData") << "data:" << data;
-	if(settings.value(CardReader::CardReaderPlugin::SETTINGS_PREFIX + "/comm/debug/showRawComData").toBool()) {
+	CardReaderSettings settings;
+	if(settings.isShowRawComData()) {
 		QString msg = siut::SIMessageData::dumpData(data, 16);
 		appendLog(NecroLog::Level::Info, tr("DriverRawData: %1").arg(msg));
 	}
@@ -707,7 +570,7 @@ void CardReaderWidget::processSICard(const siut::SICard &card)
 	appendLog(NecroLog::Level::Debug, card.toString());
 	appendLog(NecroLog::Level::Info, tr("card: %1").arg(card.cardNumber()));
 
-	if(currentPunchMode() == PunchMode::EditOnPunch) {
+	if(currentReaderMode() == CardReaderSettings::ReaderMode::EditOnPunch) {
 		getPlugin<CompetitorsPlugin>()->editCompetitorOnPunch(card.cardNumber());
 		return;
 	}
@@ -759,9 +622,9 @@ void CardReaderWidget::processReadCard(const quickevent::core::si::ReadCard &rea
 
 void CardReaderWidget::processSIPunch(const siut::SIPunch &rec)
 {
-	appendLog(NecroLog::Level::Info, tr("punch: %1 %2").arg(rec.cardNumber()).arg(rec.code()));
 	quickevent::core::si::PunchRecord punch(rec);
-	if(currentPunchMode() == PunchMode::Readout) {
+	punch.setsiid(rec.cardNumber());
+	if(currentReaderMode() == CardReaderSettings::ReaderMode::Readout) {
 		int run_id = getPlugin<CardReaderPlugin>()->findRunId(rec.cardNumber(), siut::SICard::INVALID_SI_TIME);
 		if(run_id == 0)
 			appendLog(NecroLog::Level::Error, tr("Cannot find run for punch record SI: %1").arg(rec.cardNumber()));
@@ -770,6 +633,7 @@ void CardReaderWidget::processSIPunch(const siut::SIPunch &rec)
 	}
 	int punch_id = getPlugin<CardReaderPlugin>()->savePunchRecordToSql(punch);
 	if(punch_id > 0) {
+		appendLog(NecroLog::Level::Debug, tr("Saved punch: %1 %2").arg(rec.cardNumber()).arg(rec.code()));
 		punch.setid(punch_id);
 		getPlugin<EventPlugin>()->emitDbEvent(Event::EventPlugin::DBEVENT_PUNCH_RECEIVED, punch, true);
 	}
@@ -787,11 +651,6 @@ void CardReaderWidget::updateTableView(int card_id)
 		return;
 	}
 	ui->tblCards->updateRow(0);
-}
-
-void CardReaderWidget::onCbxCardCheckersActivated(int ix)
-{
-	getPlugin<CardReaderPlugin>()->setCurrentCardCheckerIndex(ix);
 }
 
 void CardReaderWidget::showSelectedReceipt()
@@ -884,9 +743,10 @@ void CardReaderWidget::operatorAudioNotify()
 	audioPlayer()->playAlert(quickevent::gui::audio::Player::AlertKind::OperatorNotify);
 }
 
-int CardReaderWidget::currentPunchMode()
+CardReaderSettings::ReaderMode CardReaderWidget::currentReaderMode() const
 {
-	return m_cbxPunchMode->currentData().toInt();
+	CardReaderSettings s;
+	return s.readerModeEnum();
 }
 
 static int msecToSISec(int msec)

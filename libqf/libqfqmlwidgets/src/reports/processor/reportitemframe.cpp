@@ -71,7 +71,11 @@ void ReportItemFrame::initDesignedRect()
 		QVariant v = width();
 		qreal d = 0;
 		bool ok;
+#if QT_VERSION_MAJOR >= 6
+		if(v.typeId() == QMetaType::QString) {
+#else
 		if(v.type() == QVariant::String) {
+#endif
 			qfc::String s;
 			s = v.toString().trimmed();
 			{
@@ -97,7 +101,11 @@ void ReportItemFrame::initDesignedRect()
 		QVariant v = height();
 		qreal d = 0;
 		bool ok;
+#if QT_VERSION_MAJOR >= 6
+		if(v.typeId() == QMetaType::QString) {
+#else
 		if(v.type() == QVariant::String) {
+#endif
 			qfc::String s;
 			s = v.toString().trimmed();
 			{

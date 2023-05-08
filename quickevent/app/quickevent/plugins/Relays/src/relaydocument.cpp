@@ -38,7 +38,7 @@ bool  RelayDocument::dropData()
 	bool ret = false;
 	auto id = dataId();
 	{
-		qf::core::sql::Query q(model()->connectionName());
+		qf::core::sql::Query q(sqlModel()->connectionName());
 		q.prepare("UPDATE runs SET relayId=NULL WHERE relayId = :relayId");
 		q.bindValue(":relayId", id);
 		ret = q.exec();

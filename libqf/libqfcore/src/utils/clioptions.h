@@ -56,14 +56,14 @@ public:
 	private:
 		struct Data : public QSharedData
 		{
-			QVariant::Type type;
+			QMetaType::Type type;
 			QStringList names;
 			QVariant value;
 			QVariant defaultValue;
 			QString comment;
 			bool mandatory;
 
-			Data(QVariant::Type type = QVariant::Invalid) : type(type), mandatory(false) {}
+			Data(QMetaType::Type type = QMetaType::UnknownType) : type(type), mandatory(false) {}
 		};
 		QSharedDataPointer<Data> d;
 
@@ -77,8 +77,8 @@ public:
 		Option& setNames(const QString &name) {d->names = QStringList() << name; return *this;}
 		Option& setNames(const QString &name1, const QString name2) {d->names = QStringList() << name1 << name2; return *this;}
 		QStringList names() const {return d->names;}
-		Option& setType(QVariant::Type type) {d->type = type; return *this;}
-		QVariant::Type type() const {return d->type;}
+		Option& setType(QMetaType::Type type) {d->type = type; return *this;}
+		QMetaType type() const {return QMetaType(d->type);}
 		Option& setValueString(const QString &val_str);
 		Option& setValue(const QVariant &val) {d->value = val; return *this;}
 		QVariant value() const {return d->value;}
@@ -91,7 +91,7 @@ public:
 		bool isSet() const {return value().isValid();}
 	public:
 		Option();
-		Option(QVariant::Type type);
+		Option(QMetaType::Type type);
 	};
 public:
 	Option& addOption(const QString key, const Option &opt = Option());

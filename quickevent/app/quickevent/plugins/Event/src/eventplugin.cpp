@@ -30,6 +30,7 @@
 #include <qf/core/sql/connection.h>
 #include <qf/core/sql/transaction.h>
 #include <qf/core/utils/fileutils.h>
+#include <plugins/Event/src/services/oresultsclient.h>
 
 #include <QInputDialog>
 #include <QSqlDatabase>
@@ -362,6 +363,9 @@ void EventPlugin::onInstalled()
 		});
 	}
 	fwk->menuBar()->actionForPath("view/toolbar")->addActionInto(tb->toggleViewAction());
+
+	services::OResultsClient *oresults_client = new services::OResultsClient(this);
+	services::Service::addService(oresults_client);
 
 	services::EmmaClient *emma_client = new services::EmmaClient(this);
 	services::Service::addService(emma_client);
@@ -753,7 +757,7 @@ bool EventPlugin::createEvent(const QString &event_name, const QVariantMap &even
 		qfd::Dialog dlg(fwk);
 		dlg.setButtons(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
 		EventDialogWidget *event_w = new EventDialogWidget();
-		event_w->setWindowTitle("Create event");
+		event_w->setWindowTitle(tr("Create event"));
 		event_w->setEventId(event_id);
 		event_w->loadParams(new_params);
 		dlg.setCentralWidget(event_w);
@@ -855,7 +859,7 @@ void EventPlugin::editEvent()
 	qfd::Dialog dlg(fwk);
 	dlg.setButtons(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
 	EventDialogWidget *event_w = new EventDialogWidget();
-	event_w->setWindowTitle("Edit event");
+	event_w->setWindowTitle(tr("Edit event"));
 	event_w->setEventId(eventName());
 	event_w->setEventIdEditable(false);
 	event_w->loadParams(eventConfig()->value("event").toMap());
@@ -1247,7 +1251,7 @@ void EventPlugin::importEvent_qbe()
 		qfd::MessageBox::showError(fwk, err_str);
 		return;
 	}
-	if(qfd::MessageBox::askYesNo(fwk, tr("Open imported event '%1'?").arg(event_name))) {
+	if(qfd::MessageBox::askYesNo(fwk, tr("Open imported event '%1'?").arg(event_name), false)) {
 		openEvent(event_name);
 	}
 }

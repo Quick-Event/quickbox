@@ -8,7 +8,7 @@ QT += gui sql widgets serialport qml
 
 CONFIG += warn_on qt thread
 
-CONFIG += c++11
+CONFIG += c++17
 
 CONFIG(debug, debug|release) {
 	# exception backtrace support

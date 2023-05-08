@@ -30,7 +30,7 @@ win32:DESTDIR = $$QF_PROJECT_TOP_BUILDDIR/bin
 message ( DESTDIR: $$DESTDIR )
 
 QT += xml sql qml
-CONFIG += C++11
+CONFIG += c++17
 CONFIG += hide_symbols
 CONFIG += lrelease embed_translations
 

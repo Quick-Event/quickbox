@@ -8,6 +8,8 @@
 #include <QObject>
 #include <QVariant>
 
+#include <optional>
+
 namespace quickevent { namespace core { namespace si { class ReadCard; } class CourseDef;}}
 
 namespace CardReader {
@@ -23,6 +25,8 @@ public:
 public:
 	explicit CardChecker(QObject *parent = nullptr);
 
+	QString nameId() const { return objectName(); }
+
 	QF_PROPERTY_IMPL(QString, c, C, aption)
 
 	Q_INVOKABLE int fixTimeWrapAM(int time1_msec, int time2_msec);
@@ -33,7 +37,7 @@ public:
 	Q_INVOKABLE int stageIdForRun(int run_id);
 	Q_INVOKABLE int stageStartSec(int stage_id);
 	Q_INVOKABLE int startTimeSec(int run_id);
-	Q_INVOKABLE int cardCheckCheckTimeSec();
+	std::optional<int> maximumCardCheckAdvanceSec();
 	quickevent::core::CourseDef courseCodesForRunId(int run_id);
 
 	//static int finishPunchCode();

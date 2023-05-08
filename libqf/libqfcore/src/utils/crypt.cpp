@@ -69,7 +69,7 @@ QByteArray Crypt::encrypt(const QByteArray &data, int min_length) const
 	dest += code_byte(b);
 
 	/// a tou se to zaxoruje
-	for(int i=0; i<data.count(); i++) {
+	for(int i=0; i<data.size(); i++) {
 		b = ((quint8)data[i]);
 		if(b == 0)
 			break;
@@ -116,7 +116,7 @@ QByteArray Crypt::decodeArray(const QByteArray &ba) const
 	if(ba.isEmpty()) return ret;
 	int i = 0;
 	unsigned val = take_byte(ba, i);
-	while(i<ba.count()) {
+	while(i<ba.size()) {
 		val = m_generator(val);
 		quint8 b = take_byte(ba, i);
 		b = b ^ (quint8)val;

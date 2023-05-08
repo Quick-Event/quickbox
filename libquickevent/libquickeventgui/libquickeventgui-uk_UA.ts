@@ -6,7 +6,7 @@
     <message>
         <location filename="src/reportoptionsdialog.ui" line="14"/>
         <source>Print Report Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Опції друкування звіту</translation>
     </message>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="35"/>
@@ -51,17 +51,17 @@
     <message>
         <location filename="src/reportoptionsdialog.ui" line="110"/>
         <source>Wild card</source>
-        <translation>Вайлд кард</translation>
+        <translation>Будь-що</translation>
     </message>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="120"/>
         <source>Doesn&apos;t match</source>
-        <translation>Не відповідає</translation>
+        <translation>Не співпадає</translation>
     </message>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="127"/>
         <source>Coma delimited list of class names</source>
-        <translation>Список назв класів, розділених комою</translation>
+        <translation>Список назв груп, розділених комою</translation>
     </message>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="130"/>
@@ -81,12 +81,12 @@
     <message>
         <location filename="src/reportoptionsdialog.ui" line="172"/>
         <source>Exclude DISQ</source>
-        <translation>Виключаючи ДІСК</translation>
+        <translation>Відкинути DISQ</translation>
     </message>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="182"/>
         <source>Starters options</source>
-        <translation>Опції стартувальників</translation>
+        <translation>Опції учасників</translation>
     </message>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="200"/>
@@ -106,7 +106,7 @@
     <message>
         <location filename="src/reportoptionsdialog.ui" line="241"/>
         <source>Print vacants</source>
-        <translation>Друкувати вакансії</translation>
+        <translation>Друкувати незайняті</translation>
     </message>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="248"/>
@@ -121,12 +121,12 @@
     <message>
         <location filename="src/reportoptionsdialog.ui" line="264"/>
         <source>start at 0 (mmm.ss)  </source>
-        <translation>починати з 0 (ммм.с)  </translation>
+        <translation>починати з 0 (хвл.ск)  </translation>
     </message>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="274"/>
         <source>daytime (hh:mm:ss)</source>
-        <translation>вдень (гг:хв:сс)</translation>
+        <translation>час дня (гг:хв:ск)</translation>
     </message>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="284"/>
@@ -136,7 +136,7 @@
     <message>
         <location filename="src/reportoptionsdialog.ui" line="302"/>
         <source>Horizontal margin</source>
-        <translation>Горизотальній відступ</translation>
+        <translation>Горизотальний відступ</translation>
     </message>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="309"/>
@@ -149,7 +149,7 @@
     <message>
         <location filename="src/reportoptionsdialog.ui" line="341"/>
         <source>Column count</source>
-        <translation>К-сть стовбчиків</translation>
+        <translation>К-сть стовпців</translation>
     </message>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="348"/>
@@ -169,7 +169,7 @@
     <message>
         <location filename="src/reportoptionsdialog.ui" line="423"/>
         <source>Break type</source>
-        <translation>Тип поділу</translation>
+        <translation>Тип розриву</translation>
     </message>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="431"/>
@@ -179,7 +179,7 @@
     <message>
         <location filename="src/reportoptionsdialog.ui" line="436"/>
         <source>Column</source>
-        <translation>Стовбчик</translation>
+        <translation>Стовпець</translation>
     </message>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="441"/>
@@ -189,7 +189,7 @@
     <message>
         <location filename="src/reportoptionsdialog.ui" line="467"/>
         <source>Save as default</source>
-        <translation>Зберегти як за мовчазною згодою</translation>
+        <translation>Зберегти як початкові</translation>
     </message>
 </context>
 </TS>

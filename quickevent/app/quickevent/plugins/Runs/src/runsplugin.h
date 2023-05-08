@@ -77,6 +77,7 @@ public:
 	Q_INVOKABLE QVariantMap printAwardsOptionsWithDialog(const QVariantMap &opts);
 
 	bool exportStartListStageIofXml30(int stage_id, const QString &file_name);
+	bool exportStartListCurrentStageCsvSime(const QString &file_name, bool bibs, QString sql_where);
 
 	//bool exportResultsHtmlStage(int stage_id, const QString &file_name);
 	Q_INVOKABLE bool exportResultsIofXml30Stage(int stage_id, const QString &file_name);
@@ -84,7 +85,7 @@ public:
 	Q_INVOKABLE bool exportResultsCsosOverall(int stage_count, const QString &file_name);
 
 	qf::core::utils::TreeTable startListClassesTable(const QString &where_expr, const bool insert_vacants, const quickevent::gui::ReportOptionsDialog::StartTimeFormat start_time_format);
-	qf::core::utils::TreeTable startListClubsTable(const quickevent::gui::ReportOptionsDialog::StartTimeFormat start_time_format);
+	qf::core::utils::TreeTable startListClubsTable(const quickevent::gui::ReportOptionsDialog::StartTimeFormat start_time_format, const quickevent::gui::ReportOptionsDialog::StartlistOrderFirstBy order_first_by);
 	qf::core::utils::TreeTable startListStartersTable(const QString &where_expr);
 	qf::core::utils::TreeTable startListClassesNStagesTable(const int stages_count, const QString &where_expr, const quickevent::gui::ReportOptionsDialog::StartTimeFormat start_time_format);
 	qf::core::utils::TreeTable startListClubsNStagesTable(const int stages_count, const quickevent::gui::ReportOptionsDialog::StartTimeFormat start_time_format);
@@ -108,6 +109,9 @@ public:
 	QString export_resultsHtmlStage(bool with_laps = false);
 	void export_resultsHtmlStageWithLaps();
 	void export_resultsHtmlNStages();
+	QString startListStageIofXml30(int stage_id);
+	QString resultsIofXml30Stage(int stage_id);
+	int competitorForRun(int run_id);
 private:
 	Q_SLOT void onInstalled();
 

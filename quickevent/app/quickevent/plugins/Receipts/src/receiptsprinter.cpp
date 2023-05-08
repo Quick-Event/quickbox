@@ -1,5 +1,6 @@
-#include "receiptsplugin.h"
 #include "receiptsprinter.h"
+#include "receiptsplugin.h"
+#include "receiptssettings.h"
 
 #include <qf/core/collator.h>
 
@@ -31,26 +32,25 @@ static const auto SkipEmptyParts = QString::SkipEmptyParts;
 static const auto SkipEmptyParts = Qt::SkipEmptyParts;
 #endif
 
-ReceiptsPrinter::ReceiptsPrinter(const ReceiptsPrinterOptions &opts, QObject *parent)
+ReceiptsPrinter::ReceiptsPrinter(QObject *parent)
 	: QObject(parent)
-	, m_printerOptions(opts)
 {
 }
 
-bool ReceiptsPrinter::printReceipt(const QString &report_file_name, const QVariantMap &report_data)
+bool ReceiptsPrinter::printReceipt(const QString &report_file_name, const QVariantMap &report_data, int card_id)
 {
-	qfLogFuncFrame();
+	qfLogFuncFrame() << "card:" << card_id;
 	if(report_file_name.isEmpty()) {
 		qfError() << "Empty receipt path.";
 		return false;
 	}
 	QF_TIME_SCOPE("ReceiptsPrinter::printReceipt()");
-	const ReceiptsPrinterOptions &printer_opts = m_printerOptions;
+	ReceiptsSettings settings;
 	QPrinter *printer = nullptr;
 	QPaintDevice *paint_device = nullptr;
-	if(printer_opts.printerType() == (int)ReceiptsPrinterOptions::PrinterType::GraphicPrinter) {
+	if(settings.printerTypeEnum() == ReceiptsSettings::PrinterType::GraphicPrinter) {
 		QF_TIME_SCOPE("init graphics printer");
-		QPrinterInfo pi = QPrinterInfo::printerInfo(printer_opts.graphicsPrinterName());
+		QPrinterInfo pi = QPrinterInfo::printerInfo(settings.graphicsPrinterName());
 		if(pi.isNull()) {
 			for(auto s : QPrinterInfo::availablePrinterNames()) {
 				qfInfo() << "available printer:" << s;
@@ -66,23 +66,24 @@ bool ReceiptsPrinter::printReceipt(const QString &report_file_name, const QVaria
 		paint_device = printer;
 	}
 	else {
-		qfInfo() << "printing on:" << printer_opts.characterPrinterModel() << "at:"
-				 << ((printer_opts.characterPrinterType() == ReceiptsPrinterOptions::CharacterPrinteType::Directory)?
-						 printer_opts.characterPrinterDirectory() :
-						 printer_opts.characterPrinterDevice());
+		qfInfo() << "printing on:" << settings.characterPrinterModel() << "at:"
+				 << ((settings.characterPrinterTypeEnum() == ReceiptsSettings::CharacterPrinteType::Directory)?
+						 settings.characterPrinterDirectory() :
+						 settings.characterPrinterDevice());
 		qff::MainWindow *fwk = qff::MainWindow::frameWork();
 		paint_device = fwk;
 	}
 	qf::qmlwidgets::reports::ReportProcessor rp(paint_device);
 	{
 		QF_TIME_SCOPE("setting report and data");
-		if(!rp.setReport(report_file_name))
+		auto *plugin = qf::qmlwidgets::framework::getPlugin<Receipts::ReceiptsPlugin>();
+		if(!rp.setReport(plugin->findReportFile(report_file_name)))
 			return false;
 		for(auto key : report_data.keys()) {
 			rp.setTableData(key, report_data.value(key));
 		}
 	}
-	if(printer_opts.printerType() == ReceiptsPrinterOptions::PrinterType::GraphicPrinter) {
+	if(settings.printerTypeEnum() == ReceiptsSettings::PrinterType::GraphicPrinter) {
 		QF_TIME_SCOPE("process graphics");
 		{
 			QF_TIME_SCOPE("process report");
@@ -102,7 +103,7 @@ bool ReceiptsPrinter::printReceipt(const QString &report_file_name, const QVaria
 		QF_SAFE_DELETE(printer);
 		return true;
 	}
-	if(printer_opts.printerType() == ReceiptsPrinterOptions::PrinterType::CharacterPrinter) {
+	else if(settings.printerTypeEnum() == ReceiptsSettings::PrinterType::CharacterPrinter) {
 		QDomDocument doc;
 		doc.setContent(QLatin1String("<?xml version=\"1.0\"?><report><body/></report>"));
 		QDomElement el_body = doc.documentElement().firstChildElement("body");
@@ -110,7 +111,7 @@ bool ReceiptsPrinter::printReceipt(const QString &report_file_name, const QVaria
 		opts.setConvertBandsToTables(false);
 		rp.processHtml(el_body, opts);
 		//qfInfo() << doc.toString();
-		QList<QByteArray> data_lines = createPrinterData(el_body, printer_opts);
+		QList<QByteArray> data_lines = createPrinterData(el_body, settings);
 		auto save_file = [data_lines](const QString &fn) {
 			QFile f(fn);
 			if(f.open(QFile::WriteOnly)) {
@@ -126,31 +127,32 @@ bool ReceiptsPrinter::printReceipt(const QString &report_file_name, const QVaria
 				return false;
 			}
 		};
-		switch(printer_opts.characterPrinterType()) {
-			case ReceiptsPrinterOptions::CharacterPrinteType::Directory: {
-				if(!printer_opts.characterPrinterDirectory().isEmpty()) {
-					QString fn = printer_opts.characterPrinterDirectory();
+		switch(settings.characterPrinterTypeEnum()) {
+			case ReceiptsSettings::CharacterPrinteType::Directory: {
+				if(!settings.characterPrinterDirectory().isEmpty()) {
+					QString fn = settings.characterPrinterDirectory();
 					qf::core::utils::FileUtils::ensurePath(fn);
 					QCryptographicHash ch(QCryptographicHash::Sha1);
 					for(QByteArray ba : data_lines)
 						ch.addData(ba);
-					fn += '/' + QString::fromLatin1(ch.result().toHex().mid(0, 8)) + ".txt";
+					fn += '/' + QString::number(card_id) + '-'
+							+ QString::fromLatin1(ch.result().toHex().mid(0, 8)) + ".txt";
 					return save_file(fn);
 				}
 				return false;
 			}
-			case ReceiptsPrinterOptions::CharacterPrinteType::LPT: {
-				if (!printer_opts.characterPrinterDevice().isEmpty()) {
-					return save_file(printer_opts.characterPrinterDevice());
+			case ReceiptsSettings::CharacterPrinteType::LPT: {
+				if (!settings.characterPrinterDevice().isEmpty()) {
+					return save_file(settings.characterPrinterDevice());
 				}
 				return false;
 			}
-			case ReceiptsPrinterOptions::CharacterPrinteType::Network: {
-				if (!printer_opts.characterPrinterUrl().isEmpty()) {
-					QString host = printer_opts.characterPrinterUrl().section(':', 0, 0);
+			case ReceiptsSettings::CharacterPrinteType::Network: {
+				if (!settings.characterPrinterUrl().isEmpty()) {
+					QString host = settings.characterPrinterUrl().section(':', 0, 0);
 					QHostAddress host_addr(host);
-					int port = printer_opts.characterPrinterUrl().section(':', 1, 1).toInt();
-					if(printer_opts.isCharacterPrinterUdpProtocol()) {
+					int port = settings.characterPrinterUrl().section(':', 1, 1).toInt();
+					if(settings.isCharacterPrinterUdpProtocol()) {
 						QByteArray dgram;
 						for(const QByteArray& line : data_lines) {
 							dgram += line;
@@ -376,10 +378,10 @@ void ReceiptsPrinter::createPrinterData_helper(const QDomElement &el, DirectPrin
 		print_context->horizontalLayoutNestCount--;
 }
 
-static QList<PrintLine> alignPrinterData(DirectPrintContext *print_context, const ReceiptsPrinterOptions &printer_options)
+static QList<PrintLine> alignPrinterData(DirectPrintContext *print_context, const ReceiptsSettings &receipts_settings)
 {
 	QList<PrintLine> ret;
-	int line_length = printer_options.characterPrinterLineLength();
+	int line_length = receipts_settings.characterPrinterLineLength();
 	PrintLine line;
 	{
 		line << PrintData(PrintData::Command::Init);
@@ -437,11 +439,11 @@ static QList<PrintLine> alignPrinterData(DirectPrintContext *print_context, cons
 	return ret;
 }
 
-static QList<QByteArray> interpretControlCodes(const QList<PrintLine> &lines, const ReceiptsPrinterOptions &printer_options)
+static QList<QByteArray> interpretControlCodes(const QList<PrintLine> &lines, const ReceiptsSettings &receipts_settings)
 {
 	QList<QByteArray> ret;
-	int line_length = printer_options.characterPrinterLineLength();
-	bool include_escapes = printer_options.isCharacterPrinterGenerateControlCodes();
+	int line_length = receipts_settings.characterPrinterLineLength();
+	bool include_escapes = receipts_settings.isCharacterPrinterGenerateControlCodes();
 	const int cmd_length = sizeof(epson_commands) / sizeof(char*);
 	for(const PrintLine& line : lines) {
 		QByteArray ba;
@@ -474,11 +476,11 @@ static QList<QByteArray> interpretControlCodes(const QList<PrintLine> &lines, co
 	return ret;
 }
 
-QList<QByteArray> ReceiptsPrinter::createPrinterData(const QDomElement &body, const ReceiptsPrinterOptions &printer_options)
+QList<QByteArray> ReceiptsPrinter::createPrinterData(const QDomElement &body, const ReceiptsSettings &receipts_settings)
 {
 	DirectPrintContext dpc;
 	//dpc.printerLineWidth = printer_options.characterPrinterLineLength();
-	createPrinterData_helper(body, &dpc, printer_options.characterPrinterCodec());
+	createPrinterData_helper(body, &dpc, receipts_settings.characterPrinterCodec());
 	/*
 	{
 		QByteArray ba;
@@ -487,7 +489,7 @@ QList<QByteArray> ReceiptsPrinter::createPrinterData(const QDomElement &body, co
 		qfInfo() << ba;
 	}
 	*/
-	QList<PrintLine> lines = alignPrinterData(&dpc, printer_options);
+	QList<PrintLine> lines = alignPrinterData(&dpc, receipts_settings);
 #if 0
 	for(auto l : lines) {
 		QByteArray ba;
@@ -496,7 +498,7 @@ QList<QByteArray> ReceiptsPrinter::createPrinterData(const QDomElement &body, co
 		qfDebug() << ba;
 	}
 #endif
-	QList<QByteArray> ret = interpretControlCodes(lines, printer_options);
+	QList<QByteArray> ret = interpretControlCodes(lines, receipts_settings);
 	//for(auto ba : ret) {
 	//	qDebug() << ba;
 	//}

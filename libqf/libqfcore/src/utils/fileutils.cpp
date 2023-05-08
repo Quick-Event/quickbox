@@ -35,7 +35,8 @@ QString FileUtils::path(const QString &file_name)
 {
 	QString fn = FileUtils::unixSeparators(file_name);
 	int ix = fn.lastIndexOf('/');
-	if(ix < 0) return QString();
+	if(ix < 0)
+		return QString();
 	return fn.mid(0, ix+1);
 }
 
@@ -43,7 +44,8 @@ QString FileUtils::file(const QString &file_name)
 {
 	QString fn = FileUtils::unixSeparators(file_name);
 	int ix = fn.lastIndexOf('/');
-	if(ix < 0) return fn;
+	if(ix < 0)
+		return fn;
 	return fn.mid(ix + 1);
 }
 
