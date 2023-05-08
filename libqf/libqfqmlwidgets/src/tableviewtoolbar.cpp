@@ -48,7 +48,11 @@ TableViewToolBar::TableViewToolBar(QWidget *parent) :
 	m_filterCombo->setEditable(true);
 	m_filterCombo->lineEdit()->setClearButtonEnabled(true);
 	connect(m_filterCombo, &QComboBox::editTextChanged, this, &TableViewToolBar::emitFilterStringChanged);
-	connect(m_filterCombo, SIGNAL(activated(QString)), this, SLOT(emitFilterStringChanged(QString)));
+#if QT_VERSION_MAJOR >= 6
+	connect(m_filterCombo, &QComboBox::activated, this, &TableViewToolBar::emitFilterStringChanged);
+#else
+	connect(m_filterCombo, QOverload<int>::of(&QComboBox::activated), this, &TableViewToolBar::emitFilterStringChanged);
+#endif
 }
 
 TableViewToolBar::~TableViewToolBar()
@@ -84,8 +88,9 @@ void TableViewToolBar::addPendingActions()
 	addWidget(m_filterCombo);
 }
 
-void TableViewToolBar::emitFilterStringChanged(const QString &s)
+void TableViewToolBar::emitFilterStringChanged()
 {
+	auto s = m_filterCombo->currentText();
 	qfLogFuncFrame() << s;
 	emit filterStringChanged(s);
 	m_filterCombo->setFocus();

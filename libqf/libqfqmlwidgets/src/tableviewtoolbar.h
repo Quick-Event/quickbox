@@ -29,7 +29,7 @@ signals:
 	void filterStringChanged(const QString &s);
 private:
 	Q_SLOT void addPendingActions();
-	Q_SLOT void emitFilterStringChanged(const QString &s);
+	Q_SLOT void emitFilterStringChanged();
 	Q_SLOT void onFilterDialogRequest();
 private:
 	qf::qmlwidgets::TableView* m_tableView = nullptr;
