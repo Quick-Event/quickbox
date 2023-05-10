@@ -44,10 +44,10 @@ private:
 	void onNewConnection();
 	void onReadyRead();
 private:
-	std::unique_ptr<QTcpServer> m_tcpServer;
-	std::unordered_map<QTcpSocket*, std::unique_ptr<QByteArray>> m_tcpClients;
+	QTcpServer *m_tcpServer = nullptr;
+	QHash<qintptr, QByteArray> m_tcpClients;
 	std::unique_ptr<siut::DeviceDriver> m_siDriver;
-	std::ofstream m_ofs;
+	std::ofstream m_logFileFs;
 };
 
 }}
