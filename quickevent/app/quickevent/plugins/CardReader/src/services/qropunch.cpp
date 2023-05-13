@@ -11,7 +11,6 @@
 #include <qf/core/log.h>
 
 #include <QTcpSocket>
-#include <QTimer>
 #include <regex>
 
 using qf::qmlwidgets::framework::getPlugin;
@@ -96,6 +95,10 @@ void QrOPunch::onNewConnection()
 			m_tcpClients.remove(socket->socketDescriptor());
 			socket->deleteLater();
 		});
+		connect(socket, &QTcpSocket::errorOccurred, this, [socket] {
+			qfError() << "Socket error: " << socket->errorString();
+			socket->close();
+		});
 		m_tcpClients.insert(socket->socketDescriptor(), {});
 	}
 }
@@ -104,17 +107,17 @@ void QrOPunch::onReadyRead()
 {
 	QTcpSocket *socket = qobject_cast<QTcpSocket*>(sender());
 	auto sendError = [socket](const char *error) {
-		QTimer::singleShot(3000, socket, [socket] { socket->close(); });
-		socket->write("HTTP/1.1 ");
-		socket->write(error);
-		socket->write("\r\n\r\n");
-		socket->flush();
 		socket->connect(socket, &QTcpSocket::bytesWritten, [socket](qint64) {
 			if (!socket->bytesToWrite())
 				socket->close();
 		});
+		socket->write("HTTP/1.1 ");
+		socket->write(error);
+		socket->write("\r\n\r\n");
+		socket->flush();
 	};
 	auto it = m_tcpClients.find(socket->socketDescriptor());
+	assert(it != m_tcpClients.end() && "The socket should be associated with a client");
 	QByteArray &buffer = it.value();
 	while (socket->bytesAvailable() > 0)
 	{
@@ -175,28 +178,26 @@ void QrOPunch::onReadyRead()
 		QJsonParseError parseError{};
 		QJsonDocument jsonDoc = QJsonDocument::fromJson(data, &parseError);
 		if (jsonDoc.isNull()) {
-			QTimer::singleShot(3000, socket, [socket] { socket->close(); });
+			socket->connect(socket, &QTcpSocket::bytesWritten, [socket](qint64) {
+				if (!socket->bytesToWrite())
+					socket->close();
+			});
 			socket->write("HTTP/1.1 400 Bad Request\r\n\r\n");
 			socket->write("JSON error at the offset ");
 			socket->write(std::to_string(parseError.offset).c_str());
 			socket->write(":\n");
 			socket->write(parseError.errorString().toUtf8());
 			socket->flush();
-			socket->connect(socket, &QTcpSocket::bytesWritten, [socket](qint64) {
-				if (!socket->bytesToWrite())
-					socket->close();
-			});
 			break;
 		}
 		onTcpReadoutReceived(jsonDoc.toVariant());
-		QTimer::singleShot(3000, socket, [socket] { socket->close(); });
-		socket->write("HTTP/1.1 200 OK\r\n\r\n");
-		socket->flush();
 		socket->connect(socket, &QTcpSocket::bytesWritten, [socket](qint64) {
 			if (!socket->bytesToWrite())
 				socket->close();
 		});
-		break;
+		socket->write("HTTP/1.1 200 OK\r\n\r\n");
+		socket->flush();
+        break;
 	}
 }
 
@@ -206,10 +207,10 @@ void QrOPunch::onTcpReadoutReceived(const QVariant &data)
 		m_siDriver.reset(new siut::DeviceDriver(this));
 		connect(m_siDriver.get(), &siut::DeviceDriver::siTaskFinished, getPlugin<CardReaderPlugin>(), &CardReader::CardReaderPlugin::emitSiTaskFinished);
 	}
-	emit m_siDriver->siTaskFinished(static_cast<int>(siut::SiTask::Type::CardRead), data);
+	getPlugin<CardReaderPlugin>()->emitSiTaskFinished(static_cast<int>(siut::SiTask::Type::CardRead), data);
 	siut::SICard card(data.toMap());
 	for (int i = 0, n = card.punchCount(); i < n; ++i) {
-		emit m_siDriver->siTaskFinished(static_cast<int>(siut::SiTask::Type::Punch), card.punchAt(i));
+		getPlugin<CardReaderPlugin>()->emitSiTaskFinished(static_cast<int>(siut::SiTask::Type::Punch), card.punchAt(i));
 	}
 }
 
