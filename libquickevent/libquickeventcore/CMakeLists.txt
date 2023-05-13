@@ -15,6 +15,7 @@ add_library(libquickeventcore SHARED
     src/si/readcard.cpp
     src/si/siid.cpp
     src/utils.cpp
+	libquickeventcore.qrc
     )
 
 if(USE_QT6)

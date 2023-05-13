@@ -42,9 +42,9 @@ private:
 
 	QQmlListProperty<TableModelColumn> columns();
 	static void addColumnFunction(QQmlListProperty<TableModelColumn> *list_property, TableModelColumn *column);
-	static TableModelColumn* columnAtFunction(QQmlListProperty<TableModelColumn> *list_property, int index);
+	static TableModelColumn* columnAtFunction(QQmlListProperty<TableModelColumn> *list_property, qsizetype index);
 	static void removeAllColumnsFunction(QQmlListProperty<TableModelColumn> *list_property);
-	static int countColumnsFunction(QQmlListProperty<TableModelColumn> *list_property);
+	static qsizetype countColumnsFunction(QQmlListProperty<TableModelColumn> *list_property);
 
 private:
 	qf::core::qml::SqlQueryBuilder* m_qmlQueryBuilder = nullptr;

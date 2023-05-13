@@ -1,6 +1,8 @@
 #ifndef QF_CORE_QML_SQLQUERY_H
 #define QF_CORE_QML_SQLQUERY_H
 
+#include "sqlrecord.h"
+
 #include <qf/core/sql/query.h>
 
 #include <QObject>
@@ -8,19 +10,23 @@
 #include <QVariant>
 #include <QPointer>
 
+#include <QQmlComponent>
+
 class QSqlDadabase;
 
 namespace qf {
 namespace core {
 namespace qml {
 
-class SqlRecord;
+//class SqlRecord;
 class SqlQueryBuilder;
 
 class SqlQuery : public QObject
 {
 	Q_OBJECT
 	Q_ENUMS(ParamType)
+	QML_ELEMENT
+
 public:
 	enum ParamType { In = QSql::In, Out = QSql::Out, InOut = QSql::InOut, Binary = QSql::Binary };
 public:
@@ -52,5 +58,7 @@ private:
 };
 
 }}}
+
+//Q_DECLARE_OPAQUE_POINTER(qf::core::qml::SqlQuery);
 
 #endif // QF_CORE_QML_SQLQUERY_H

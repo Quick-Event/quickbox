@@ -25,11 +25,11 @@ Application::Application(int &argc, char **argv) :
 */
 		QString path;
 	#ifdef Q_OS_UNIX
-		path = QCoreApplication::applicationDirPath() + "/../lib/qml";
+		m_qmlLibraryImportPaths << QCoreApplication::applicationDirPath() + "/../lib/qml";
 	#else
-		path = QCoreApplication::applicationDirPath() + "/qml";
+		m_qmlLibraryImportPaths << QCoreApplication::applicationDirPath() + "/qml";
 	#endif
-	m_qmlLibraryImportPaths << path;
+	m_qmlLibraryImportPaths << QCoreApplication::applicationDirPath() + "/qml";
 /*
 	QString path;
 #ifdef Q_OS_UNIX

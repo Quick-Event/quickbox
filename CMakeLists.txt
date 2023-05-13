@@ -40,3 +40,18 @@ if(Qt_FOUND)
 else()
     message(FATAL_ERROR "Qt5 not found")
 endif()
+
+# Directories where Qt Creator can find QML files.
+# (Not needed for builds, but makes Qt Creator code completion happy.)
+list(APPEND QML_IMPORT_PATH ${CMAKE_BINARY_DIR}/libqf/plugins)
+#list(APPEND QML_IMPORT_PATH "/second/example/path/to/qml")
+
+# Prevent adding duplicate values at each run of CMake.
+list(REMOVE_DUPLICATES QML_IMPORT_PATH)
+
+# The variable is cached in ${BUILD_DIR}/CMakeCache.txt. We need FORCE to
+# change it there immediately. Also, add a comment to the cache file.
+set(QML_IMPORT_PATH ${QML_IMPORT_PATH}
+    CACHE STRING "Qt Creator extra qml import paths"
+    FORCE
+)

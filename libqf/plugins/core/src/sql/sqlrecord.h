@@ -28,4 +28,6 @@ private:
 
 }}}
 
+Q_DECLARE_OPAQUE_POINTER(qf::core::qml::SqlRecord);
+
 #endif // QF_CORE_QML_SQLRECORD_H

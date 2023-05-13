@@ -4,6 +4,7 @@
 #include <qf/core/utils/crypt.h>
 
 #include <QObject>
+//#include <QQmlComponent>
 
 namespace qf {
 namespace core {
@@ -12,6 +13,7 @@ namespace qml {
 class Crypt : public QObject
 {
 	Q_OBJECT
+	//QML_ELEMENT
 public:
 	explicit Crypt(QObject *parent = nullptr);
 public:

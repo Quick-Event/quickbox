@@ -128,3 +128,4 @@ target_include_directories(quickevent PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(quickevent PUBLIC libquickeventcore libquickeventgui libqfqmlwidgets libsiut)
 
 install(TARGETS quickevent)
+

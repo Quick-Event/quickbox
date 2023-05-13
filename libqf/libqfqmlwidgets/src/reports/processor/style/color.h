@@ -18,7 +18,7 @@ namespace style {
 class QFQMLWIDGETS_DECL_EXPORT Color : public StyleObject
 {
 	Q_OBJECT
-    Q_PROPERTY(QVariant def READ definition WRITE setDefinition NOTIFY definitionChanged)
+	Q_PROPERTY(QVariant def READ definition WRITE setDefinition NOTIFY definitionChanged)
 public:
 	explicit Color(QObject *parent = nullptr);
 	~Color() Q_DECL_OVERRIDE;

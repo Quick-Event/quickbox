@@ -344,6 +344,7 @@ QStringList &ReportProcessor::qmlEngineImportPaths()
 #else
 		lst << QCoreApplication::applicationDirPath() + "/qml";
 #endif
+		lst << QCoreApplication::applicationDirPath() + "/qml";
 		lst << ":/quickevent";
 	}
 	return lst;

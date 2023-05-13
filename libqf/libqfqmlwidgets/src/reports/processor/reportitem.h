@@ -9,8 +9,8 @@
 
 #include "../../qmlwidgetsglobal.h"
 #include "../../graphics/graphics.h"
-#include "style/pen.h"
-#include "style/brush.h"
+//#include "style/pen.h"
+//#include "style/brush.h"
 #include "style/text.h"
 #include "style/sheet.h"
 

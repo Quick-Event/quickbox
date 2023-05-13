@@ -121,3 +121,5 @@ target_include_directories(libqfqmlwidgets PUBLIC include)
 target_compile_definitions(libqfqmlwidgets PRIVATE QFQMLWIDGETS_BUILD_DLL)
 
 install(TARGETS libqfqmlwidgets)
+
+

@@ -1,13 +1,15 @@
 #ifndef QF_CORE_QML_SQLDATADOCUMENT_H
 #define QF_CORE_QML_SQLDATADOCUMENT_H
 
+#include "../sql/sqlquerybuilder.h"
+
 #include <qf/core/model/sqldatadocument.h>
 
 namespace qf {
 namespace core {
 namespace qml {
 
-class SqlQueryBuilder;
+//class SqlQueryBuilder;
 
 class SqlDataDocument : public qf::core::model::SqlDataDocument
 {

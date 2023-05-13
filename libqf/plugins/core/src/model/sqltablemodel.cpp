@@ -88,7 +88,7 @@ void SqlTableModel::addColumnFunction(QQmlListProperty<TableModelColumn> *list_p
 	}
 }
 
-TableModelColumn *SqlTableModel::columnAtFunction(QQmlListProperty<TableModelColumn> *list_property, int index)
+TableModelColumn *SqlTableModel::columnAtFunction(QQmlListProperty<TableModelColumn> *list_property, qsizetype index)
 {
 	SqlTableModel *that = static_cast<SqlTableModel*>(list_property->object);
 	return that->m_qmlColumns.value(index);
@@ -106,7 +106,7 @@ void SqlTableModel::removeAllColumnsFunction(QQmlListProperty<TableModelColumn> 
 	that->m_qmlColumns.clear();
 }
 
-int SqlTableModel::countColumnsFunction(QQmlListProperty<TableModelColumn> *list_property)
+qsizetype SqlTableModel::countColumnsFunction(QQmlListProperty<TableModelColumn> *list_property)
 {
 	SqlTableModel *that = static_cast<SqlTableModel*>(list_property->object);
 	return that->m_qmlColumns.count();

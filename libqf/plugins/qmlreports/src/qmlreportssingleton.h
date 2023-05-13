@@ -2,6 +2,7 @@
 #define QMLREPORTSSINGLETON_H
 
 #include <QObject>
+#include <QQmlComponent>
 
 class QQmlEngine;
 class QJSEngine;
@@ -9,6 +10,7 @@ class QJSEngine;
 class QmlReportsSingleton : public QObject
 {
 	Q_OBJECT
+	QML_ELEMENT
 public:
 	QmlReportsSingleton(QObject* parent = 0);
 public:

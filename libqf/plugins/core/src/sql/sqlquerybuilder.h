@@ -114,4 +114,6 @@ private:
 
 }}}
 
+Q_DECLARE_OPAQUE_POINTER(qf::core::qml::SqlQueryBuilder);
+
 #endif // QF_CORE_QML_SQLQUERYBUILDER_H
