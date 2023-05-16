@@ -68,8 +68,9 @@ public:
 	void setQuery(const QString &query_str);
 	Q_SIGNAL void queryChanged(const QString &query_str);
 
-	const qf::core::sql::Query& recentlyExecutedQuery() {return m_recentlyExecutedQuery;}
-	Q_INVOKABLE const QString& recentlyExecutedQueryString() const {return m_recentlyExecutedQueryString;}
+	const QString& recentlyExecutedQueryString() const {return m_recentlyExecutedQueryString;}
+	int recentlyExecutedQueryRowsAffected() const {return m_recentlyExecutedQueryRowsAffected;}
+	const QSqlError& recentlyExecutedQueryError() const {return m_recentlyExecutedQueryError;}
 
 	void addForeignKeyDependency(const QString &master_table_key, const QString &slave_table_key);
 protected:
@@ -90,8 +91,9 @@ protected:
 	qf::core::sql::QueryBuilder m_queryBuilder;
 	QString m_query;
 	QString m_connectionName;
-	qf::core::sql::Query m_recentlyExecutedQuery;
 	QString m_recentlyExecutedQueryString;
+	int m_recentlyExecutedQueryRowsAffected;
+	QSqlError m_recentlyExecutedQueryError;
 	/// INSERT needs to know dependency of tables in joined queries to insert particular tables in proper order
 	QMap<QString, QString> m_foreignKeyDependencies;
 };

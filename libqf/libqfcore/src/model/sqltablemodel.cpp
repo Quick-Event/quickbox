@@ -669,17 +669,17 @@ bool SqlTableModel::reloadTable(const QString &query_str)
 {
 	qfLogFuncFrame() << query_str;
 	qf::core::sql::Connection sql_conn = sqlConnection();
-	m_recentlyExecutedQuery = qfs::Query(sql_conn);
+	qfs::Query q(sql_conn);
 	m_recentlyExecutedQueryString = query_str;
-	bool ok = m_recentlyExecutedQuery.exec(query_str);
+	bool ok = q.exec(query_str);
 	if(!ok) {
-		qfError() << QString("SQL Error: %1\n%2").arg(m_recentlyExecutedQuery.lastError().text()).arg(query_str);
+		qfError() << QString("SQL Error: %1\n%2").arg(q.lastError().text()).arg(query_str);
 		return false;
 	}
-	if(m_recentlyExecutedQuery.isSelect()) {
+	if(q.isSelect()) {
 		bool retype_sqlite_null_values = sql_conn.driverName().endsWith(QLatin1String("SQLITE"), Qt::CaseInsensitive);
 		qfu::Table::FieldList table_fields;
-		QSqlRecord rec = m_recentlyExecutedQuery.record();
+		QSqlRecord rec = q.record();
 		int fld_cnt = rec.count();
 		//qfInfo() << query_str;
 		for(int i=0; i<fld_cnt; i++) {
@@ -694,11 +694,11 @@ bool SqlTableModel::reloadTable(const QString &query_str)
 		}
 		setSqlFlags(table_fields, query_str);
 		m_table = qfu::Table(table_fields);
-		while(m_recentlyExecutedQuery.next()) {
+		while(q.next()) {
 			qfu::TableRow &row = m_table.appendRow();
 			row.setInsert(false);
 			for(int i=0; i<fld_cnt; i++) {
-				QVariant v = m_recentlyExecutedQuery.value(i);
+				QVariant v = q.value(i);
 				//qfInfo() << table_fields.value(i).name() << table_fields.value(i).type() << i << v << "null:" << v.isNull();
 				if(retype_sqlite_null_values) {
 					// SQLite driver reports NULL values as QString()

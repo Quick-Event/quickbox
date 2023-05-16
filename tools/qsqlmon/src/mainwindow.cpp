@@ -568,19 +568,18 @@ bool MainWindow::execQuery(const QString& query_str)
 			m->clearColumns();
 			m->setQuery(qs);
 			ok = m->reload();
-			QSqlQuery q = m->recentlyExecutedQuery();
 			if(ok) {
-				if(q.isSelect()) {
+				if(is_select) {
 					/// if query was select
 					ui.queryView->tableView()->resizeColumnsToContents();
 					ui.queryView->setInfo(qs);
 				}
 				else {
-					appendInfo(tr("affected rows: %1").arg(q.numRowsAffected()));
+					appendInfo(tr("affected rows: %1").arg(m->recentlyExecutedQueryRowsAffected()));
 				}
 			}
 			else {
-				QString msg = q.lastError().text();
+				QString msg = m->recentlyExecutedQueryError().text();
 				qf::qmlwidgets::dialogs::MessageBox::showError(this, msg);
 				appendInfo(msg);
 			}

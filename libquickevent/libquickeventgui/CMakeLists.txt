@@ -1,6 +1,5 @@
 add_library(libquickeventgui SHARED
     src/audio/player.cpp
-    src/audio/wavfile.cpp
     src/og/itemdelegate.cpp
     src/og/sqltablemodel.cpp
     src/og/timeedit.cpp

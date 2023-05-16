@@ -127,14 +127,14 @@ CompetitorWidget::CompetitorWidget(QWidget *parent) :
 		for (int i = 1; i <= stage_cnt; ++i) {
 			QPushButton *bt = new QPushButton(tr("E&%1").arg(i));
 			ly->addWidget(bt);
-			connect(bt, &QPushButton::clicked, [this, i]() {
+			connect(bt, &QPushButton::clicked, this, [this, i]() {
 				this->showRunsTable(i);
 			});
 		}
 	}
 
 	// if there is only one run propagate widget SI card change from competitors to runs
-	connect(ui->edSiId, qOverload<int>(&QSpinBox::valueChanged),[=](int new_si_number) // widget SIcard edit box
+	connect(ui->edSiId, qOverload<int>(&QSpinBox::valueChanged), this, [this](int new_si_number) // widget SIcard edit box
 	{
 		if(getPlugin<EventPlugin>()->stageCount() == 1 && m_runsModel->rowCount() == 1 ) {
 			m_runsModel->setValue(0, CompetitorRunsModel::col_runs_siId, new_si_number); // update SI in runs model

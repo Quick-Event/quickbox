@@ -172,8 +172,10 @@ void DlgColumnDef::loadColumnDefinition(const qf::core::sql::FieldInfo &fi)
 	int ix = lstType->findText(s, Qt::MatchExactly);
 	lstType->setCurrentIndex(ix);
 	edLength->setText(QString::number(fi.length()));
-	if(fi.type() == QVariant::String) edDecimals->setText(QString());
-	else edDecimals->setText(QString::number(fi.precision()));
+	if(fi.metaType() == QMetaType(QMetaType::QString))
+		edDecimals->setText(QString());
+	else
+		edDecimals->setText(QString::number(fi.precision()));
 	edDefaultValue->setText(fi.defaultValue().toString()); edName->setEnabled(true);
 	chkNotNull->setChecked(!fi.isNullable());
 	chkUnsigned->setChecked(fi.isUnsigned());
@@ -210,14 +212,14 @@ void DlgColumnDef::loadColumnDefinition(const qf::core::sql::FieldInfo &fi)
 			int ix = lstCharacterSet->findText(char_set, Qt::MatchFixedString);
 			lstCharacterSet->setCurrentIndex(ix);
 		}
-		lstCharacterSet->setEnabled(fi.type() == QVariant::String);
+		lstCharacterSet->setEnabled(fi.metaType() == QMetaType(QMetaType::QString));
 		{
 			loadCollationsForCurrentCharset();
 			QString collation = fi.collation();
 			int ix = lstCollation->findText(collation, Qt::MatchFixedString);
 			lstCollation->setCurrentIndex(ix);
 		}
-		lstCollation->setEnabled(fi.type() == QVariant::String);
+		lstCollation->setEnabled(fi.metaType() == QMetaType(QMetaType::QString));
 		//qfInfo() << "2grpEnum enabled:" << grpEnum->isEnabled() << "txtEnum enabled:" << txtEnum->isEnabled();
 		grpEnum->setEnabled(fi.nativeType() == "enum" || fi.nativeType() == "set");
 		txtEnum->setPlainText(fi.enumOrSetFields().join("\n"));

@@ -318,8 +318,8 @@ void OrisImporter::chooseAndImport()
 		return;
 	int event_id = dlg.eventId();
 	if(event_id > 0) {
-		importEvent(event_id, [=]() {
-			importRegistrations([=]() {
+		importEvent(event_id, [this]() {
+			importRegistrations([this]() {
 				importClubs();
 			});
 		});

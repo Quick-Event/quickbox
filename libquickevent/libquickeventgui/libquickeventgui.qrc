@@ -1,4 +1,8 @@
 <RCC>
     <qresource prefix="/quickeventgui">
+        <file>sound/broken-glass.wav</file>
+        <file>sound/buzz.wav</file>
+        <file>sound/ding.wav</file>
+        <file>sound/dingding.wav</file>
     </qresource>
 </RCC>

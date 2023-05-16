@@ -1,16 +1,10 @@
 #include "player.h"
-#include "wavfile.h"
 
 #include <qf/core/log.h>
 #include <qf/core/utils.h>
 
 #include <QCoreApplication>
-#if QT_VERSION_MAJOR < 6
-#include <QAudioDeviceInfo>
-#endif
-#include <QAudioFormat>
 #include <QAudioOutput>
-#include <QString>
 
 namespace quickevent {
 namespace gui {
@@ -25,60 +19,61 @@ void Player::playAlert(AlertKind kind)
 {
 	QString fn;
 	switch(kind) {
-	case AlertKind::Error: fn = QStringLiteral("error.wav"); break;
-	case AlertKind::Warning: fn = QStringLiteral("warning.wav"); break;
-	case AlertKind::Info: fn = QStringLiteral("info.wav"); break;
-	case AlertKind::OperatorWakeUp: fn = QStringLiteral("operator-wakeup.wav"); break;
-	case AlertKind::OperatorNotify: fn = QStringLiteral("operator-notify.wav"); break;
+	case AlertKind::Error: fn = QStringLiteral("broken-glass.wav"); break;
+	case AlertKind::Warning: fn = QStringLiteral("buzz.wav"); break;
+	case AlertKind::Info: fn = QStringLiteral("ding.wav"); break;
+	case AlertKind::OperatorWakeUp: fn = QStringLiteral("buzz.wav"); break;
+	case AlertKind::OperatorNotify: fn = QStringLiteral("dingding.wav"); break;
 	}
 	if(!fn.isEmpty()) {
-		fn = QCoreApplication::applicationDirPath() + "/quickevent-data/style/sound/" + fn;
+		fn = ":/quickeventgui/sound/" + fn;
 		playFile(fn);
 	}
 }
 
 void Player::playFile(const QString &file)
 {
-#if QT_VERSION_MAJOR < 6
-	if (m_audioOutput) {
-		m_audioOutput->stop();
+	m_playlist.enqueue(file);
+	if (!isPlaying()) {
+		playNext();
 	}
+}
 
-	if(!m_wavFile)
-		m_wavFile = new WavFile(this);
-	if(!m_wavFile->open(file)) {
-		qfError() << "Cannot open audio file" << file;
+bool Player::isPlaying() const
+{
+	return m_player && m_player->playbackState() != QMediaPlayer::StoppedState;
+}
+
+void Player::playNext()
+{
+	if (m_playlist.isEmpty()) {
 		return;
 	}
 
-	QF_SAFE_DELETE(m_audioOutput);
+	//if(Application::instance()->isSilentMode()) {
+	//	m_playlist.clear();
+	//	return;
+	//}
 
-	QAudioDeviceInfo info(QAudioDeviceInfo::defaultOutputDevice());
-
-	if (!info.isFormatSupported(m_wavFile->fileFormat())) {
-		qfWarning() << "Raw audio format not supported by backend, cannot play audio.";
-		return;
+	if (!m_audioOutput) {
+		m_audioOutput = new QAudioOutput;
+		m_player = new QMediaPlayer;
+		m_player->setAudioOutput(m_audioOutput);
+		connect(m_player, &QMediaPlayer::playbackStateChanged, this, &Player::onPlaybackStateChanged, Qt::QueuedConnection);
+		m_audioOutput->setVolume(100);
 	}
 
-	m_audioOutput = new QAudioOutput(m_wavFile->fileFormat(), this);
-	connect(m_audioOutput, &QAudioOutput::stateChanged, [this](QAudio::State new_state) {
-		qfDebug() << "Player state changed to" << new_state;
-		switch (new_state) {
-		case QAudio::IdleState:
-			// Finished playing (no more data)
-			this->m_audioOutput->stop();
-			if(this->m_wavFile)
-				this->m_wavFile->close();
-			break;
+	QString file = m_playlist.dequeue();
+	m_player->setSource(QUrl::fromLocalFile(file));
+	m_player->setPosition(0);
+	m_player->play();
+}
 
-		default:
-			// ... other cases as appropriate
-			break;
-		}
-	});
-
-	m_audioOutput->start(m_wavFile);
-#endif
+void Player::onPlaybackStateChanged(QMediaPlayer::PlaybackState new_state)
+{
+	if (new_state == QMediaPlayer::StoppedState) {
+		playNext();
+	}
 }
 
 }}}
