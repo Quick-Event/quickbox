@@ -286,11 +286,11 @@ void OResultsClient::onCompetitorChanged(int competitor_id)
 		int start_time = q.value("startTimeMs").toInt();
 		int running_time = q.value("timeMs").toInt();
 
-		QString runner_id = is_csos_reg(registration) ? registration : QString::number(card_num);
-		int status_code = mop_run_status_code(running_time, isDisq, isDisqByOrganizer, isMissPunch, isBadCheck, isDidNotStart, isDidNotFinish, isNotCompeting);
-
-		if (runner_id.isEmpty() || card_num == 0)
+		if (registration.isEmpty() && card_num == 0)
 			return;
+
+		QString runner_id = !registration.isEmpty() ? registration : QString::number(card_num);
+		int status_code = mop_run_status_code(running_time, isDisq, isDisqByOrganizer, isMissPunch, isBadCheck, isDidNotStart, isDidNotFinish, isNotCompeting);
 
 		QVariantMap competitor {
 			{"stat", status_code},
