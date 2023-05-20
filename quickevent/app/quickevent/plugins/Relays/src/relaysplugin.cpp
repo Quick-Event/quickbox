@@ -479,7 +479,7 @@ QVariant RelaysPlugin::startListByClassesTableData(const QString &class_filter)
 		qf::core::sql::QueryBuilder qb;
 		qb.select2("competitors", "registration, iofId")
 			.select("competitors.firstName, competitors.lastName, COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName")
-			.select2("runs", "leg, siId, startTimeMs")
+			.select2("runs", "id, leg, siId, startTimeMs")
 			.from("runs")
 			.join("runs.competitorId", "competitors.id")
 			.join("runs.relayId", "relays.id")
@@ -616,6 +616,7 @@ QString RelaysPlugin::resultsIofXml30()
 					continue;
 				QVariantList member_result{"TeamMemberResult"};
 				QVariantList person{"Person"};
+				append_list(person, QVariantList{"Id", QVariantMap{{"type", "QuickEvent"}}, tt_leg_row.value(QStringLiteral("runId"))});
 				append_list(person, QVariantList{"Id", QVariantMap{{"type", "CZE"}}, tt_leg_row.value(QStringLiteral("registration"))});
 				auto iof_id = tt_leg_row.value(QStringLiteral("iofId"));
 				if (!iof_id.isNull())
@@ -822,6 +823,7 @@ QString RelaysPlugin::startListIofXml30()
 				const qf::core::utils::TreeTableRow tt_leg_row = tt_legs.row(k);
 				QVariantList member_start{"TeamMemberStart"};
 				QVariantList person{"Person"};
+				append_list(person, QVariantList{"Id", QVariantMap{{"type", "QuickEvent"}}, tt_leg_row.value(QStringLiteral("runs.id"))});
 				append_list(person, QVariantList{"Id", QVariantMap{{"type", "CZE"}}, tt_leg_row.value(QStringLiteral("registration"))});
 				auto iof_id = tt_leg_row.value(QStringLiteral("iofId"));
 				if (!iof_id.isNull())

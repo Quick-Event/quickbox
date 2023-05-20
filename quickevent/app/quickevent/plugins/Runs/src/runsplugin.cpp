@@ -865,8 +865,7 @@ QString RunsPlugin::resultsIofXml30Stage(int stage_id)
 			//pos++;
 			QVariantList person_result{"PersonResult"};
 			QVariantList person{"Person"};
-			person.insert(person.count(),
-				QVariantList{"Id", QVariantMap{{"type", "CZE"}}, tt2_row.value(QStringLiteral("competitors.registration"))});
+			person.insert(person.count(), QVariantList{"Id", QVariantMap{{"type", "CZE"}}, tt2_row.value(QStringLiteral("competitors.registration"))});
 			auto iof_id = tt2_row.value(QStringLiteral("competitors.iofId"));
 			if (!iof_id.isNull())
 				person.insert(person.count(), QVariantList{"Id", QVariantMap{{"type", "IOF"}}, iof_id});
@@ -1129,7 +1128,7 @@ qf::core::utils::TreeTable RunsPlugin::startListClassesTable(const QString &wher
 	qfs::QueryBuilder qb2;
 	qb2.select2("competitors", "lastName, firstName, registration, iofId, startNumber")
 		.select("COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName")
-		.select2("runs", "siId, startTimeMs")
+		.select2("runs", "id, siId, startTimeMs")
 		.select2("clubs","name, abbr")
 		.from("competitors")
 		.join("LEFT JOIN clubs ON substr(competitors.registration, 1, 3) = clubs.abbr")
@@ -2391,6 +2390,7 @@ QString RunsPlugin::startListStageIofXml30(int stage_id)
 			auto tt2_row = tt2.row(j);
 			QVariantList xml_person{"PersonStart"};
 			QVariantList person{"Person"};
+			append_list(person, QVariantList{"Id", QVariantMap{{"type", "QuickEvent"}}, tt2_row.value(QStringLiteral("runs.id"))});
 			append_list(person, QVariantList{"Id", QVariantMap{{"type", "CZE"}}, tt2_row.value(QStringLiteral("competitors.registration"))});
 			auto iof_id = tt2_row.value(QStringLiteral("competitors.iofId"));
 			if (!iof_id.isNull())

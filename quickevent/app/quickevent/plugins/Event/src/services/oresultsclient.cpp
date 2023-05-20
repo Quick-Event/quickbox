@@ -205,12 +205,6 @@ static void append_list(QVariantList &lst, const QVariantList &new_lst)
 	lst.insert(lst.count(), new_lst);
 }
 
-static bool is_csos_reg(QString &reg)
-{
-	const static std::regex csos_registration_regex("[A-Z]{3}[0-9]{4}");
-	return reg.length() == 7 && std::regex_match(reg.toStdString(), csos_registration_regex);
-}
-
 static int mop_start(int runner_start_ms) {
 	int stage_id = getPlugin<EventPlugin>()->currentStageId();
 	QDateTime event_start = getPlugin<EventPlugin>()->stageStartDateTime(stage_id);
@@ -255,6 +249,7 @@ void OResultsClient::onCompetitorChanged(int competitor_id)
 		   "competitors.startNumber, "
 		   "competitors.lastName || ' ' || competitors.firstName AS name, "
 		   "classes.id AS classId, "
+		   "runs.id AS runId, "
 		   "runs.siId, "
 		   "runs.disqualified, "
 		   "runs.disqualifiedByOrganizer, "
@@ -271,7 +266,7 @@ void OResultsClient::onCompetitorChanged(int competitor_id)
 		   "INNER JOIN classes ON classes.id = competitors.classId OR classes.id = relays.classId  "
 		   "WHERE competitors.id=" QF_IARG(competitor_id) " AND runs.stageId=" QF_IARG(stage_id), qf::core::Exception::Throw);
 	if(q.next()) {
-		QString registration = q.value("registration").toString();
+		int run_id = q.value("runId").toInt();
 		int start_num = q.value("startNumber").toInt();
 		QString name = q.value("name").toString();
 		QString class_id = q.value("classId").toString();
@@ -286,11 +281,7 @@ void OResultsClient::onCompetitorChanged(int competitor_id)
 		int start_time = q.value("startTimeMs").toInt();
 		int running_time = q.value("timeMs").toInt();
 
-		QString runner_id = is_csos_reg(registration) ? registration : QString::number(card_num);
 		int status_code = mop_run_status_code(running_time, isDisq, isDisqByOrganizer, isMissPunch, isBadCheck, isDidNotStart, isDidNotFinish, isNotCompeting);
-
-		if (runner_id.isEmpty() || card_num == 0)
-			return;
 
 		QVariantMap competitor {
 			{"stat", status_code},
@@ -313,7 +304,7 @@ void OResultsClient::onCompetitorChanged(int competitor_id)
 		};
 		QVariantList xml_competitor{"cmp",
 			QVariantMap {
-				{"id", runner_id },
+				{"id", run_id },
 				{"card", card_num },
 			},
 			QVariantList {"base",
