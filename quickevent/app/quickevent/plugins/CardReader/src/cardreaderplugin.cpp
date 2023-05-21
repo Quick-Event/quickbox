@@ -4,6 +4,7 @@
 #include "cardreaderwidget.h"
 #include "cardreadersettingspage.h"
 #include "services/racomclient.h"
+#include "services/qropunch.h"
 
 #include "../../Core/src/coreplugin.h"
 #include "../../Core/src/widgets/settingsdialog.h"
@@ -61,6 +62,8 @@ void CardReaderPlugin::onInstalled()
 
 	services::RacomClient *racom_client = new services::RacomClient(this);
 	Event::services::Service::addService(racom_client);
+	services::QrOPunch *qr_o_punch = new services::QrOPunch(this);
+	Event::services::Service::addService(qr_o_punch);
 
 	auto core_plugin = getPlugin<Core::CorePlugin>();
 	core_plugin->settingsDialog()->addPage(new CardReaderSettingsPage());
