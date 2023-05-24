@@ -46,6 +46,8 @@ int RunStatus::ogTime() const
 	if (m_notCompeting)
 		return quickevent::core::og::TimeMs::NOT_COMPETITING_TIME_MSEC;
 	if (m_disqualified) {
+		if (m_disqualifiedByOrganizer)
+			return quickevent::core::og::TimeMs::DISQ_TIME_MSEC;
 		if (m_missingPunch)
 			return quickevent::core::og::TimeMs::MISPUNCH_TIME_MSEC;
 		if (m_didNotStart)
@@ -54,8 +56,6 @@ int RunStatus::ogTime() const
 			return quickevent::core::og::TimeMs::NOT_FINISH_TIME_MSEC;
 		if (m_overTime)
 			return quickevent::core::og::TimeMs::OVERTIME_TIME_MSEC;
-		// if (m_disqualifiedByOrganizer)
-		//
 		return quickevent::core::og::TimeMs::DISQ_TIME_MSEC;
 	}
 	return 0;
@@ -66,6 +66,8 @@ QString RunStatus::toXmlExportString() const
 	if (m_notCompeting)
 		return QStringLiteral("NotCompeting");
 	if (m_disqualified) {
+		if (m_disqualifiedByOrganizer)
+			QStringLiteral("Disqualified");
 		if (m_missingPunch)
 			return QStringLiteral("MissingPunch");
 		if (m_didNotStart)
@@ -74,8 +76,6 @@ QString RunStatus::toXmlExportString() const
 			return QStringLiteral("DidNotFinish");
 		if (m_overTime)
 			return QStringLiteral("OverTime");
-		// if (m_disqualifiedByOrganizer)
-		//
 		return QStringLiteral("Disqualified");
 	}
 	return QStringLiteral("OK");
@@ -87,6 +87,8 @@ QString RunStatus::toEmmaExportString() const
 	if (m_notCompeting)
 		return QStringLiteral("NC  ");
 	if (m_disqualified)	{
+		if (m_disqualifiedByOrganizer)
+			return QStringLiteral("DISQ");
 		if (m_missingPunch)
 			return QStringLiteral("MP  ");
 		if (m_didNotStart)
@@ -95,8 +97,6 @@ QString RunStatus::toEmmaExportString() const
 			return QStringLiteral("DNF ");
 		if (m_overTime)
 			return QStringLiteral("OVRT");
-		// if (m_disqualifiedByOrganizer)
-		//
 		return QStringLiteral("DISQ");
 	}
 	return QStringLiteral("O.K.");
@@ -107,6 +107,8 @@ QString RunStatus::toHtmlExportString() const
 	if (m_notCompeting)
 		return QStringLiteral("NC");
 	if (m_disqualified)	{
+		if (m_disqualifiedByOrganizer)
+			return QStringLiteral("DISQ");
 		if (m_missingPunch)
 			return QStringLiteral("MP");
 		if (m_didNotStart)
@@ -115,8 +117,6 @@ QString RunStatus::toHtmlExportString() const
 			return QStringLiteral("DNF");
 		if (m_overTime)
 			return QStringLiteral("OVRT");
-		// else if (m_disqualifiedByOrganizer)
-		//
 		return QStringLiteral("DISQ");
 	}
 	return QStringLiteral("OK");
@@ -127,6 +127,8 @@ QString RunStatus::toString() const
 	if (m_notCompeting)
 		return tr("NC", "Not Competing");
 	if (m_disqualified)	{
+		if (m_disqualifiedByOrganizer)
+			return tr("DISQ", "Disqualified");
 		if (m_missingPunch)
 			return tr("MP", "Missing Punch");
 		if (m_didNotStart)
@@ -135,8 +137,6 @@ QString RunStatus::toString() const
 			return tr("DNF", "Did Not Finish");
 		if (m_overTime)
 			return tr("OVRT", "Over Time");
-		// if (m_disqualifiedByOrganizer)
-		//
 		return tr("DISQ", "Disqualified");
 	}
 	return tr("OK");
