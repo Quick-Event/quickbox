@@ -43,8 +43,6 @@ bool RunStatus::isOk() const
 
 int RunStatus::toTime() const
 {
-	if (m_notCompeting)
-		return quickevent::core::og::TimeMs::NOT_COMPETITING_TIME_MSEC;
 	if (m_disqualified) {
 		if (m_missingPunch)
 			return quickevent::core::og::TimeMs::MISPUNCH_TIME_MSEC;
@@ -58,13 +56,13 @@ int RunStatus::toTime() const
 		//
 		return quickevent::core::og::TimeMs::DISQ_TIME_MSEC;
 	}
+	if (m_notCompeting)
+		return quickevent::core::og::TimeMs::NOT_COMPETITING_TIME_MSEC;
 	return 0;
 }
 
 QString RunStatus::toXmlExportString() const
 {
-	if (m_notCompeting)
-		return QStringLiteral("NotCompeting");
 	if (m_disqualified) {
 		if (m_missingPunch)
 			return QStringLiteral("MissingPunch");
@@ -78,14 +76,14 @@ QString RunStatus::toXmlExportString() const
 		//
 		return QStringLiteral("Disqualified");
 	}
+	if (m_notCompeting)
+		return QStringLiteral("NotCompeting");
 	return QStringLiteral("OK");
 }
 
 
 QString RunStatus::toEmmaExportString() const
 {
-	if (m_notCompeting)
-		return QStringLiteral("NC  ");
 	if (m_disqualified)	{
 		if (m_missingPunch)
 			return QStringLiteral("MP  ");
@@ -99,13 +97,13 @@ QString RunStatus::toEmmaExportString() const
 		//
 		return QStringLiteral("DISQ");
 	}
+	if (m_notCompeting)
+		return QStringLiteral("NC  ");
 	return QStringLiteral("O.K.");
 }
 
 QString RunStatus::toHtmlExportString() const
 {
-	if (m_notCompeting)
-		return QStringLiteral("NC");
 	if (m_disqualified)	{
 		if (m_missingPunch)
 			return QStringLiteral("MP");
@@ -119,13 +117,13 @@ QString RunStatus::toHtmlExportString() const
 		//
 		return QStringLiteral("DISQ");
 	}
+	if (m_notCompeting)
+		return QStringLiteral("NC");
 	return QStringLiteral("OK");
 }
 
 QString RunStatus::toString() const
 {
-	if (m_notCompeting)
-		return tr("NC", "Not Competing");
 	if (m_disqualified)	{
 		if (m_missingPunch)
 			return tr("MP", "Missing Punch");
@@ -139,6 +137,8 @@ QString RunStatus::toString() const
 		//
 		return tr("DISQ", "Disqualified");
 	}
+	if (m_notCompeting)
+		return tr("NC", "Not Competing");
 	return tr("OK");
 }
 
