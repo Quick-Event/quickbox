@@ -54,6 +54,7 @@ void RunsTableItemDelegate::reloadHighlightedClassId()
 		m_classStartFirst = 0;
 		m_classStartLast = 0;
 	}
+	//qfInfo() << "interval:" << m_classInterval << "first:" << m_classStartFirst << "last:" << m_classStartLast;
 }
 
 void RunsTableItemDelegate::paintBackground(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
