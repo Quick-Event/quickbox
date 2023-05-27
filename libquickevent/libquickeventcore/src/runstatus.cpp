@@ -67,7 +67,7 @@ QString RunStatus::toXmlExportString() const
 		return QStringLiteral("NotCompeting");
 	if (m_disqualified) {
 		if (m_disqualifiedByOrganizer)
-			QStringLiteral("Disqualified");
+			return QStringLiteral("Disqualified");
 		if (m_missingPunch)
 			return QStringLiteral("MissingPunch");
 		if (m_didNotStart)
