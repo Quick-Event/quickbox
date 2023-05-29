@@ -378,7 +378,6 @@ void CardReaderPlugin::updateCheckedCardValuesSql(const quickevent::core::si::Ch
 		q.execThrow("SELECT * FROM runs WHERE id=" + QString::number(run_id));
 		if(q.next()) {
 			if(q.value("disqualifiedByOrganizer").toBool()) should_be_disq = true;
-			if(q.value("notCompeting").toBool()) should_be_disq = true;
 			if(q.value("notStart").toBool()) should_be_disq = true;
 			if(q.value("notFinish").toBool()) should_be_disq = true;
 		}
