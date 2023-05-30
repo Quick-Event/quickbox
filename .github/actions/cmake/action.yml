@@ -1,0 +1,56 @@
+name: Setup CMake
+description: "Invoke CMake and generate build files"
+inputs:
+  qt_version:
+    description: "Specify Qt version to use"
+    default: "6.5.0"
+  qt_arch:
+    description: "Specify Qt version to use"
+    default: "gcc_64"
+  use_qt6:
+    description: "Specify whether we're using Qt 5 or Qt 6"
+    default: "ON"
+  modules:
+    description: "Specify which modules should be installed"
+    default: "qtserialport qtmultimedia"
+  additional_cmake_args:
+    description: "Additional args to pass to CMake"
+    default: ""
+
+runs:
+  using: "composite"
+  steps:
+    # Linux deps
+    - name: Install/cache clazy, ninja, openldap, doctest libfuse, and Qt's dependencies
+      if: runner.os != 'Windows'
+      uses: awalsh128/cache-apt-pkgs-action@v1.3.0
+      with:
+        packages: ninja-build libgl1-mesa-dev libpulse-dev libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-shape0 libxcb-util1 libxcb-xinerama0 libxkbcommon-x11-0 libxcb-cursor-dev clazy libfuse-dev libgstreamer-gl1.0-0 libgstreamer-plugins-base1.0-0
+        version: 1.0
+
+    # Qt
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v3
+      with:
+        cache: true
+        version: ${{ inputs.qt_version }}
+        arch: ${{ inputs.qt_arch }}
+        install-deps: false
+        modules: ${{ inputs.modules }}
+
+    - name: Configure CMake
+      run: |
+        # Enable these when all warnings are fixed :^)
+        # CFLAGS="-Werror ${CFLAGS}" \
+        # CXXFLAGS="-Werror ${CXXFLAGS}" \
+        cmake \
+        -G Ninja \
+        -S '${{github.workspace}}' \
+        -B '${{github.workspace}}/build' \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DBUILD_TESTING=OFF \
+        -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+        -DUSE_QT6=${{ inputs.use_qt6 }} \
+        ${{ env.cmake_extra_args }} \
+        ${{ inputs.additional_cmake_args }}
+      shell: bash

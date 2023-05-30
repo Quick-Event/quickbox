@@ -1,0 +1,42 @@
+name: Lint
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master", "qt6" ]
+
+jobs:
+  clang-tidy:
+    name: clang-tidy / Ubuntu 22.04
+    runs-on: ubuntu-22.04
+    env:
+      CC: clang
+      CXX: clang++
+    steps:
+      - name: Clone the repository
+        uses: actions/checkout@v3
+        with:
+          submodules: true
+
+      - name: Run clang-tidy
+        uses: ./.github/actions/run-linter
+        with:
+          lint_program_with_args: clang-tidy --quiet --warnings-as-errors=*
+
+  clazy:
+    name: clazy / Ubuntu 22.04
+    runs-on: ubuntu-22.04
+    env:
+      CC: clang
+      CXX: clang++
+    steps:
+      - name: Clone the repository
+        uses: actions/checkout@v3
+        with:
+          submodules: true
+
+      - name: Run clazy
+        uses: ./.github/actions/run-linter
+        with:
+          lint_program_with_args: clazy-standalone --checks=level1,no-fully-qualified-moc-types,no-non-pod-global-static

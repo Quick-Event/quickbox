@@ -1,0 +1,25 @@
+name: AppImage
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master", "qt6" ]
+
+jobs:
+  ubuntu-qt6:
+    name: Qt 6.5.0 / Ubuntu 22.04
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Clone the repository
+        uses: actions/checkout@v3
+        with:
+          submodules: true
+
+      - name: Setup CMake
+        uses: ./.github/actions/cmake
+        with:
+          additional_cmake_args: -DCMAKE_INSTALL_PREFIX='${{ github.workspace }}/install/usr'
+
+      - name: Create AppImage
+        uses: ./.github/actions/appimage
