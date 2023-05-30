@@ -61,6 +61,8 @@ function ogTimeToString(time_ms)
 
 function detailRunStatusToString(detail)
 {
+	if(detail.rowData("notCompeting"))
+		return qsTr("NC");
 	if(detail.rowData("disqualified")) {
 		if (detail.rowData("disqualifiedByOrganizer"))
 			return qsTr("DISQ");
@@ -72,6 +74,7 @@ function detailRunStatusToString(detail)
 			return qsTr("DNF");
 		if (detail.rowData("overTime"))
 			return qsTr("OVRT");
+		return qsTr("DISQ");
 	}
 	return "";
 }
