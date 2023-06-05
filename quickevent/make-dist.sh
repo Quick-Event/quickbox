@@ -174,6 +174,8 @@ $RSYNC $QT_LIB_DIR/libQt5SerialPort.so* $DIST_LIB_DIR
 $RSYNC $QT_LIB_DIR/libQt5DBus.so* $DIST_LIB_DIR
 $RSYNC $QT_LIB_DIR/libQt5Multimedia.so* $DIST_LIB_DIR
 $RSYNC $QT_LIB_DIR/libQt5XcbQpa.so* $DIST_LIB_DIR
+$RSYNC /usr/lib/x86_64-linux-gnu/libssl.so $DIST_LIB_DIR
+$RSYNC /usr/lib/x86_64-linux-gnu/libcrypto.so $DIST_LIB_DIR
 
 $RSYNC $QT_LIB_DIR/libicu*.so* $DIST_LIB_DIR
 
