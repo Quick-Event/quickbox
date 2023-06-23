@@ -196,7 +196,6 @@ void ReportOptionsDialog::setOptions(const ReportOptionsDialog::Options &options
 	ui->edPageHeight->setValue(options.pageHeight());
 	ui->edHorizontalMargin->setValue(options.horizontalMargin());
 	ui->edVerticalMargin->setValue(options.verticalMargin());
-	//ui->chkShirinkPageWidthToColumnCount->setChecked(options.isShirinkPageWidthToColumnCount());
 	ui->grpClassFilter->setChecked(options.isUseClassFilter());
 	ui->chkClassFilterDoesntMatch->setChecked(options.isInvertClassFilter());
 	ui->edFilter->setText(options.classFilter());
@@ -233,7 +232,6 @@ ReportOptionsDialog::Options ReportOptionsDialog::options() const
 	opts.setPageHeight(ui->edPageHeight->value());
 	opts.setHorizontalMargin(ui->edHorizontalMargin->value());
 	opts.setVerticalMargin(ui->edVerticalMargin->value());
-	//opts.setShirinkPageWidthToColumnCount(ui->chkShirinkPageWidthToColumnCount->isChecked());
 	opts.setUseClassFilter(ui->grpClassFilter->isChecked());
 	opts.setInvertClassFilter(ui->chkClassFilterDoesntMatch->isChecked());
 	opts.setClassFilter(ui->edFilter->text());
