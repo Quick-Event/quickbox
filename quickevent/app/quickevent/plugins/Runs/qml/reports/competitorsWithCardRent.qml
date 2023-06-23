@@ -8,6 +8,7 @@ Report {
 	id: root
 	objectName: "root"
 
+	property var options
 	property string reportTitle: qsTr("Competitors with rented cards in stage %1").arg(stageId);
 	property var stageId
 
@@ -19,10 +20,10 @@ Report {
 	}
 	textStyle: myStyle.textStyleDefault
 
-	width: 210
-	height: 297
-	hinset: 5
-	vinset: 5
+	width: root.options.pageWidth? root.options.pageWidth: 210
+	height: root.options.pageHeight? root.options.pageHeight: 297
+	hinset: root.options.horizontalMargin? root.options.horizontalMargin: 10
+	vinset: root.options.verticalMargin? root.options.verticalMargin: 5
 	Frame {
 		width: "%"
 		height: "%"
