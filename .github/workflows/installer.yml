@@ -1,0 +1,53 @@
+name: Installer
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master", "qt6" ]
+
+jobs:
+  windows:
+    name: Qt 6.5.0 / Windows
+    runs-on: windows-2022
+    steps:
+      - name: Clone the repository
+        uses: actions/checkout@v3
+        with:
+          submodules: true
+
+      - name: Setup CMake
+        uses: ./.github/actions/cmake
+        with:
+          qt_arch: win64_mingw
+          additional_cmake_args: -DCMAKE_INSTALL_PREFIX='${{ github.workspace }}/install'
+
+      - name: Build
+        run: cmake --build '${{github.workspace}}/build' --parallel "$(nproc)"
+
+      - name: Install
+        run: cmake --install '${{ github.workspace }}/build'
+
+      - name: Run windeployqt
+        # --no-translations is needed because https://bugreports.qt.io/browse/QTBUG-112204
+        # FIXME: Remove when 6.5.1 becomes available.
+        run: windeployqt --no-translations -serialport '${{ github.workspace }}/install/bin/quickevent.exe'
+
+      - name: Copy MinGW runtime libraries
+        # windeployqt is unable to copy those, because it looks for them next to where g++.exe is. On the GitHub runner,
+        # they are in a different directory.
+        run: cp /mingw64/bin/{libstdc++-6.dll,libgcc_s_seh-1.dll,libwinpthread-1.dll} '${{ github.workspace }}/install/bin'
+        shell: bash
+
+      - name: Get app version
+        run: echo "VERSION=$(grep APP_VERSION quickevent/app/quickevent/src/appversion.h | cut -d\" -f2)" >> "$GITHUB_ENV"
+        shell: bash
+
+      - name: Create installer
+        run: iscc "-DBUILD_DIR=${{ github.workspace }}/install" "-DVERSION=${{ env.VERSION }}" quickevent/quickevent.iss
+
+      - name: Upload installer
+        uses: actions/upload-artifact@v3
+        with:
+          name: quickevent-${{ env.VERSION }}-setup.exe
+          path: ${{ github.workspace }}/install/_inno/quickevent/quickevent-*-setup.exe
