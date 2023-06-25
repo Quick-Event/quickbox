@@ -1058,13 +1058,13 @@ static QString copy_sql_table(const QString &table_name, const QSqlRecord &dest_
 			}
 			else {
 				v = from_q.value(fld_name);
-				v.convert(rec.field(i).type());
+				v.convert(rec.field(i).metaType());
 			}
 			if(!has_id_int
-					&& (fld.type() == QVariant::Int
-						|| fld.type() == QVariant::UInt
-						|| fld.type() == QVariant::LongLong
-						|| fld.type() == QVariant::ULongLong)
+					&& (fld.metaType().id() == QMetaType::Type::Int
+						|| fld.metaType().id() == QMetaType::Type::UInt
+						|| fld.metaType().id() == QMetaType::Type::LongLong
+						|| fld.metaType().id() == QMetaType::Type::ULongLong)
 					&& fld_name == QLatin1String("id")) {
 				// probably ID INT AUTO_INCREMENT
 				//max_id = qMax(max_id, v.toInt());

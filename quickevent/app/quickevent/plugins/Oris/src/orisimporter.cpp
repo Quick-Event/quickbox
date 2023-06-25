@@ -335,7 +335,7 @@ static QString jsonObjectToFullName(const QJsonObject &data, const QString &fiel
 void OrisImporter::importEvent(int event_id, std::function<void ()> success_callback)
 {
 	QUrl url(QString("https://oris.orientacnisporty.cz/API/?format=json&method=getEvent&id=%1").arg(event_id));
-	getJsonAndProcess(url, this, [=](const QJsonDocument &jsd) {
+	getJsonAndProcess(url, this, [this, event_id, success_callback](const QJsonDocument &jsd) {
 		qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 		try {
 			saveJsonBackup("Event", jsd);
@@ -562,12 +562,12 @@ void OrisImporter::syncEventEntries(int event_id, std::function<void ()> success
 					qfWarning() << "class id:" << class_id << "not found in the class definitions";
 					class_id = 0;
 				}
-				doc->setValue("classId", (class_id == 0)? QVariant(QVariant::Int): QVariant(class_id));
+				doc->setValue("classId", (class_id == 0)? QVariant(QMetaType(QMetaType::Type::Int)): QVariant(class_id));
 				doc->setSiid(siid);
 				doc->setValue("firstName", first_name);
 				doc->setValue("lastName", last_name);
 				doc->setValue("registration", reg_no);
-				doc->setValue("iofId", !iof_id.isEmpty() ? iof_id : QVariant(QVariant::Int));
+				doc->setValue("iofId", !iof_id.isEmpty() ? iof_id : QVariant(QMetaType(QMetaType::Type::Int)));
 				doc->setValue("licence", competitor_o.value(QStringLiteral("Licence")).toString());
 				doc->setValue("note", note);
 				doc->setValue("importId", import_id);

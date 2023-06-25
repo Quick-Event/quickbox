@@ -40,7 +40,7 @@ void OrisPlugin::onInstalled()
 	}
 	{
 		qfw::Action *a = act_import_oris->addActionInto("syncEntries", tr("&Sync current event entries"));
-		connect(a, &qfw::Action::triggered, m_orisImporter, [=]() { m_orisImporter->syncCurrentEventEntries(); });
+		connect(a, &qfw::Action::triggered, m_orisImporter, [this]() { m_orisImporter->syncCurrentEventEntries(); });
 		a->setEnabled(false);
 		connect(getPlugin<EventPlugin>(), &Event::EventPlugin::eventOpenChanged, [a](bool is_event_open) {
 			a->setEnabled(is_event_open);
@@ -64,8 +64,8 @@ void OrisPlugin::onInstalled()
 	act_import_oris->addSeparatorInto();
 	{
 		qfw::Action *a = act_import_oris->addActionInto("clubs", tr("&Clubs and registrations"));
-		connect(a, &qfw::Action::triggered, m_orisImporter, [=]() {
-			m_orisImporter->importRegistrations([=]() {
+		connect(a, &qfw::Action::triggered, m_orisImporter, [this]() {
+				m_orisImporter->importRegistrations([this]() {
 				m_orisImporter->importClubs();
 			});
 		});

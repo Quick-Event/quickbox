@@ -67,7 +67,7 @@ void CorePlugin::onInstalled()
 	a_file->addSeparatorInto();
 	{
 		auto *a = new qfw::Action(tr("&Settings"));
-		connect(a, &qfw::Action::triggered, this, [=]() {
+		connect(a, &qfw::Action::triggered, this, [this]() {
 			settingsDialog()->exec();
 		});
 		a_file->addActionInto(a);

@@ -101,11 +101,11 @@ void EventConfig::save(const QString &path_to_save)
 			}
 			QVariant val = it.value();
 			QString val_str;
-			if(val.type() == QVariant::Date)
+			if(val.typeId() == qMetaTypeId<QDate>())
 				val_str = val.toDate().toString(Qt::ISODate);
-			else if(val.type() == QVariant::Time)
+			else if(val.typeId() == qMetaTypeId<QTime>())
 				val_str = val.toTime().toString(Qt::ISODate);
-			else if(val.type() == QVariant::DateTime)
+			else if(val.typeId() == qMetaTypeId<QDateTime>())
 				val_str = val.toDateTime().toString(Qt::ISODate);
 			else
 				val_str = val.toString();
@@ -130,7 +130,7 @@ void EventConfig::save(const QString &path_to_save)
 
 void EventConfig::save_helper(QVariantMap &ret, const QString &current_path, const QVariant &val)
 {
-	if(val.type() == QVariant::Map) {
+	if(val.typeId() == qMetaTypeId<QVariantMap>()) {
 		QVariantMap m = val.toMap();
 		QMapIterator<QString, QVariant> it(m);
 		while(it.hasNext()) {

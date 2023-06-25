@@ -23,7 +23,7 @@ SettingsDialog::SettingsDialog(QWidget *parent)
 {
 	ui->setupUi(this);
 	m_buttonGroup = new QButtonGroup(this);
-	connect(m_buttonGroup, &QButtonGroup::idToggled, this, [=](int page_index, bool checked) {
+	connect(m_buttonGroup, &QButtonGroup::idToggled, this, [this](int page_index, bool checked) {
 		qfDebug() << "id toggled:" << page_index << checked;
 		if(checked) {
 			ui->stackedWidget->setCurrentIndex(page_index);

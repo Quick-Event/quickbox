@@ -71,7 +71,7 @@ QList<QObject *> DbSchema::tables()
 {
 	QList<QObject *> ret;
 	QObject *db_schema = dbSchemaRoot();
-	QQmlListReference tbllst(db_schema, "tables", qmlEngine());
+	QQmlListReference tbllst(db_schema, "tables");
 	for (int i = 0; i < tbllst.count(); ++i) {
 		ret << tbllst.at(i);
 	}
@@ -90,7 +90,7 @@ QObject *DbSchema::table(const QString &table_name)
 QSqlRecord DbSchema::sqlRecord(QObject *table, bool lowercase_field_names)
 {
 	QSqlRecord ret;
-	QQmlListReference fields(table, "fields", qmlEngine());
+	QQmlListReference fields(table, "fields");
 	for (int i = 0; i < fields.count(); ++i) {
 		QObject *field = fields.at(i);
 		QString name = field->property("name").toString();
@@ -100,7 +100,7 @@ QSqlRecord DbSchema::sqlRecord(QObject *table, bool lowercase_field_names)
 		QObject *type = typev.value<QObject*>();
 		QF_ASSERT(type != nullptr, "Internal error: Cannot get field type", return QSqlRecord());
 		QByteArray type_name = type->property("metaTypeName").toString().toLatin1();
-		QSqlField fld(name, QVariant::nameToType(type_name.constData()));
+		QSqlField fld(name, QMetaType::fromName(type_name));
 		ret.append(fld);
 		//qfInfo() << type << "name:" << name << "type:" << type_name;
 	}

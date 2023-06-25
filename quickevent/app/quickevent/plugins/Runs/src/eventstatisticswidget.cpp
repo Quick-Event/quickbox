@@ -182,7 +182,7 @@ QVariant EventStatisticsModel::value(int row_ix, int column_ix) const
 		QDateTime dt1 = tableRow(row_ix).value(QStringLiteral("resultsPrintTS")).toDateTime();
 		QDateTime dt2 = QDateTime::currentDateTime();
 		if(!dt1.isValid())
-			return QVariant{QVariant::Int};
+			return QVariant{QMetaType(QMetaType::Type::Int)};
 		int time_since_last_printed_msec = dt1.msecsTo(dt2);
 		return time_since_last_printed_msec;
 	}
@@ -289,8 +289,8 @@ void FooterModel::reload()
 		//qfInfo() << type << "type:" << QVariant::typeToName(type);
 		int isum = 0;
 		double dsum = 0;
-		bool int_col = (type == QVariant::Int || type == QVariant::UInt || type == QVariant::LongLong || type == QVariant::ULongLong);
-		bool double_col = (type == QVariant::Double);
+		bool int_col = (type == QMetaType::Type::Int || type == QMetaType::Type::UInt || type == QMetaType::Type::LongLong || type == QMetaType::Type::ULongLong);
+		bool double_col = (type == QMetaType::Type::Double);
 		for (int j = 0; j < mm->rowCount(); ++j) {
 			if(int_col) {
 				isum += mm->value(j, i).toInt();
