@@ -1,6 +1,0 @@
-module qf.qmlwidgets
-
-#singleton InputDialogSingleton 1.0 InputDialogSingleton.qml
-#singleton MessageBoxSingleton 1.0 MessageBoxSingleton.qml
-
-plugin qmlwidgetsplugin ..
