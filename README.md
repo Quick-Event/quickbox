@@ -55,7 +55,7 @@ cmake -S . -B build -DCMAKE_PREFIX_PATH:PATH=/home/fanda/app/qt/6.5.1/gcc_64 -DQ
 cmake --build build -j8
 cmake --install build
 ```
-If you want to use system Qt for build, then remove CLI option `cmake -S . -B build -DCMAKE_PREFIX_PATH:PATH=/home/fanda/app/qt5/6.5.1/gcc_64 -DQF_BUILD_QML_PLUGINS=ON --install-prefix `pwd`/build/install`
+If you want to use system Qt for build, then remove CLI option `-DCMAKE_PREFIX_PATH:PATH=/home/fanda/app/qt5/6.5.1/gcc_64`
 
 ## Install
 #### Windows
