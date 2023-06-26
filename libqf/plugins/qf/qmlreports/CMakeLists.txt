@@ -2,7 +2,7 @@ qt_add_qml_module(qfqmlreportsplugin
     URI "qf.qmlreports"
     VERSION "1.0"
 	PLUGIN_TARGET qfqmlreportsplugin
-	RESOURCE_PREFIX :/qf/qml/qmlreports
+	RESOURCE_PREFIX qml/qf/qmlreports
 #    PAST_MAJOR_VERSIONS 1
 #    CLASS_NAME QtWebSocketsDeclarativeModule
 #    NO_PLUGIN_OPTIONAL
@@ -23,3 +23,6 @@ target_link_libraries(qfqmlreportsplugin PUBLIC
     Qt::Qml
 	libqfqmlwidgets
 )
+
+install(TARGETS qfqmlreportsplugin LIBRARY DESTINATION ${CMAKE_INSTALL_BINDIR}/qml/qf/qmlreports)
+

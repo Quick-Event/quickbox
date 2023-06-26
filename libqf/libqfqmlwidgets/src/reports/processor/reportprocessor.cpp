@@ -341,8 +341,6 @@ QStringList &ReportProcessor::qmlEngineImportPaths()
 	if(lst.isEmpty()) {
 #ifdef Q_OS_UNIX
 		lst << QCoreApplication::applicationDirPath() + "/../lib/qml";
-#else
-		lst << QCoreApplication::applicationDirPath() + "/qml";
 #endif
 		lst << QCoreApplication::applicationDirPath() + "/qml";
 		lst << ":/quickevent";
@@ -366,11 +364,12 @@ QQmlEngine *ReportProcessor::qmlEngine(bool throw_exc)
 #else
 	Q_UNUSED(throw_exc)
 	if(!m_qmlEngine) {
+		qfMessage() << "Creating report processor QML engine";
 		m_qmlEngine = new QQmlEngine(this);
 		m_qmlEngine->rootContext()->setContextProperty("reportProcessor", this);
 		m_qmlEngine->rootContext()->setContextProperty("application", QCoreApplication::instance());
 		Q_FOREACH(auto path, qmlEngineImportPaths()) {
-			qfDebug() << "Adding ReportProcessor QML engine import path:" << path;
+			qfMessage() << "Adding ReportProcessor QML engine import path:" << path;
 			m_qmlEngine->addImportPath(path);
 		}
 	}

@@ -25,7 +25,7 @@ qt_add_qml_module(qfcoreplugin
     VERSION "1.0"
 	PLUGIN_TARGET qfcoreplugin
 #	QML_FILES ${qml_files}
-	RESOURCE_PREFIX :/qf/qml/core
+	RESOURCE_PREFIX qf/qml/core
 #    PAST_MAJOR_VERSIONS 1
 #    CLASS_NAME QtWebSocketsDeclarativeModule
 #    NO_PLUGIN_OPTIONAL
@@ -60,4 +60,6 @@ target_link_libraries(qfcoreplugin PUBLIC
     Qt::Qml
 	libqfcore
 )
+
+install(TARGETS qfcoreplugin LIBRARY DESTINATION ${CMAKE_INSTALL_BINDIR}/qml/qf/core)
 
