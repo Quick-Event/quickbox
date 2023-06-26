@@ -45,13 +45,15 @@ For now, most of the [documentation](https://github.com/Quick-Event/quickbox/wik
 
 ---
 ## Build
+Qt6 version
 ```
 git clone https://github.com/Quick-Event/quickbox.git
 cd quickbox
-mkdir build && cd build
-cmake .. -DQF_BUILD_QML_PLUGINS=ON -DCMAKE_PREFIX_PATH:PATH=/home/fanda/app/qt5/6.5.1/gcc_64 --install-prefix `pwd`/build/install
-cmake --build .
-cmake --install .
+git switch qt6
+git submodule update --init --recursive
+cmake -S . -B build -DCMAKE_PREFIX_PATH:PATH=/home/fanda/app/qt5/6.5.1/gcc_64 -DQF_BUILD_QML_PLUGINS=ON --install-prefix `pwd`/build/install
+cmake --build build
+cmake --install build
 ```
 ## Install
 #### Windows
