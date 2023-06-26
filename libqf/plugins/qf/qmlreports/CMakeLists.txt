@@ -24,5 +24,7 @@ target_link_libraries(qfqmlreportsplugin PUBLIC
 	libqfqmlwidgets
 )
 
-install(TARGETS qfqmlreportsplugin LIBRARY DESTINATION ${CMAKE_INSTALL_BINDIR}/qml/qf/qmlreports)
+set(PLUGIN_DEST_DIR ${CMAKE_INSTALL_BINDIR}/qml/qf/qmlreports)
+install(TARGETS qfqmlreportsplugin LIBRARY DESTINATION ${PLUGIN_DEST_DIR})
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/qmldir DESTINATION ${PLUGIN_DEST_DIR})
 
