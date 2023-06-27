@@ -2,7 +2,7 @@
 
 #include <QFrame>
 
-#include <quickevent/gui/partwidget.h>
+#include "partwidget.h"
 
 class QCheckBox;
 
@@ -20,8 +20,6 @@ class ForeignKeyComboBox;
 }
 }
 
-class ThisPartWidget;
-
 class RelaysWidget : public QFrame
 {
 	Q_OBJECT
@@ -31,7 +29,7 @@ public:
 	explicit RelaysWidget(QWidget *parent = nullptr);
 	~RelaysWidget() Q_DECL_OVERRIDE;
 
-	void settleDownInPartWidget(quickevent::gui::PartWidget *part_widget);
+	void settleDownInPartWidget(::PartWidget *part_widget);
 private:
 	Q_SLOT void lazyInit();
 	Q_SLOT void reset();

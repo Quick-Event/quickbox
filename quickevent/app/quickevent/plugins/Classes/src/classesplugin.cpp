@@ -18,7 +18,7 @@
 #include <qf/core/sql/querybuilder.h>
 #include <qf/core/sql/transaction.h>
 #include <plugins/Event/src/eventplugin.h>
-#include <quickevent/gui/partwidget.h>
+#include "partwidget.h"
 
 #include <QQmlEngine>
 
@@ -26,7 +26,7 @@ namespace qfw = qf::qmlwidgets;
 namespace qff = qf::qmlwidgets::framework;
 //namespace qfd = qf::qmlwidgets::dialogs;
 namespace qfs = qf::core::sql;
-using quickevent::gui::PartWidget;
+using ::PartWidget;
 using qff::getPlugin;
 using Event::EventPlugin;
 

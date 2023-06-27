@@ -52,7 +52,7 @@ using namespace qf::qmlwidgets::reports;
 ReportViewWidget::ScrollArea::ScrollArea(QWidget * parent)
 : QScrollArea(parent)
 {
-	connect(verticalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(verticalScrollBarValueChanged(int)));
+	connect(verticalScrollBar(), &QScrollBar::valueChanged, this, &ReportViewWidget::ScrollArea::verticalScrollBarValueChanged);
 }
 
 bool ReportViewWidget::showReport(QWidget *parent
@@ -365,8 +365,8 @@ ReportViewWidget::ReportViewWidget(QWidget *parent)
 	/// zajimavy, odkomentuju tenhle radek a nemuzu nastavit pozadi zadnyho widgetu na scrollArea.
 	//f_scrollArea->setBackgroundRole(QPalette::Dark);
 	m_painterWidget = new PainterWidget(m_scrollArea);
-	connect(m_painterWidget, SIGNAL(sqlValueEdited(QString,QVariant)), this, SIGNAL(sqlValueEdited(QString,QVariant)), Qt::QueuedConnection);
-	connect(m_scrollArea, SIGNAL(zoomOnWheel(int,QPoint)), this, SLOT(zoomOnWheel(int,QPoint)), Qt::QueuedConnection);
+	connect(m_painterWidget, &PainterWidget::sqlValueEdited, this, &ReportViewWidget::sqlValueEdited, Qt::QueuedConnection);
+	connect(m_scrollArea, &ScrollArea::zoomOnWheel, this, &ReportViewWidget::zoomOnWheel, Qt::QueuedConnection);
 	m_scrollArea->setWidget(m_painterWidget);
 	QBoxLayout *ly = new QVBoxLayout(this);
 	ly->setSpacing(0);
@@ -374,8 +374,8 @@ ReportViewWidget::ReportViewWidget(QWidget *parent)
 	ly->addWidget(m_scrollArea);
 	ly->addWidget(statusBar());
 
-	connect(m_scrollArea, SIGNAL(showNextPage()), this, SLOT(scrollToNextPage()));
-	connect(m_scrollArea, SIGNAL(showPreviousPage()), this, SLOT(scrollToPrevPage()));
+	connect(m_scrollArea, &ScrollArea::showNextPage, this, &ReportViewWidget::scrollToNextPage);
+	connect(m_scrollArea, &ScrollArea::showPreviousPage, this, &ReportViewWidget::scrollToPrevPage);
 }
 
 ReportViewWidget::~ReportViewWidget()
@@ -394,7 +394,7 @@ ReportProcessor * ReportViewWidget::reportProcessor()
 void ReportViewWidget::setReportProcessor(ReportProcessor * proc)
 {
 	m_reportProcessor = proc;
-	connect(m_reportProcessor, SIGNAL(pageProcessed()), this, SLOT(onPageProcessed()));
+	connect(m_reportProcessor, &ReportProcessor::pageProcessed, this, &ReportViewWidget::onPageProcessed);
 }
 
 qf::qmlwidgets::StatusBar *ReportViewWidget::statusBar()
@@ -409,59 +409,11 @@ qf::qmlwidgets::StatusBar *ReportViewWidget::statusBar()
 		zoomStatusSpinBox->setSuffix("%");
 		zoomStatusSpinBox->setAlignment(Qt::AlignRight);
 		m_statusBar->addWidget(zoomStatusSpinBox);
-		connect(zoomStatusSpinBox, SIGNAL(valueChanged(int)), this, SLOT(setScaleProc(int)));
+		connect(zoomStatusSpinBox, &QSpinBox::valueChanged, this, &ReportViewWidget::setScaleProc);
 	}
 	return m_statusBar;
 }
-/*--
-QFPart::ToolBarList ReportViewWidget::createToolBars()
-{
-	qfDebug() << QF_FUNC_NAME;
-	QFPart::ToolBarList tool_bars;
-	//if(!f_toolBars.isEmpty()) return f_toolBars;
 
-	tool_bars = f_uiBuilder->createToolBars();
-
-	/// je to dost divoky, najdu toolbar jmenem "main" a v nem widget majici akci s id == "view.nextPage"
-	/// a pred ni prdnu lineEdit, pukud pridam do toolbaru widget, musim na konec pridat i Stretch :(
-	foreach(QFToolBar *tb, tool_bars) {
-		//qfDebug() << "\ttoolbar object name:" << tb->objectName();
-		if(tb->objectName() == "main") {
-			QLayout *ly = tb->layout();
-			//QF_ASSERT(ly, "bad layout cast");
-			for(int i = 0; i < ly->count(); ++i) {
-				QWidget *w = ly->itemAt(i)->widget();
-				//qfDebug() << "\twidget:" << w;
-				if(w) {
-					QList<QAction*> alst = w->actions();
-					if(!alst.isEmpty()) {
-						QFAction *a = qobject_cast<QFAction*>(alst[0]);
-						if(a) {
-							//qfDebug() << "\taction id:" << a->id();
-							if(a->id() == "view.nextPage") {
-								edCurrentPage = new QLineEdit(nullptr);
-								edCurrentPage->setAlignment(Qt::AlignRight);
-								edCurrentPage->setMaximumWidth(60);
-								connect(edCurrentPage, SIGNAL(editingFinished()), this, SLOT(edCurrentPageEdited()));
-								tb->insertWidget(a, edCurrentPage);
-								QLabel *space = new QLabel(QString(), nullptr);
-								space->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);
-								tb->addWidget(space);
-								//QSpacerItem *spacer = new QSpacerItem(1, 1, QSizePolicy::Expanding, QSizePolicy::Minimum);
-								//ly->addItem(spacer);
-								break;
-							}
-						}
-					}
-				}
-			}
-			break;
-		}
-	}
-
-	return tool_bars;
-}
---*/
 void ReportViewWidget::view_zoomIn(const QPoint &center_pos)
 {
 	qfLogFuncFrame() << "center_pos:" << center_pos.x() << center_pos.y();
@@ -616,56 +568,56 @@ qf::qmlwidgets::framework::DialogWidget::ActionMap ReportViewWidget::createActio
 		QIcon ico(":/qf/qmlwidgets/images/frev");
 		a = new qf::qmlwidgets::Action(ico, tr("First page"), this);
 		ret[QStringLiteral("view.firstPage")] = a;
-		connect(a, SIGNAL(triggered()), this, SLOT(view_firstPage()));
+		connect(a, &QAction::triggered, this, &ReportViewWidget::view_firstPage);
 	}
 	{
 		qf::qmlwidgets::Action *a;
 		QIcon ico(":/qf/qmlwidgets/images/rev");
 		a = new qf::qmlwidgets::Action(ico, tr("Prev page"), this);
 		ret[QStringLiteral("view.prevPage")] = a;
-		connect(a, SIGNAL(triggered()), this, SLOT(view_prevPage()));
+		connect(a, &QAction::triggered, this, [this]() { view_prevPage(); });
 	}
 	{
 		qf::qmlwidgets::Action *a;
 		QIcon ico(":/qf/qmlwidgets/images/fwd");
 		a = new qf::qmlwidgets::Action(ico, tr("Next page"), this);
 		ret[QStringLiteral("view.nextPage")] = a;
-		connect(a, SIGNAL(triggered()), this, SLOT(view_nextPage()));
+		connect(a, &QAction::triggered, this, [this]() { view_nextPage(); });
 	}
 	{
 		qf::qmlwidgets::Action *a;
 		QIcon ico(":/qf/qmlwidgets/images/ffwd");
 		a = new qf::qmlwidgets::Action(ico, tr("Last page"), this);
 		ret[QStringLiteral("view.lastPage")] = a;
-		connect(a, SIGNAL(triggered()), this, SLOT(view_lastPage()));
+		connect(a, &QAction::triggered, this, &ReportViewWidget::view_lastPage);
 	}
 	{
 		qf::qmlwidgets::Action *a;
 		QIcon ico(":/qf/qmlwidgets/images/zoom_in");
 		a = new qf::qmlwidgets::Action(ico, tr("Zoom in"), this);
 		ret[QStringLiteral("view.zoomIn")] = a;
-		connect(a, SIGNAL(triggered()), this, SLOT(view_zoomIn()));
+		connect(a, &QAction::triggered, this, [this]() { view_zoomIn(); });
 	}
 	{
 		qf::qmlwidgets::Action *a;
 		QIcon ico(":/qf/qmlwidgets/images/zoom_out");
 		a = new qf::qmlwidgets::Action(ico, tr("Zoom out"), this);
 		ret[QStringLiteral("view.zoomOut")] = a;
-		connect(a, SIGNAL(triggered()), this, SLOT(view_zoomOut()));
+		connect(a, &QAction::triggered, this, [this]() { view_zoomOut(); });
 	}
 	{
 		qf::qmlwidgets::Action *a;
 		QIcon ico(":/qf/qmlwidgets/images/zoom_fitwidth");
 		a = new qf::qmlwidgets::Action(ico, tr("Zoom to fit width"), this);
 		ret[QStringLiteral("view.zoomFitWidth")] = a;
-		connect(a, SIGNAL(triggered()), this, SLOT(view_zoomToFitWidth()));
+		connect(a, &QAction::triggered, this, &ReportViewWidget::view_zoomToFitWidth);
 	}
 	{
 		qf::qmlwidgets::Action *a;
 		QIcon ico(":/qf/qmlwidgets/images/zoom_fitheight");
 		a = new qf::qmlwidgets::Action(ico, tr("Zoom to fit height"), this);
 		ret[QStringLiteral("view.zoomFitHeight")] = a;
-		connect(a, SIGNAL(triggered()), this, SLOT(view_zoomToFitHeight()));
+		connect(a, &QAction::triggered, this, &ReportViewWidget::view_zoomToFitHeight);
 	}
 	{
 		qf::qmlwidgets::Action *a;
@@ -673,7 +625,7 @@ qf::qmlwidgets::framework::DialogWidget::ActionMap ReportViewWidget::createActio
 		a = new qf::qmlwidgets::Action(ico, tr("&Print"), this);
 		//a->setTooltip(tr("Tisk"));
 		ret[QStringLiteral("file.print")] = a;
-		connect(a, SIGNAL(triggered()), this, SLOT(file_print()));
+		connect(a, &QAction::triggered, this, &ReportViewWidget::file_print);
 	}
 	{
 		qf::qmlwidgets::Action *a;
@@ -681,7 +633,7 @@ qf::qmlwidgets::framework::DialogWidget::ActionMap ReportViewWidget::createActio
 		a = new qf::qmlwidgets::Action(ico, tr("Print pre&view"), this);
 		//a->setToolTip(tr("Náhled tisku"));
 		ret[QStringLiteral("file.printPreview")] = a;
-		connect(a, SIGNAL(triggered()), this, SLOT(file_printPreview()));
+		connect(a, &QAction::triggered, this, &ReportViewWidget::file_printPreview);
 	}
 	{
 		qf::qmlwidgets::Action *a;
@@ -689,7 +641,7 @@ qf::qmlwidgets::framework::DialogWidget::ActionMap ReportViewWidget::createActio
 		a = new qf::qmlwidgets::Action(ico, tr("Export PD&F"), this);
 		a->setToolTip(tr("Export in the Adobe Acrobat PDF format"));
 		ret[QStringLiteral("file.export.pdf")] = a;
-		connect(a, SIGNAL(triggered()), this, SLOT(file_export_pdf()));
+		connect(a, &QAction::triggered, this, &ReportViewWidget::file_export_pdf);
 	}
 	{
 		qf::qmlwidgets::Action *a;
@@ -697,7 +649,7 @@ qf::qmlwidgets::framework::DialogWidget::ActionMap ReportViewWidget::createActio
 		a = new qf::qmlwidgets::Action(ico, tr("Export &HTML"), this);
 		a->setToolTip(tr("Export data in HTML"));
 		ret[QStringLiteral("file.export.html")] = a;
-		connect(a, SIGNAL(triggered()), this, SLOT(file_export_html()));
+		connect(a, &QAction::triggered, this, &ReportViewWidget::file_export_html);
 	}
 	return ret;
 }
@@ -1203,7 +1155,7 @@ void ReportViewWidget::file_printPreview()
 	qfLogFuncFrame();
 	QPrinter printer(QPrinter::ScreenResolution);	/// SVG to tiskne na preview moc velky, pokud je QPrinter printer(QPrinter::HighResolution), je to potreba opravit
 	QPrintPreviewDialog preview(&printer, this);
-	connect(&preview, SIGNAL(paintRequested(QPrinter*)), this, SLOT(print(QPrinter*)));
+	connect(&preview, &QPrintPreviewDialog::paintRequested, this, [this]() { print(); });
 	preview.exec();
 }
 

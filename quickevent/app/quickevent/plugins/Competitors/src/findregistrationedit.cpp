@@ -94,7 +94,7 @@ void FindRegistrationEdit::focusInEvent(QFocusEvent *event)
 		//qfInfo() << event->FocusIn;
 		/// don't know why, but QCompleter::activated is not connected any more when FindRegistrationEdit loose its focus
 		/// nasty hack is to reconnect signal every time when FindRegistrationEdit get focus again
-		connect(completer(), SIGNAL(activated(QModelIndex)), this, SLOT(onCompleterActivated(QModelIndex)), Qt::UniqueConnection);
+		connect(completer(), qOverload<const QModelIndex &>(&QCompleter::activated), this, &FindRegistrationEdit::onCompleterActivated, Qt::UniqueConnection);
 	}
 }
 

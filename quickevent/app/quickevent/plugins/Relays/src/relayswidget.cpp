@@ -8,7 +8,7 @@
 #include <plugins/Event/src/eventplugin.h>
 #include <plugins/Runs/src/runsplugin.h>
 
-#include <quickevent/gui/partwidget.h>
+#include "partwidget.h"
 #include <quickevent/gui/reportoptionsdialog.h>
 
 #include <quickevent/core/si/siid.h>
@@ -91,7 +91,6 @@ RelaysWidget::RelaysWidget(QWidget *parent) :
 	ui->tblRelays->setTableModel(m);
 	m_tblModel = m;
 
-	//connect(ui->tblRelays, SIGNAL(editRowInExternalEditor(QVariant,int)), this, SLOT(edit Relay(QVariant,int)), Qt::QueuedConnection);
 	connect(ui->tblRelays, &qfw::TableView::editRowInExternalEditor, this, &RelaysWidget::editRelay, Qt::QueuedConnection);
 	connect(ui->tblRelays, &qfw::TableView::editSelectedRowsInExternalEditor, this, &RelaysWidget::editRelays, Qt::QueuedConnection);
 
@@ -105,10 +104,11 @@ RelaysWidget::~RelaysWidget()
 	delete ui;
 }
 
-void RelaysWidget::settleDownInPartWidget(quickevent::gui::PartWidget *part_widget)
+void RelaysWidget::settleDownInPartWidget(::PartWidget *part_widget)
 {
-	connect(part_widget, SIGNAL(resetPartRequest()), this, SLOT(reset()));
-	connect(part_widget, SIGNAL(reloadPartRequest()), this, SLOT(reload()));
+	connect(part_widget, &::PartWidget::resetPartRequest, this, &RelaysWidget::reset);
+	connect(part_widget, &::PartWidget::reloadPartRequest, this, &RelaysWidget::reload);
+
 	qfw::ToolBar *main_tb = part_widget->toolBar("main", true);
 	{
 		QLabel *lbl;
@@ -206,7 +206,7 @@ void RelaysWidget::reset()
 		m_cbxClasses->loadItems(true);
 		m_cbxClasses->insertItem(0, tr("--- all ---"), 0);
 		m_cbxClasses->setCurrentIndex(0);
-		connect(m_cbxClasses, SIGNAL(currentDataChanged(QVariant)), this, SLOT(reload()), Qt::UniqueConnection);
+		connect(m_cbxClasses, &qf::qmlwidgets::ForeignKeyComboBox::currentDataChanged, this, &RelaysWidget::reload, Qt::UniqueConnection);
 		m_cbxClasses->blockSignals(false);
 	}
 	reload();

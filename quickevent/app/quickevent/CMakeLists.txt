@@ -95,13 +95,7 @@ add_executable(quickevent
 	plugins/Speaker/src/punchestableview.cpp
 	plugins/Speaker/src/speakerplugin.cpp
 	plugins/Speaker/src/speakerwidget.cpp
-	src/appclioptions.cpp
-	src/application.cpp
-	src/loggerwidget.cpp
-	src/main.cpp
-	src/mainwindow.cpp
-	style/style.qrc
-	images/images.qrc
+
 	plugins/shared/shared.qrc
 	plugins/Receipts/Receipts.qrc
 	plugins/Event/Event.qrc
@@ -111,6 +105,17 @@ add_executable(quickevent
 	plugins/Relays/Relays.qrc
 	plugins/Runs/Runs.qrc
 	plugins/CardReader/CardReader.qrc
+
+	src/appclioptions.cpp
+	src/application.cpp
+	src/loggerwidget.cpp
+	src/main.cpp
+	src/mainwindow.cpp
+	src/partwidget.cpp
+
+	style/style.qrc
+	images/images.qrc
+
 	quickevent.rc
 )
 
@@ -125,7 +130,7 @@ qt6_add_translation(QM_FILES
 )
 
 target_sources(quickevent PRIVATE ${QM_FILES})
-target_include_directories(quickevent PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(quickevent PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/src)
 target_link_libraries(quickevent PUBLIC libquickeventcore libquickeventgui libqfqmlwidgets libsiut)
 
 install(TARGETS quickevent)

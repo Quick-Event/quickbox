@@ -24,7 +24,7 @@
 #include <qf/qmlwidgets/reports/processor/reportpainter.h>
 #include <plugins/CardReader/src/cardreaderplugin.h>
 #include <plugins/Event/src/eventplugin.h>
-#include <quickevent/gui/partwidget.h>
+#include "partwidget.h"
 
 #include <QDomDocument>
 #include <QSqlRecord>
@@ -35,7 +35,7 @@
 
 namespace qfu = qf::core::utils;
 namespace qff = qf::qmlwidgets::framework;
-using quickevent::gui::PartWidget;
+using ::PartWidget;
 using qff::getPlugin;
 using Event::EventPlugin;
 using Receipts::ReceiptsPlugin;

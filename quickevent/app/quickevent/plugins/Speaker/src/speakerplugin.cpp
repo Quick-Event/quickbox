@@ -11,7 +11,7 @@
 
 namespace qff = qf::qmlwidgets::framework;
 namespace qfw = qf::qmlwidgets;
-using quickevent::gui::PartWidget;
+using ::PartWidget;
 
 namespace Speaker {
 

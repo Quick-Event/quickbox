@@ -33,7 +33,7 @@
 
 namespace qff = qf::qmlwidgets::framework;
 namespace qfs = qf::core::sql;
-using quickevent::gui::PartWidget;
+using ::PartWidget;
 using qff::getPlugin;
 using Event::EventPlugin;
 using Runs::RunsPlugin;

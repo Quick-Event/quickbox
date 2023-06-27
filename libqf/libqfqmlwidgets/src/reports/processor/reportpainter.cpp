@@ -677,8 +677,7 @@ void ReportItemMetaPaintCheck::paint(ReportPainter * painter, unsigned mode)
 			/// CHECK cross
 			//--static QString s_check = "color: maroon; style: solid; size:2";
 			QPen p(Qt::SolidLine);
-			QColor c;
-			c.setNamedColor("maroon");
+			auto c = QColor::fromString("maroon");
 			p.setColor(c);
 			painter->setPen(p);
 			r = qf::qmlwidgets::graphics::mm2device(r, painter->device());

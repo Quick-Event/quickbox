@@ -34,7 +34,7 @@ namespace qfd = qf::qmlwidgets::dialogs;
 namespace qfm = qf::core::model;
 namespace qfs = qf::core::sql;
 namespace qog = quickevent::core::og;
-using quickevent::gui::PartWidget;
+using ::PartWidget;
 using qff::getPlugin;
 using Event::EventPlugin;
 using Runs::RunsPlugin;

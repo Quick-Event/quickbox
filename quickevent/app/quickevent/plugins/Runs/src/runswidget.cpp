@@ -122,7 +122,7 @@ void RunsWidget::reset(int class_id)
 			m_cbxClasses->setCurrentIndex(0);
 		else
 			m_cbxClasses->setCurrentData(class_id);
-		connect(m_cbxClasses, SIGNAL(currentDataChanged(QVariant)), this, SLOT(reload()), Qt::UniqueConnection);
+		connect(m_cbxClasses, &qf::qmlwidgets::ForeignKeyComboBox::currentDataChanged, this, &RunsWidget::reload, Qt::UniqueConnection);
 		m_cbxClasses->blockSignals(false);
 	}
 	reload();
@@ -137,7 +137,7 @@ void RunsWidget::reload()
 	ui->wRunsTableWidget->reload(stage_id, class_id, m_chkShowOffRace->isChecked());
 }
 
-void RunsWidget::settleDownInPartWidget(quickevent::gui::PartWidget *part_widget)
+void RunsWidget::settleDownInPartWidget(::PartWidget *part_widget)
 {
 	qfLogFuncFrame();
 	connect(part_widget, SIGNAL(resetPartRequest()), this, SLOT(reset()));

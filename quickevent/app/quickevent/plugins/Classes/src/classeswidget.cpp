@@ -211,7 +211,7 @@ ClassesWidget::ClassesWidget(QWidget *parent) :
 		ui->tblCourseCodes->setTableModel(m);
 		m_courseCodesModel = m;
 	}
-	connect(ui->tblClasses, SIGNAL(currentRowChanged(int)), this, SLOT(reloadCourseCodes()));
+	connect(ui->tblClasses, &qf::qmlwidgets::TableView::currentRowChanged, this, &ClassesWidget::reloadCourseCodes);
 	connect(ui->chkUseAllMaps, &QCheckBox::toggled, [this](bool checked) {
 		getPlugin<EventPlugin>()->setStageData(selectedStageId(), QStringLiteral("useAllMaps"), checked);
 	});
@@ -227,10 +227,10 @@ int ClassesWidget::selectedStageId()
 	return m_cbxStage->currentData().toInt();
 }
 
-void ClassesWidget::settleDownInPartWidget(quickevent::gui::PartWidget *part_widget)
+void ClassesWidget::settleDownInPartWidget(::PartWidget *part_widget)
 {
-	connect(part_widget, SIGNAL(resetPartRequest()), this, SLOT(reset()));
-	connect(part_widget, SIGNAL(reloadPartRequest()), this, SLOT(reload()));
+	connect(part_widget, &::PartWidget::resetPartRequest, this, &ClassesWidget::reset);
+	connect(part_widget, &::PartWidget::reloadPartRequest, this, &ClassesWidget::reload);
 
 	qfw::Action *a_edit = part_widget->menuBar()->actionForPath("edit", true);
 	a_edit->setText(tr("&Edit"));
@@ -334,7 +334,7 @@ void ClassesWidget::reset()
 		for(int i=0; i < getPlugin<EventPlugin>()->stageCount(); i++)
 			m_cbxStage->addItem(tr("E%1").arg(i+1), i+1);
 		m_cbxStage->blockSignals(false);
-		connect(m_cbxStage, SIGNAL(currentIndexChanged(int)), this, SLOT(reload()), Qt::UniqueConnection);
+		connect(m_cbxStage, &QComboBox::currentIndexChanged, this, &ClassesWidget::reload, Qt::UniqueConnection);
 	}
 	reload();
 }

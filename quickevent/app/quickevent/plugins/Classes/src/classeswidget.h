@@ -3,7 +3,7 @@
 
 #include <QFrame>
 
-#include <quickevent/gui/partwidget.h>
+#include "partwidget.h"
 
 class QComboBox;
 
@@ -32,7 +32,7 @@ public:
 
 	Q_INVOKABLE int selectedStageId();
 
-	void settleDownInPartWidget(quickevent::gui::PartWidget *part_widget);
+	void settleDownInPartWidget(::PartWidget *part_widget);
 private:
 	void edit_courses();
 	void edit_codes();

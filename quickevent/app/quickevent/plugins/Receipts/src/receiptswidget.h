@@ -3,7 +3,7 @@
 
 #include <QFrame>
 
-#include <quickevent/gui/partwidget.h>
+#include "partwidget.h"
 
 namespace Ui {
 	class ReceiptsWidget;
@@ -40,7 +40,7 @@ public:
 	explicit ReceiptsWidget(QWidget *parent = 0);
 	~ReceiptsWidget() Q_DECL_OVERRIDE;
 
-	void settleDownInPartWidget(quickevent::gui::PartWidget *part_widget);
+	void settleDownInPartWidget(::PartWidget *part_widget);
 
 	Q_SLOT void reset();
 	Q_SLOT void reload();

@@ -13,7 +13,7 @@
 #include <quickevent/core/utils.h>
 #include <quickevent/core/si/punchrecord.h>
 #include <quickevent/core/runstatus.h>
-#include <quickevent/gui/partwidget.h>
+#include "partwidget.h"
 
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/framework/dockwidget.h>
@@ -45,7 +45,7 @@ namespace qfw = qf::qmlwidgets;
 namespace qff = qf::qmlwidgets::framework;
 namespace qfu = qf::core::utils;
 namespace qfs = qf::core::sql;
-using quickevent::gui::PartWidget;
+using ::PartWidget;
 using qff::getPlugin;
 using Event::EventPlugin;
 using Competitors::CompetitorsPlugin;

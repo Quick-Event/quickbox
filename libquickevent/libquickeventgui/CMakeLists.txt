@@ -3,7 +3,6 @@ add_library(libquickeventgui SHARED
     src/og/itemdelegate.cpp
     src/og/sqltablemodel.cpp
     src/og/timeedit.cpp
-    src/partwidget.cpp
     src/reportoptionsdialog.cpp
     src/si/siidedit.cpp
     libquickeventgui.qrc

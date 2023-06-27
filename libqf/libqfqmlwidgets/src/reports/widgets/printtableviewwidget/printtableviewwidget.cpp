@@ -24,7 +24,7 @@ PrintTableViewWidget::PrintTableViewWidget(TableView *table_view, QWidget *paren
 		cbx->addItem(tr("portrait"), ":/qf/qmlwidgets/reports/portrait.qml");
 		cbx->addItem(tr("landscape"), ":/qf/qmlwidgets/reports/landscape.qml");
 		cbx->setCurrentIndex(-1);
-		connect(cbx, SIGNAL(activated(int)), this, SLOT(onLstQrcReportsActivated(int)));
+		connect(cbx, &QComboBox::activated, this, &PrintTableViewWidget::onLstQrcReportsActivated);
 	}
 
 	qfc::model::TableModel *model = table_view->tableModel();

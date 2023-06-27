@@ -91,7 +91,7 @@ void FindRunnerEdit::setTable(const qf::core::utils::Table &t)
 	m_findRunnersModel = new FindRunnersModel(m_completer);
 	m_findRunnersModel->setRunnersTable(t);
 	m_completer->setModel(m_findRunnersModel);
-	connect(m_completer, SIGNAL(activated(QModelIndex)), this, SLOT(onCompleterActivated(QModelIndex)));
+	connect(m_completer, qOverload<const QModelIndex&>(&QCompleter::activated), this, &FindRunnerEdit::onCompleterActivated);
 	setCompleter(m_completer);
 }
 

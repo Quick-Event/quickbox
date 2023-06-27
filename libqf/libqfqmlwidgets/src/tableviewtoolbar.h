@@ -3,15 +3,28 @@
 
 #include "qmlwidgetsglobal.h"
 
+#include <QComboBox>
 #include <QToolBar>
-
-class QComboBox;
 
 namespace qf {
 namespace qmlwidgets {
 
 class TableView;
 class Action;
+
+class FilterCombo : public QComboBox
+{
+	Q_OBJECT
+private:
+	typedef QComboBox Super;
+public:
+	FilterCombo(QWidget *parent = nullptr) : QComboBox(parent) {}
+	~FilterCombo() Q_DECL_OVERRIDE {}
+
+	Q_SIGNAL void filterFocusReleased();
+protected:
+	void keyReleaseEvent(QKeyEvent *ev) Q_DECL_OVERRIDE;
+};
 
 class QFQMLWIDGETS_DECL_EXPORT TableViewToolBar : public QToolBar
 {
@@ -34,7 +47,7 @@ private:
 private:
 	qf::qmlwidgets::TableView* m_tableView = nullptr;
 	QList<Action*> m_pendingActions;
-	QComboBox *m_filterCombo = nullptr;
+	FilterCombo *m_filterCombo = nullptr;
 };
 
 }}

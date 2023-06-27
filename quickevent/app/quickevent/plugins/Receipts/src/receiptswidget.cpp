@@ -97,10 +97,10 @@ void ReceiptsWidget::lazyInit()
 {
 }
 
-void ReceiptsWidget::settleDownInPartWidget(quickevent::gui::PartWidget *part_widget)
+void ReceiptsWidget::settleDownInPartWidget(::PartWidget *part_widget)
 {
-	connect(part_widget, SIGNAL(resetPartRequest()), this, SLOT(reset()));
-	connect(part_widget, SIGNAL(reloadPartRequest()), this, SLOT(reload()));
+	connect(part_widget, &::PartWidget::resetPartRequest, this, &ReceiptsWidget::reset);
+	connect(part_widget, &::PartWidget::reloadPartRequest, this, &ReceiptsWidget::reload);
 
 	connect(getPlugin<EventPlugin>(), &Event::EventPlugin::dbEventNotify, this, &ReceiptsWidget::onDbEventNotify, Qt::QueuedConnection);
 }
@@ -152,16 +152,6 @@ void ReceiptsWidget::onDbEventNotify(const QString &domain, int connection_id, c
 
 void ReceiptsWidget::createActions()
 {
-	//QStyle *sty = style();
-	/*
-	{
-		QIcon ico(":/quickevent/Receipts/images/comm");
-		qf::qmlwidgets::Action *a = new qf::qmlwidgets::Action(ico, tr("Open COM"), this);
-		a->setCheckable(true);
-		connect(a, SIGNAL(triggered(bool)), this, SLOT(onCommOpen(bool)));
-		m_actCommOpen = a;
-	}
-	*/
 }
 
 int ReceiptsWidget::currentStageId()

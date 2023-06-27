@@ -14,20 +14,6 @@
 //namespace qfu = qf::core::utils;
 using namespace qf::qmlwidgets;
 
-class FilterCombo : public QComboBox
-{
-	Q_OBJECT
-private:
-	typedef QComboBox Super;
-public:
-	FilterCombo(QWidget *parent = nullptr) : QComboBox(parent) {}
-	~FilterCombo() Q_DECL_OVERRIDE {}
-
-	Q_SIGNAL void filterFocusReleased();
-protected:
-	void keyReleaseEvent(QKeyEvent *ev) Q_DECL_OVERRIDE;
-};
-
 void FilterCombo::keyReleaseEvent(QKeyEvent *ev)
 {
 	qfLogFuncFrame() << ev->key() << (ev->key() == Qt::Key_Escape);
@@ -69,7 +55,7 @@ void TableViewToolBar::setTableView(TableView *table_view)
 		connect(this, &TableViewToolBar::filterStringChanged, table_view, &TableView::filterByString);
 		connect(table_view, &TableView::filterDialogRequest, this, &TableViewToolBar::onFilterDialogRequest);
 		if(m_filterCombo) {
-			connect(m_filterCombo, SIGNAL(filterFocusReleased()), table_view, SLOT(setFocus()));
+			connect(m_filterCombo, &FilterCombo::filterFocusReleased, table_view, [table_view]() { table_view->setFocus(); });
 		}
 	}
 }
@@ -102,4 +88,3 @@ void TableViewToolBar::onFilterDialogRequest()
 	m_filterCombo->setFocus();
 }
 
-#include "tableviewtoolbar.moc"

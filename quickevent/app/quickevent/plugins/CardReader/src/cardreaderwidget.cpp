@@ -310,10 +310,10 @@ void CardReaderWidget::onCustomContextMenuRequest(const QPoint & pos)
 	}
 }
 
-void CardReaderWidget::settleDownInPartWidget(quickevent::gui::PartWidget *part_widget)
+void CardReaderWidget::settleDownInPartWidget(::PartWidget *part_widget)
 {
-	connect(part_widget, SIGNAL(resetPartRequest()), this, SLOT(reset()));
-	connect(part_widget, SIGNAL(reloadPartRequest()), this, SLOT(reload()));
+	connect(part_widget, &::PartWidget::resetPartRequest, this, &CardReaderWidget::reset);
+	connect(part_widget, &::PartWidget::reloadPartRequest, this, &CardReaderWidget::reload);
 	{
 		qfw::Action *a_station = part_widget->menuBar()->actionForPath("station", true);
 		a_station->setText(tr("&Station"));

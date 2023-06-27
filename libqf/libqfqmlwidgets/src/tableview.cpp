@@ -1632,7 +1632,7 @@ void TableView::createActions()
 		a->setOid("reload");
 		m_actionGroups[ViewActions] << a->oid();
 		m_actions[a->oid()] = a;
-		connect(a, SIGNAL(triggered()), this, SLOT(reload()));
+		connect(a, &Action::triggered, this, &TableView::reload);
 	}
 	{
 		a = new Action(tr("Copy"), this);
@@ -1643,7 +1643,7 @@ void TableView::createActions()
 		a->setOid("copy");
 		m_actionGroups[ViewActions] << a->oid();
 		m_actions[a->oid()] = a;
-		connect(a, SIGNAL(triggered()), this, SLOT(copy()));
+		connect(a, &Action::triggered, this, &TableView::copy);
 	}
 	{
 		a = new Action(tr("Copy special"), this);
@@ -1653,7 +1653,7 @@ void TableView::createActions()
 		a->setOid("copySpecial");
 		m_actionGroups[ViewActions] << a->oid();
 		m_actions[a->oid()] = a;
-		connect(a, SIGNAL(triggered()), this, SLOT(copySpecial()));
+		connect(a, &Action::triggered, this, &TableView::copySpecial);
 	}
 	{
 		a = new Action(tr("Paste"), this);
@@ -1663,7 +1663,7 @@ void TableView::createActions()
 		a->setOid("paste");
 		m_actionGroups[PasteActions] << a->oid();
 		m_actions[a->oid()] = a;
-		connect(a, SIGNAL(triggered()), this, SLOT(paste()), Qt::QueuedConnection); /// hazelo mi to vyjjimky v evendloopu
+		connect(a, &Action::triggered, this, &TableView::paste, Qt::QueuedConnection); /// hazelo mi to vyjjimky v evendloopu
 	}
 	{
 		a = new Action(style->icon("insert-row"), tr("Insert row"), this);
@@ -1672,7 +1672,7 @@ void TableView::createActions()
 		a->setOid("insertRow");
 		m_actionGroups[RowActions] << a->oid();
 		m_actions[a->oid()] = a;
-		connect(a, SIGNAL(triggered()), this, SLOT(insertRow()));
+		connect(a, &Action::triggered, this, &TableView::insertRow);
 	}
 	{
 		a = new Action(style->icon("delete-row"), tr("Delete selected rows"), this);
@@ -1681,7 +1681,7 @@ void TableView::createActions()
 		a->setOid("removeSelectedRows");
 		m_actionGroups[RowActions] << a->oid();
 		m_actions[a->oid()] = a;
-		connect(a, SIGNAL(triggered()), this, SLOT(removeSelectedRows()));
+		connect(a, &Action::triggered, this, &TableView::removeSelectedRows);
 	}
 	{
 		a = new Action(tr("Post row edits"), this);
@@ -1691,7 +1691,7 @@ void TableView::createActions()
 		a->setOid("postRow");
 		m_actionGroups[RowActions] << a->oid();
 		m_actions[a->oid()] = a;
-		connect(a, SIGNAL(triggered()), this, SLOT(postRow()));
+		connect(a, &Action::triggered, this, &TableView::postRow);
 	}
 	{
 		a = new Action(tr("Revert row edits"), this);
@@ -1701,7 +1701,7 @@ void TableView::createActions()
 		a->setOid("revertRow");
 		m_actionGroups[RowActions] << a->oid();
 		m_actions[a->oid()] = a;
-		connect(a, SIGNAL(triggered()), this, SLOT(revertRow()));
+		connect(a, &Action::triggered, this, &TableView::revertRow);
 	}
 	{
 		a = new Action(tr("Clone row"), this);
@@ -1713,7 +1713,7 @@ void TableView::createActions()
 		//a->setShortcutContext(Qt::WidgetShortcut);
 		m_actionGroups[RowActions] << a->oid();
 		m_actions[a->oid()] = a;
-		connect(a, SIGNAL(triggered()), this, SLOT(cloneRow()));
+		connect(a, &Action::triggered, this, &TableView::cloneRow);
 	}
 	{
 		a = new Action("editRowsSeparator", this);
@@ -1727,7 +1727,7 @@ void TableView::createActions()
 		a->setIcon(style->icon("view"));
 		a->setToolTip(tr("Zobrazit radek v formulari pro cteni"));
 		//a->setShortcutContext(Qt::WidgetShortcut);
-		//connect(a, SIGNAL(triggered()), this, SLOT(emitViewRowInExternalEditor()));
+		//connect(a, &Action::triggered, this, &TableView::emitViewRowInExternalEditor()));
 		a->setOid("viewRowExternal");
 		m_actions[a->oid()] = a;
 	}
@@ -1736,7 +1736,7 @@ void TableView::createActions()
 		a->setIcon(style->icon("edit"));
 		a->setToolTip(tr("Upravit radek ve formulari"));
 		//a->setShortcutContext(Qt::WidgetShortcut);
-		//connect(a, SIGNAL(triggered()), this, SLOT(emitEditRowInExternalEditor()));
+		//connect(a, &Action::triggered, this, &TableView::emitEditRowInExternalEditor()));
 		a->setOid("editRowExternal");
 		m_actions[a->oid()] = a;
 	}
@@ -1770,7 +1770,7 @@ void TableView::createActions()
 		a->setShortcut(QKeySequence(tr("Ctrl+F", "filter table")));
 		//a->setShortcutContext(Qt::WidgetShortcut);
 		m_actionGroups[SortActions] << a->oid();
-		connect(a, SIGNAL(triggered(bool)), this, SIGNAL(filterDialogRequest()));
+		connect(a, &Action::triggered, this, &TableView::filterDialogRequest);
 		m_actions[a->oid()] = a;
 	}
 	{
@@ -1778,7 +1778,7 @@ void TableView::createActions()
 		//a->setToolTip(tr("Upravit radek v externim editoru"));
 		a->setShortcut(QKeySequence(tr("Ctrl+Shift+T", "Edit cell content")));
 		//a->setShortcutContext(Qt::WidgetShortcut);
-		connect(a, SIGNAL(triggered()), this, SLOT(editCellContentInEditor()));
+		connect(a, &Action::triggered, this, &TableView::editCellContentInEditor);
 		a->setOid("showCurrentCellText");
 		m_actionGroups[CellActions] << a->oid();
 		m_actions[a->oid()] = a;
@@ -1787,7 +1787,7 @@ void TableView::createActions()
 		a = new Action(tr("Save BLOB"), this);
 		//a->setToolTip(tr("Upravit radek v externim editoru"));
 		//a->setShortcutContext(Qt::WidgetShortcut);
-		connect(a, SIGNAL(triggered()), this, SLOT(saveCurrentCellBlob()));
+		connect(a, &Action::triggered, this, &TableView::saveCurrentCellBlob);
 		a->setOid("saveCurrentCellBlob");
 		m_actionGroups[BlobActions] << a->oid();
 		m_actions[a->oid()] = a;
@@ -1796,7 +1796,7 @@ void TableView::createActions()
 		a = new Action(tr("Load BLOB from file"), this);
 		//a->setToolTip(tr("Upravit radek v externim editoru"));
 		//a->setShortcutContext(Qt::WidgetShortcut);
-		connect(a, SIGNAL(triggered()), this, SLOT(loadCurrentCellBlob()));
+		connect(a, &Action::triggered, this, &TableView::loadCurrentCellBlob);
 		a->setOid("loadCurrentCellBlob");
 		m_actionGroups[BlobActions] << a->oid();
 		m_actions[a->oid()] = a;
@@ -1805,7 +1805,7 @@ void TableView::createActions()
 		a = new Action(tr("Insert rows statement"), this);
 		//a->setToolTip(tr("Upravit radek v externim editoru"));
 		////a->setShortcutContext(Qt::WidgetShortcut);
-		//connect(a, SIGNAL(triggered()), this, SLOT(insertRowsStatement()));
+		//connect(a, &Action::triggered, this, &TableView::insertRowsStatement()));
 		a->setOid("insertRowsStatement");
 		m_actionGroups[RowActions] << a->oid();
 		m_actions[a->oid()] = a;
@@ -1815,7 +1815,7 @@ void TableView::createActions()
 		//a->setToolTip(tr("Upravit radek v externim editoru"));
 		a->setShortcut(QKeySequence(tr("Ctrl+Shift+L", "Set NULL in selection")));
 		a->setShortcutContext(Qt::WidgetWithChildrenShortcut);
-		connect(a, SIGNAL(triggered()), this, SLOT(setNullInSelection()));
+		connect(a, &Action::triggered, this, &TableView::setNullInSelection);
 		a->setOid("setNullInSelection");
 		m_actionGroups[SetValueActions] << a->oid();
 		m_actions[a->oid()] = a;
@@ -1824,7 +1824,7 @@ void TableView::createActions()
 		a = new Action(tr("Set value in selection"), this);
 		a->setShortcut(QKeySequence(tr("Ctrl+Shift+E", "Set value in selection")));
 		//a->setShortcutContext(Qt::WidgetWithChildrenShortcut);
-		connect(a, SIGNAL(triggered()), this, SLOT(setValueInSelection()));
+		connect(a, &Action::triggered, this, &TableView::setValueInSelection);
 		a->setOid("setValueInSelection");
 		m_actionGroups[SetValueActions] << a->oid();
 		m_actions[a->oid()] = a;
@@ -1833,7 +1833,7 @@ void TableView::createActions()
 		a = new Action(tr("Generate sequence in selection"), this);
 		//a->setShortcut(QKeySequence(tr("Ctrl+Shift+E", "Set value in selection")));
 		////a->setShortcutContext(Qt::WidgetShortcut);
-		connect(a, SIGNAL(triggered()), this, SLOT(generateSequenceInSelection()));
+		connect(a, &Action::triggered, this, &TableView::generateSequenceInSelection);
 		a->setOid("generateSequenceInSelection");
 		m_actionGroups[SetValueActions] << a->oid();
 		m_actions[a->oid()] = a;
@@ -1849,7 +1849,7 @@ void TableView::createActions()
 			a = new Action(tr("Select current column"), this);
 			a->setShortcut(QKeySequence(tr("Ctrl+Shift+C", "Select current column")));
 			a->setShortcutContext(Qt::WidgetShortcut);
-			connect(a, SIGNAL(triggered()), this, SLOT(selectCurrentColumn()));
+			connect(a, &Action::triggered, this, &TableView::selectCurrentColumn);
 			a->setOid("selectCurrentColumn");
 			m->addAction(a);
 			//m_actions[a->oid()] = a;
@@ -1858,7 +1858,7 @@ void TableView::createActions()
 		{
 			a = new Action(tr("Select current row"), this);
 			////a->setShortcutContext(Qt::WidgetShortcut);
-			connect(a, SIGNAL(triggered()), this, SLOT(selectCurrentRow()));
+			connect(a, &Action::triggered, this, &TableView::selectCurrentRow);
 			a->setOid("selectCurrentRow");
 			//m_actions[a->oid()] = a;
 			//m_actionGroups[SelectActions] << a->oid();
@@ -1874,13 +1874,13 @@ void TableView::createActions()
 		a->setMenu(m);
 		{
 			a = new Action(tr("Sum column"), this);
-			//connect(a, SIGNAL(triggered()), this, SLOT(sumColumn()));
+			//connect(a, &Action::triggered, this, &TableView::sumColumn()));
 			a->setOid("sumColumn");
 			m->addAction(a);
 		}
 		{
 			a = new Action(tr("Sum selection"), this);
-			//connect(a, SIGNAL(triggered()), this, SLOT(sumSelection()));
+			//connect(a, &Action::triggered, this, &TableView::sumSelection()));
 			a->setOid("sumSelection");
 			m->addAction(a);
 		}
@@ -1894,7 +1894,7 @@ void TableView::createActions()
 		a->setMenu(m);
 		{
 			a = new Action(tr("Report"), this);
-			connect(a, SIGNAL(triggered()), this, SLOT(exportReport()));
+			connect(a, &Action::triggered, this, &TableView::exportReport);
 			a->setOid("exportReport");
 			m_actions[a->oid()] = a;
 			m->addAction(a);
@@ -1908,7 +1908,7 @@ void TableView::createActions()
 		}
 		{
 			a = new Action(tr("HTML"), this);
-			//connect(a, SIGNAL(triggered()), this, SLOT(exportHTML()));
+			//connect(a, &Action::triggered, this, &TableView::exportHTML()));
 			a->setOid("exportHTML");
 			m_actions[a->oid()] = a;
 			m->addAction(a);
@@ -1916,7 +1916,7 @@ void TableView::createActions()
 #ifdef QF_XLSLIB
 		{
 			a = new Action(tr("XLS - MS Excel"), this);
-			//connect(a, SIGNAL(triggered()), this, SLOT(exportXLS()));
+			//connect(a, &Action::triggered, this, &TableView::exportXLS()));
 			a->setOid("exportXLS");
 			m_actions[a->oid()] = a;
 			m->addAction(a);
@@ -1924,7 +1924,7 @@ void TableView::createActions()
 #endif
 		{
 			a = new Action(tr("XML (MS Excel 2003)"), this);
-			//connect(a, SIGNAL(triggered()), this, SLOT(exportXML()));
+			//connect(a, &Action::triggered, this, &TableView::exportXML()));
 			a->setOid("exportXML");
 			m_actions[a->oid()] = a;
 			m->addAction(a);
@@ -1939,7 +1939,7 @@ void TableView::createActions()
 		a->setMenu(m);
 		{
 			a = new Action(tr("CSV"), this);
-			//connect(a, SIGNAL(triggered()), this, SLOT(importCSV()));
+			//connect(a, &Action::triggered, this, &TableView::importCSV()));
 			a->setOid("importCSV");
 			m_actions[a->oid()] = a;
 			m->addAction(a);

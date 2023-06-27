@@ -3,7 +3,7 @@
 
 #include <QFrame>
 
-#include <quickevent/gui/partwidget.h>
+#include "partwidget.h"
 
 class QCheckBox;
 
@@ -32,7 +32,7 @@ public:
 	explicit CompetitorsWidget(QWidget *parent = nullptr);
 	~CompetitorsWidget() Q_DECL_OVERRIDE;
 
-	void settleDownInPartWidget(quickevent::gui::PartWidget *part_widget);
+	void settleDownInPartWidget(::PartWidget *part_widget);
 private:
 	Q_SLOT void lazyInit();
 	Q_SLOT void reset();

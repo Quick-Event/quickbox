@@ -29,7 +29,7 @@ QColor Color::color()
 #else
 		if(v.type() == QVariant::String) {
 #endif
-			m_color.setNamedColor(v.toString());
+			m_color = QColor::fromString(v.toString());
 			if(!m_color.isValid()) {
 				Sheet *ss = rootStyleSheet();
 				if(ss) {

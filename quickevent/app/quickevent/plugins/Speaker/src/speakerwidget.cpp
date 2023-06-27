@@ -93,12 +93,12 @@ SpeakerWidget::~SpeakerWidget()
 	delete ui;
 }
 
-void SpeakerWidget::settleDownInPartWidget(quickevent::gui::PartWidget *part_widget)
+void SpeakerWidget::settleDownInPartWidget(::PartWidget *part_widget)
 {
 	m_partWidget = part_widget;
 
-	connect(part_widget, SIGNAL(resetPartRequest()), this, SLOT(reset()));
-	connect(part_widget, SIGNAL(reloadPartRequest()), this, SLOT(reload()));
+	connect(part_widget, &::PartWidget::resetPartRequest, this, &SpeakerWidget::reset);
+	connect(part_widget, &::PartWidget::reloadPartRequest, this, &SpeakerWidget::reload);
 
 	connect(getPlugin<EventPlugin>(), &Event::EventPlugin::dbEventNotify, this, &SpeakerWidget::onDbEventNotify, Qt::QueuedConnection);
 

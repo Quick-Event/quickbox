@@ -5,6 +5,7 @@
 #include "dbschema.h"
 #include "stagedocument.h"
 #include "stagewidget.h"
+#include "../../Core/src/widgets/appstatusbar.h"
 
 #include "services/serviceswidget.h"
 #include "services/emmaclient.h"
@@ -280,20 +281,20 @@ void EventPlugin::onInstalled()
 
 	m_actConnectDb = new qfw::Action(tr("&Connect to database"));
 	//a->setShortcut("ctrl+L");
-	connect(m_actConnectDb, SIGNAL(triggered()), this, SLOT(connectToSqlServer()));
+	connect(m_actConnectDb, &QAction::triggered, this, &EventPlugin::connectToSqlServer);
 
 	m_actOpenEvent = new qfw::Action(tr("&Open event"));
 	//m_actOpenEvent->setShortcut("Ctrl+O");
 	m_actOpenEvent->setEnabled(false);
-	connect(m_actOpenEvent, SIGNAL(triggered()), this, SLOT(openEvent()));
+	connect(m_actOpenEvent, &QAction::triggered, this, [this]() { openEvent(); });
 
 	m_actCreateEvent = new qfw::Action(tr("Create eve&nt"));
 	//m_actCreateEvent->setShortcut("Ctrl+N");
-	connect(m_actCreateEvent, SIGNAL(triggered()), this, SLOT(createEvent()));
+	connect(m_actCreateEvent, &QAction::triggered, this, [this]() { createEvent(); });
 
 	m_actEditEvent = new qfw::Action(tr("E&dit event"));
 	m_actEditEvent->setEnabled(false);
-	connect(m_actEditEvent, SIGNAL(triggered()), this, SLOT(editEvent()));
+	connect(m_actEditEvent, &QAction::triggered, this, &EventPlugin::editEvent);
 	connect(this, &EventPlugin::eventNameChanged, [this](const QString &event_name) {
 		this->m_actEditEvent->setEnabled(!event_name.isEmpty());
 	});
@@ -305,10 +306,12 @@ void EventPlugin::onInstalled()
 	m_actImportEvent_qbe = new qfw::Action(tr("Event (*.qbe)"));
 	connect(m_actImportEvent_qbe, &QAction::triggered, this, &EventPlugin::importEvent_qbe);
 
-	connect(this, SIGNAL(eventNameChanged(QString)), fwk->statusBar(), SLOT(setEventName(QString)));
+	if(auto *sb = qobject_cast<Core::AppStatusBar*>(fwk->statusBar())) {
+		connect(this, &EventPlugin::eventNameChanged, sb, &Core::AppStatusBar::setEventName);
+		connect(this, &EventPlugin::currentStageIdChanged, sb, &Core::AppStatusBar::setStageNo);
+	}
 	connect(this, &EventPlugin::eventNameChanged, this, &EventPlugin::updateWindowTitle);
 	connect(this, &EventPlugin::currentStageIdChanged, this, &EventPlugin::updateWindowTitle);
-	connect(this, SIGNAL(currentStageIdChanged(int)), fwk->statusBar(), SLOT(setStageNo(int)));
 	connect(fwk, &qff::MainWindow::applicationLaunched, this, &EventPlugin::connectToSqlServer);
 	connect(this, &EventPlugin::eventOpenChanged, this, &EventPlugin::onEventOpened);
 
@@ -342,7 +345,7 @@ void EventPlugin::onInstalled()
 		bt_stage->setCheckable(true);
 		tb->addWidget(bt_stage);
 		m_cbxStage = new QComboBox();
-		connect(m_cbxStage, SIGNAL(activated(int)), this, SLOT(onCbxStageActivated(int)));
+		connect(m_cbxStage, &QComboBox::activated, this, &EventPlugin::onCbxStageActivated);
 		connect(this, &EventPlugin::currentStageIdChanged, [bt_stage](int stage_id) {
 			bt_stage->setText(tr("Current stage E%1").arg(stage_id));
 		});
@@ -354,7 +357,7 @@ void EventPlugin::onInstalled()
 		QIcon ico(style->icon("settings"));
 		m_actEditStage = new qfw::Action(ico, "Stage settings");
 		m_actEditStage->setVisible(false);
-		connect(m_actEditStage, SIGNAL(triggered()), this, SLOT(editStage()));
+		connect(m_actEditStage, &QAction::triggered, this, &EventPlugin::editStage);
 		tb->addAction(m_actEditStage);
 
 		connect(bt_stage, &QPushButton::clicked, [this, act_stage](bool checked) {
@@ -673,7 +676,7 @@ void EventPlugin::connectToSqlServer()
 								   << " as " << db.userName() << "@" << db.hostName() << ":" << db.port();
 				connect_ok = db.open();
 				if(connect_ok) {
-					bool ok = connect(db.driver(), SIGNAL(notification(QString, QSqlDriver::NotificationSource,QVariant)), this, SLOT(onDbEvent(QString,QSqlDriver::NotificationSource, QVariant)));
+					bool ok = connect(db.driver(), &QSqlDriver::notification, this, &EventPlugin::onDbEvent);
 					if(ok)
 						ok = db.driver()->subscribeToNotification(DBEVENT_NOTIFY_NAME);
 					if(!ok)

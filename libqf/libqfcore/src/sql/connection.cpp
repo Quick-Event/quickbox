@@ -944,12 +944,14 @@ QString Connection::createSchemaSqlCommand(const QString &schema_name, bool incl
 
 QStringList Connection::serverVersion() const
 {
-	QSqlQuery q = exec("SHOW variables LIKE 'version'");
-	QStringList sl;
+	QSqlQuery q(*this);
+	q.exec("SHOW variables LIKE 'version'");
 	if(q.next()) {
+		QStringList sl;
 		sl = q.value(1).toString().split('.');
+		return sl;
 	}
-	return sl;
+	return {};
 }
 
 QString Connection::fullTableNameToQtDriverTableName(const QString &full_table_name) const

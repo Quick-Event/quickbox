@@ -71,7 +71,6 @@ CompetitorsWidget::CompetitorsWidget(QWidget *parent) :
 	ui->tblCompetitors->setTableModel(m);
 	m_competitorsModel = m;
 
-	//connect(ui->tblCompetitors, SIGNAL(editRowInExternalEditor(QVariant,int)), this, SLOT(editCompetitor(QVariant,int)), Qt::QueuedConnection);
 	connect(ui->tblCompetitors, &qfw::TableView::editRowInExternalEditor, this, &CompetitorsWidget::editCompetitor, Qt::QueuedConnection);
 	connect(ui->tblCompetitors, &qfw::TableView::editSelectedRowsInExternalEditor, this, &CompetitorsWidget::editCompetitors, Qt::QueuedConnection);
 
@@ -87,10 +86,11 @@ CompetitorsWidget::~CompetitorsWidget()
 	delete ui;
 }
 
-void CompetitorsWidget::settleDownInPartWidget(quickevent::gui::PartWidget *part_widget)
+void CompetitorsWidget::settleDownInPartWidget(::PartWidget *part_widget)
 {
-	connect(part_widget, SIGNAL(resetPartRequest()), this, SLOT(reset()));
-	connect(part_widget, SIGNAL(reloadPartRequest()), this, SLOT(reload()));
+	connect(part_widget, &::PartWidget::resetPartRequest, this, &CompetitorsWidget::reset);
+	connect(part_widget, &::PartWidget::reloadPartRequest, this, &CompetitorsWidget::reload);
+
 	qfw::ToolBar *main_tb = part_widget->toolBar("main", true);
 	{
 		QLabel *lbl;
@@ -157,7 +157,7 @@ void CompetitorsWidget::reset()
 		m_cbxClasses->loadItems(true);
 		m_cbxClasses->insertItem(0, tr("--- all ---"), 0);
 		m_cbxClasses->setCurrentIndex(0);
-		connect(m_cbxClasses, SIGNAL(currentDataChanged(QVariant)), this, SLOT(reload()), Qt::UniqueConnection);
+		connect(m_cbxClasses, &qf::qmlwidgets::ForeignKeyComboBox::currentDataChanged, this, &CompetitorsWidget::reload, Qt::UniqueConnection);
 		m_cbxClasses->blockSignals(false);
 	}
 	reload();

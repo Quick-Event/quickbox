@@ -3,7 +3,7 @@
 
 #include <QFrame>
 
-#include <quickevent/gui/partwidget.h>
+#include "partwidget.h"
 
 class QComboBox;
 class QCheckBox;
@@ -40,7 +40,7 @@ public:
 	explicit RunsWidget(QWidget *parent = nullptr);
 	~RunsWidget() Q_DECL_OVERRIDE;
 
-	void settleDownInPartWidget(quickevent::gui::PartWidget *part_widget);
+	void settleDownInPartWidget(::PartWidget *part_widget);
 
 	Q_SLOT void reset(int class_id = 0);
 	Q_SLOT void reload();
