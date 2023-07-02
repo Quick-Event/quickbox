@@ -8,7 +8,7 @@ on:
 
 jobs:
   windows:
-    name: Qt 6.5.0 / Windows
+    name: Qt 6.5 / Windows
     runs-on: windows-2022
     steps:
       - name: Clone the repository
@@ -31,7 +31,7 @@ jobs:
       - name: Run windeployqt
         # --no-translations is needed because https://bugreports.qt.io/browse/QTBUG-112204
         # FIXME: Remove when 6.5.1 becomes available.
-        run: windeployqt --no-translations -serialport '${{ github.workspace }}/install/bin/quickevent.exe'
+        run: windeployqt --no-translations -serialport -multimedia '${{ github.workspace }}/install/bin/quickevent.exe'
 
       - name: Copy MinGW runtime libraries
         # windeployqt is unable to copy those, because it looks for them next to where g++.exe is. On the GitHub runner,
