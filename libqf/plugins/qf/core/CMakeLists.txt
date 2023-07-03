@@ -61,7 +61,7 @@ target_link_libraries(qfcoreplugin PUBLIC
 	libqfcore
 )
 
-set(PLUGIN_DEST_DIR ${CMAKE_INSTALL_BINDIR}/qml/qf/qmlreports)
+set(PLUGIN_DEST_DIR ${CMAKE_INSTALL_BINDIR}/qml/qf/core)
 install(TARGETS qfcoreplugin LIBRARY DESTINATION ${PLUGIN_DEST_DIR})
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/qmldir DESTINATION ${PLUGIN_DEST_DIR})
 
