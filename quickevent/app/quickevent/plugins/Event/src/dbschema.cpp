@@ -14,6 +14,7 @@
 #include <QQmlEngine>
 #include <QQmlContext>
 #include <QQmlComponent>
+#include <QQmlEngine>
 
 DbSchema::DbSchema(Event::EventPlugin *event_plugin)
 	: QObject(event_plugin)
@@ -109,6 +110,22 @@ QSqlRecord DbSchema::sqlRecord(QObject *table, bool lowercase_field_names)
 
 QQmlEngine *DbSchema::qmlEngine()
 {
-	return m_eventPlugin->qmlEngine();
+	if(!m_qmlEngine) {
+		qfMessage() << "Creating report processor QML engine";
+		m_qmlEngine = new QQmlEngine(this);
+		//m_qmlEngine->rootContext()->setContextProperty("reportProcessor", this);
+		//m_qmlEngine->rootContext()->setContextProperty("application", QCoreApplication::instance());
+		QStringList import_paths = {
+			QCoreApplication::applicationDirPath() + "/qml",
+			":/quickevent",
+			":/quickevent/shared/qml",
+		};
+		for(const auto &path : import_paths) {
+			m_qmlEngine->addImportPath(path);
+			qfInfo() << "DbSchema, adding QML engine import path:" << path;
+		}
+	}
+	//return m_qmlEngine;	return m_eventPlugin->qmlEngine();
+	return m_qmlEngine;
 }
 

@@ -39,5 +39,6 @@ private:
 	Event::EventPlugin *m_eventPlugin;
 	QQmlComponent *m_dbschemaComponent = nullptr;
 	QObject *m_dbSchemaRoot = nullptr;
+	QQmlEngine *m_qmlEngine = nullptr;
 };
 

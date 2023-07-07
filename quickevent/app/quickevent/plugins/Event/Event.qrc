@@ -1,5 +1,23 @@
 <RCC>
     <qresource prefix="/quickevent/Event">
     	<file>qml/DbSchema.qml</file>
-    </qresource>
+        <file>qml/sql/def/private/FieldType.qml</file>
+        <file>qml/sql/def/private/libsqldef.js</file>
+        <file>qml/sql/def/Boolean.qml</file>
+        <file>qml/sql/def/Date.qml</file>
+        <file>qml/sql/def/DateTime.qml</file>
+        <file>qml/sql/def/Enum.qml</file>
+        <file>qml/sql/def/Field.qml</file>
+        <file>qml/sql/def/ForeignKeyReference.qml</file>
+        <file>qml/sql/def/Index.qml</file>
+        <file>qml/sql/def/Insert.qml</file>
+        <file>qml/sql/def/Int.qml</file>
+        <file>qml/sql/def/Real.qml</file>
+        <file>qml/sql/def/Schema.qml</file>
+        <file>qml/sql/def/Serial.qml</file>
+        <file>qml/sql/def/String.qml</file>
+        <file>qml/sql/def/Table.qml</file>
+        <file>qml/sql/def/Time.qml</file>
+        <file>qml/sql/def/qmldir</file>
+   </qresource>
 </RCC>
