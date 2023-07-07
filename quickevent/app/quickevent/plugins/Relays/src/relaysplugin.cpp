@@ -49,17 +49,11 @@ RelaysPlugin::RelaysPlugin(QObject *parent)
 
 RelaysPlugin::~RelaysPlugin()
 {
-	//if(m_registrationsDockWidget)
-	//	m_registrationsDockWidget->savePersistentSettingsRecursively();
 }
 
 QObject *RelaysPlugin::createRelayDocument(QObject *parent)
 {
-	 RelayDocument *ret = new  RelayDocument(parent);
-	if(!parent) {
-		qfWarning() << "Parent is NULL, created class will have QQmlEngine::JavaScriptOwnership.";
-		qmlEngine()->setObjectOwnership(ret, QQmlEngine::JavaScriptOwnership);
-	}
+	RelayDocument *ret = new  RelayDocument(parent);
 	return ret;
 }
 

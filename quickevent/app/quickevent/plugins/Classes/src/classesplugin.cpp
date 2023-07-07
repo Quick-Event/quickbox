@@ -46,16 +46,11 @@ void ClassesPlugin::onInstalled()
 QObject *ClassesPlugin::createClassDocument(QObject *parent)
 {
 	ClassDocument *ret = new ClassDocument(parent);
-	if(!parent) {
-		qfWarning() << "Parent is NULL, created class will have QQmlEngine::JavaScriptOwnership.";
-		qmlEngine()->setObjectOwnership(ret, QQmlEngine::JavaScriptOwnership);
-	}
 	return ret;
 }
 
 void ClassesPlugin::createClass(const QString &class_name)
 {
-	//qf::core::sql::Transaction transaction;
 	ClassDocument doc;
 	doc.loadForInsert();
 	doc.setValue(QStringLiteral("classes.name"), class_name);

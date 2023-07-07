@@ -41,8 +41,6 @@ public:
 	};
 	QList<ReportFileInfo> listReportFiles(const QString &report_dir) const;
 
-	QQmlEngine* qmlEngine();
-
 	Q_SIGNAL void installed();
 private:
 	QString m_featureId;

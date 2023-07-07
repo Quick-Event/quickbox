@@ -47,10 +47,6 @@ CompetitorsPlugin::~CompetitorsPlugin()
 QObject *CompetitorsPlugin::createCompetitorDocument(QObject *parent)
 {
 	CompetitorDocument *ret = new CompetitorDocument(parent);
-	if(!parent) {
-		qfWarning() << "Parent is NULL, created class will have QQmlEngine::JavaScriptOwnership.";
-		qmlEngine()->setObjectOwnership(ret, QQmlEngine::JavaScriptOwnership);
-	}
 	return ret;
 }
 

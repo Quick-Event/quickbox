@@ -13,8 +13,6 @@
 #include <qf/core/exception.h>
 #include <qf/core/assert.h>
 #include <qf/core/utils.h>
-//#include <qf/core/settings.h>
-//#include <qf/core/utils/crypt.h>
 
 #include <QQmlEngine>
 #include <QQmlContext>
@@ -40,8 +38,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
 	Application *app = Application::instance();
 	app->m_frameWork = this;
-	QQmlEngine *qe = app->qmlEngine();
-	qe->rootContext()->setContextProperty("FrameWork", this);
 	connect(this, &MainWindow::pluginsLoaded, this, &MainWindow::onPluginsLoaded);
 }
 
