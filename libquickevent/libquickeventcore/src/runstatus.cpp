@@ -38,10 +38,10 @@ RunStatus RunStatus::fromTreeTableRow(const qf::core::utils::TreeTableRow &ttr)
 
 bool RunStatus::isOk() const
 {
-	return !(m_disqualified || m_notCompeting);
+	return !m_disqualified && !m_notCompeting;
 }
 
-int RunStatus::toTime() const
+int RunStatus::ogTime() const
 {
 	if (m_disqualified) {
 		if (m_disqualifiedByOrganizer)
