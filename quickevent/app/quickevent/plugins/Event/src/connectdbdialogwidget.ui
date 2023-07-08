@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>601</width>
-    <height>384</height>
+    <width>465</width>
+    <height>374</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -89,11 +89,11 @@
        <number>3</number>
       </property>
       <item>
-       <widget class="QTabWidget" name="tabWidget">
+       <widget class="QTabWidget" name="dataStorageTabWidget">
         <property name="currentIndex">
          <number>0</number>
         </property>
-        <widget class="QWidget" name="tab">
+        <widget class="QWidget" name="tabPostgres">
          <attribute name="title">
           <string>S&amp;ql server</string>
          </attribute>
@@ -201,7 +201,7 @@
           </item>
          </layout>
         </widget>
-        <widget class="QWidget" name="tabSingleFile">
+        <widget class="QWidget" name="tabSqlite">
          <attribute name="title">
           <string>Single &amp;file</string>
          </attribute>
@@ -267,6 +267,23 @@
           </item>
          </layout>
         </widget>
+        <widget class="QWidget" name="tab">
+         <attribute name="title">
+          <string>FIXME</string>
+         </attribute>
+         <layout class="QVBoxLayout" name="verticalLayout_4">
+          <item>
+           <widget class="QLabel" name="label_7">
+            <property name="text">
+             <string>will be removed, when https://bugreports.qt.io/browse/QTBUG-114916 will be fixed</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
        </widget>
       </item>
      </layout>
@@ -277,7 +294,7 @@
  <layoutdefault spacing="3" margin="3"/>
  <tabstops>
   <tabstop>edEventName</tabstop>
-  <tabstop>tabWidget</tabstop>
+  <tabstop>dataStorageTabWidget</tabstop>
   <tabstop>edServerHost</tabstop>
   <tabstop>edServerPort</tabstop>
   <tabstop>edServerUser</tabstop>

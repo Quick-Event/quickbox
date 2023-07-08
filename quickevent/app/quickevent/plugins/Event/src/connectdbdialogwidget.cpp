@@ -27,7 +27,7 @@ QString ConnectDbDialogWidget::eventName()
 
 Event::EventPlugin::ConnectionType ConnectDbDialogWidget::connectionType()
 {
-	if(ui->tabWidget->currentIndex() == 0)
+	if(ui->dataStorageTabWidget->currentIndex() == 0)
 		return Event::EventPlugin::ConnectionType::SqlServer;
 	return Event::EventPlugin::ConnectionType::SingleFile;
 }
@@ -61,7 +61,14 @@ void ConnectDbDialogWidget::loadSettings()
 {
 	ConnectionSettings settings;
 	ui->edEventName->setText(settings.eventName());
-	ui->tabWidget->setCurrentIndex(static_cast<int>(settings.connectionType()));
+	switch(settings.connectionType()) {
+	case Event::EventPlugin::ConnectionType::SqlServer:
+		ui->dataStorageTabWidget->setCurrentWidget(ui->tabPostgres);
+		break;
+	case Event::EventPlugin::ConnectionType::SingleFile:
+		ui->dataStorageTabWidget->setCurrentWidget(ui->tabSqlite);
+		break;
+	}
 	ui->edServerHost->setText(settings.serverHost());
 	int port = settings.serverPort();
 	if(port > 0)
@@ -75,7 +82,10 @@ void ConnectDbDialogWidget::saveSettings()
 {
 	ConnectionSettings settings;
 	settings.setEventName(ui->edEventName->text());
-	settings.setConnectionType(static_cast<Event::EventPlugin::ConnectionType>(ui->tabWidget->currentIndex()));
+	auto connection_type = Event::EventPlugin::ConnectionType::SqlServer;
+	if(ui->dataStorageTabWidget->currentWidget() == ui->tabSqlite)
+		connection_type = Event::EventPlugin::ConnectionType::SingleFile;
+	settings.setConnectionType(connection_type);
 	settings.setServerHost(ui->edServerHost->text());
 	settings.setServerPort(ui->edServerPort->value());
 	settings.setServerUser(ui->edServerUser->text());
