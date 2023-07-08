@@ -46,4 +46,4 @@ endif()
 target_link_libraries(qsqlmon PRIVATE libqfqmlwidgets)
 target_include_directories(qsqlmon PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
-install(TARGETS quickshow)
+install(TARGETS qsqlmon)
