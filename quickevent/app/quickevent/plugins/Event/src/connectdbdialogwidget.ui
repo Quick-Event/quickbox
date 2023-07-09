@@ -71,11 +71,11 @@
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="groupBox_2">
-     <property name="title">
-      <string>Data storage</string>
+    <widget class="QFrame" name="frame">
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout_2">
+     <layout class="QHBoxLayout" name="horizontalLayout_4">
       <property name="leftMargin">
        <number>3</number>
       </property>
@@ -89,14 +89,71 @@
        <number>3</number>
       </property>
       <item>
-       <widget class="QTabWidget" name="dataStorageTabWidget">
+       <widget class="QRadioButton" name="btSqlServer">
+        <property name="text">
+         <string>&amp;SQL server</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="btSingleFile">
+        <property name="text">
+         <string>Single &amp;file</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBox_2">
+     <property name="title">
+      <string>Data storage</string>
+     </property>
+     <property name="flat">
+      <bool>true</bool>
+     </property>
+     <property name="checkable">
+      <bool>false</bool>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <property name="spacing">
+       <number>3</number>
+      </property>
+      <property name="leftMargin">
+       <number>3</number>
+      </property>
+      <property name="topMargin">
+       <number>3</number>
+      </property>
+      <property name="rightMargin">
+       <number>3</number>
+      </property>
+      <property name="bottomMargin">
+       <number>3</number>
+      </property>
+      <item>
+       <widget class="QStackedWidget" name="dataStorageStackedWidget">
         <property name="currentIndex">
          <number>0</number>
         </property>
-        <widget class="QWidget" name="tabPostgres">
-         <attribute name="title">
-          <string>S&amp;ql server</string>
-         </attribute>
+        <widget class="QWidget" name="pgSqlServer">
          <layout class="QFormLayout" name="formLayout">
           <property name="labelAlignment">
            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -108,24 +165,21 @@
            <number>6</number>
           </property>
           <property name="leftMargin">
-           <number>18</number>
+           <number>3</number>
           </property>
           <property name="topMargin">
-           <number>18</number>
+           <number>3</number>
           </property>
           <property name="rightMargin">
-           <number>18</number>
+           <number>3</number>
           </property>
           <property name="bottomMargin">
-           <number>18</number>
+           <number>3</number>
           </property>
           <item row="0" column="0">
            <widget class="QLabel" name="label">
             <property name="text">
              <string>&amp;Host</string>
-            </property>
-            <property name="buddy">
-             <cstring>edServerHost</cstring>
             </property>
            </widget>
           </item>
@@ -140,9 +194,6 @@
            <widget class="QLabel" name="label_2">
             <property name="text">
              <string>&amp;Port</string>
-            </property>
-            <property name="buddy">
-             <cstring>edServerPort</cstring>
             </property>
            </widget>
           </item>
@@ -167,9 +218,6 @@
             <property name="text">
              <string>&amp;User</string>
             </property>
-            <property name="buddy">
-             <cstring>edServerUser</cstring>
-            </property>
            </widget>
           </item>
           <item row="2" column="1">
@@ -183,9 +231,6 @@
            <widget class="QLabel" name="label_4">
             <property name="text">
              <string>Pa&amp;ssword</string>
-            </property>
-            <property name="buddy">
-             <cstring>edServerPassword</cstring>
             </property>
            </widget>
           </item>
@@ -201,25 +246,22 @@
           </item>
          </layout>
         </widget>
-        <widget class="QWidget" name="tabSqlite">
-         <attribute name="title">
-          <string>Single &amp;file</string>
-         </attribute>
+        <widget class="QWidget" name="pgSingleFile">
          <layout class="QVBoxLayout" name="verticalLayout_3">
           <property name="spacing">
-           <number>9</number>
+           <number>6</number>
           </property>
           <property name="leftMargin">
-           <number>18</number>
+           <number>3</number>
           </property>
           <property name="topMargin">
-           <number>18</number>
+           <number>3</number>
           </property>
           <property name="rightMargin">
-           <number>18</number>
+           <number>3</number>
           </property>
           <property name="bottomMargin">
-           <number>18</number>
+           <number>3</number>
           </property>
           <item>
            <widget class="QLabel" name="label_6">
@@ -267,23 +309,6 @@
           </item>
          </layout>
         </widget>
-        <widget class="QWidget" name="tab">
-         <attribute name="title">
-          <string>FIXME</string>
-         </attribute>
-         <layout class="QVBoxLayout" name="verticalLayout_4">
-          <item>
-           <widget class="QLabel" name="label_7">
-            <property name="text">
-             <string>will be removed, when https://bugreports.qt.io/browse/QTBUG-114916 will be fixed</string>
-            </property>
-            <property name="wordWrap">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
        </widget>
       </item>
      </layout>
@@ -294,7 +319,7 @@
  <layoutdefault spacing="3" margin="3"/>
  <tabstops>
   <tabstop>edEventName</tabstop>
-  <tabstop>dataStorageTabWidget</tabstop>
+  <tabstop>dataStorageStackedWidget</tabstop>
   <tabstop>edServerHost</tabstop>
   <tabstop>edServerPort</tabstop>
   <tabstop>edServerUser</tabstop>

@@ -13,6 +13,16 @@ ConnectDbDialogWidget::ConnectDbDialogWidget(QWidget *parent) :
 	setTitle(tr("Data storage setup"));
 
 	ui->setupUi(this);
+	ui->btSqlServer->setChecked(true);
+	ui->dataStorageStackedWidget->setCurrentWidget(ui->pgSqlServer);
+	connect(ui->btSqlServer, &QAbstractButton::toggled, this, [this](bool checked) {
+		if(checked)
+			ui->dataStorageStackedWidget->setCurrentWidget(ui->pgSqlServer);
+	});
+	connect(ui->btSingleFile, &QAbstractButton::toggled, this, [this](bool checked) {
+		if(checked)
+			ui->dataStorageStackedWidget->setCurrentWidget(ui->pgSingleFile);
+	});
 }
 
 ConnectDbDialogWidget::~ConnectDbDialogWidget()
@@ -27,7 +37,7 @@ QString ConnectDbDialogWidget::eventName()
 
 Event::EventPlugin::ConnectionType ConnectDbDialogWidget::connectionType()
 {
-	if(ui->dataStorageTabWidget->currentIndex() == 0)
+	if(ui->dataStorageStackedWidget->currentWidget() == ui->pgSqlServer)
 		return Event::EventPlugin::ConnectionType::SqlServer;
 	return Event::EventPlugin::ConnectionType::SingleFile;
 }
@@ -63,10 +73,10 @@ void ConnectDbDialogWidget::loadSettings()
 	ui->edEventName->setText(settings.eventName());
 	switch(settings.connectionType()) {
 	case Event::EventPlugin::ConnectionType::SqlServer:
-		ui->dataStorageTabWidget->setCurrentWidget(ui->tabPostgres);
+		ui->btSqlServer->setChecked(true);
 		break;
 	case Event::EventPlugin::ConnectionType::SingleFile:
-		ui->dataStorageTabWidget->setCurrentWidget(ui->tabSqlite);
+		ui->btSingleFile->setChecked(true);
 		break;
 	}
 	ui->edServerHost->setText(settings.serverHost());
@@ -83,7 +93,7 @@ void ConnectDbDialogWidget::saveSettings()
 	ConnectionSettings settings;
 	settings.setEventName(ui->edEventName->text());
 	auto connection_type = Event::EventPlugin::ConnectionType::SqlServer;
-	if(ui->dataStorageTabWidget->currentWidget() == ui->tabSqlite)
+	if(ui->dataStorageStackedWidget->currentWidget() == ui->pgSingleFile)
 		connection_type = Event::EventPlugin::ConnectionType::SingleFile;
 	settings.setConnectionType(connection_type);
 	settings.setServerHost(ui->edServerHost->text());
