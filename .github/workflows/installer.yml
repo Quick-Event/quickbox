@@ -36,10 +36,9 @@ jobs:
 
       - name: Test
         run: |
-          pwd
-          ls  
-          ls /
-        shell: bash
+          cd "C:/Program Files/PostgreSQL/14/bin"
+          dir
+        shell: cmd
       
       - name: Setup CMake
         uses: ./.github/actions/cmake
