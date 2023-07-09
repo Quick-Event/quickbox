@@ -36,7 +36,11 @@ jobs:
 
       - name: Test
         run: |
-          dir "C:/Program Files/PostgreSQL/14/bin"
+          copy "C:/Program Files/PostgreSQL/14/bin/libiconv-2.dll" '${{ github.workspace }}/install/bin'
+          copy "C:/Program Files/PostgreSQL/14/bin/libintl-9.dll" '${{ github.workspace }}/install/bin'
+          copy "C:/Program Files/PostgreSQL/14/bin/liblz4.dll" '${{ github.workspace }}/install/bin'
+          copy "C:/Program Files/PostgreSQL/14/bin/zlib1.dll" '${{ github.workspace }}/install/bin'
+          copy "C:/Program Files/PostgreSQL/14/bin/libpq.dll" '${{ github.workspace }}/install/bin'
         shell: cmd
       
       - name: Setup CMake
