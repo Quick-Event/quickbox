@@ -59,6 +59,7 @@ jobs:
 
       - name: Copy PostgreSQL runtime libraries
         run: |
+          ls "/"
           ls "/Program Files"
           ls "/Program Files/PostgreSQL"
           ls "/Program Files/PostgreSQL/14"
