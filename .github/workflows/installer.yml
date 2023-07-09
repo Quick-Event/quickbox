@@ -34,15 +34,15 @@ jobs:
           choco install postgresql14 --version 14.5.1 -y
         shell: cmd
 
-      - run: copy "C:/Program Files/PostgreSQL/14/bin/libiconv-2.dll" "${{ github.workspace }}/install/bin"
+      - run: copy "C:/Program Files/PostgreSQL/14/bin/libiconv-2.dll" '${{ github.workspace }}/install/bin'
         shell: cmd
-      - run: copy "C:/Program Files/PostgreSQL/14/bin/libintl-9.dll" "${{ github.workspace }}/install/bin"
+      - run: copy "C:/Program Files/PostgreSQL/14/bin/libintl-9.dll" '${{ github.workspace }}/install/bin'
         shell: cmd
-      - run: copy "C:/Program Files/PostgreSQL/14/bin/liblz4.dll" "${{ github.workspace }}/install/bin"
+      - run: copy "C:/Program Files/PostgreSQL/14/bin/liblz4.dll" '${{ github.workspace }}/install/bin'
         shell: cmd
-      - run: copy "C:/Program Files/PostgreSQL/14/bin/zlib1.dll" "${{ github.workspace }}/install/bin"
+      - run: copy "C:/Program Files/PostgreSQL/14/bin/zlib1.dll" '${{ github.workspace }}/install/bin'
         shell: cmd
-      - run: copy "C:/Program Files/PostgreSQL/14/bin/libpq.dll" "${{ github.workspace }}/install/bin"
+      - run: copy "C:/Program Files/PostgreSQL/14/bin/libpq.dll" '${{ github.workspace }}/install/bin'
         shell: cmd
       
       - name: Setup CMake
