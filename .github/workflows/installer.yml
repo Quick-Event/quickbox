@@ -59,9 +59,10 @@ jobs:
 
       - name: Copy PostgreSQL runtime libraries
         run: |
-          ls "/"
-          ls "/c"
-          ls "C:"
+          ls "/Program Files"
+          ls "/Program Files/PostgreSQL"
+          ls "/Program Files/PostgreSQL/14"
+          ls "/Program Files/PostgreSQL/14/bin"
           cp "/Program Files/PostgreSQL/14/bin/{libiconv-2.dll,libintl-9.dll,liblz4.dll,zlib1.dll,libpq.dll}" '${{ github.workspace }}/install/bin'
         shell: bash
 
