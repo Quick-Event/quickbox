@@ -34,6 +34,13 @@ jobs:
           choco install postgresql14 --version 14.5.1 -y
         shell: cmd
 
+      - name: Test
+        run: |
+          pwd
+          ls  
+          ls /
+        shell: bash
+      
       - name: Setup CMake
         uses: ./.github/actions/cmake
         with:
