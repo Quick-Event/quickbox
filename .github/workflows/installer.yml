@@ -58,11 +58,11 @@ jobs:
         shell: bash
 
       - name: Copy PostgreSQL runtime libraries
-        run: |
-          ls Program\ Files
-          ls Program\ Files/PostgreSQL
-          ls Program\ Files/PostgreSQL/14
-          cp "Program\ Files/PostgreSQL/14/bin/{libiconv-2.dll,libintl-9.dll,liblz4.dll,zlib1.dll,libpq.dll}" '${{ github.workspace }}/install/bin'
+        run: 
+          - ls Program\ Files
+          - ls Program\ Files/PostgreSQL
+          - ls Program\ Files/PostgreSQL/14
+          - cp "Program\ Files/PostgreSQL/14/bin/{libiconv-2.dll,libintl-9.dll,liblz4.dll,zlib1.dll,libpq.dll}" '${{ github.workspace }}/install/bin'
         shell: bash
 
       - name: Get app version
