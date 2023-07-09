@@ -59,13 +59,9 @@ jobs:
 
       - name: Copy PostgreSQL runtime libraries
         run: |
-          ls "/"
-          ls "/Program Files"
-          ls "/Program Files/PostgreSQL"
-          ls "/Program Files/PostgreSQL/14"
-          ls "/Program Files/PostgreSQL/14/bin"
-          cp "/Program Files/PostgreSQL/14/bin/{libiconv-2.dll,libintl-9.dll,liblz4.dll,zlib1.dll,libpq.dll}" '${{ github.workspace }}/install/bin'
-        shell: bash
+          ls Program\ Files/PostgreSQL/14/bin
+          cp "Program\ Files/PostgreSQL/14/bin/{libiconv-2.dll,libintl-9.dll,liblz4.dll,zlib1.dll,libpq.dll}" '${{ github.workspace }}/install/bin'
+        shell: cmd
 
       - name: Get app version
         run: echo "VERSION=$(grep APP_VERSION quickevent/app/quickevent/src/appversion.h | cut -d\" -f2)" >> "$GITHUB_ENV"
