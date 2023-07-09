@@ -16,6 +16,24 @@ jobs:
         with:
           submodules: true
 
+      - name: Cache libraries
+        id: cache-libs
+        uses: actions/cache@v3
+        with:
+          path: |
+            C:/Program Files/PostgreSQL/14/bin/libiconv-2.dll
+            C:/Program Files/PostgreSQL/14/bin/libintl-9.dll
+            C:/Program Files/PostgreSQL/14/bin/liblz4.dll
+            C:/Program Files/PostgreSQL/14/bin/zlib1.dll
+            C:/Program Files/PostgreSQL/14/bin/libpq.dll
+          key: ${{ runner.os }}-Libraries
+
+      - name: Get PostgreSQL libraries
+        if: steps.cache-libs.outputs.cache-hit != 'true'
+        run: |
+          choco install postgresql14 --version 14.5.1 -y
+        shell: cmd
+
       - name: Setup CMake
         uses: ./.github/actions/cmake
         with:
