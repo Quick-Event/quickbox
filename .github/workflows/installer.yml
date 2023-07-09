@@ -66,6 +66,7 @@ jobs:
         run: |
           cd "C:/Program Files/PostgreSQL/14/bin"
           cp "./{libiconv-2.dll,libintl-9.dll,liblz4.dll,zlib1.dll,libpq.dll}" '${{ github.workspace }}/install/bin'
+        shell: bash
 
       - name: Get app version
         run: echo "VERSION=$(grep APP_VERSION quickevent/app/quickevent/src/appversion.h | cut -d\" -f2)" >> "$GITHUB_ENV"
