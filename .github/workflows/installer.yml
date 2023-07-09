@@ -4,7 +4,7 @@ on:
   push:
     branches: [ "master", "qt6", "qt6-test" ]
   pull_request:
-    branches: [ "master", "qt6" ]
+    branches: [ "master" ]
 
 jobs:
   windows:
@@ -36,8 +36,7 @@ jobs:
 
       - name: Test
         run: |
-          cd "C:/Program Files/PostgreSQL/14/bin"
-          dir
+          dir "C:/Program Files/PostgreSQL/14/bin"
         shell: cmd
       
       - name: Setup CMake
