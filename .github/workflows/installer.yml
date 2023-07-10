@@ -28,7 +28,7 @@ jobs:
             C:/Program Files/PostgreSQL/14/bin/liblz4.dll
             C:/Program Files/PostgreSQL/14/bin/zlib1.dll
             C:/Program Files/PostgreSQL/14/bin/libpq.dll
-          key: ${{ runner.os }}-Libraries
+          key: ${{ runner.os }}-libraries
 
       - name: Get libraries
         if: steps.cache-libs.outputs.cache-hit != 'true'
