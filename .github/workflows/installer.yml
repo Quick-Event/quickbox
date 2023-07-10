@@ -63,9 +63,9 @@ jobs:
       - name: Copy PostgreSQL runtime libraries
         run: |
           cd "C:/Program Files/PostgreSQL/14/bin"
-          cp libiconv-2.dll libintl-9.dll liblz4.dll zlib1.dll libpq.dll '${{ github.workspace }}/install/bin'
+          cp libiconv-2.dll libintl-9.dll liblz4.dll zlib1.dll libpq.dll '${{ github.workspace }}/install/bin/'
           cd "C:\openssl"
-          cp libssl-1_1-x64.dll libcrypto-1_1-x64.dll '${{ github.workspace }}/install/bin'
+          cp libssl-1_1-x64.dll libcrypto-1_1-x64.dll '${{ github.workspace }}/install/bin/'
         shell: bash
 
       - name: Get app version
