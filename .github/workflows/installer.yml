@@ -34,17 +34,6 @@ jobs:
           choco install postgresql14 --version 14.5.1 -y
         shell: cmd
 
-      - run: copy "C:/Program Files/PostgreSQL/14/bin/libiconv-2.dll" '${{ github.workspace }}/install/bin'
-        shell: cmd
-      - run: copy "C:/Program Files/PostgreSQL/14/bin/libintl-9.dll" '${{ github.workspace }}/install/bin'
-        shell: cmd
-      - run: copy "C:/Program Files/PostgreSQL/14/bin/liblz4.dll" '${{ github.workspace }}/install/bin'
-        shell: cmd
-      - run: copy "C:/Program Files/PostgreSQL/14/bin/zlib1.dll" '${{ github.workspace }}/install/bin'
-        shell: cmd
-      - run: copy "C:/Program Files/PostgreSQL/14/bin/libpq.dll" '${{ github.workspace }}/install/bin'
-        shell: cmd
-      
       - name: Setup CMake
         uses: ./.github/actions/cmake
         with:
@@ -71,12 +60,7 @@ jobs:
       - name: Copy PostgreSQL runtime libraries
         run: |
           cd "C:/Program Files/PostgreSQL/14/bin"
-          cp libiconv-2.dll '${{ github.workspace }}/install/bin'
-          cp libintl-9.dll '${{ github.workspace }}/install/bin'
-          cp liblz4.dll '${{ github.workspace }}/install/bin'
-          cp zlib1.dll '${{ github.workspace }}/install/bin'
-          cp libpq.dll '${{ github.workspace }}/install/bin'
-          cp "./{libiconv-2.dll,libintl-9.dll,liblz4.dll,zlib1.dll,libpq.dll}" '${{ github.workspace }}/install/bin'
+          cp libiconv-2.dll libintl-9.dll liblz4.dll zlib1.dll libpq.dll '${{ github.workspace }}/install/bin'
         shell: bash
 
       - name: Get app version
