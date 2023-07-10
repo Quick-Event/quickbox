@@ -158,38 +158,12 @@ void Dialog::loadPersistentSettings()
 		settings.beginGroup(path);
 		QRect geometry = settings.value("geometry").toRect();
 		if(geometry.isValid()) {
-			if(isSavePersistentPosition()) {
-				geometry = qf::qmlwidgets::internal::DesktopUtils::moveRectToVisibleDesktopScreen(geometry);
-				this->setGeometry(geometry);
-			}
-			else {
-				this->resize(geometry.size());
-			}
+			geometry = qf::qmlwidgets::internal::DesktopUtils::moveRectToVisibleDesktopScreen(geometry);
+			this->setGeometry(geometry);
 		}
 	}
 }
-#if 0
-bool Dialog::doneRequest(int result)
-{
-	qfLogFuncFrame() << "result:" << result;
-	qf::qmlwidgets::framework::DialogWidget *dw = dialogWidget();
-	if(dw) {
-		return dw->acceptDialogDone(result);
-		/*
-		QMetaObject::invokeMethod(dw, "dialogDoneRequest_qml",
-								  Q_RETURN_ARG(QVariant, ret),
-								  Q_ARG(QVariant, result));
-		*/
-	}
-	return true;
-}
-#endif
-/*
-QVariant Dialog::doneRequest_qml(const QVariant &result)
-{
-	return doneRequest(result.toBool());
-}
-*/
+
 void Dialog::savePersistentSettings()
 {
 	QString path = persistentSettingsPath();
