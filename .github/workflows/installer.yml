@@ -21,6 +21,8 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
+            C:/openssl/bin/libssl-1_1-x64.dll
+            C:/openssl/bin/libcrypto-1_1-x64.dll
             C:/Program Files/PostgreSQL/14/bin/libiconv-2.dll
             C:/Program Files/PostgreSQL/14/bin/libintl-9.dll
             C:/Program Files/PostgreSQL/14/bin/liblz4.dll
@@ -28,9 +30,10 @@ jobs:
             C:/Program Files/PostgreSQL/14/bin/libpq.dll
           key: ${{ runner.os }}-Libraries
 
-      - name: Get PostgreSQL libraries
+      - name: Get libraries
         if: steps.cache-libs.outputs.cache-hit != 'true'
         run: |
+          choco install openssl.light --params "/InstallDir:C:\openssl" --version 1.1.1 -y
           choco install postgresql14 --version 14.5.1 -y
         shell: cmd
 
@@ -61,6 +64,8 @@ jobs:
         run: |
           cd "C:/Program Files/PostgreSQL/14/bin"
           cp libiconv-2.dll libintl-9.dll liblz4.dll zlib1.dll libpq.dll '${{ github.workspace }}/install/bin'
+          cd "C:\openssl"
+          cp libssl-1_1-x64.dll libcrypto-1_1-x64.dll '${{ github.workspace }}/install/bin'
         shell: bash
 
       - name: Get app version
