@@ -135,3 +135,9 @@ target_link_libraries(quickevent PUBLIC libquickeventcore libquickeventgui libqf
 
 install(TARGETS quickevent)
 install(FILES ${QM_FILES} DESTINATION ${CMAKE_INSTALL_BINDIR}/translations)
+
+#install(DIRECTORY plugins/Runs/qml/reports DESTINATION ${CMAKE_INSTALL_BINDIR}/reports/Runs/qml)
+#install(DIRECTORY plugins/Receipts/qml/reports DESTINATION ${CMAKE_INSTALL_BINDIR}/reports/Receipts/qml)
+foreach(plugin IN ITEMS Classes Competitors Runs Relays Receipts shared)
+	install(DIRECTORY plugins/${plugin}/qml/reports DESTINATION ${CMAKE_INSTALL_BINDIR}/reports/${plugin}/qml)
+endforeach()
