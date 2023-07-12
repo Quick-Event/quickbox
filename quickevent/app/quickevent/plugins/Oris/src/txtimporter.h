@@ -28,6 +28,7 @@ public:
 	Q_INVOKABLE void importRunsIofCSV();
 protected:
 	void importParsedCsv(const QList<QVariantList> &csv);
+	int getStartTimeMSec(QString str, int start00_msec);
 };
 
 #endif // TXTIMPORTER_H

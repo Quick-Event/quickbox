@@ -239,6 +239,24 @@ void TxtImporter::importParsedCsv(const QList<QVariantList> &csv)
 	getPlugin<EventPlugin>()->emitDbEvent(Event::EventPlugin::DBEVENT_COMPETITOR_COUNTS_CHANGED);
 }
 
+int TxtImporter::getStartTimeMSec(QString str, int start00_msec)
+{
+	bool ok;
+	double dbl_time = str.toDouble(&ok);
+	int st_time = 0;
+	if(ok) {
+		st_time = ((int)dbl_time) * 60 + (((int)(dbl_time * 100)) % 100);
+		st_time *= 1000;
+	} else { // time hh:mm:ss
+		QTime t = QTime::fromString(str,"hh:mm:ss");
+		st_time = t.hour() * 3600 + t.minute() * 60 + t.second();
+		st_time *= 1000;
+		st_time -= start00_msec;
+	}
+	return st_time;
+}
+
+
 void TxtImporter::importRunsCzeCSV()
 {
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
@@ -251,7 +269,7 @@ void TxtImporter::importRunsCzeCSV()
 							  "<li>SI</li>"
 							  "<li>Class</li>"
 							  "<li>Bib</li>"
-							  "<li>Start time <i>(in format mmm.ss from zero time)</i></li>"
+							  "<li>Start time <i>(in format: <b>mmm.ss</b> from zero time or <b>hh:mm:ss</b>)</i></li>"
 							  "</ol> Only first column is mandatory, others can be empty."));
 	mbx.setDoNotShowAgainPersistentKey("importRunsCzeCSV");
 	int res = mbx.exec();
@@ -267,6 +285,9 @@ void TxtImporter::importRunsCzeCSV()
 	while(q.next()) {
 		classes_map[q.value(1).toString()] = q.value(0).toInt();
 	}
+
+	int stage_id = getPlugin<EventPlugin>()->currentStageId();
+	auto start00_day_msec = getPlugin<EventPlugin>()->stageStartTime(stage_id).msecsSinceStartOfDay();
 
 	try {
 		QFile f(fn);
@@ -329,15 +350,7 @@ void TxtImporter::importRunsCzeCSV()
 					q3.exec(qf::core::Exception::Throw);
 				}
 				if (!starttime.isEmpty()) {
-					bool ok;
-					double dbl_time = starttime.toDouble(&ok);
-					if(!ok) {
-						qfWarning() << "Cannot convert" << starttime << "to double.";
-						continue;
-					}
-					int st_time = ((int)dbl_time) * 60 + (((int)(dbl_time * 100)) % 100);
-					st_time *= 1000;
-
+					int st_time = getStartTimeMSec(starttime, start00_day_msec);
 					q4.bindValue(":starttime", st_time);
 					q4.bindValue(":id", comp_id);
 					q4.exec(qf::core::Exception::Throw);
@@ -365,7 +378,7 @@ void TxtImporter::importRunsIofCSV()
 							  "<li>SI</li>"
 							  "<li>Class</li>"
 							  "<li>Bib</li>"
-							  "<li>Start time <i>(in format mmm.ss from zero time)</i></li>"
+							  "<li>Start time <i>(in format: <b>mmm.ss</b> from zero time or <b>hh:mm:ss</b>)</i></li>"
 							  "</ol> Only first column is mandatory, others can be empty."));
 	mbx.setDoNotShowAgainPersistentKey("importRunsIofCSV");
 	int res = mbx.exec();
@@ -381,6 +394,9 @@ void TxtImporter::importRunsIofCSV()
 	while(q.next()) {
 		classes_map[q.value(1).toString()] = q.value(0).toInt();
 	}
+
+	int stage_id = getPlugin<EventPlugin>()->currentStageId();
+	auto start00_day_msec = getPlugin<EventPlugin>()->stageStartTime(stage_id).msecsSinceStartOfDay();
 
 	try {
 		QFile f(fn);
@@ -443,15 +459,7 @@ void TxtImporter::importRunsIofCSV()
 					q3.exec(qf::core::Exception::Throw);
 				}
 				if (!starttime.isEmpty()) {
-					bool ok;
-					double dbl_time = starttime.toDouble(&ok);
-					if(!ok) {
-						qfWarning() << "Cannot convert" << starttime << "to double.";
-						continue;
-					}
-					int st_time = ((int)dbl_time) * 60 + (((int)(dbl_time * 100)) % 100);
-					st_time *= 1000;
-
+					int st_time = getStartTimeMSec(starttime, start00_day_msec);
 					q4.bindValue(":starttime", st_time);
 					q4.bindValue(":id", comp_id);
 					q4.exec(qf::core::Exception::Throw);

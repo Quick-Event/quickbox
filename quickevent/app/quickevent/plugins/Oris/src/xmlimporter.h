@@ -31,14 +31,15 @@ public:
 
 		int siNumber = 0;
 
-		QString nationalityCode;
-		QString nationalityName;
-		QString clubCode;
-		QString clubName;
-		int clubIdIof = -1;	// Eventor
+		QString nationalityCode;	// Person
+		QString nationalityName;	// Person
+		QString clubCode;			// Organisation - Club
+		QString clubName;			// Organisation - Club
+		QString countryCode;		// Organisation - NationalFederation
+		QString countryName;		// Organisation - NationalFederation
+		int clubIdIof = -1;	// Eventor (Club or NationalFederation ID)
 		QSet<int> enterRaces;
 		// ...
-		QString country_abbr;
 		int bib = 0;
 		int rank = 0;
 		int start_order_pref = 0; // 0-none /  1- early / 2- middle / 3- late

@@ -24,7 +24,7 @@ XmlImporter::XmlImporter(QObject *parent)
 {
 }
 
-bool XmlImporter::readPersonNode (SPerson &s, QXmlStreamReader &reader, const XmlCreators creator)
+bool XmlImporter::readPersonNode (SPerson &s, QXmlStreamReader &reader, [[maybe_unused]] const XmlCreators creator)
 {
 	bool result = false;
 	while(reader.readNextStartElement()) {
@@ -65,9 +65,11 @@ bool XmlImporter::readPersonNode (SPerson &s, QXmlStreamReader &reader, const Xm
 				while(reader.readNextStartElement()) {
 					if (reader.name() == "Country") {
 						if (reader.attributes().hasAttribute("code"))
-							s.country_abbr = reader.attributes().value("code").toString();
-						reader.readElementText(); // need to be here, for next element
+							s.countryCode = reader.attributes().value("code").toString();
+						s.countryName = reader.readElementText();
 					}
+					else if (reader.name() == "Id" && reader.attributes().hasAttribute("type") && reader.attributes().value("type").toString() == "IOF")
+						s.clubIdIof = reader.readElementText().toInt();
 					else
 						reader.skipCurrentElement();
 				}
@@ -117,7 +119,6 @@ bool XmlImporter::readPersonNode (SPerson &s, QXmlStreamReader &reader, const Xm
 			reader.skipCurrentElement();
 	}
 
-//	s.country_abbr = (!country_abbr.isEmpty()) ? country_abbr : nationality_abbr;
 	return result;
 }
 
@@ -182,12 +183,22 @@ bool XmlImporter::importEntries(QXmlStreamReader &reader, const XmlCreators crea
 						doc.setValue("registration", person.regCz);
 						doc.setValue("note", person.noteOris);
 						doc.setValue("importId",person.orisId);
-					} else if (creator == XmlCreators::Eventor) {
-						QString club_abbr = clubs_map[person.clubIdIof];
-						if (!club_abbr.isEmpty())
-							doc.setValue("registration",club_abbr);
+					}
+					else if (creator == XmlCreators::Eventor) {
+						if (person.clubIdIof == -1) {
+							// without club & federation
+							doc.setValue("registration",person.nationalityCode);
+						}
+						else {
+							QString club_abbr = clubs_map[person.clubIdIof];
+							if (!club_abbr.isEmpty())
+								doc.setValue("registration",club_abbr);
+							if (!person.clubName.isEmpty())
+								doc.setValue("club",person.clubName);
+							else if (!person.countryName.isEmpty())
+								doc.setValue("club",person.countryName);
+						}
 						doc.setValue("country",person.nationalityName);
-						doc.setValue("club",person.clubName);
 						doc.setValue("importId",person.iofId);
 					}
 					doc.setValue("iofId", person.iofId);
@@ -196,7 +207,9 @@ bool XmlImporter::importEntries(QXmlStreamReader &reader, const XmlCreators crea
 				}
 			}
 			else
-				qfWarning() << "Failed to read runner entry on pos" << items_processed;
+				qfWarning() << "Failed to read runner entry on pos" << items_processed << " [" << person.className << ","
+				<< person.nameFamily << "," << person.nameGiven << "," << person.iofId << "," << person.regCz << "," << person.countryCode
+				<< "]";
 		}
 		else if (reader.name() == "Event") {
 			QMap <QString, int> races;
