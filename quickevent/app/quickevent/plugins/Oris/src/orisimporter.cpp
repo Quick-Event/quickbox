@@ -666,7 +666,7 @@ void OrisImporter::syncEventEntries(int event_id, std::function<void ()> success
 						auto td = QVariantList() << QStringLiteral("td") << field_string(doc, fldn);
 						tr.insert(tr.length(), td);
 					}
-					deleted_entries_rows.insert(new_entries_rows.length(), tr);
+					deleted_entries_rows.insert(deleted_entries_rows.length(), tr);
 				}
 			}
 			QVariantList html_body = QVariantList() << QStringLiteral("body");
