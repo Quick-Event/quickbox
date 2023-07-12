@@ -16,6 +16,7 @@ class EventConfig : public QObject
 	Q_PROPERTY(int stageCount READ stageCount)
 	Q_PROPERTY(bool isHandicap READ isHandicap)
 	Q_PROPERTY(bool isRelays READ isRelays)
+	Q_PROPERTY(bool isIofRace READ isIofRace)
 	//Q_PROPERTY(QString eventName READ eventName)
 public:
 	enum class Sport {OB = 1, LOB, MTBO, TRAIL};
@@ -44,6 +45,7 @@ public:
 	int handicapLength() const;
 	bool isHandicap() const {return handicapLength() > 0;}
 	bool isRelays() const {return disciplineId() == (int)Discipline::Relays || disciplineId() == (int)Discipline::Teams;}
+	bool isIofRace() const;
 	QString eventName() const;
 	QString eventPlace() const;
 	QString director() const;

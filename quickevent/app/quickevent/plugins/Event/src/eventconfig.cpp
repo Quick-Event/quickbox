@@ -253,6 +253,11 @@ bool EventConfig::isOneTenthSecResults() const
 	return static_cast<bool>(value(QStringLiteral("oneTenthSecResults")).toInt());
 }
 
+bool EventConfig::isIofRace() const
+{
+	return value(QStringLiteral("event.iofRace")).toInt() != 0;
+}
+
 /*
 const QSet<QString> &EventConfig::knownKeys()
 {
