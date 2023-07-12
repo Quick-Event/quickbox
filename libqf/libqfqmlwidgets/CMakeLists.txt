@@ -92,7 +92,7 @@ add_library(libqfqmlwidgets SHARED
     )
 
 if(USE_QT6)
-    qt6_add_translations(libqfqmlwidgets TS_FILES
+	qt6_add_translation(QM_FILES
         libqfqmlwidgets-cs_CZ.ts
         libqfqmlwidgets-fr_FR.ts
         libqfqmlwidgets-nb_NO.ts
@@ -121,5 +121,6 @@ target_include_directories(libqfqmlwidgets PUBLIC include)
 target_compile_definitions(libqfqmlwidgets PRIVATE QFQMLWIDGETS_BUILD_DLL)
 
 install(TARGETS libqfqmlwidgets)
+install(FILES ${QM_FILES} DESTINATION ${CMAKE_INSTALL_BINDIR}/translations)
 
 

@@ -9,7 +9,7 @@ add_library(libsiut SHARED
     )
 
 if(USE_QT6)
-    qt6_add_translations(libsiut TS_FILES
+	qt6_add_translation(QM_FILES
         libsiut-cs_CZ.ts
         libsiut-fr_FR.ts
         libsiut-nb_NO.ts
@@ -36,3 +36,4 @@ target_link_libraries(libsiut PUBLIC Qt::Core Qt::SerialPort libqfcore)
 target_include_directories(libsiut PUBLIC include)
 
 install(TARGETS libsiut)
+install(FILES ${QM_FILES} DESTINATION ${CMAKE_INSTALL_BINDIR}/translations)

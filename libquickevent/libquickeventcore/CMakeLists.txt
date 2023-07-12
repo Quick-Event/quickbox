@@ -19,7 +19,7 @@ add_library(libquickeventcore SHARED
     )
 
 if(USE_QT6)
-    qt6_add_translations(libquickeventcore TS_FILES
+    qt6_add_translation(QM_FILES
     libquickeventcore-cs_CZ.ts
     libquickeventcore-fr_FR.ts
     libquickeventcore-nb_NO.ts
@@ -46,3 +46,4 @@ target_link_libraries(libquickeventcore PUBLIC Qt::Core Qt::Sql libsiut)
 target_include_directories(libquickeventcore PUBLIC include)
 
 install(TARGETS libquickeventcore)
+install(FILES ${QM_FILES} DESTINATION ${CMAKE_INSTALL_BINDIR}/translations)

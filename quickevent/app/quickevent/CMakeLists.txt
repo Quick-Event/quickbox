@@ -134,4 +134,4 @@ target_include_directories(quickevent PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAK
 target_link_libraries(quickevent PUBLIC libquickeventcore libquickeventgui libqfqmlwidgets libsiut)
 
 install(TARGETS quickevent)
-
+install(FILES ${QM_FILES} DESTINATION ${CMAKE_INSTALL_BINDIR}/translations)

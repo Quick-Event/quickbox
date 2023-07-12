@@ -10,7 +10,7 @@ add_executable(quickshow
     )
 
 if(USE_QT6)
-    qt6_add_translations(quickshow TS_FILES
+	qt6_add_translation(QM_FILES
         quickshow-cs_CZ.ts
         quickshow-fr_FR.ts
         quickshow-nb_NO.ts
@@ -36,3 +36,4 @@ target_link_libraries(quickshow PRIVATE Qt::Widgets Qt::Sql libqfcore)
 target_include_directories(quickshow PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 
 install(TARGETS quickshow)
+install(FILES ${QM_FILES} DESTINATION ${CMAKE_INSTALL_BINDIR}/translations)

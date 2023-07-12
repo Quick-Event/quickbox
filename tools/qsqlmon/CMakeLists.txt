@@ -21,7 +21,7 @@ add_executable(qsqlmon
     )
 
 if(USE_QT6)
-    qt6_add_translations(qsqlmon TS_FILES
+	qt6_add_translation(QM_FILES
         qsqlmon-cs_CZ.ts
         qsqlmon-fr_FR.ts
         qsqlmon-nb_NO.ts
@@ -47,3 +47,4 @@ target_link_libraries(qsqlmon PRIVATE libqfqmlwidgets)
 target_include_directories(qsqlmon PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 install(TARGETS qsqlmon)
+install(FILES ${QM_FILES} DESTINATION ${CMAKE_INSTALL_BINDIR}/translations)

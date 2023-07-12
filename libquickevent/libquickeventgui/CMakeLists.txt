@@ -9,7 +9,7 @@ add_library(libquickeventgui SHARED
     )
 
 if(USE_QT6)
-    qt6_add_translations(libquickeventgui TS_FILES
+	qt6_add_translation(QM_FILES
         libquickeventgui-cs_CZ.ts
         libquickeventgui-fr_FR.ts
         libquickeventgui-nb_NO.ts
@@ -36,3 +36,4 @@ target_link_libraries(libquickeventgui PUBLIC Qt::Core Qt::Multimedia libquickev
 target_include_directories(libquickeventgui PUBLIC include)
 
 install(TARGETS libquickeventgui)
+install(FILES ${QM_FILES} DESTINATION ${CMAKE_INSTALL_BINDIR}/translations)
