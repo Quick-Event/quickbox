@@ -16,8 +16,6 @@
 #include <QtQml>
 #include <QLocale>
 
-//#include <iostream>
-
 NecroLog::MessageHandler old_message_handler;
 bool send_log_entry_recursion_lock = false;
 
@@ -115,9 +113,16 @@ int main(int argc, char *argv[])
 
 		qfInfo() << "Loading translations for:" << lc_name;
 
-		for(QString file_name : {"libqfcore", "libqfqmlwidgets", "libquickeventcore", "libquickeventgui", "libsiut", "quickevent"}) {
+		for(const auto &file_name : {
+				QStringLiteral("libqfcore"),
+				QStringLiteral("libqfqmlwidgets"),
+				QStringLiteral("libquickeventcore"),
+				QStringLiteral("libquickeventgui"),
+				QStringLiteral("libsiut"),
+				QStringLiteral("quickevent"),
+		}) {
 			QTranslator *translator = new QTranslator(&app);
-			bool ok = translator->load(QLocale(lc_name), file_name, QString("-"), QString(":/i18n"));
+			bool ok = translator->load(QLocale(lc_name), file_name, QString("-"), QString("translations"));
 			if (ok) {
 				ok = QCoreApplication::installTranslator(translator);
 			}
@@ -126,11 +131,12 @@ int main(int argc, char *argv[])
 
 		{
 			QTranslator *translator = new QTranslator(&app);
-			bool ok = translator->load(QLocale(lc_name), QString("qtbase"), QString("_"), QString(":/i18n"));
+			const auto file_name = QStringLiteral("qt");
+			bool ok = translator->load(QLocale(lc_name), file_name, QString("_"), QString("translations"));
 			if (ok) {
 				ok = QCoreApplication::installTranslator(translator);
 			}
-			qfInfo() << "Installing translator file: qtbase ... " << (ok ? "OK" : "ERROR");
+			qfInfo() << "Installing translator file:" << file_name << "... " << (ok ? "OK" : "ERROR");
 		}
 	}
 

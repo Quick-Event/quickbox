@@ -25,16 +25,6 @@ int main(int argc, char *argv[])
 
 	qfInfo() << QCoreApplication::applicationName() << "ver." << QCoreApplication::applicationVersion();
 
-	//qfError() << "qfError() test OK.";
-	//qfWarning() << "qfWarning() test OK.";
-	//qfInfo() << "qfInfo() test OK.";
-	//qfDebug() << "qfDebug() test OK.";
-
-	//QLocale::setDefault(QLocale(QLocale::Czech, QLocale::CzechRepublic));
-	//QLocale::setDefault(QLocale::system());
-	/// defaultni locales jsou z LC_ALL
-	qfInfo() << "Default locale set to:" << QLocale().name();
-
 	TheApp app(argc, argv);
 
 	MainWindow main_window;

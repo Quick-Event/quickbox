@@ -29,9 +29,9 @@ else()
         quickshow-ru_RU.ts
         quickshow-uk_UA.ts
         )
-    target_sources(quickshow PRIVATE ${QM_FILES})
 endif()
 
+target_sources(quickshow PRIVATE ${QM_FILES})
 target_link_libraries(quickshow PRIVATE Qt::Widgets Qt::Sql libqfcore)
 target_include_directories(quickshow PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 

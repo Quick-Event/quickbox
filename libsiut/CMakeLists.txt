@@ -28,9 +28,9 @@ else()
         libsiut-ru_RU.ts
         libsiut-uk_UA.ts
         )
-    target_sources(libsiut PRIVATE ${QM_FILES})
 endif()
 
+target_sources(libsiut PRIVATE ${QM_FILES})
 target_compile_definitions(libsiut PRIVATE SIUT_BUILD_DLL)
 target_link_libraries(libsiut PUBLIC Qt::Core Qt::SerialPort libqfcore)
 target_include_directories(libsiut PUBLIC include)

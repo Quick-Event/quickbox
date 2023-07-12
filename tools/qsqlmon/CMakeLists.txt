@@ -40,9 +40,9 @@ else()
         qsqlmon-ru_RU.ts
         qsqlmon-uk_UA.ts
         )
-    target_sources(qsqlmon PRIVATE ${QM_FILES})
 endif()
 
+target_sources(qsqlmon PRIVATE ${QM_FILES})
 target_link_libraries(qsqlmon PRIVATE libqfqmlwidgets)
 target_include_directories(qsqlmon PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
 

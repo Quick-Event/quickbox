@@ -52,13 +52,26 @@ int main(int argc, char *argv[])
 
 		qfInfo() << "Loading translations for:" << lc_name;
 
-		for(QString file_name : {"libqfcore", "libqfqmlwidgets", "quickshow"}) {
+		for(const auto &file_name : {
+			QStringLiteral("libqfcore"),
+			QStringLiteral("libqfqmlwidgets"),
+			QStringLiteral("quickshow"),
+		}) {
 			QTranslator *translator = new QTranslator(&app);
 			bool ok = translator->load(QLocale(lc_name), file_name, QString("-"), QString(":/i18n"));
 			if (ok) {
 				ok = QCoreApplication::installTranslator(translator);
 			}
 			qfInfo() << "Installing translator file:" << file_name << " ... " << (ok? "OK": "ERROR");
+		}
+		{
+			QTranslator *translator = new QTranslator(&app);
+			const auto file_name = QStringLiteral("qt");
+			bool ok = translator->load(QLocale(lc_name), file_name, QString("_"), QString("translations"));
+			if (ok) {
+				ok = QCoreApplication::installTranslator(translator);
+			}
+			qfInfo() << "Installing translator file:" << file_name << "... " << (ok ? "OK" : "ERROR");
 		}
 	}
 
