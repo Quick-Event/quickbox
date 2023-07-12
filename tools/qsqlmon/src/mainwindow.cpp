@@ -36,7 +36,6 @@
 #include <QSqlIndex>
 #include <QSqlField>
 #include <QLibraryInfo>
-#include <QFileDialog>
 #include <QDialog>
 #include <QWindowStateChangeEvent>
 #include <QPluginLoader>

@@ -4,6 +4,7 @@
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/dialogs/dialog.h>
 #include <qf/qmlwidgets/dialogs/getiteminputdialog.h>
+#include <qf/qmlwidgets/dialogs/filedialog.h>
 #include <qf/qmlwidgets/dialogs/messagebox.h>
 #include <qf/qmlwidgets/framework/plugin.h>
 #include <qf/qmlwidgets/dialogbuttonbox.h>
@@ -662,7 +663,7 @@ void OrisImporter::syncEventEntries(int event_id, std::function<void ()> success
 						edited_entries_rows.insert(edited_entries_rows.length(), tr);
 				}
 				else if(doc->mode() == doc->ModeDelete) {
-					for(QString fldn : fields) {
+					for(const QString &fldn : fields) {
 						auto td = QVariantList() << QStringLiteral("td") << field_string(doc, fldn);
 						tr.insert(tr.length(), td);
 					}
@@ -677,7 +678,7 @@ void OrisImporter::syncEventEntries(int event_id, std::function<void ()> success
 			fwk->hideProgress();
 			qf::core::utils::HtmlUtils::FromHtmlListOptions opts;
 			opts.setDocumentTitle(tr("Oris import report"));
-			QString html = qf::core::utils::HtmlUtils::fromHtmlList(html_body, opts);
+			const QString html = qf::core::utils::HtmlUtils::fromHtmlList(html_body, opts);
 #ifdef Q_OS_LINUX_NNNNN
 			QFile f("/tmp/1.html");
 			if(f.open(QFile::WriteOnly)) {
@@ -686,12 +687,29 @@ void OrisImporter::syncEventEntries(int event_id, std::function<void ()> success
 #endif
 			qf::qmlwidgets::dialogs::Dialog dlg(QDialogButtonBox::Save | QDialogButtonBox::Cancel, fwk);
 			qf::qmlwidgets::DialogButtonBox *bbx = dlg.buttonBox();
-			QPushButton *bt_no_drops = new QPushButton(tr("Save without drops"));
+			auto *bt_no_drops = new QPushButton(tr("Save without drops"));
 			bool no_drops = false;
 			connect(bt_no_drops, &QPushButton::clicked, [&no_drops]() {
 				no_drops = true;
 			});
 			bbx->addButton(bt_no_drops, QDialogButtonBox::AcceptRole);
+
+			auto *bt_export = new QPushButton(tr("Export"));
+			connect(bt_export, &QPushButton::clicked, [fwk, html]() {
+				QString fn = qf::qmlwidgets::dialogs::FileDialog::getSaveFileName(fwk, tr("Export as ..."), "changes.html", tr("HTML files *.html (*.html)"));
+				if(fn.isEmpty())
+					return;
+				if(!fn.endsWith(".html", Qt::CaseInsensitive))
+					fn = fn + ".html";
+				QFile f(fn);
+				if(!f.open(QFile::WriteOnly)) {
+					qf::qmlwidgets::dialogs::MessageBox::showError(fwk, tr("Cannot open file '%1' for writing.").arg(f.fileName()));
+					return;
+				}
+				f.write(html.toUtf8());
+			});
+			bbx->addButton(bt_export, QDialogButtonBox::ActionRole);
+
 			auto *w = new qf::qmlwidgets::HtmlViewWidget();
 			dlg.setCentralWidget(w);
 			w->setHtmlText(html);

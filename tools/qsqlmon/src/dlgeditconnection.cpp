@@ -1,10 +1,8 @@
 #include "dlgeditconnection.h"
-#include "theapp.h"
 
 #include <qf/core/log.h>
 #include <qf/qmlwidgets/dialogs/filedialog.h>
 
-#include <QFileDialog>
 #include <QVariant>
 
 //#define QF_NO_TRASH_OUTPUT
