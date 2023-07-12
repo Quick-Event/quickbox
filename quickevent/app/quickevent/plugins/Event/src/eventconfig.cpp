@@ -248,6 +248,11 @@ std::optional<int> EventConfig::maximumCardCheckAdvanceSec() const
 	return {};
 }
 
+bool EventConfig::isIofRace() const
+{
+	return value(QStringLiteral("event.iofRace")).toInt() != 0;
+}
+
 /*
 const QSet<QString> &EventConfig::knownKeys()
 {

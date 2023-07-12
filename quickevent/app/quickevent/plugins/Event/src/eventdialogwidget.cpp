@@ -62,6 +62,7 @@ void EventDialogWidget::loadParams(const QVariantMap &params)
 	if(ui->cbxDisciplineId->currentIndex() < 0)
 		ui->cbxDisciplineId->setCurrentIndex(0);
 	ui->ed_importId->setText(params.value("importId").toString());
+	ui->ed_iofRace->setChecked(params.value("iofRace").toInt() != 0);
 	ui->ed_cardChecCheckTimeSec->setValue(params.value("cardChechCheckTimeSec").toInt());
 }
 
@@ -82,5 +83,6 @@ QVariantMap EventDialogWidget::saveParams()
 	ret["disciplineId"] = (ui->cbxDisciplineId->currentIndex() <= 0) ? 1 : ui->cbxDisciplineId->currentIndex() + 1;
 	ret["importId"] = ui->ed_importId->text().toInt();
 	ret["cardChechCheckTimeSec"] = ui->ed_cardChecCheckTimeSec->value();
+	ret["iofRace"] = (int)ui->ed_iofRace->isChecked();
 	return ret;
 }
