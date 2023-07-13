@@ -1,6 +1,5 @@
 #include "reportssettingspage.h"
 #include "ui_reportssettingspage.h"
-#include "../coreplugin.h"
 #include "../reportssettings.h"
 
 #include <qf/core/log.h>
@@ -29,9 +28,9 @@ ReportsSettingsPage::~ReportsSettingsPage()
 	delete ui;
 }
 
-void ReportsSettingsPage::setCustomReportsDirectory(const QString dir)
+void ReportsSettingsPage::setReportsDirectory(const QString dir)
 {
-	auto old_dir = ui->edCustomReportsDirectory->text();
+	auto old_dir = ui->edReportsDirectory->text();
 	auto new_dir = dir;
 	if(dir.isEmpty()) {
 		new_dir = QFileDialog::getExistingDirectory(this, tr("Open Directory"),
@@ -40,77 +39,40 @@ void ReportsSettingsPage::setCustomReportsDirectory(const QString dir)
 	}
 	if(new_dir.isEmpty())
 		return;
-	ui->edCustomReportsDirectory->setText(new_dir);
+	ui->edReportsDirectory->setText(new_dir);
 	//if(new_dir != old_dir)
 	//	QMessageBox::information(this, tr("Information"), tr("Custom reports directory changes will be applied after application restart."));
 }
 
 void ReportsSettingsPage::on_btSelectCustomReportsDirectory_clicked()
 {
-	setCustomReportsDirectory({});
+	setReportsDirectory({});
 }
 
-void ReportsSettingsPage::on_btCreateCustomReportsDirectory_clicked()
-{
-	auto old_dir = ui->edCustomReportsDirectory->text();
-	QString custom_reports_dir_name = QFileDialog::getExistingDirectory(this, tr("Open Directory"),
-													 old_dir,
-													 QFileDialog::ShowDirsOnly);
-	if(custom_reports_dir_name.isEmpty())
-		return;
-	//m_exportReportDefinitionsDir = export_dir_name;
-	QDir export_dir(custom_reports_dir_name);
-	const auto PREFIX = QStringLiteral(":/quickevent/");
-	const auto REPORTS = QStringLiteral("/reports");
-	const auto SHARED = QStringLiteral("shared/");
-	QDirIterator it(":/", QDirIterator::Subdirectories);
-	while (it.hasNext()) {
-		QString name = it.next();
-		if(!name.startsWith(PREFIX))
-			continue;
-		name = name.mid(PREFIX.length());
-		if(name.startsWith(SHARED))
-			continue;
-		if(!name.contains(REPORTS))
-			continue;
-		QString export_path = export_dir.absolutePath() + '/' + name;
-		QFileInfo fi = it.fileInfo();
-		if(fi.isDir()) {
-			qfInfo()<< "Creating dir:" << export_path;
-			if(!export_dir.mkpath(name))
-				qfError() << "cannot create dir:" << export_path;
-		}
-		else {
-			qfInfo()<< "Copying file:" << export_path;
-			if(QFile::copy(it.filePath(), export_path))
-				QFile(export_path).setPermissions(QFileDevice::ReadOwner | QFileDevice::WriteOwner);
-			else
-				qfWarning() << "File:" << export_path << "exists already, it will not be overwritten.";
-		}
-	}
-	setCustomReportsDirectory(custom_reports_dir_name);
-}
-
-static const auto KEY_customReportsDirectory = QStringLiteral("customReportsDirectory");
+static const auto KEY_reportsDirectory = QStringLiteral("reportsDirectory");
 //static const auto KEY_exportReportDefinitionsDir = QStringLiteral("exportReportDefinitionsDir");
 
 void ReportsSettingsPage::load()
 {
-	ui->edCustomReportsDirectory->setText(customReportsDirectory());
+	auto dir = reportsDirectory();
+	ui->edReportsDirectory->setText(dir);
 }
 
 void ReportsSettingsPage::save()
 {
 	ReportsSettings settings;
-	auto dir = ui->edCustomReportsDirectory->text().trimmed();
-	settings.setCustomReportsDirectory(dir);
-	qf::qmlwidgets::framework::Plugin::setCustomReportsDir(dir);
+	auto dir = ui->edReportsDirectory->text().trimmed();
+	settings.setReportsDirectory(dir);
+	qf::qmlwidgets::framework::Plugin::setReportsDir(dir);
 }
 
-QString ReportsSettingsPage::customReportsDirectory() const
+QString ReportsSettingsPage::reportsDirectory() const
 {
 	ReportsSettings settings;
-	return settings.customReportsDirectory();
+	auto dir = settings.reportsDirectory();
+	if(dir.isEmpty())
+		dir = QCoreApplication::applicationDirPath() + "/reports";
+	return dir;
 }
 
 }

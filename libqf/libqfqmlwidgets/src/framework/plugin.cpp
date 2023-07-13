@@ -1,6 +1,4 @@
 #include "plugin.h"
-#include "application.h"
-#include "mainwindow.h"
 
 #include <qf/core/utils.h>
 #include <qf/core/log.h>
@@ -13,7 +11,7 @@
 
 using namespace qf::qmlwidgets::framework;
 
-QString Plugin::m_customReportsDir;
+QString Plugin::m_reportsDir;
 
 Plugin::Plugin(const QString &feature_id, QObject *parent)
 	: QObject(parent)
@@ -36,14 +34,17 @@ Plugin::~Plugin()
 QString Plugin::findReportFile(const QString &report_file_path) const
 {
 	QStringList search_paths;
-	if(!m_customReportsDir.isEmpty())
-		search_paths << m_customReportsDir + '/' + m_featureId + "/qml/reports";
+	if(!m_reportsDir.isEmpty())
+		search_paths << m_reportsDir + '/' + m_featureId + "/qml/reports";
 	search_paths << qmlReportsDir();
 	for(const QString &dir : search_paths) {
 		auto fn = dir + '/' + report_file_path;
+		//qfInfo() << "dir:" << dir << "try:" << fn;
 		QFileInfo fi(fn);
-		if(fi.isFile())
+		if(fi.isFile()) {
+			//qfInfo() << "HIT:" << fn;
 			return fn;
+		}
 	}
 	qfError() << "Cannot find report file for feature id:" << m_featureId << "and file path:" << report_file_path;
 	return {};
@@ -53,8 +54,8 @@ QList<Plugin::ReportFileInfo> Plugin::listReportFiles(const QString &report_dir)
 {
 	QList<ReportFileInfo> report_files;
 	QStringList search_paths;
-	if(!m_customReportsDir.isEmpty())
-		search_paths << m_customReportsDir + '/' + m_featureId + "/qml/reports";
+	if(!m_reportsDir.isEmpty())
+		search_paths << m_reportsDir + '/' + m_featureId + "/qml/reports";
 	search_paths << qmlReportsDir();
 	for(const QString &dir : search_paths) {
 		QDirIterator it(dir + '/' + report_dir, QDirIterator::NoIteratorFlags);

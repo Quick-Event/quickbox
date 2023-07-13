@@ -22,7 +22,8 @@ public:
 	explicit Plugin(QObject *parent = nullptr);
 	~Plugin() Q_DECL_OVERRIDE;
 
-	static void setCustomReportsDir(const QString &dir) { m_customReportsDir = dir; }
+	static void setReportsDir(const QString &dir) { m_reportsDir = dir; }
+	static QString reportsDir() { return m_reportsDir; }
 
 	QString homeDir() const { return qf::qmlwidgets::framework::Application::instance()->pluginDataDir() + '/' +  featureId(); }
 	QString qmlDir() const { return homeDir() + "/qml"; }
@@ -44,7 +45,7 @@ public:
 	Q_SIGNAL void installed();
 private:
 	QString m_featureId;
-	static QString m_customReportsDir;
+	static QString m_reportsDir;
 };
 
 }}}

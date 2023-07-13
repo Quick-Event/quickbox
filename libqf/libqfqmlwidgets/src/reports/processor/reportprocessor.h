@@ -116,7 +116,7 @@ public slots:
 	void processSinglePage() {process(SinglePage);}
 public:
 	/// Every QnlEngine created by ReportProcessor will have this import paths
-	static QStringList& qmlEngineImportPaths();
+	static QStringList qmlEngineImportPaths();
 protected:
 	QQmlEngine* qmlEngine(bool throw_exc = true);
 private:	

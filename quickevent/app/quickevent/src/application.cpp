@@ -47,7 +47,7 @@ Application::Application(int &argc, char **argv, AppCliOptions *cli_opts)
 		}
 	}
 #ifdef Q_OS_UNIX
-	QString plugin_path = QCoreApplication::applicationDirPath() + "/../lib/qml/" + QCoreApplication::applicationName().toLower();
+	//QString plugin_path = QCoreApplication::applicationDirPath() + "/../lib/qml/" + QCoreApplication::applicationName().toLower();
 #else
 	QString plugin_path = QCoreApplication::applicationDirPath() + "/qml/" + QCoreApplication::applicationName().toLower();
 #ifdef Q_OS_WIN
@@ -55,7 +55,7 @@ Application::Application(int &argc, char **argv, AppCliOptions *cli_opts)
 	SetDllDirectory(reinterpret_cast<LPCWSTR>(plugin_path.utf16()));
 #endif
 #endif
-	qf::qmlwidgets::reports::ReportProcessor::qmlEngineImportPaths().append(plugin_path);
+	//qf::qmlwidgets::reports::ReportProcessor::qmlEngineImportPaths().append(plugin_path);
 }
 
 Application::~Application()

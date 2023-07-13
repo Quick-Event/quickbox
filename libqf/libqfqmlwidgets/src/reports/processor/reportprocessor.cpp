@@ -1,7 +1,8 @@
 #include "reportprocessor.h"
 #include "reportitemreport.h"
 #include "reportpainter.h"
-#include "../../framework/application.h"
+//#include "../../framework/application.h"
+#include "../../framework/plugin.h"
 
 #include <qf/core/utils/fileutils.h>
 #include <qf/core/log.h>
@@ -335,16 +336,15 @@ QDomElement ReportProcessor::convertHorizontalDivToTableRow(QDomElement &el_div)
 	return el_table_row;
 }
 
-QStringList &ReportProcessor::qmlEngineImportPaths()
+QStringList ReportProcessor::qmlEngineImportPaths()
 {
-	static QStringList lst;
-	if(lst.isEmpty()) {
+	QStringList lst;
 #ifdef Q_OS_UNIX
-		lst << QCoreApplication::applicationDirPath() + "/../lib/qml";
+	lst << QCoreApplication::applicationDirPath() + "/../lib/qml";
 #endif
-		lst << QCoreApplication::applicationDirPath() + "/qml";
-		lst << ":/quickevent";
-	}
+	lst << QCoreApplication::applicationDirPath() + "/qml";
+	lst << framework::Plugin::reportsDir();
+	lst << ":/quickevent";
 	return lst;
 }
 
