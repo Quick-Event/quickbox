@@ -863,19 +863,20 @@ QString RunsPlugin::resultsIofXml30Stage(int stage_id)
 		for(int j=0; j<tt2.rowCount(); j++) {
 			const qf::core::utils::TreeTableRow tt2_row = tt2.row(j);
 			//pos++;
-		QVariantList person_result{"PersonResult"};
-		QVariantList person{"Person"};
-		person.insert(person.count(),
-			QVariantList{"Id", QVariantMap{{"type", "CZE"}}, tt2_row.value(QStringLiteral("competitors.registration"))});
-		auto iof_id = tt2_row.value(QStringLiteral("competitors.iofId"));
-		if (!iof_id.isNull())
-			person.insert(person.count(), QVariantList{"Id", QVariantMap{{"type", "IOF"}}, iof_id});
-		person.insert(person.count(),QVariantList{"Name",
-			QVariantList{"Family", tt2_row.value(QStringLiteral("competitors.lastName"))},
-			QVariantList{"Given", tt2_row.value(QStringLiteral("competitors.firstName"))},
-			}
-		);
-		person_result.insert(person_result.count(),person);
+			QVariantList person_result{"PersonResult"};
+			QVariantList person{"Person"};
+			person.insert(person.count(),
+				QVariantList{"Id", QVariantMap{{"type", "CZE"}}, tt2_row.value(QStringLiteral("competitors.registration"))});
+			auto iof_id = tt2_row.value(QStringLiteral("competitors.iofId"));
+			if (!iof_id.isNull())
+				person.insert(person.count(), QVariantList{"Id", QVariantMap{{"type", "IOF"}}, iof_id});
+			person.insert(person.count(), QVariantList{"Id", QVariantMap{{"type", "QuickEvent"}}, tt2_row.value(QStringLiteral("runs.id"))});
+			person.insert(person.count(),QVariantList{"Name",
+				QVariantList{"Family", tt2_row.value(QStringLiteral("competitors.lastName"))},
+				QVariantList{"Given", tt2_row.value(QStringLiteral("competitors.firstName"))},
+				}
+			);
+			person_result.insert(person_result.count(),person);
 
 			auto club_abbr = tt2_row.value(QStringLiteral("clubs.abbr")).toString();
 			if (!club_abbr.isEmpty()) {
