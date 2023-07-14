@@ -11,6 +11,20 @@ Frame {
 	Frame {
 		width: "%"
 		layout: Frame.LayoutHorizontal
+		bottomBorder: Pen { basedOn: "black2" }
+		htmlExportAttributes: {"lpt_textStyle": "bold,underline2"}
+		Para {
+			width: "%"
+			textHAlign: Frame.AlignHCenter
+			htmlExportAttributes: {"lpt_textStyle": "bold", "lpt_textWidth": "%", "lpt_textAlign": "center"}
+		textStyle: myStyle.textStyleBold
+			text: "Slosovatelný kupón";
+		}
+	}
+	//vinset: 20
+	Frame {
+		width: "%"
+		layout: Frame.LayoutHorizontal
 		textStyle: myStyle.textStyleBold
 		bottomBorder: Pen { basedOn: "black2" }
 		htmlExportAttributes: {"lpt_textStyle": "bold,underline2"}
@@ -27,59 +41,70 @@ Frame {
 			}
 		}
 	}
+	Para { text: "" }
+	Para { text: "" }
+	Frame {
+		layout: Frame.LayoutHorizontal
+		valign: Frame.AlignVCenter
+		Frame {
+			width: "%"
+			bottomBorder: Pen { basedOn: "black1dot" }
+			htmlExportAttributes: {"lpt_textStyle": "underline2"}
+			//htmlExportAttributes: {"lpt_text": "-----"}
+		}
+		Para {
+			text: "zde odstřihnout";
+			htmlExportAttributes: {"lpt_textWidth": "%", "lpt_textAlign": "center"}
+		}
+		Frame {
+			width: "%"
+			bottomBorder: Pen { basedOn: "black1dot" }
+			//htmlExportAttributes: {"lpt_text": "-----"}
+		}
+	}
+	Para { text: "" }
+	Para { text: "" }
 	Frame {
 		width: "%"
 		vinset: 1
 		halign: Frame.AlignHCenter
 		htmlExportAttributes: {"lpt_textWidth": "%", "lpt_textAlign": "center"}
+
 		Para {
 			htmlExportAttributes: {"lpt_textStyle": "bold"}
 			textStyle: myStyle.textStyleBold
-			text: "Slosovatelný kupón";
-		}
-		Para {
-			htmlExportAttributes: {"lpt_textStyle": "bold"}
-			textStyle: myStyle.textStyleBold
-			text: "www.SUUNTOCZ.cz";
+			text: "www.VJSPORT.cz";
 		}
 		Frame { height: 2 }
 		Para {
 			htmlExportAttributes: {"lpt_textStyle": "bold"}
 			textStyle: myStyle.textStyleBold
-			text: "15% sleva pro závodníky.";
+			text: "podkolenky zdarma";
 		}
 		Para {
 			halign: Frame.AlignHCenter
-			text: "na libovolné GPS hodinky značky Suunto.";
+			text: "jediné opravdové boty na OB s extrémní";
 		}
 		Para {
 			halign: Frame.AlignHCenter
-			text: "Platí i na Suunto Ambit 3 Vertical za 2990,-";
+			text: "výdrží. Nyní ve stánku HSH podkolenky";
 		}
 		Para {
 			halign: Frame.AlignHCenter
-			text: "Platí do 31.7.2022  i na zlevněné produkty.";
+			text: "zdarma ke všem modelům kromě výprodeje";
 		}
 		Para {
 			halign: Frame.AlignHCenter
 			text: "www.orienteering.cz";
 		}
-		Frame {
-			layout: Frame.LayoutHorizontal
-			valign: Frame.AlignVCenter
-			Frame {
-				width: "%"
-				bottomBorder: Pen { basedOn: "black1dot" }
-				//htmlExportAttributes: {"lpt_text": "-----"}
-			}
-			Para {
-				text: "zde odstřihnout";
-			}
-			Frame {
-				width: "%"
-				bottomBorder: Pen { basedOn: "black1dot" }
-				//htmlExportAttributes: {"lpt_text": "-----"}
-			}
+		Para {
+			htmlExportAttributes: {"lpt_textStyle": "bold"}
+			textStyle: myStyle.textStyleBold
+			text: "Výsledky online";
+		}
+		Para {
+			halign: Frame.AlignHCenter
+			text: "oresults.eu/events/350";
 		}
 	}
 }

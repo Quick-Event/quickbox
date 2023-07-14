@@ -1,5 +1,5 @@
 <RCC>
-	<qresource prefix="/qf/qmlwidgets/images">
+	<qresource prefix="qf/qmlwidgets/images">
 		<file>under-construction.png</file>
 		<file>alert.png</file>
 		<file>wordwrap.png</file>

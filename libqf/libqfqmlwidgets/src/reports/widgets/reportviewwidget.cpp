@@ -18,6 +18,7 @@
 #include "../../toolbar.h"
 #include "../../framework/cursoroverrider.h"
 #include "../../framework/mainwindow.h"
+#include "../../style.h"
 
 #include <qf/core/utils/fileutils.h>
 #include <qf/core/log.h>
@@ -559,14 +560,12 @@ void ReportViewWidget::settleDownInDialog(qf::qmlwidgets::dialogs::Dialog *dlg)
 
 qf::qmlwidgets::framework::DialogWidget::ActionMap ReportViewWidget::createActions()
 {
+	auto *style = Style::instance();
 	ActionMap ret;
-
-	//QStyle *sty = style();
-	//QIcon ico = sty->standardIcon(QStyle::SP_MediaSkipForward);
 	{
 		qf::qmlwidgets::Action *a;
-		QIcon ico(":/qf/qmlwidgets/images/frev");
-		a = new qf::qmlwidgets::Action(ico, tr("First page"), this);
+		a = new qf::qmlwidgets::Action(tr("First page"), this);
+		a->setIcon(style->icon("frev"));
 		ret[QStringLiteral("view.firstPage")] = a;
 		connect(a, &QAction::triggered, this, &ReportViewWidget::view_firstPage);
 	}
@@ -621,15 +620,15 @@ qf::qmlwidgets::framework::DialogWidget::ActionMap ReportViewWidget::createActio
 	}
 	{
 		qf::qmlwidgets::Action *a;
-		QIcon ico(":/qf/qmlwidgets/images/print.png");
-		a = new qf::qmlwidgets::Action(ico, tr("&Print"), this);
+		a = new qf::qmlwidgets::Action(tr("&Print"), this);
+		a->setIcon(style->icon("prnter"));
 		//a->setTooltip(tr("Tisk"));
 		ret[QStringLiteral("file.print")] = a;
 		connect(a, &QAction::triggered, this, &ReportViewWidget::file_print);
 	}
 	{
 		qf::qmlwidgets::Action *a;
-		QIcon ico(":/qf/qmlwidgets/images/print-preview.png");
+		QIcon ico(":/qf/qmlwidgets/images/print-preview");
 		a = new qf::qmlwidgets::Action(ico, tr("Print pre&view"), this);
 		//a->setToolTip(tr("Náhled tisku"));
 		ret[QStringLiteral("file.printPreview")] = a;
@@ -637,7 +636,7 @@ qf::qmlwidgets::framework::DialogWidget::ActionMap ReportViewWidget::createActio
 	}
 	{
 		qf::qmlwidgets::Action *a;
-		QIcon ico(":/qf/qmlwidgets/images/acrobat.png");
+		QIcon ico(":/qf/qmlwidgets/images/acrobat");
 		a = new qf::qmlwidgets::Action(ico, tr("Export PD&F"), this);
 		a->setToolTip(tr("Export in the Adobe Acrobat PDF format"));
 		ret[QStringLiteral("file.export.pdf")] = a;
@@ -645,7 +644,7 @@ qf::qmlwidgets::framework::DialogWidget::ActionMap ReportViewWidget::createActio
 	}
 	{
 		qf::qmlwidgets::Action *a;
-		QIcon ico(":/qf/qmlwidgets/images/network.png");
+		QIcon ico(":/qf/qmlwidgets/images/network");
 		a = new qf::qmlwidgets::Action(ico, tr("Export &HTML"), this);
 		a->setToolTip(tr("Export data in HTML"));
 		ret[QStringLiteral("file.export.html")] = a;
