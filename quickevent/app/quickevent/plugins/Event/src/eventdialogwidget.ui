@@ -325,8 +325,25 @@
    </item>
    <item row="14" column="1">
     <widget class="QCheckBox" name="ed_iofRace">
+     <property name="toolTip">
+      <string>IOF Eventor race - user for IOF XML exports</string>
+     </property>
      <property name="text">
       <string>Is IOF Race (data from Eventor)</string>
+     </property>
+    </widget>
+   </item>
+   <item row="15" column="0">
+    <widget class="QLabel" name="label_16">
+     <property name="text">
+      <string>Race number (xml)</string>
+     </property>
+    </widget>
+   </item>
+   <item row="15" column="1">
+    <widget class="QSpinBox" name="ed_xmlRaceNumber">
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;IOF Eventor race number - if nonzero, user as &amp;lt;Race&amp;gt; node and for attribute of &amp;lt;Start&amp;gt; node for IOF XML exports&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
     </widget>
    </item>
