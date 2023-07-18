@@ -121,6 +121,7 @@ private:
 
 	int courseForRun_Classic(int run_id);
 	int courseForRun_Relays(int run_id);
+	QString getClubAbbrFromName(QString name);
 
 	void writeCSOSHeader(QTextStream &ts);
 
