@@ -345,7 +345,7 @@ bool XmlImporter::importClasses(QXmlStreamReader &reader, const XmlCreators crea
 	return (items_processed > 0);
 }
 
-QString XmlImporter::GenFakeCzClubAbbr(QString country)
+QString XmlImporter::genFakeCzClubAbbr(QString country)
 {
 	if (country.isEmpty())
 		return "";
@@ -354,7 +354,7 @@ QString XmlImporter::GenFakeCzClubAbbr(QString country)
 	fakeCzClubMap[c]++;
 	QString result = QString("%1%2").arg(c).arg(pos,2,36,QLatin1Char('0')).toUpper();
 	if (result == country)
-		return GenFakeCzClubAbbr(country);
+		return genFakeCzClubAbbr(country);
 	else
 		return result;
 }
@@ -446,7 +446,7 @@ bool XmlImporter::importClubs(QXmlStreamReader &reader, const XmlCreators creato
 					}
 					else {
 						q.bindValue(":name", name);
-						q.bindValue(":abbr", GenFakeCzClubAbbr(country_code));
+						q.bindValue(":abbr", genFakeCzClubAbbr(country_code));
 					}
 					q.bindValue(":importId", id_iof);
 				}

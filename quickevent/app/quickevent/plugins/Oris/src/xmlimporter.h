@@ -10,7 +10,7 @@ class XmlImporter : public QObject
 {
 	Q_OBJECT
 public:
-	enum class XmlCreators : int
+	enum class XmlCreators
 	{
 		QuickEvent = 0,
 		Oris,
@@ -58,7 +58,7 @@ protected:
 	bool importClubs(QXmlStreamReader &reader, const XmlCreators creator);
 	bool importRegistration(QXmlStreamReader &reader, const XmlCreators creator);
 
-	QString GenFakeCzClubAbbr(QString country);
+	QString genFakeCzClubAbbr(QString country);
 	QMap <QString,int> fakeCzClubMap;
 };
 
