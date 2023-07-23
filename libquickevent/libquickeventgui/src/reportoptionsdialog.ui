@@ -508,6 +508,13 @@
       </widget>
      </item>
      <item>
+      <widget class="QPushButton" name="btReset">
+       <property name="text">
+        <string>Reset</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QDialogButtonBox" name="buttonBox">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -523,6 +530,7 @@
  </widget>
  <tabstops>
   <tabstop>edStagesCount</tabstop>
+  <tabstop>edLegsCount</tabstop>
   <tabstop>grpClassFilter</tabstop>
   <tabstop>btWildCard</tabstop>
   <tabstop>btRegExp</tabstop>
@@ -530,16 +538,23 @@
   <tabstop>edFilter</tabstop>
   <tabstop>chkClassFilterDoesntMatch</tabstop>
   <tabstop>edNumPlaces</tabstop>
+  <tabstop>chkExcludeDisq</tabstop>
   <tabstop>edStartersOptionsLineSpacing</tabstop>
   <tabstop>chkStartOpts_PrintVacants</tabstop>
   <tabstop>chkStartOpts_PrintStartNumbers</tabstop>
+  <tabstop>btStartTimes1</tabstop>
+  <tabstop>btStartTimes2</tabstop>
+  <tabstop>btStartOrder1</tabstop>
+  <tabstop>btStartOrder2</tabstop>
+  <tabstop>btStartOrder3</tabstop>
   <tabstop>edPageWidth</tabstop>
-  <tabstop>edHorizontalMargin</tabstop>
-  <tabstop>edColumnCount</tabstop>
   <tabstop>edPageHeight</tabstop>
+  <tabstop>edHorizontalMargin</tabstop>
   <tabstop>edVerticalMargin</tabstop>
+  <tabstop>edColumnCount</tabstop>
   <tabstop>cbxBreakAfterClassType</tabstop>
   <tabstop>btSaveAsDefault</tabstop>
+  <tabstop>btReset</tabstop>
  </tabstops>
  <resources/>
  <connections>

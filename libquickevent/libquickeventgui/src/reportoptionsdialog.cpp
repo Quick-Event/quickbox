@@ -44,6 +44,7 @@ ReportOptionsDialog::ReportOptionsDialog(QWidget *parent)
 	connect(this, &ReportOptionsDialog::persistentSettingsIdChanged, [this]() {
 		loadPersistentSettings();
 	});
+    connect(ui->btReset, &QPushButton::clicked, this, &ReportOptionsDialog::resetPersistentSettings);
 
 	connect(this, &ReportOptionsDialog::startListOptionsVisibleChanged, ui->grpStartOptions, &QGroupBox::setVisible);
 	connect(this, &ReportOptionsDialog::classFilterVisibleChanged, ui->grpClassFilter, &QGroupBox::setVisible);
@@ -327,6 +328,12 @@ ReportOptionsDialog::StartlistOrderFirstBy ReportOptionsDialog::startlistOrderFi
 	return start_order_by;
 }
 
+void ReportOptionsDialog::resetPersistentSettings()
+{
+    Options new_options;
+    setOptions(new_options);
+    savePersistentSettings();
+}
 
 }}
 

@@ -99,6 +99,7 @@ public:
 	void loadPersistentSettings(const Options &default_options);
 	Q_SLOT void loadPersistentSettings();
 	Q_SLOT void savePersistentSettings();
+    Q_SLOT void resetPersistentSettings();
 
 	void setClassNamesFilter(const QStringList &class_names);
 
