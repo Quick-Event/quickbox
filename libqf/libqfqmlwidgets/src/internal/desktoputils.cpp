@@ -1,9 +1,6 @@
 #include "desktoputils.h"
 
 #include <QApplication>
-#if QT_VERSION_MAJOR < 6
-#include <QDesktopWidget>
-#endif
 #include <QScreen>
 
 namespace qf {
@@ -12,17 +9,21 @@ namespace internal {
 
 QRect DesktopUtils::moveRectToVisibleDesktopScreen(const QRect &r)
 {
-	QRect ret = r;
 #if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
-	QScreen *scr = QApplication::screenAt(ret.topLeft());
-	QRect screen_rect = scr? scr->geometry(): QRect();
+	if(QApplication::screenAt(r.topLeft())) {
+		return r;
+	}
+	else {
+		if(auto *first_screen = QApplication::screens().value(0)) {
+			auto ret = r;
+			ret.moveTopLeft(first_screen->geometry().topLeft());
+			return ret;
+		}
+		return r;
+	}
 #else
-	QDesktopWidget *dw = QApplication::desktop();
-	QRect screen_rect = dw->screenGeometry(ret.topLeft());
-#endif
-	if(screen_rect.isValid() && !screen_rect.contains(ret.topLeft()))
-		ret.moveTopLeft(screen_rect.topLeft());
 	return ret;
+#endif
 }
 
 } // namespace internal

@@ -18,7 +18,7 @@ public:
 	static RunStatus fromTreeTableRow(const qf::core::utils::TreeTableRow &ttr);
 
 	bool isOk() const;
-	int toTime() const;
+	int ogTime() const;
 
 	QString toXmlExportString() const;
 	QString toEmmaExportString() const;

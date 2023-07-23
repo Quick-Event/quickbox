@@ -120,6 +120,19 @@ struct Leg
 	int stime = 0;
 	int spos = 0;
 	quickevent::core::RunStatus runStatus;
+
+	bool isFinishedOk() const {
+		return ogTime() < quickevent::core::og::TimeMs::UNREAL_TIME_MSEC;
+	}
+
+	int ogTime() const {
+		if(runStatus.isOk()) {
+			if(time > 0)
+				return time;
+			return quickevent::core::og::TimeMs::NOT_FINISH_TIME_MSEC;
+		}
+		return runStatus.ogTime();
+	}
 };
 
 struct Organization {
@@ -140,10 +153,10 @@ struct Relay
 		int ret = 0;
 		for (int i = 0; i < qMin(legs.count(), leg_cnt); ++i) {
 			const Leg &leg = legs[i];
-			if (leg.runStatus.isOk())
+			if (leg.isFinishedOk())
 				ret += leg.time;
 			else
-				return leg.runStatus.toTime();
+				return leg.ogTime();
 		}
 		return ret;
 	}
@@ -234,11 +247,11 @@ qf::core::utils::TreeTable RelaysPlugin::nLegsClassResultsTable(int class_id, in
 				.name = q.value("clubs.name").toString(),
 				.shortName = q.value("clubs.abbr").toString()
 			};
-			for (int i = 0; i < leg_count; ++i)
+			for (int i = 0; i < leg_count; ++i) {
 				r.legs << Leg();
+			}
 			relays << r;
 			qfDebug() << r.name;
-			//relay_ids << QString::number(r.relayId);
 		}
 	}
 	{
@@ -275,13 +288,13 @@ qf::core::utils::TreeTable RelaysPlugin::nLegsClassResultsTable(int class_id, in
 			}
 		}
 	}
-	for (int legno = 1; legno <= leg_count; ++legno) {
+	for (int legno = 0; legno < leg_count; ++legno) {
 		qfs::QueryBuilder qb;
 		qb.select2("runs", "id, relayId, timeMs," + quickevent::core::RunStatus::runsTableColumns().join(","))
 				.from("runs")
 				.joinRestricted("runs.relayId", "relays.id",
 								"relays.classId=" QF_IARG(class_id)
-								" AND runs.leg=" QF_IARG(legno)
+								" AND runs.leg=" QF_IARG(legno + 1)
 								" AND runs.isRunning"
 								, qfs::QueryBuilder::INNER_JOIN)
 				.orderBy("runs.disqualified, runs.timeMs");
@@ -297,7 +310,7 @@ qf::core::utils::TreeTable RelaysPlugin::nLegsClassResultsTable(int class_id, in
 					}
 					int run_id = q.value("runs.id").toInt();
 					Relay &relay = relays[i];
-					Leg &leg = relay.legs[legno - 1];
+					Leg &leg = relay.legs[legno];
 					if(leg.runId != run_id) {
 						qfError() << "internal error, leg:" << legno << "runId check:" << leg.runId << "should equal" << run_id;
 					}
@@ -316,31 +329,35 @@ qf::core::utils::TreeTable RelaysPlugin::nLegsClassResultsTable(int class_id, in
 		}
 	}
 	/// compute overal legs positions
-	for (int legno = 1; legno <= leg_count; ++legno) {
-		QList<QPair<int, int>> relay_stime;
+	for (int legno = 0; legno < leg_count; ++legno) {
+		struct LegTime {
+			int relayId;
+			int stime;
+		};
+		QList<LegTime> relay_stime;
 		for (int i = 0; i < relays.count(); ++i) {
 			Relay &relay = relays[i];
-			Leg &leg = relay.legs[legno - 1];
+			Leg &leg = relay.legs[legno];
 			if(leg.runStatus.isOk() && leg.time > 0) {
-				if(legno == 1)
+				if(legno == 0)
 					leg.stime = leg.time;
-				else if(relay.legs[legno-2].stime > 0)
-					leg.stime = leg.time + relay.legs[legno-2].stime;
+				else if(relay.legs[legno-1].stime > 0)
+					leg.stime = leg.time + relay.legs[legno-1].stime;
 			}
 			if(leg.stime > 0)
-				relay_stime << QPair<int, int>(relay.relayId, leg.stime);
+				relay_stime << LegTime{ .relayId = relay.relayId,  .stime = leg.stime };
 		}
-		std::sort(relay_stime.begin(), relay_stime.end(), [](const QPair<int, int> &a, const QPair<int, int> &b) {return a.second < b.second;});
+		std::sort(relay_stime.begin(), relay_stime.end(), [](const LegTime &a, const LegTime &b) {return a.stime < b.stime;});
 		int pos = 0;
-		int winner_time = relay_stime.begin()->second;
-		for(const QPair<int, int> &p : relay_stime) {
-			int relay_id = p.first;
+		int winner_time = relay_stime.begin()->stime;
+		for(const auto &p : relay_stime) {
+			int relay_id = p.relayId;
 			for (int i = 0; i < relays.count(); ++i) {
 				if(relays[i].relayId == relay_id) {
 					Relay &relay = relays[i];
-					Leg &leg = relay.legs[legno - 1];
+					Leg &leg = relay.legs[legno];
 					leg.spos = ++pos;
-					leg.lossOverall = p.second - winner_time;
+					leg.lossOverall = p.stime - winner_time;
 					break;
 				}
 			}
@@ -356,8 +373,9 @@ qf::core::utils::TreeTable RelaysPlugin::nLegsClassResultsTable(int class_id, in
 		QMutableListIterator<Relay> i(relays);
 		while (i.hasNext()) {
 			const Relay &r = i.next();
-			if(r.time(leg_count) == qog::TimeMs::NOT_FINISH_TIME_MSEC)
+			if(r.time(leg_count) == qog::TimeMs::NOT_FINISH_TIME_MSEC) {
 				i.remove();
+			}
 		}
 	}
 	/// sort relays
@@ -412,7 +430,7 @@ qf::core::utils::TreeTable RelaysPlugin::nLegsClassResultsTable(int class_id, in
 			tt2_row.setValue("lastName", leg.lastName);
 			tt2_row.setValue("registration", leg.reg);
 			tt2_row.setValue("iofId", leg.iofId);
-			tt2_row.setValue("time", leg.runStatus.isOk() ? leg.time : leg.runStatus.toTime());
+			tt2_row.setValue("time", leg.ogTime());
 			tt2_row.setValue("pos", leg.pos);
 			tt2_row.setValue("loss", leg.loss);
 			tt2_row.setValue("lossOverall", leg.lossOverall);
@@ -608,7 +626,7 @@ QString RelaysPlugin::resultsIofXml30()
 				auto iof_id = tt_leg_row.value(QStringLiteral("iofId"));
 				if (!iof_id.isNull())
 					append_list(person, QVariantList{"Id", QVariantMap{{"type", "IOF"}}, iof_id});
-				append_list(person, QVariantList{"Id", tt_leg_row.value(QStringLiteral("runId"))});
+				append_list(person, QVariantList{"Id", QVariantMap{{"type", "QuickEvent"}}, tt_leg_row.value(QStringLiteral("runId"))});
 				auto family = tt_leg_row.value(QStringLiteral("lastName"));
 				auto given = tt_leg_row.value(QStringLiteral("firstName"));
 				append_list(person, QVariantList{"Name", QVariantList{"Family", family}, QVariantList{"Given", given}});

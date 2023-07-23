@@ -44,7 +44,24 @@ For now, most of the [documentation](https://github.com/Quick-Event/quickbox/wik
 * [Často kladené otázky, FAQ](https://github.com/Quick-Event/quickbox/wiki/%C4%8Casto-kladen%C3%A9-ot%C3%A1zky%2C-FAQ)
 
 ---
-## QuickEvent installation
+## Build
+Qt6 version
+```
+git clone https://github.com/Quick-Event/quickbox.git
+cd quickbox
+git switch qt6
+git submodule update --init --recursive
+cmake -S . -B build -DCMAKE_PREFIX_PATH:PATH=~/app/qt/6.5.1/gcc_64 -DQF_BUILD_QML_PLUGINS=ON --install-prefix `pwd`/build/install
+cd build
+cmake --build . -j8
+# to install
+cmake --install .
+# to run
+LD_LIBRARY_PATH=../lib:~/app/qt5/6.5.1/gcc_64/lib ./install/quickevent
+```
+If you want to use system Qt for build, then remove CLI option `-DCMAKE_PREFIX_PATH:PATH=/home/fanda/app/qt5/6.5.1/gcc_64`
+
+## Install
 #### Windows
 1. download the installation package (*.exe) from https://github.com/Quick-Event/quickbox/releases
 2. follow the installation wizard (keeping the default installation path is recommended)
