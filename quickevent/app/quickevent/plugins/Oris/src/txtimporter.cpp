@@ -248,7 +248,7 @@ int TxtImporter::getStartTimeMSec(QString str, int start00_msec)
 		st_time = static_cast<int>(dbl_time) * 60 + ((static_cast<int>(dbl_time * 100)) % 100);
 		st_time *= 1000;
 	} else { // time hh:mm:ss
-		QTime t = QTime::fromString(str,"hh:mm:ss");
+		QTime t = QTime::fromString(str,(str.size() > 7) ?"hh:mm:ss" : "h:mm:ss");
 		st_time = t.hour() * 3600 + t.minute() * 60 + t.second();
 		st_time *= 1000;
 		st_time -= start00_msec;
