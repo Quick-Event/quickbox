@@ -323,13 +323,18 @@ bool XmlImporter::importClasses(QXmlStreamReader &reader, const XmlCreators crea
 
 			// insert to db
 			if (class_id != 0 && !class_name.isEmpty())	{
-				Classes::ClassDocument doc;
-				qfInfo() << "adding class id:" << class_id << "name:" << class_name;
-				doc.loadForInsert();
-				doc.setValue("id", class_id);
-				doc.setValue("name", class_name);
-				doc.save();
-				items_processed++;
+				try {
+					Classes::ClassDocument doc;
+					qfInfo() << "adding class id:" << class_id << "name:" << class_name;
+					doc.loadForInsert();
+					doc.setValue("id", class_id);
+					doc.setValue("name", class_name);
+					doc.save();
+					items_processed++;
+				}
+				catch (const qf::core::Exception &e) {
+					qfError() << "Import Class " << class_name << " ERROR:" << e.message();
+				}
 			}
 		}
 		else
