@@ -526,7 +526,7 @@ void RunsWidget::import_start_times_ob2000()
 						qfInfo() << ba;
 						continue;
 					}
-					int st_time = ((int)d) * 60 + (((int)(d * 100)) % 100);
+					int st_time = static_cast<int>(d) * 60 + ((static_cast<int>(d * 100)) % 100);
 					st_time *= 1000;
 					QString reg = sl.value(sl.count() - 2) + sl.value(sl.count() - 1);
 					reg = reg.toUpper().trimmed();
