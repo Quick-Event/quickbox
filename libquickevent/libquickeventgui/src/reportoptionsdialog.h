@@ -121,9 +121,9 @@ public:
 	Q_INVOKABLE bool isBreakAfterEachClass() const {return breakType() != BreakType::None;}
 	Q_INVOKABLE bool isColumnBreak() const {return breakType() == BreakType::Column;}
 	Q_INVOKABLE int resultNumPlaces() const;
-	Q_INVOKABLE QString sqlWhereExpression() const;
-	static QString sqlWhereExpression(const Options &opts);
-	static QString getClassesForStartNumber(const int number);
+	Q_INVOKABLE QString sqlWhereExpression(const int stage_id = 1) const;
+	static QString sqlWhereExpression(const Options &opts, const int stage_id);
+	static QString getClassesForStartNumber(const int number, const int stage_id);
 protected:
 	//void showEvent(QShowEvent *event) Q_DECL_OVERRIDE;
 private:
