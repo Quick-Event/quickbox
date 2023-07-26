@@ -45,6 +45,7 @@ public:
 	static Type codeToType(int code);
 	static std::optional<int> codeToStartNumber(int code);
 	static std::optional<int> codeToFinishNumber(int code);
+	static int startNumberToCode(int start);
 
 	QString toString() const;
 };

@@ -1449,6 +1449,7 @@ void RunsPlugin::report_startListClasses()
 	dlg.setStartListOptionsVisible(true);
 	dlg.setPageLayoutVisible(true);
 	dlg.setStartTimeFormatVisible(true);
+	dlg.setClassStartSelectionVisible(true);
 	if(dlg.exec()) {
 		auto tt = startListClassesTable(dlg.sqlWhereExpression(), dlg.isStartListPrintVacants(), dlg.startTimeFormat());
 		auto opts = dlg.optionsMap();
@@ -1502,6 +1503,7 @@ void RunsPlugin::report_startListStarters()
 	dlg.setStartListOptionsVisible(true);
 	dlg.setStartListPrintVacantsVisible(false);
 	dlg.setStartersOptionsVisible(true);
+	dlg.setClassStartSelectionVisible(true);
 	if(dlg.exec()) {
 		auto tt = startListStartersTable(dlg.sqlWhereExpression());
 		auto opts = dlg.optionsMap();

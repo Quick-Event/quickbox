@@ -91,13 +91,10 @@
       <property name="bottomMargin">
        <number>5</number>
       </property>
-      <item row="0" column="1">
-       <widget class="QRadioButton" name="btRegExp">
-        <property name="toolTip">
-         <string>Posix regular expression</string>
-        </property>
+      <item row="2" column="0" colspan="2">
+       <widget class="QCheckBox" name="chkClassFilterDoesntMatch">
         <property name="text">
-         <string>RegExp</string>
+         <string>Doesn't match</string>
         </property>
        </widget>
       </item>
@@ -114,10 +111,13 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="0" colspan="2">
-       <widget class="QCheckBox" name="chkClassFilterDoesntMatch">
+      <item row="0" column="1">
+       <widget class="QRadioButton" name="btRegExp">
+        <property name="toolTip">
+         <string>Posix regular expression</string>
+        </property>
         <property name="text">
-         <string>Doesn't match</string>
+         <string>RegExp</string>
         </property>
        </widget>
       </item>
@@ -133,6 +133,28 @@
       </item>
       <item row="1" column="0" colspan="3">
        <widget class="QLineEdit" name="edFilter"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="grpClassStartSelection">
+     <property name="title">
+      <string>Class filter - start number selection</string>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <layout class="QFormLayout" name="formLayout_2">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_11">
+        <property name="text">
+         <string>Use only class from selected start</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QComboBox" name="cbxStartNumber"/>
       </item>
      </layout>
     </widget>
@@ -537,6 +559,8 @@
   <tabstop>btClassNames</tabstop>
   <tabstop>edFilter</tabstop>
   <tabstop>chkClassFilterDoesntMatch</tabstop>
+  <tabstop>grpClassStartSelection</tabstop>
+  <tabstop>cbxStartNumber</tabstop>
   <tabstop>edNumPlaces</tabstop>
   <tabstop>chkExcludeDisq</tabstop>
   <tabstop>edStartersOptionsLineSpacing</tabstop>
@@ -548,10 +572,10 @@
   <tabstop>btStartOrder2</tabstop>
   <tabstop>btStartOrder3</tabstop>
   <tabstop>edPageWidth</tabstop>
-  <tabstop>edPageHeight</tabstop>
   <tabstop>edHorizontalMargin</tabstop>
-  <tabstop>edVerticalMargin</tabstop>
   <tabstop>edColumnCount</tabstop>
+  <tabstop>edPageHeight</tabstop>
+  <tabstop>edVerticalMargin</tabstop>
   <tabstop>cbxBreakAfterClassType</tabstop>
   <tabstop>btSaveAsDefault</tabstop>
   <tabstop>btReset</tabstop>

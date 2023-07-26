@@ -113,6 +113,12 @@ std::optional<int> CodeDef::codeToStartNumber(int code)
 	return {};
 }
 
+int CodeDef::startNumberToCode(int start)
+{
+	return start + START_PUNCH_CODE;
+}
+
+
 std::optional<int> CodeDef::codeToFinishNumber(int code)
 {
 	if(CodeDef::codeToType(code) == CodeDef::Type::Finish)
