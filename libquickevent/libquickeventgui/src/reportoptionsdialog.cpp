@@ -64,7 +64,7 @@ ReportOptionsDialog::ReportOptionsDialog(QWidget *parent)
 	connect(this, &ReportOptionsDialog::persistentSettingsIdChanged, [this]() {
 		loadPersistentSettings();
 	});
-    connect(ui->btReset, &QPushButton::clicked, this, &ReportOptionsDialog::resetPersistentSettings);
+	connect(ui->btReset, &QPushButton::clicked, this, &ReportOptionsDialog::resetPersistentSettings);
 
 	connect(this, &ReportOptionsDialog::startListOptionsVisibleChanged, ui->grpStartOptions, &QGroupBox::setVisible);
 	connect(this, &ReportOptionsDialog::classFilterVisibleChanged, ui->grpClassFilter, &QGroupBox::setVisible);
