@@ -123,7 +123,6 @@ public:
 	Q_INVOKABLE QString sqlWhereExpression(const int stage_id = 1) const;
 	static QString sqlWhereExpression(const Options &opts, const int stage_id);
 	static QString getClassesForStartNumber(const int number, const int stage_id);
-	static QString getClassesForStartNumber(const int number);
 protected:
 	//void showEvent(QShowEvent *event) Q_DECL_OVERRIDE;
 private:
