@@ -146,24 +146,23 @@ bool ReportOptionsDialog::isStartListPrintStartNumbers() const
 	return ui->chkStartOpts_PrintStartNumbers->isChecked();
 }
 
-QString ReportOptionsDialog::sqlWhereExpression() const
+QString ReportOptionsDialog::sqlWhereExpression(const int stage_id) const
 {
 	const Options opts = options();
-	return sqlWhereExpression(opts);
+	return sqlWhereExpression(opts,stage_id);
 }
 
-QString ReportOptionsDialog::getClassesForStartNumber(const int number)
+QString ReportOptionsDialog::getClassesForStartNumber(const int number, const int stage_id)
 {
 	QString classes;
 	if (number > 0) {
 		int start_code = core::CodeDef::startNumberToCode(number);
-		int stage = 1;
 
 		QString query_str = "SELECT classes.name FROM classes, classdefs, coursecodes, codes"
 							" WHERE classdefs.classId = classes.id AND classdefs.courseId = coursecodes.courseId AND"
 							" coursecodes.position = 0 AND coursecodes.codeId = codes.id AND classdefs.stageId = %2 AND codes.code = %1";
 		qf::core::sql::Query q;
-		q.exec(query_str.arg(start_code).arg(stage), qf::core::Exception::Throw);
+		q.exec(query_str.arg(start_code).arg(stage_id), qf::core::Exception::Throw);
 		while (q.next()) {
 			if (!classes.isEmpty())
 				classes += ",";
@@ -173,7 +172,7 @@ QString ReportOptionsDialog::getClassesForStartNumber(const int number)
 	return classes;
 }
 
-QString ReportOptionsDialog::sqlWhereExpression(const ReportOptionsDialog::Options &opts)
+QString ReportOptionsDialog::sqlWhereExpression(const ReportOptionsDialog::Options &opts,const int stage_id)
 {
 	if(opts.isUseClassFilter()) {
 		QString filter_str = opts.classFilter();
@@ -204,7 +203,7 @@ QString ReportOptionsDialog::sqlWhereExpression(const ReportOptionsDialog::Optio
 
 	}
 	else if (opts.isUseClassStartSelectionFilter()) {
-		qf::core::String s = getClassesForStartNumber(opts.classStartNumber());
+		qf::core::String s = getClassesForStartNumber(opts.classStartNumber(),stage_id);
 		QStringList sl = s.splitAndTrim(',');
 		QString ret = QString("classes.name IN('%2')").arg(sl.join("','"));
 		return ret;
