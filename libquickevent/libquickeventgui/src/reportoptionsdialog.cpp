@@ -39,24 +39,23 @@ ReportOptionsDialog::ReportOptionsDialog(QWidget *parent)
 	ui->grpResultOptions->setVisible(false);
 	ui->grpStartTimes->setVisible(false);
 	ui->grpStartlistOrderBy->setVisible(false);
+	ui->grpClassStartSelection->setVisible(false);
 	ui->btRegExp->setEnabled(QSqlDatabase::database().driverName().endsWith(QLatin1String("PSQL"), Qt::CaseInsensitive));
 
-	{
-		// fill start numbers from courses
-		ui->cbxStartNumber->addItem(QString("All"), 0);
-		QString query_str = "SELECT codes.code FROM codes ORDER BY id";
-		qf::core::sql::Query q;
-		q.exec(query_str, qf::core::Exception::Throw);
-		while (q.next()) {
-			auto code = q.value(0).toInt();
-			if(auto n = core::CodeDef::codeToStartNumber(code); n.has_value()) {
-				ui->cbxStartNumber->addItem(QString("Start %1").arg(n.value()),n.value());
-			}
+	// fill start numbers from courses
+	QString query_str = "SELECT codes.code FROM codes"
+						" ORDER BY id";
+	qf::core::sql::Query q;
+	q.exec(query_str, qf::core::Exception::Throw);
+	while (q.next()) {
+		auto code = q.value(0).toInt();
+		if(auto n = core::CodeDef::codeToStartNumber(code); n.has_value()) {
+			ui->cbxStartNumber->addItem(QString("Start %1").arg(n.value()),n.value());
 		}
 	}
-	ui->grpClassStartSelection->setChecked(false);
-	if (ui->cbxStartNumber->count() <= 1) {
+	if (ui->cbxStartNumber->count() < 1) {
 		ui->grpClassStartSelection->setEnabled(false);
+		ui->grpClassStartSelection->setChecked(false);
 		ui->cbxStartNumber->clear();
 	}
 	connect(ui->btSaveAsDefault, &QPushButton::clicked, [this]() {
@@ -78,6 +77,7 @@ ReportOptionsDialog::ReportOptionsDialog(QWidget *parent)
 	connect(this, &ReportOptionsDialog::resultOptionsVisibleChanged, ui->grpResultOptions, &QGroupBox::setVisible);
 	connect(this, &ReportOptionsDialog::startTimeFormatVisibleChanged, ui->grpStartTimes, &QGroupBox::setVisible);
 	connect(this, &ReportOptionsDialog::startlistOrderFirstByVisibleChanged, ui->grpStartlistOrderBy, &QGroupBox::setVisible);
+	connect(this, &ReportOptionsDialog::classStartSelectionVisibleChanged, ui->grpClassStartSelection, &QGroupBox::setVisible);
 }
 
 ReportOptionsDialog::~ReportOptionsDialog()
@@ -104,6 +104,7 @@ void ReportOptionsDialog::setClassNamesFilter(const QStringList &class_names)
 	ui->btClassNames->setChecked(true);
 	ui->chkClassFilterDoesntMatch->setChecked(false);
 	ui->edFilter->setText(class_names.join(','));
+	ui->grpClassStartSelection->setChecked(false);
 }
 
 int ReportOptionsDialog::stagesCount() const
@@ -147,7 +148,28 @@ QString ReportOptionsDialog::sqlWhereExpression(const int stage_id) const
 	return sqlWhereExpression(opts,stage_id);
 }
 
-QString ReportOptionsDialog::getClassesForStartNumber(const int number, const int stage_id)
+QString ReportOptionsDialog::getClassesForStartNumber(const int number)
+{
+	QString classes;
+	if (number > 0) {
+		int start_code = core::CodeDef::startNumberToCode(number);
+		int stage = 1;
+
+		QString query_str = "SELECT classes.name FROM classes, classdefs, coursecodes, codes"
+							" WHERE classdefs.classId = classes.id AND classdefs.courseId = coursecodes.courseId AND"
+							" coursecodes.position = 0 AND coursecodes.codeId = codes.id AND classdefs.stageId = %2 AND codes.code = %1";
+		qf::core::sql::Query q;
+		q.exec(query_str.arg(start_code).arg(stage), qf::core::Exception::Throw);
+		while (q.next()) {
+			if (!classes.isEmpty())
+				classes += ",";
+			classes += q.value(0).toString();
+		}
+	}
+	return classes;
+}
+
+QString ReportOptionsDialog::sqlWhereExpression(const ReportOptionsDialog::Options &opts)
 {
 	QString classes;
 	if (number > 0) {
@@ -198,6 +220,13 @@ QString ReportOptionsDialog::sqlWhereExpression(const ReportOptionsDialog::Optio
 				conditions << ret.arg(filter_operator).arg(sl.join("','"));
 			}
 		}
+
+	}
+	else if (opts.isUseClassStartSelectionFilter()) {
+		qf::core::String s = getClassesForStartNumber(opts.classStartNumber());
+		QStringList sl = s.splitAndTrim(',');
+		QString ret = QString("classes.name IN('%2')").arg(sl.join("','"));
+		return ret;
 	}
 	return conditions.isEmpty()? "": "(" + conditions.join(") AND (") + ")";
 }
@@ -244,7 +273,7 @@ void ReportOptionsDialog::setOptions(const ReportOptionsDialog::Options &options
 	ui->btWildCard->setChecked(filter_type == FilterType::WildCard);
 	ui->btRegExp->setChecked(filter_type == FilterType::RegExp);
 	ui->btClassNames->setChecked(filter_type == FilterType::ClassName);
-	if (ui->grpClassStartSelection->isEnabled())
+	if (ui->grpClassStartSelection->isEnabled() && ui->grpClassStartSelection->isVisible())
 		ui->grpClassStartSelection->setChecked(options.isUseClassStartSelectionFilter());
 	auto index = ui->cbxStartNumber->findData(options.classStartNumber());
 	ui->cbxStartNumber->setCurrentIndex(index);
@@ -280,7 +309,8 @@ ReportOptionsDialog::Options ReportOptionsDialog::options() const
 	opts.setUseClassFilter(ui->grpClassFilter->isChecked());
 	opts.setInvertClassFilter(ui->chkClassFilterDoesntMatch->isChecked());
 	opts.setClassFilter(ui->edFilter->text());
-	opts.setStartNumber(ui->cbxStartNumber->currentData().toInt());
+	opts.setClassStartNumber(ui->cbxStartNumber->currentData().toInt());
+	opts.setUseClassStartSelectionFilter(ui->grpClassStartSelection->isChecked());
 	FilterType filter_type =  ui->btWildCard->isChecked()? FilterType::WildCard: ui->btRegExp->isChecked()? FilterType::RegExp: FilterType::ClassName;
 	opts.setClassFilterType((int)filter_type);
 	opts.setStartListPrintVacants(isStartListPrintVacants());

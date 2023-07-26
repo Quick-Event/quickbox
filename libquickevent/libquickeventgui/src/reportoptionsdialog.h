@@ -45,6 +45,7 @@ class QUICKEVENTGUI_DECL_EXPORT ReportOptionsDialog : public QDialog, public qf:
 	QF_PROPERTY_BOOL_IMPL2(r, R, esultOptionsVisible, false)
 	QF_PROPERTY_BOOL_IMPL2(s, S, tartTimeFormatVisible, false)
 	QF_PROPERTY_BOOL_IMPL2(s, S, tartlistOrderFirstByVisible, false)
+	QF_PROPERTY_BOOL_IMPL2(c, C, lassStartSelectionVisible, false)
 private:
 	using Super = QDialog;
 public:
@@ -122,6 +123,7 @@ public:
 	Q_INVOKABLE QString sqlWhereExpression(const int stage_id = 1) const;
 	static QString sqlWhereExpression(const Options &opts, const int stage_id);
 	static QString getClassesForStartNumber(const int number, const int stage_id);
+	static QString getClassesForStartNumber(const int number);
 protected:
 	//void showEvent(QShowEvent *event) Q_DECL_OVERRIDE;
 private:
