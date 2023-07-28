@@ -32,6 +32,7 @@ class QUICKEVENTGUI_DECL_EXPORT ReportOptionsDialog : public QDialog, public qf:
 	Q_PROPERTY(bool resultOptionsVisible READ isResultOptionsVisible WRITE setResultOptionsVisible NOTIFY resultOptionsVisibleChanged)
 	Q_PROPERTY(bool startTimeFormatVisible READ isStartTimeFormatVisible WRITE setStartTimeFormatVisible NOTIFY startTimeFormatVisibleChanged)
 	Q_PROPERTY(bool startlistOrderFirstByVisible READ isStartlistOrderFirstByVisible WRITE setStartlistOrderFirstByVisible NOTIFY startlistOrderFirstByVisibleChanged)
+	Q_PROPERTY(bool classStartSelectionVisible READ isClassStartSelectionVisible WRITE setClassStartSelectionVisible NOTIFY classStartSelectionVisibleChanged)
 
 	QF_PROPERTY_BOOL_IMPL2(c, C, lassFilterVisible, true)
 	QF_PROPERTY_BOOL_IMPL2(s, S, tartListOptionsVisible, false)
@@ -44,6 +45,7 @@ class QUICKEVENTGUI_DECL_EXPORT ReportOptionsDialog : public QDialog, public qf:
 	QF_PROPERTY_BOOL_IMPL2(r, R, esultOptionsVisible, false)
 	QF_PROPERTY_BOOL_IMPL2(s, S, tartTimeFormatVisible, false)
 	QF_PROPERTY_BOOL_IMPL2(s, S, tartlistOrderFirstByVisible, false)
+	QF_PROPERTY_BOOL_IMPL2(c, C, lassStartSelectionVisible, false)
 private:
 	using Super = QDialog;
 public:
@@ -62,7 +64,6 @@ public:
 		QF_VARIANTMAP_FIELD2(int, c, setC, olumnCount, 2)
 		QF_VARIANTMAP_FIELD2(int, h, setH, orizontalMargin, 10)
 		QF_VARIANTMAP_FIELD2(int, v, setV, erticalMargin, 5)
-		QF_VARIANTMAP_FIELD2(bool, is, set, ShirinkPageWidthToColumnCount, false)
 		QF_VARIANTMAP_FIELD(QString, c, setC, lassFilter)
 		QF_VARIANTMAP_FIELD2(int, c, setC, lassFilterType, 0)
 		QF_VARIANTMAP_FIELD(bool, is, set, UseClassFilter)
@@ -75,6 +76,8 @@ public:
 		QF_VARIANTMAP_FIELD2(bool, isR, setR, esultExcludeDisq, false)
 		QF_VARIANTMAP_FIELD2(int, s, setS, tartTimeFormat, 0)
 		QF_VARIANTMAP_FIELD2(int, s, setS, tartlistOrderFirstBy, 0)
+		QF_VARIANTMAP_FIELD(bool, is, set, UseClassStartSelectionFilter)
+		QF_VARIANTMAP_FIELD2(int, c, setC, lassStartNumber, 0)
 		public:
 			Options(const QVariantMap &o = QVariantMap()) : QVariantMap(o) {}
 	};
@@ -100,6 +103,7 @@ public:
 	void loadPersistentSettings(const Options &default_options);
 	Q_SLOT void loadPersistentSettings();
 	Q_SLOT void savePersistentSettings();
+    Q_SLOT void resetPersistentSettings();
 
 	void setClassNamesFilter(const QStringList &class_names);
 
@@ -117,8 +121,9 @@ public:
 	Q_INVOKABLE bool isBreakAfterEachClass() const {return breakType() != BreakType::None;}
 	Q_INVOKABLE bool isColumnBreak() const {return breakType() == BreakType::Column;}
 	Q_INVOKABLE int resultNumPlaces() const;
-	Q_INVOKABLE QString sqlWhereExpression() const;
-	static QString sqlWhereExpression(const Options &opts);
+	Q_INVOKABLE QString sqlWhereExpression(const int stage_id = 1) const;
+	static QString sqlWhereExpression(const Options &opts, const int stage_id);
+	static QString getClassesForStartNumber(const int number, const int stage_id);
 protected:
 	//void showEvent(QShowEvent *event) Q_DECL_OVERRIDE;
 private:

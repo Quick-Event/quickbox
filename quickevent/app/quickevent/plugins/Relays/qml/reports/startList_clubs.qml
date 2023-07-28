@@ -32,8 +32,8 @@ Report {
 	}
 	textStyle: myStyle.textStyleDefault
 
-	width: root.options.isShirinkPageWidthToColumnCount? 210/2*root.options.columnCount: 210
-	height: 297
+	width: root.options.pageWidth? root.options.pageWidth: 210
+	height: root.options.pageHeight? root.options.pageHeight: 297
 	hinset: root.options.horizontalMargin? root.options.horizontalMargin: 10
 	vinset: root.options.verticalMargin? root.options.verticalMargin: 5
 	Frame {

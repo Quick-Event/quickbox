@@ -560,7 +560,7 @@ void EventStatisticsWidget::printResultsForRows(const QList<int> &rows)
 		opts.setClassFilterType((int)quickevent::gui::ReportOptionsDialog::FilterType::ClassName);
 		opts.setClassFilter(class_names.join(','));
 	}
-	QVariant td = getPlugin<RunsPlugin>()->currentStageResultsTableData(quickevent::gui::ReportOptionsDialog::sqlWhereExpression(opts));
+	QVariant td = getPlugin<RunsPlugin>()->currentStageResultsTableData(quickevent::gui::ReportOptionsDialog::sqlWhereExpression(opts, getPlugin<EventPlugin>()->currentStageId()));
 	QVariantMap props;
 	props["isBreakAfterEachClass"] = (opts.breakType() != (int)quickevent::gui::ReportOptionsDialog::BreakType::None);
 	props["isColumnBreak"] = (opts.breakType() == (int)quickevent::gui::ReportOptionsDialog::BreakType::Column);
