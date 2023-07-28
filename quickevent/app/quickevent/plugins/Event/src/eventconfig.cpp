@@ -248,6 +248,11 @@ std::optional<int> EventConfig::maximumCardCheckAdvanceSec() const
 	return {};
 }
 
+bool EventConfig::isOneTenthSecResults() const
+{
+	return static_cast<bool>(value(QStringLiteral("oneTenthSecResults")).toInt());
+}
+
 /*
 const QSet<QString> &EventConfig::knownKeys()
 {
