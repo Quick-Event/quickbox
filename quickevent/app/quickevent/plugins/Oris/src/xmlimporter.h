@@ -22,28 +22,26 @@ public:
 		QString nameFamily;
 
 		QString className;
-		QString classNameShort; // backup, if not defined className
+		QString classNameShort;		// backup, if not defined className
 
-		int iofId = -1;
-		QString regCz;		// ORIS
-		QString noteOris;	// ORIS
-		int orisId = -1;	// ORIS
+		std::optional<int> iofId;
+		QString regCz;				// ORIS
+		QString noteOris;			// ORIS
+		std::optional<int> orisId;	// ORIS
 
 		int siNumber = 0;
 
-		QString nationalityCode;	// Person
-		QString nationalityName;	// Person
-		QString clubCode;			// Organisation - Club
-		QString clubName;			// Organisation - Club
-		QString countryCode;		// Organisation - NationalFederation
-		QString countryName;		// Organisation - NationalFederation
-		int clubIdIof = -1;	// Eventor (Club or NationalFederation ID)
+		QString nationalityCode;		// Person
+		QString nationalityName;		// Person
+		QString clubCode;				// Organisation - Club
+		QString clubName;				// Organisation - Club
+		QString countryCode;			// Organisation - NationalFederation
+		QString countryName;			// Organisation - NationalFederation
+		std::optional<int> clubIdIof;	// Eventor (Club or NationalFederation ID)
+
 		QSet<int> enterRaces;
-		// ...
-		int bib = 0;
-		int rank = 0;
-		int start_order_pref = 0; // 0-none /  1- early / 2- middle / 3- late
-		int leg = 0;
+
+		int legNumber = 0;
 	};
 
 	explicit XmlImporter(QObject *parent = nullptr);
