@@ -134,68 +134,7 @@
      </layout>
     </widget>
    </item>
-   <item>
-    <widget class="QGroupBox" name="grpClassStartSelection">
-     <property name="title">
-      <string>Class filter - start number selection</string>
-     </property>
-     <property name="checkable">
-      <bool>true</bool>
-     </property>
-     <layout class="QFormLayout" name="formLayout_2">
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_11">
-        <property name="text">
-         <string>Use only class from selected start</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QComboBox" name="cbxStartNumber"/>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
-    <widget class="QGroupBox" name="grpResultOptions">
-     <property name="title">
-      <string>Result options</string>
-     </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_41">
-      <item>
-       <widget class="QLabel" name="label_9">
-        <property name="text">
-         <string>Number of places in each class</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QSpinBox" name="edNumPlaces">
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-        <property name="minimum">
-         <number>1</number>
-        </property>
-        <property name="maximum">
-         <number>9999</number>
-        </property>
-        <property name="value">
-         <number>9999</number>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="chkExcludeDisq">
-        <property name="text">
-         <string>Exclude DISQ</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
+   <item row="4" column="0">
     <widget class="QGroupBox" name="grpStartersOptions">
      <property name="title">
       <string>Starters options</string>
@@ -605,8 +544,6 @@
   <tabstop>btClassNames</tabstop>
   <tabstop>edFilter</tabstop>
   <tabstop>chkClassFilterDoesntMatch</tabstop>
-  <tabstop>grpClassStartSelection</tabstop>
-  <tabstop>cbxStartNumber</tabstop>
   <tabstop>edNumPlaces</tabstop>
   <tabstop>chkExcludeDisq</tabstop>
   <tabstop>edStartersOptionsLineSpacing</tabstop>
