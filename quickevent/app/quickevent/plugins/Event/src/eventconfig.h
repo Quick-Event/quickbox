@@ -55,6 +55,7 @@ public:
 	QDateTime eventDateTime() const;
 	int dbVersion() const;
 	std::optional<int> maximumCardCheckAdvanceSec() const;
+	bool isOneTenthSecResults() const;
 private:
 	void save_helper(QVariantMap &ret, const QString &current_path, const QVariant &val);
 	QVariantMap setValue_helper(const QVariantMap &m, const QStringList &path, const QVariant &val);
