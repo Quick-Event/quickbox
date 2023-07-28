@@ -8,6 +8,8 @@ namespace quickevent {
 namespace core {
 namespace og {
 
+//bool TimeMs::m_oneTenthSecPrecision = false;
+
 TimeMs::TimeMs()
 	: m_msec(0), m_isValid(false)
 {

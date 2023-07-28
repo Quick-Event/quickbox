@@ -26,7 +26,7 @@ public:
 
 	TimeMs();
 	TimeMs(int msec);
-public:
+
 	bool isValid() const {return m_isValid;}
 	bool operator==(const TimeMs &o) const
 	{
@@ -55,9 +55,13 @@ public:
 	static int msecIntervalAM(int from_time_msec, int to_time_msec);
 
 	static void registerQVariantFunctions();
+
+	//static void setOneTenthSecPrecision(bool b) { m_oneTenthSecPrecision = b; }
+	//static bool isOneTenthSecPrecision() { return m_oneTenthSecPrecision; }
 private:
 	int m_msec;
 	bool m_isValid;
+	//static bool m_oneTenthSecPrecision;
 };
 
 }}}

@@ -10,6 +10,8 @@ EventDialogWidget::EventDialogWidget(QWidget *parent) :
 	setPersistentSettingsId("EventDialogWidget");
 	ui->setupUi(this);
 
+	ui->ed_oneTenthSecResults->setDisabled(true);
+
 	QRegularExpression rx("[a-z][a-z0-9_]*"); // PostgreSQL schema must start with small letter and it may contain small letters, digits and underscores only.
 	QValidator *validator = new QRegularExpressionValidator(rx, this);
 	ui->ed_eventId->setValidator(validator);
@@ -63,6 +65,7 @@ void EventDialogWidget::loadParams(const QVariantMap &params)
 		ui->cbxDisciplineId->setCurrentIndex(0);
 	ui->ed_importId->setText(params.value("importId").toString());
 	ui->ed_cardChecCheckTimeSec->setValue(params.value("cardChechCheckTimeSec").toInt());
+	ui->ed_oneTenthSecResults->setCurrentIndex(params.value("oneTenthSecResults").toInt());
 }
 
 QVariantMap EventDialogWidget::saveParams()
@@ -82,5 +85,6 @@ QVariantMap EventDialogWidget::saveParams()
 	ret["disciplineId"] = (ui->cbxDisciplineId->currentIndex() <= 0) ? 1 : ui->cbxDisciplineId->currentIndex() + 1;
 	ret["importId"] = ui->ed_importId->text().toInt();
 	ret["cardChechCheckTimeSec"] = ui->ed_cardChecCheckTimeSec->value();
+	ret["oneTenthSecResults"] = ui->ed_oneTenthSecResults->currentIndex();
 	return ret;
 }
