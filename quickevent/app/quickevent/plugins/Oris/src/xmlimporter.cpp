@@ -122,6 +122,32 @@ bool XmlImporter::readPersonNode (SPerson &s, QXmlStreamReader &reader, [[maybe_
 	return result;
 }
 
+bool XmlImporter::readRaceNode(SRace &s, QXmlStreamReader &reader)
+{
+	QDateTime dt;
+	dt.setTimeSpec(Qt::UTC);
+	while(reader.readNextStartElement()) {
+		if (reader.name() == "Name")
+			s.name = reader.readElementText();
+		else if (reader.name() == "RaceNumber")
+			s.number = reader.readElementText().toInt();
+		else if (reader.name() == "StartTime") {
+			while(reader.readNextStartElement()) {
+				if (reader.name() == "Date")
+					dt.setDate(QDate::fromString(reader.readElementText(),Qt::ISODate));
+				else if (reader.name() == "Time") {
+					dt.setTime(QTime::fromString(reader.readElementText(),Qt::ISODate));
+				}
+				else
+					reader.skipCurrentElement();
+			}
+		}
+		else
+			reader.skipCurrentElement();
+	}
+	s.datetime = dt.toTimeSpec(Qt::LocalTime);
+	return s.number != 0 && s.datetime.isValid();
+}
 
 bool XmlImporter::importEntries(QXmlStreamReader &reader, const XmlCreators creator)
 {
@@ -151,6 +177,7 @@ bool XmlImporter::importEntries(QXmlStreamReader &reader, const XmlCreators crea
 	int selected_race = 0; // if entries has more races in (defined in Event), selected race
 	// load from XML & insert to db
 	int items_processed = 0;
+	int relays_processed = 0;
 	qf::core::sql::Transaction transaction;
 	while(reader.readNextStartElement()) {
 		if(reader.name() == "PersonEntry") {
@@ -174,9 +201,8 @@ bool XmlImporter::importEntries(QXmlStreamReader &reader, const XmlCreators crea
 						}
 					}
 					doc.setValue("classId", class_id);
-					if(person.siNumber > 0) {
+					if(person.siNumber > 0)
 						doc.setSiid(person.siNumber);
-					}
 					doc.setValue("firstName", person.nameGiven);
 					doc.setValue("lastName", person.nameFamily);
 					if (creator == XmlCreators::Oris) {
@@ -215,30 +241,170 @@ bool XmlImporter::importEntries(QXmlStreamReader &reader, const XmlCreators crea
 							<< ((person.iofId.has_value()) ? person.iofId.value(): -1 ) << "," << person.regCz << ","
 							<< person.countryCode << "]";
 		}
-		else if (reader.name() == "Event") {
-			QMap <QString, int> races;
+		else if (reader.name() == "TeamEntry") {
+			QString relay_name;
+			QString relay_club;
+			QString relay_number;
+			std::map<int, SPerson> legs;
+			QString country_code, country,class_name;
+			int club_iof_id = -1;
+			QString club_name,club_country_code,club_country;
 			while(reader.readNextStartElement()) {
-				if (reader.name() == "Race") {
-					QString name, date;
-					int number;
-					while(reader.readNextStartElement()) {
-						if (reader.name() == "Name")
-							name = reader.readElementText();
-						else if (reader.name() == "RaceNumber")
-							number = reader.readElementText().toInt();
-						else if (reader.name() == "StartTime") {
-							while(reader.readNextStartElement()) {
-								if (reader.name() == "Date")
-									date = reader.readElementText();
-								else
-									reader.skipCurrentElement();
+				if (reader.name() == "Name") {
+					relay_name = reader.readElementText();
+					relay_number = relay_name.right(1);
+				}
+				else if (reader.name() == "TeamEntryPerson") {
+					SPerson person;
+					if (readPersonNode(person,reader,creator)) {
+						if (person.legNumber > 0)
+							legs.insert({person.legNumber,person});
+					}
+				}
+				else if (reader.name() == "Organisation" && reader.attributes().hasAttribute("type")) {
+					if (reader.attributes().value("type").toString() == "NationalFederation") {
+						while(reader.readNextStartElement()) {
+							if (reader.name() == "Id" && reader.attributes().hasAttribute("type")&& reader.attributes().value("type").toString() == "IOF")
+								club_iof_id =  reader.readElementText().toInt();
+							else if (reader.name() == "Name")
+								club_name = reader.readElementText();
+							else if (reader.name() == "Country") {
+								if (reader.attributes().hasAttribute("code"))
+									relay_club = club_country_code = reader.attributes().value("code").toString();
+								club_country = reader.readElementText();
 							}
+							else
+								reader.skipCurrentElement();
+						}
+					}
+					else if (reader.attributes().value("type").toString() == "Club" || reader.attributes().value("type").toString() == "Other") {
+						while(reader.readNextStartElement()) {
+//							if (reader.name() == "Id" && reader.attributes().hasAttribute("type")&& reader.attributes().value("type").toString() == "ORIS")
+//								id_cz =  reader.readElementText().toInt();
+							if (reader.name() == "Id" && reader.attributes().hasAttribute("type")&& reader.attributes().value("type").toString() == "IOF")
+								club_iof_id =  reader.readElementText().toInt();
+							else if (reader.name() == "Name") {
+//								if (reader.attributes().hasAttribute("code"))
+//									code_cz = reader.attributes().value("code").toString();
+								club_name = reader.readElementText();
+							}/*
+							else if (reader.name() == "Extensions")
+							{
+								while(reader.readNextStartElement()) {
+									if (reader.name() == "Abbreviation")
+										abbr_cz = reader.readElementText();
+									else
+										reader.skipCurrentElement();
+								}
+							}*/
+							else if (reader.name() == "Country") {
+								if (reader.attributes().hasAttribute("code"))
+									country_code = reader.attributes().value("code").toString();
+								country = reader.readElementText(); // need to be here, for next element
+							}
+							else
+								reader.skipCurrentElement();
+						}
+					}
+					else
+						reader.skipCurrentElement();
+				}
+				else if (reader.name() == "Class") {
+					while(reader.readNextStartElement()) {
+						if (reader.name() == "Name") {
+							class_name = reader.readElementText();
 						}
 						else
 							reader.skipCurrentElement();
 					}
-					QString race = QString("[%1] %2 %3").arg(number).arg(name).arg(date);
-					races[race] = number;
+				}
+				else
+					reader.skipCurrentElement();
+			}
+			// add relay entry
+			int class_id = classes_map.value(class_name);
+			if(class_id == 0) {
+				qfError() << "Undefined class name:" << class_name << "for relay:" << relay_name;
+				transaction.rollback();
+				return false;
+			}
+			qfInfo() << relay_club << "|" << relay_name << "|" << relay_number << "|" << class_name << "|" << class_id;
+			q.execThrow("SELECT id FROM relays WHERE"
+						" name='" + relay_number + "'"
+									   " AND club='" + relay_club + "'"
+									   " AND classId=" + QString::number(class_id));
+			int relay_id;
+			if(q.next()) {
+				relay_id = q.value(0).toInt();
+				q.execThrow("UPDATE relays SET importId=2 WHERE id=" + QString::number(relay_id));
+			}
+			else {
+				q.execThrow("INSERT INTO relays (classId, club, name, importId) VALUES ("
+							+ QString::number(class_id) + ", "
+							+ "'" + relay_club + "', "
+							+ "'" + relay_number + "', "
+							+ "2"
+							+ ")");
+				relay_id = q.lastInsertId().toInt();
+			}
+			relays_processed++;
+			for (auto&leg : legs) {
+				if (creator == XmlCreators::Eventor) {
+					qfInfo() << '\t' << leg.first << leg.second.nameFamily << leg.second.nameGiven << ((leg.second.iofId.has_value()) ? leg.second.iofId.value() : 0 ) << leg.second.siNumber;
+					if (!leg.second.iofId.has_value())
+						continue;
+
+					Competitors::CompetitorDocument doc;
+					doc.setEmitDbEventsOnSave(false);
+					doc.loadForInsert();
+					doc.setValue("classId", class_id);
+					if(leg.second.siNumber > 0)
+						doc.setSiid(leg.second.siNumber);
+					doc.setValue("firstName", leg.second.nameGiven);
+					doc.setValue("lastName", leg.second.nameFamily);
+
+					if (!leg.second.clubIdIof.has_value()) {
+						// without club & federation
+						doc.setValue("registration",leg.second.nationalityCode);
+					}
+					else {
+						QString club_abbr = (leg.second.clubIdIof.has_value()) ? clubs_map[leg.second.clubIdIof.value()] : "";
+						if (!club_abbr.isEmpty())
+							doc.setValue("registration",club_abbr);
+						if (!leg.second.clubName.isEmpty())
+							doc.setValue("club",leg.second.clubName);
+						else if (!leg.second.countryName.isEmpty())
+							doc.setValue("club",leg.second.countryName);
+					}
+					doc.setValue("country",leg.second.nationalityName);
+					if (leg.second.iofId.has_value())
+						doc.setValue("importId",leg.second.iofId.value());
+					if (leg.second.iofId.has_value())
+						doc.setValue("iofId", leg.second.iofId.value());
+					if (!doc.save())
+						continue;
+					items_processed++;
+					int run_id = doc.lastInsertedRunsIds().first();
+					q.execThrow("UPDATE runs SET"
+								" relayId=" + QString::number(relay_id) + ","
+								" leg=" + QString::number(leg.first) + //","
+//								" importId=2"
+								" WHERE id=" + QString::number(run_id)
+								);
+				}
+				else
+					qfInfo() << '\t' << leg.first << leg.second.nameFamily << leg.second.nameGiven << leg.second.regCz << leg.second.siNumber;
+			}
+		}
+		else if (reader.name() == "Event") {
+			QMap <QString, int> races;
+			while(reader.readNextStartElement()) {
+				if (reader.name() == "Race") {
+					SRace race;
+					if (readRaceNode(race,reader)) {
+						QString race_str = QString("[%1] %2 %3").arg(race.number).arg(race.name).arg(race.datetime.date().toString(Qt::ISODate));
+						races[race_str] = race.number;
+					}
 				}
 				else
 					reader.skipCurrentElement();
@@ -268,9 +434,9 @@ bool XmlImporter::importEntries(QXmlStreamReader &reader, const XmlCreators crea
 			reader.skipCurrentElement();
 	}
 
-	if (items_processed > 0) {
+	if (items_processed > 0 || relays_processed > 0) {
 		transaction.commit();
-		qfInfo() << "Imported entry for" << items_processed << "runners.";
+		qfInfo() << "Imported entry for" << items_processed << "runners and for" << relays_processed << "relays.";
 		getPlugin<EventPlugin>()->emitReloadDataRequest();
 		getPlugin<EventPlugin>()->emitDbEvent(Event::EventPlugin::DBEVENT_COMPETITOR_COUNTS_CHANGED);
 	}
@@ -308,12 +474,14 @@ bool XmlImporter::importStartlist(QXmlStreamReader &reader, const XmlCreators cr
 bool XmlImporter::importClasses(QXmlStreamReader &reader, const XmlCreators creator)
 {
 	// load data from XML
+	bool is_relays = getPlugin<EventPlugin>()->eventConfig()->isRelays();
 	qf::core::sql::Transaction transaction;
 	int items_processed = 0;
 	while(reader.readNextStartElement()) {
 		if(reader.name() == "Class") {
 			QString class_name;
 			int class_id = 0;
+			int legs_cnt = 0;
 			while(reader.readNextStartElement()) {
 				if (reader.name() == "Name")
 					class_name = reader.readElementText();
@@ -321,6 +489,15 @@ bool XmlImporter::importClasses(QXmlStreamReader &reader, const XmlCreators crea
 					class_id = reader.readElementText().toInt();
 				else if (reader.name() == "Id" && reader.attributes().hasAttribute("type") && reader.attributes().value("type").toString() == "IOF" && creator == XmlCreators::Eventor)
 					class_id = reader.readElementText().toInt();
+				else if (reader.name() == "Leg") {
+					legs_cnt++;
+					while(reader.readNextStartElement()) {
+						if (reader.name() == "Name")
+							qfInfo() << "Leg name:"<< reader.readElementText(); // need to be here, for next element
+						else
+							reader.skipCurrentElement();
+					}
+				}
 				else
 					reader.skipCurrentElement();
 			}
@@ -334,6 +511,15 @@ bool XmlImporter::importClasses(QXmlStreamReader &reader, const XmlCreators crea
 					doc.setValue("id", class_id);
 					doc.setValue("name", class_name);
 					doc.save();
+
+					if (legs_cnt > 0 && is_relays) {
+						qf::core::sql::Query q;
+						q.execThrow("UPDATE classdefs SET"
+									" relayLegCount=" + QString::number(legs_cnt) +
+									" WHERE classId=" + QString::number(class_id) +
+									" AND stageId=1"
+									);
+					}
 					items_processed++;
 				}
 				catch (const qf::core::Exception &e) {
@@ -556,6 +742,93 @@ bool XmlImporter::importRegistration(QXmlStreamReader &reader, const XmlCreators
 	return items_processed > 0;
 }
 
+bool XmlImporter::importEvent(QXmlStreamReader &reader, const XmlCreators creator)
+{
+	if (creator == XmlCreators::Oris) {
+		qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+		qfd::MessageBox::showWarning(fwk, QString(tr("EventList from ORIS is not yet supported. It requires a different type of handling.")));
+		return false; // ORIS has only list with all races - need to select/find current race
+	}
+	QString race_name;
+	int event_id = -1;
+	QMap <QString, SRace> races;
+	Event::EventConfig::Discipline discipline_id = Event::EventConfig::Discipline::Classic;
+
+	while(reader.readNextStartElement()) {
+		if(reader.name() == "Event") {
+			while(reader.readNextStartElement()) {
+				if (reader.name() == "Name")
+					race_name = reader.readElementText();
+				else if (reader.name() == "Id" && reader.attributes().hasAttribute("type") && reader.attributes().value("type").toString() == "IOF")
+					event_id = reader.readElementText().toInt();
+				else if (reader.name() == "Form") {
+					auto form = reader.readElementText();
+					if (form == "Relay")
+						discipline_id = Event::EventConfig::Discipline::Relays;
+					else if (form == "Team")
+						discipline_id = Event::EventConfig::Discipline::Teams;
+					// default Individual == Event::EventConfig::Discipline::Classic
+				}
+				else if (reader.name() == "Race") {
+					SRace race;
+					if (readRaceNode(race,reader)) {
+						QString race_str = QString("[%1] %2 %3").arg(race.number).arg(race.name).arg(race.datetime.date().toString(Qt::ISODate));
+						races[race_str] = race;
+					}
+				}
+				else
+					reader.skipCurrentElement();
+			}
+		}
+		else
+			reader.skipCurrentElement();
+	}
+	SRace event_race; // if event has more races in (defined in Event), selected race
+	if (races.size() > 0) {
+		// when defined some races ...
+		if (races.size() == 1)
+			event_race = races.first();
+		else {
+			QStringList items;
+			auto it = races.begin();
+			while (it != races.end()) {
+				items << it.key();
+				it++;
+			}
+			bool ok;
+			QString item = QInputDialog::getItem(qf::qmlwidgets::framework::MainWindow::frameWork(), tr("Select which race import)"),
+												 tr("Races:"), items, 0, false, &ok);
+			if (ok && !item.isEmpty())
+				event_race = races[item];
+			else
+				return false;
+		}
+	}
+	else
+		return false;
+	try {
+		QVariantMap ecfg;
+		ecfg["stageCount"] = 1;
+		ecfg["name"] = (event_race.name.isEmpty()) ? race_name : event_race.name;
+		ecfg["description"] = (event_race.name.isEmpty())? QString() : race_name;
+		ecfg["date"] = event_race.datetime.date();
+		ecfg["place"] = QString();
+		ecfg["mainReferee"] = QString();
+		ecfg["director"] = QString();
+		ecfg["sportId"] = static_cast<int>(Event::EventConfig::Sport::OB);
+		ecfg["disciplineId"] = static_cast<int>(discipline_id);
+		ecfg["importId"] = event_id;
+		ecfg["time"] = event_race.datetime.time();
+		ecfg["iofRace"] = 1;
+		ecfg["iofXmlRaceNumber"] = (races.size() > 1) ? event_race.number : 0;
+		return getPlugin<EventPlugin>()->createEvent(QString(), ecfg);
+	}
+	catch (qf::core::Exception &e) {
+		qfError() << "Import Event ERROR:" << e.message();
+	}
+	return true;
+}
+
 bool XmlImporter::importXML30()
 {
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
@@ -588,7 +861,7 @@ bool XmlImporter::importXML30()
 		else if (reader.name() == "CompetitorList") // registration
 			return importRegistration(reader, creator);
 		else if (reader.name() == "EventList")
-			return false; // not used yet - maybe for race info, maybe for racelist (WMOC)
+			return importEvent(reader, creator);
 		else
 			qfd::MessageBox::showWarning(fwk, QString(tr("Unsuported IOF XML 3.0 type (%1)")).arg(reader.name()));
 	}

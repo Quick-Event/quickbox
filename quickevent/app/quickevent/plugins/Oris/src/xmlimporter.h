@@ -5,6 +5,8 @@
 #include <QXmlStreamReader>
 #include <QSet>
 #include <QMap>
+#include <QTime>
+#include <QDate>
 
 class XmlImporter : public QObject
 {
@@ -44,17 +46,26 @@ public:
 		int legNumber = 0;
 	};
 
+	struct SRace
+	{
+		int number = 0;
+		QString name;
+		QDateTime datetime;
+	};
+
 	explicit XmlImporter(QObject *parent = nullptr);
 
 	Q_INVOKABLE bool importXML30();
 protected:
 	bool readPersonNode(SPerson &s, QXmlStreamReader &reader, const XmlCreators creator);
+	bool readRaceNode(SRace &s, QXmlStreamReader &reader);
 
 	bool importEntries(QXmlStreamReader &reader, const XmlCreators creator);
 	bool importStartlist(QXmlStreamReader &reader, const XmlCreators creator);
 	bool importClasses(QXmlStreamReader &reader, const XmlCreators creator);
 	bool importClubs(QXmlStreamReader &reader, const XmlCreators creator);
 	bool importRegistration(QXmlStreamReader &reader, const XmlCreators creator);
+	bool importEvent(QXmlStreamReader &reader, const XmlCreators creator);
 
 	QString genFakeCzClubAbbr(QString country);
 	QMap <QString,int> fakeCzClubMap;
