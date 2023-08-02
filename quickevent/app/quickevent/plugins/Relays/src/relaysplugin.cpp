@@ -116,7 +116,7 @@ struct Leg
 	quickevent::core::RunStatus runStatus;
 
 	bool isFinishedOk() const {
-		return ogTime() < quickevent::core::og::TimeMs::UNREAL_TIME_MSEC;
+		return ogTime() < quickevent::core::og::TimeMs::MAX_REAL_TIME_MSEC;
 	}
 
 	int ogTime() const {
@@ -152,15 +152,18 @@ struct Relay
 			else
 				return leg.ogTime();
 		}
-		return ret;
+		return (legs.count() < leg_cnt) ? 0 : ret;
 	}
 	QString status(int leg_cnt) const
-	{
+	{	// status after N legs (summary status)
 		for (int i = 0; i < qMin(legs.count(), leg_cnt); ++i) {
 			const Leg &leg = legs[i];
-			return leg.runStatus.toXmlExportString();
+			if(!leg.runStatus.isOk())
+				return leg.runStatus.toXmlExportString();
 		}
-		return QStringLiteral("DidNotStart");	// relay leg not found
+		if (legs.count() < leg_cnt)
+			return QStringLiteral("DidNotStart");	// relay leg not found
+		return QStringLiteral("OK");
 	}
 };
 }
