@@ -596,7 +596,7 @@ qf::core::utils::TreeTable RunsPlugin::stageResultsTable(int stage_id, const QSt
 
 	{
 		qf::core::sql::QueryBuilder qb;
-		qb.select2("competitors", "registration, iofId, lastName, firstName, startNumber")
+		qb.select2("competitors", "registration, iofId, lastName, firstName, startNumber, country")
 			.select("COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName")
 			.select2("runs", "*")
 			.select2("clubs", "name, abbr")
@@ -792,6 +792,10 @@ QString RunsPlugin::resultsIofXml30Stage(int stage_id)
 	QDateTime stage_start_date_time = getPlugin<EventPlugin>()->stageStartDateTime(stage_id);//.toTimeSpec(Qt::OffsetFromUTC);
 	//qfInfo() << stage_start_date_time << datetime_to_string(stage_start_date_time);
 	qf::core::utils::TreeTable tt1 = stageResultsTable(stage_id, QString(), 0, false, true);
+	Event::EventConfig *event_config = getPlugin<EventPlugin>()->eventConfig();
+	bool is_iof_race = event_config->isIofRace();
+	int iof_xml_race_number = event_config->iofXmlRaceNumber();
+
 	QVariantList result_list{
 		"ResultList",
 		QVariantMap{
@@ -833,6 +837,15 @@ QString RunsPlugin::resultsIofXml30Stage(int stage_id)
 				},
 			}
 		);
+
+		if (iof_xml_race_number != 0) {
+			event_lst.insert(event_lst.count(),
+				QVariantList{"Race",
+					QVariantList{"RaceNumber", iof_xml_race_number},
+					QVariantList{"Name", event_config->eventName()}
+				}
+			);
+		}
 		result_list.insert(result_list.count(), event_lst);
 	}
 
@@ -852,7 +865,8 @@ QString RunsPlugin::resultsIofXml30Stage(int stage_id)
 			}
 		);
 		qf::core::utils::TreeTable tt2 = tt1_row.table();
-		//int pos = 0;
+		if (tt2.rowCount() == 0 && is_iof_race)
+			continue; // not save empty class results
 		int course_id = tt1_row.value(QStringLiteral("courses.id")).toInt();
 		quickevent::core::CourseDef course_def = courseForCourseId(course_id);
 		QVariantList codes = course_def.codes();
@@ -864,7 +878,9 @@ QString RunsPlugin::resultsIofXml30Stage(int stage_id)
 			//pos++;
 			QVariantList person_result{"PersonResult"};
 			QVariantList person{"Person"};
-			person.insert(person.count(), QVariantList{"Id", QVariantMap{{"type", "CZE"}}, tt2_row.value(QStringLiteral("competitors.registration"))});
+			if (!is_iof_race)
+				person.insert(person.count(),
+					QVariantList{"Id", QVariantMap{{"type", "CZE"}}, tt2_row.value(QStringLiteral("competitors.registration"))});
 			auto iof_id = tt2_row.value(QStringLiteral("competitors.iofId"));
 			if (!iof_id.isNull())
 				person.insert(person.count(), QVariantList{"Id", QVariantMap{{"type", "IOF"}}, iof_id});
@@ -874,31 +890,44 @@ QString RunsPlugin::resultsIofXml30Stage(int stage_id)
 				QVariantList{"Given", tt2_row.value(QStringLiteral("competitors.firstName"))},
 				}
 			);
+			if (is_iof_race) {
+				auto nationality = tt2_row.value(QStringLiteral("competitors.country"));
+				QString nat_code = getClubAbbrFromName(nationality.toString());
+				person.insert(person.count(), QVariantList{"Nationality", QVariantMap{{"code", nat_code}}, nationality});
+			}
 			person_result.insert(person_result.count(),person);
 
-			auto club_abbr = tt2_row.value(QStringLiteral("clubs.abbr")).toString();
-			if (!club_abbr.isEmpty()) {
+			if (is_iof_race){
 				person_result.insert(person_result.count(),
 					QVariantList{"Organisation",
+						QVariantList{"Id", QVariantMap{{"type", "IOF"}},tt2_row.value(QStringLiteral("clubs.importId"))},
 						QVariantList{"Name", tt2_row.value(QStringLiteral("clubs.name"))},
-						QVariantList{"ShortName", club_abbr},
 					}
 				);
 			}
 			else {
-				person_result.insert(person_result.count(),
-					QVariantList{"Organisation",
-						QVariantList{"Name", QString()},
-						QVariantList{"ShortName",
-							tt2_row.value(QStringLiteral("competitors.registration")).toString().left(3)
+				auto club_abbr = tt2_row.value(QStringLiteral("clubs.abbr")).toString();
+				if (!club_abbr.isEmpty()) {
+					person_result.insert(person_result.count(),
+						QVariantList{"Organisation",
+							QVariantList{"Name", tt2_row.value(QStringLiteral("clubs.name"))},
+							QVariantList{"ShortName", club_abbr},
 						}
-					}
-				);
+					);
+				}
+				else {
+					person_result.insert(person_result.count(),
+						QVariantList{"Organisation",
+							QVariantList{"Name", QString()},
+							QVariantList{"ShortName",
+								tt2_row.value(QStringLiteral("competitors.registration")).toString().left(3)
+							}
+						}
+					);
+				}
 			}
-
 			auto run_status = quickevent::core::RunStatus::fromTreeTableRow(tt2_row);
-
-			QVariantList result{"Result"};
+			QVariantList result{"Result", (iof_xml_race_number != 0) ? QVariantMap{{"raceNumber", iof_xml_race_number}} : QVariantMap{}};
 			auto bib_number = tt2_row.value(QStringLiteral("competitors.startNumber"));
 			if(!bib_number.isNull())
 				result.insert(result.count(), QVariantList{"BibNumber", bib_number});
@@ -2529,7 +2558,7 @@ QString RunsPlugin::startListStageIofXml30(int stage_id)
 		append_list(xml_root, class_start);
 	}
 	qf::core::utils::HtmlUtils::FromXmlListOptions opts;
-	opts.setDocumentTitle(tr("E%1 IOF XML stage results").arg(tt1.value("stageId").toString()));
+	opts.setDocumentTitle(tr("E%1 IOF XML stage startlist").arg(tt1.value("stageId").toString()));
 	return qf::core::utils::HtmlUtils::fromXmlList(xml_root, opts);
 }
 
