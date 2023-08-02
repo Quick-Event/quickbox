@@ -64,7 +64,12 @@ void Player::playNext()
 	}
 
 	QString file = m_playlist.dequeue();
-	m_player->setSource(QUrl::fromLocalFile(file));
+	if (file.startsWith(':')) {
+		m_player->setSource(QUrl("qrc" + file));
+	}
+	else {
+		m_player->setSource(QUrl::fromLocalFile(file));
+	}
 	m_player->setPosition(0);
 	m_player->play();
 }

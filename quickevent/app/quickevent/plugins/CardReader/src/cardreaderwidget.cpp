@@ -181,9 +181,13 @@ CardReaderWidget::CardReaderWidget(QWidget *parent)
 #ifdef QT_DEBUG
 	{
 		connect(ui->btTest, &QPushButton::clicked, this, &CardReaderWidget::onTestButtonClicked);
+		connect(ui->btTestSound, &QPushButton::clicked, this, [this]() {
+			audioPlayer()->playAlert(quickevent::gui::audio::Player::AlertKind::OperatorWakeUp);
+		});
 	}
 #else
 	ui->btTest->hide();
+	ui->btTestSound->hide();
 #endif
 
 	connect(getPlugin<CardReaderPlugin>(), &CardReader::CardReaderPlugin::siTaskFinished, this, &CardReaderWidget::onSiTaskFinished);

@@ -84,9 +84,16 @@
          </spacer>
         </item>
         <item>
+         <widget class="QPushButton" name="btTestSound">
+          <property name="text">
+           <string>Test sound</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="QPushButton" name="btTest">
           <property name="text">
-           <string>Test</string>
+           <string>Test punch</string>
           </property>
          </widget>
         </item>
