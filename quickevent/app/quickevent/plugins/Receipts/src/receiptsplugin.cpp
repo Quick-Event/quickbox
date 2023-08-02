@@ -147,7 +147,7 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 	quickevent::core::si::CheckedCard checked_card = getPlugin<CardReaderPlugin>()->checkCard(read_card);
 	int run_id = checked_card.runId();
 	bool is_card_lent = getPlugin<CardReaderPlugin>()->isCardLent(read_card.cardNumber(), read_card.finishTime(), run_id);
-	int current_stage_id = getPlugin<EventPlugin>()->stageIdForRun(run_id);
+	int stage_id = 0;
 	int course_id = checked_card.courseId();
 	int leg = 0;
 	int relay_num = 0;
@@ -182,6 +182,7 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 		model.setQuery(qb.toString());
 		model.reload();
 		if(model.rowCount() == 1) {
+			stage_id = model.value(0, "runs.stageId").toInt();
 			qf::core::sql::Query run_laps;
 			run_laps.execThrow("SELECT runlaps.position, runlaps.code, runlaps.lapTimeMs FROM runlaps WHERE runId = " QF_IARG(run_id) " ORDER BY position");
 			while(run_laps.next()) {
@@ -203,7 +204,7 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 						int class_id = model.value(0, "competitors.classId").toInt();
 						qb_laps.from("competitors")
 							.join("competitors.id", "runs.competitorId",qf::core::sql::QueryBuilder::INNER_JOIN)
-							.where("runs.stageId=" QF_IARG(current_stage_id)
+							.where("runs.stageId=" QF_IARG(stage_id)
 								" AND competitors.classId=" QF_IARG(class_id));
 
 
@@ -244,7 +245,7 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 						int class_id = model.value(0, "competitors.classId").toInt();
 						qb_curr_times.from("competitors")
 							.join("competitors.id", "runs.competitorId",qf::core::sql::QueryBuilder::INNER_JOIN)
-							.where("runs.stageId=" QF_IARG(current_stage_id)
+							.where("runs.stageId=" QF_IARG(stage_id)
 								" AND competitors.classId=" QF_IARG(class_id));
 
 
@@ -293,7 +294,7 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 				qb.select2("runs", "timeMs")
 						.select("runs.disqualified OR NOT runs.isRunning OR runs.misPunch AS dis")
 						.from("competitors")
-						.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId=" QF_IARG(current_stage_id) " AND competitors.classId=" QF_IARG(class_id), qf::core::sql::QueryBuilder::INNER_JOIN)
+						.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId=" QF_IARG(stage_id) " AND competitors.classId=" QF_IARG(class_id), qf::core::sql::QueryBuilder::INNER_JOIN)
 						.where("runs.finishTimeMs > 0")
 						.orderBy("misPunch, disqualified, isRunning, runs.timeMs");
 			}
@@ -342,7 +343,7 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 		}
 		tt.setValue("appVersion", QCoreApplication::applicationVersion());
 		tt.setValue("stageCount", getPlugin<EventPlugin>()->stageCount());
-		tt.setValue("currentStageId", getPlugin<EventPlugin>()->currentStageId());
+		tt.setValue("currentStageId", stage_id);
 		qfDebug() << "competitor:\n" << tt.toString();
 		ret["competitor"] = tt.toVariant();
 	}
