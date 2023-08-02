@@ -36,6 +36,9 @@ class MainWindow : public QMainWindow, public qf::qmlwidgets::framework::IPersis
 {
 	Q_OBJECT
 	Q_PROPERTY(QString persistentSettingsId READ persistentSettingsId WRITE setPersistentSettingsId)
+public:
+	MainWindow(QWidget *parent = nullptr, Qt::WindowFlags flags = Qt::WindowFlags());
+	~MainWindow();
 protected:
 	//bool event(QEvent *event);
 	virtual void closeEvent(QCloseEvent *e);
@@ -130,9 +133,6 @@ public:
 	 */
 	qf::core::sql::Connection activeConnection();
 	bool execCommand(const QString& query_str);
-public:
-	MainWindow();
-	~MainWindow();
 };
 
 #endif

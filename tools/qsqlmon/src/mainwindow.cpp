@@ -7,7 +7,6 @@
 #include "servertreeitem.h"
 #include "dlgeditconnection.h"
 #include "dlgaltertable.h"
-#include "dlgindexdef.h"
 #include "columnselectorwidget.h"
 #include "qfstatusbar.h"
 
@@ -48,8 +47,9 @@
 
 #include <limits>
 
-MainWindow::MainWindow()
-	: QMainWindow(), qf::qmlwidgets::framework::IPersistentSettings(this)
+MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
+	: QMainWindow(parent, flags)
+	, qf::qmlwidgets::framework::IPersistentSettings(this)
 {
 	//setAttribute(Qt::WA_DeleteOnClose);
 	f_sqlDelimiter = ';';

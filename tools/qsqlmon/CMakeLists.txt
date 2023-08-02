@@ -17,7 +17,8 @@ add_executable(qsqlmon
     src/sqldock.cpp
     src/sqltextedit.cpp
     src/tableviewwidget.cpp
-    src/theapp.cpp
+	src/theapp.cpp
+	src/qsqlmon.qrc
     )
 
 if(USE_QT6)
