@@ -525,6 +525,8 @@ QString RelaysPlugin::resultsIofXml30()
 {
 	QDateTime start00 = getPlugin<EventPlugin>()->stageStartDateTime(1);
 	qfDebug() << "creating table";
+	Event::EventConfig *event_config = getPlugin<EventPlugin>()->eventConfig();
+	bool is_iof_race = event_config->isIofRace();
 	//auto tt_classes = getPlugin<RelaysPlugin>()->nLegsResultsTable("classes.name='D105'", 999, 999999, false);
 	auto tt_classes = getPlugin<RelaysPlugin>()->nLegsResultsTable(QString(), 999, 999999, false);
 	QVariantList result_list{
@@ -540,7 +542,8 @@ QString RelaysPlugin::resultsIofXml30()
 	{
 		QVariantList event_lst{"Event"};
 		QVariantMap event = tt_classes.value("event").toMap();
-		event_lst.insert(event_lst.count(), QVariantList{"Id", QVariantMap{{"type", "ORIS"}}, event.value("importId")});
+		if (!is_iof_race)
+			event_lst.insert(event_lst.count(), QVariantList{"Id", QVariantMap{{"type", "ORIS"}}, event.value("importId")});
 		event_lst.insert(event_lst.count(), QVariantList{"Name", event.value("name")});
 		event_lst.insert(event_lst.count(), QVariantList{"StartTime",
 				   QVariantList{"Date", event.value("date")},
@@ -593,13 +596,28 @@ QString RelaysPlugin::resultsIofXml30()
 				QVariantList{"Name", tt_teams_row.value(QStringLiteral("name")) }
 			);
 
-			append_list(team_result,
-				QVariantList{"Organisation",
-					QVariantList{"Name", tt_teams_row.value(QStringLiteral("orgName"))},
-					QVariantList{"ShortName", tt_teams_row.value(QStringLiteral("orgShortName"))},
-				}
-			);
+			if (is_iof_race) {
+				qf::core::sql::Query q;
+				q.exec(QStringLiteral("SELECT importId FROM clubs WHERE abbr='%1'").arg(tt_teams_row.value(QStringLiteral("orgShortName")).toString()), qf::core::Exception::Throw);
+				QString importId = (q.next()) ? q.value(0).toString() : "";
 
+				append_list(team_result,
+					QVariantList{"Organisation",
+						QVariantList{"Id", QVariantMap{{"type", "IOF"}},importId},
+						QVariantList{"Name", tt_teams_row.value(QStringLiteral("orgName"))},
+						// relay doesn't have country - Eventor national races use club as country
+						QVariantList{"Country", QVariantMap{{"code", tt_teams_row.value(QStringLiteral("orgShortName"))}},tt_teams_row.value(QStringLiteral("orgName"))},
+					}
+				);
+			}
+			else {
+				append_list(team_result,
+					QVariantList{"Organisation",
+						QVariantList{"Name", tt_teams_row.value(QStringLiteral("orgName"))},
+						QVariantList{"ShortName", tt_teams_row.value(QStringLiteral("orgShortName"))},
+					}
+				);
+			}
 			int relay_number = tt_teams_row.value(QStringLiteral("relayNumber")).toInt();
 			append_list(team_result,
 				QVariantList{"BibNumber", relay_number }
@@ -617,7 +635,8 @@ QString RelaysPlugin::resultsIofXml30()
 				QVariantList member_result{"TeamMemberResult"};
 				QVariantList person{"Person"};
 				append_list(person, QVariantList{"Id", QVariantMap{{"type", "QuickEvent"}}, tt_leg_row.value(QStringLiteral("runId"))});
-				append_list(person, QVariantList{"Id", QVariantMap{{"type", "CZE"}}, tt_leg_row.value(QStringLiteral("registration"))});
+				if (!is_iof_race)
+					append_list(person, QVariantList{"Id", QVariantMap{{"type", "CZE"}}, tt_leg_row.value(QStringLiteral("registration"))});
 				auto iof_id = tt_leg_row.value(QStringLiteral("iofId"));
 				if (!iof_id.isNull())
 					append_list(person, QVariantList{"Id", QVariantMap{{"type", "IOF"}}, iof_id});
@@ -677,8 +696,10 @@ QString RelaysPlugin::resultsIofXml30()
 						q.execThrow(qb.toString());
 						if(q.next()) {
 							append_list(course, QVariantList{"Name", q.value(0)});
-							append_list(course, QVariantList{"Length", q.value(1)});
-							append_list(course, QVariantList{"Climb", q.value(2)});
+							if (!q.value(1).toString().isEmpty())
+								append_list(course, QVariantList{"Length", q.value(1)});
+							if (!q.value(2).toString().isEmpty())
+								append_list(course, QVariantList{"Climb", q.value(2)});
 						}
 						else {
 							qfWarning() << "Cannot load course for id:" << course_id;
@@ -738,7 +759,6 @@ QString RelaysPlugin::startListIofXml30()
 {
 	QDateTime start00 = getPlugin<EventPlugin>()->stageStartDateTime(1);
 	qfDebug() << "creating table";
-	//auto tt_classes = getPlugin<RelaysPlugin>()->nLegsResultsTable("classes.name='D105'", 999, 999999, false);
 	qf::core::utils::TreeTable tt_classes = startListByClassesTableData(QString());
 	QVariantList start_list{
 		"StartList",
@@ -873,7 +893,7 @@ QString RelaysPlugin::startListIofXml30()
 		append_list(start_list, class_start);
 	}
 	qf::core::utils::HtmlUtils::FromXmlListOptions opts;
-	opts.setDocumentTitle(tr("Relays IOF-XML 3.0 results"));
+	opts.setDocumentTitle(tr("Relays IOF-XML 3.0 startlist"));
 	return qf::core::utils::HtmlUtils::fromXmlList(start_list, opts);
 }
 
