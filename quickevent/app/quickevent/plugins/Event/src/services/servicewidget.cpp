@@ -27,13 +27,13 @@ void ServiceWidget::setStatus(Service::Status st)
 	ui->btPlay->setIcon(m_isRunning? ico_stop: ico_play);
 	switch (st) {
 	case Service::Status::Running:
-		ui->lblStatus->setPixmap(QPixmap(":/qf/core/images/light-green"));
+		ui->lblStatus->setPixmap(QPixmap(":/qf/qmlwidgets/images/light-green"));
 		break;
 	case Service::Status::Stopped:
-		ui->lblStatus->setPixmap(QPixmap(":/qf/core/images/light-red"));
+		ui->lblStatus->setPixmap(QPixmap(":/qf/qmlwidgets/images/light-red"));
 		break;
 	default:
-		ui->lblStatus->setPixmap(QPixmap(":/qf/core/images/light-yellow"));
+		ui->lblStatus->setPixmap(QPixmap(":/qf/qmlwidgets/images/light-yellow"));
 		break;
 	}
 }

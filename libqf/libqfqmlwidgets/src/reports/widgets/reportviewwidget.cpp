@@ -571,81 +571,80 @@ qf::qmlwidgets::framework::DialogWidget::ActionMap ReportViewWidget::createActio
 	}
 	{
 		qf::qmlwidgets::Action *a;
-		QIcon ico(":/qf/qmlwidgets/images/rev");
-		a = new qf::qmlwidgets::Action(ico, tr("Prev page"), this);
+		a = new qf::qmlwidgets::Action(tr("Prev page"), this);
+		a->setIcon(style->icon("rev"));
 		ret[QStringLiteral("view.prevPage")] = a;
 		connect(a, &QAction::triggered, this, [this]() { view_prevPage(); });
 	}
 	{
 		qf::qmlwidgets::Action *a;
-		QIcon ico(":/qf/qmlwidgets/images/fwd");
-		a = new qf::qmlwidgets::Action(ico, tr("Next page"), this);
+		a = new qf::qmlwidgets::Action(tr("Next page"), this);
+		a->setIcon(style->icon("fwd"));
 		ret[QStringLiteral("view.nextPage")] = a;
 		connect(a, &QAction::triggered, this, [this]() { view_nextPage(); });
 	}
 	{
 		qf::qmlwidgets::Action *a;
-		QIcon ico(":/qf/qmlwidgets/images/ffwd");
-		a = new qf::qmlwidgets::Action(ico, tr("Last page"), this);
+		a = new qf::qmlwidgets::Action(tr("Last page"), this);
+		a->setIcon(style->icon("ffwd"));
 		ret[QStringLiteral("view.lastPage")] = a;
 		connect(a, &QAction::triggered, this, &ReportViewWidget::view_lastPage);
 	}
 	{
 		qf::qmlwidgets::Action *a;
-		QIcon ico(":/qf/qmlwidgets/images/zoom_in");
-		a = new qf::qmlwidgets::Action(ico, tr("Zoom in"), this);
+		a = new qf::qmlwidgets::Action(tr("Zoom in"), this);
+		a->setIcon(style->icon("zoom_in"));
 		ret[QStringLiteral("view.zoomIn")] = a;
 		connect(a, &QAction::triggered, this, [this]() { view_zoomIn(); });
 	}
 	{
 		qf::qmlwidgets::Action *a;
-		QIcon ico(":/qf/qmlwidgets/images/zoom_out");
-		a = new qf::qmlwidgets::Action(ico, tr("Zoom out"), this);
+		a = new qf::qmlwidgets::Action(tr("Zoom out"), this);
+		a->setIcon(style->icon("zoom_out"));
 		ret[QStringLiteral("view.zoomOut")] = a;
 		connect(a, &QAction::triggered, this, [this]() { view_zoomOut(); });
 	}
 	{
 		qf::qmlwidgets::Action *a;
-		QIcon ico(":/qf/qmlwidgets/images/zoom_fitwidth");
-		a = new qf::qmlwidgets::Action(ico, tr("Zoom to fit width"), this);
+		a = new qf::qmlwidgets::Action(tr("Zoom to fit width"), this);
+		a->setIcon(style->icon("zoom_fitwidth"));
 		ret[QStringLiteral("view.zoomFitWidth")] = a;
 		connect(a, &QAction::triggered, this, &ReportViewWidget::view_zoomToFitWidth);
 	}
 	{
 		qf::qmlwidgets::Action *a;
-		QIcon ico(":/qf/qmlwidgets/images/zoom_fitheight");
-		a = new qf::qmlwidgets::Action(ico, tr("Zoom to fit height"), this);
+		a = new qf::qmlwidgets::Action(tr("Zoom to fit height"), this);
+		a->setIcon(style->icon("zoom_fitheight"));
 		ret[QStringLiteral("view.zoomFitHeight")] = a;
 		connect(a, &QAction::triggered, this, &ReportViewWidget::view_zoomToFitHeight);
 	}
 	{
 		qf::qmlwidgets::Action *a;
 		a = new qf::qmlwidgets::Action(tr("&Print"), this);
-		a->setIcon(style->icon("prnter"));
+		a->setIcon(style->icon("printer"));
 		//a->setTooltip(tr("Tisk"));
 		ret[QStringLiteral("file.print")] = a;
 		connect(a, &QAction::triggered, this, &ReportViewWidget::file_print);
 	}
 	{
 		qf::qmlwidgets::Action *a;
-		QIcon ico(":/qf/qmlwidgets/images/print-preview");
-		a = new qf::qmlwidgets::Action(ico, tr("Print pre&view"), this);
-		//a->setToolTip(tr("Náhled tisku"));
+		a = new qf::qmlwidgets::Action(tr("Print pre&view"), this);
+		a->setIcon(style->icon("print-preview"));
 		ret[QStringLiteral("file.printPreview")] = a;
 		connect(a, &QAction::triggered, this, &ReportViewWidget::file_printPreview);
 	}
 	{
 		qf::qmlwidgets::Action *a;
-		QIcon ico(":/qf/qmlwidgets/images/acrobat");
-		a = new qf::qmlwidgets::Action(ico, tr("Export PD&F"), this);
+		a = new qf::qmlwidgets::Action(tr("Export PD&F"), this);
+		a->setIcon(style->icon("acrobat"));
 		a->setToolTip(tr("Export in the Adobe Acrobat PDF format"));
 		ret[QStringLiteral("file.export.pdf")] = a;
 		connect(a, &QAction::triggered, this, &ReportViewWidget::file_export_pdf);
 	}
 	{
 		qf::qmlwidgets::Action *a;
-		QIcon ico(":/qf/qmlwidgets/images/network");
-		a = new qf::qmlwidgets::Action(ico, tr("Export &HTML"), this);
+		a = new qf::qmlwidgets::Action(tr("Export &HTML"), this);
+		a->setIcon(style->icon("network"));
 		a->setToolTip(tr("Export data in HTML"));
 		ret[QStringLiteral("file.export.html")] = a;
 		connect(a, &QAction::triggered, this, &ReportViewWidget::file_export_html);

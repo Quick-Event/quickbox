@@ -242,7 +242,7 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
 
 QVariant TableModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-	static QIcon ico_dirty(QPixmap(":/qf/core/images/pencil.png"));
+	//static QIcon ico_dirty(QPixmap(":/qf/core/images/pencil.png"));
 	//static QIcon ico_filter(QPixmap(":/libqfgui/images/filter.png"));
 	QVariant ret;
 	if(orientation == Qt::Horizontal) {
@@ -281,12 +281,12 @@ QVariant TableModel::headerData(int section, Qt::Orientation orientation, int ro
 				ret = QVariant(section + 1);
 			}
 		}
-		else if(role == Qt::DecorationRole) {
-			qfu::TableRow r = m_table.row(section);
-			if(!r.isNull() && r.isDirty()) {
-				return QVariant::fromValue(ico_dirty);
-			}
-		}
+		//else if(role == Qt::DecorationRole) {
+		//	qfu::TableRow r = m_table.row(section);
+		//	if(!r.isNull() && r.isDirty()) {
+		//		return QVariant::fromValue(ico_dirty);
+		//	}
+		//}
 	}
 	else {
 		ret = QAbstractTableModel::headerData(section, orientation, role);

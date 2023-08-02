@@ -24,7 +24,8 @@ Application::Application(int &argc, char **argv, AppCliOptions *cli_opts)
 	}
 
 	auto *style = qf::qmlwidgets::Style::instance();
-	style->setIconPath(":/qf/qmlwidgets/images/flat");
+	style->addIconSearchPath(":/qf/qmlwidgets/images/flat");
+	style->addIconSearchPath(":/qf/qmlwidgets/images");
 
 	loadStyleSheet();
 
