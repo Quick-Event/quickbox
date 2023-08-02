@@ -114,11 +114,7 @@ QString HtmlUtils::fromHtmlList_helper(const QVariant &item, const QString &inde
 {
 	QString ret;
 	Q_UNUSED(options)
-#if QT_VERSION_MAJOR >= 6
 	if(item.typeId() == QMetaType::QVariantList) {
-#else
-	if(item.type() == QVariant::List) {
-#endif
 		QVariantList lst = item.toList();
 		if(lst.isEmpty())
 			return ret;
@@ -128,11 +124,7 @@ QString HtmlUtils::fromHtmlList_helper(const QVariant &item, const QString &inde
 		QString attrs_str;
 		int ix = 1;
 		QVariant attrs = lst.value(ix);
-#if QT_VERSION_MAJOR >= 6
 		if(attrs.typeId() == QMetaType::QVariantMap) {
-#else
-		if(attrs.type() == QVariant::Map) {
-#endif
 			QVariantMap m = attrs.toMap();
 			QMapIterator<QString, QVariant> it(m);
 			while(it.hasNext()) {
@@ -145,16 +137,22 @@ QString HtmlUtils::fromHtmlList_helper(const QVariant &item, const QString &inde
 		ret += '\n' + indent;
 		if(has_children) {
 			ret += '<' + element_name + attrs_str + '>';
-			QString indent2 = indent + '\t';
-			bool has_child_elemet = false;
-			for (; ix < lst.count(); ++ix) {
-				QVariant v = lst[ix];
-				if(!v.toList().isEmpty())
-					has_child_elemet = true;
-				ret += fromHtmlList_helper(v, indent2, options);
+			if(ix == lst.count() - 1 && lst[ix].typeId() != QMetaType::QVariantList) {
+				// inline single item
+				ret += lst[ix].toString().toHtmlEscaped();
 			}
-			if(has_child_elemet)
-				ret += '\n' + indent;
+			else {
+				QString indent2 = indent + '\t';
+				bool has_child_elemet = false;
+				for (; ix < lst.count(); ++ix) {
+					QVariant v = lst[ix];
+					if(!v.toList().isEmpty())
+						has_child_elemet = true;
+					ret += fromHtmlList_helper(v, indent2, options);
+				}
+				if(has_child_elemet)
+					ret += '\n' + indent;
+			}
 			ret += "</" + element_name + '>';
 		}
 		else {
