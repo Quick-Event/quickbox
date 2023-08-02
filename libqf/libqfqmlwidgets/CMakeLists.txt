@@ -89,6 +89,7 @@ add_library(libqfqmlwidgets SHARED
     style/qf_qmlwidgets_style.qrc
     images/qf_qmlwidgets_images.qrc
 	images/flat/qf_qmlwidgets_images_flat.qrc
+	src/reports/widgets/printtableviewwidget/reports/qf_qmlwidgets_printtablewidget_reports.qrc
     )
 
 if(USE_QT6)
