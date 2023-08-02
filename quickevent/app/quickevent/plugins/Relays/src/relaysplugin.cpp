@@ -343,7 +343,7 @@ qf::core::utils::TreeTable RelaysPlugin::nLegsClassResultsTable(int class_id, in
 		}
 		std::sort(relay_stime.begin(), relay_stime.end(), [](const LegTime &a, const LegTime &b) {return a.stime < b.stime;});
 		int pos = 0;
-		int winner_time = relay_stime.begin()->stime;
+		int winner_time = (relay_stime.size() != 0) ? relay_stime.begin()->stime : 0;
 		for(const auto &p : relay_stime) {
 			int relay_id = p.relayId;
 			for (int i = 0; i < relays.count(); ++i) {

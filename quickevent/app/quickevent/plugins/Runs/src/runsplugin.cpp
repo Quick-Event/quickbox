@@ -599,7 +599,7 @@ qf::core::utils::TreeTable RunsPlugin::stageResultsTable(int stage_id, const QSt
 		qb.select2("competitors", "registration, iofId, lastName, firstName, startNumber, country")
 			.select("COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName")
 			.select2("runs", "*")
-			.select2("clubs", "name, abbr")
+			.select2("clubs", "name, abbr, importId")
 			.from("competitors")
 			.join("LEFT JOIN clubs ON substr(competitors.registration, 1, 3) = clubs.abbr")
 			.joinRestricted("competitors.id"
