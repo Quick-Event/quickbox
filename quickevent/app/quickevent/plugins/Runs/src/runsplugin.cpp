@@ -2433,7 +2433,7 @@ QString RunsPlugin::startListStageIofXml30(int stage_id)
 			auto iof_id = tt2_row.value(QStringLiteral("competitors.iofId"));
 			if (!iof_id.isNull())
 				append_list(person, QVariantList{"Id", QVariantMap{{"type", "IOF"}}, iof_id});
-			append_list(person, QVariantList{"Id", tt2_row.value(QStringLiteral("runs.id"))});
+			append_list(person, QVariantList{"Id", QVariantMap{{"type", "QuickEvent"}}, tt2_row.value(QStringLiteral("runs.id"))});
 			auto family = tt2_row.value(QStringLiteral("competitors.lastName"));
 			auto given = tt2_row.value(QStringLiteral("competitors.firstName"));
 			append_list(person, QVariantList{"Name", QVariantList{"Family", family}, QVariantList{"Given", given}});
