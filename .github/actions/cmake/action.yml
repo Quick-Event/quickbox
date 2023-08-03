@@ -3,7 +3,7 @@ description: "Invoke CMake and generate build files"
 inputs:
   qt_version:
     description: "Specify Qt version to use"
-    default: "6.5.1"
+    default: "6.5.2"
   qt_arch:
     description: "Specify Qt version to use"
     default: "gcc_64"
