@@ -247,7 +247,6 @@ bool XmlImporter::importEntries(QXmlStreamReader &reader, const XmlCreators crea
 			QString relay_number;
 			std::map<int, SPerson> legs;
 			QString country_code, country,class_name;
-			int club_iof_id = -1;
 			QString club_name,club_country_code,club_country;
 			while(reader.readNextStartElement()) {
 				if (reader.name() == "Name") {
@@ -264,9 +263,7 @@ bool XmlImporter::importEntries(QXmlStreamReader &reader, const XmlCreators crea
 				else if (reader.name() == "Organisation" && reader.attributes().hasAttribute("type")) {
 					if (reader.attributes().value("type").toString() == "NationalFederation") {
 						while(reader.readNextStartElement()) {
-							if (reader.name() == "Id" && reader.attributes().hasAttribute("type")&& reader.attributes().value("type").toString() == "IOF")
-								club_iof_id =  reader.readElementText().toInt();
-							else if (reader.name() == "Name")
+							if (reader.name() == "Name")
 								club_name = reader.readElementText();
 							else if (reader.name() == "Country") {
 								if (reader.attributes().hasAttribute("code"))
@@ -279,24 +276,9 @@ bool XmlImporter::importEntries(QXmlStreamReader &reader, const XmlCreators crea
 					}
 					else if (reader.attributes().value("type").toString() == "Club" || reader.attributes().value("type").toString() == "Other") {
 						while(reader.readNextStartElement()) {
-//							if (reader.name() == "Id" && reader.attributes().hasAttribute("type")&& reader.attributes().value("type").toString() == "ORIS")
-//								id_cz =  reader.readElementText().toInt();
-							if (reader.name() == "Id" && reader.attributes().hasAttribute("type")&& reader.attributes().value("type").toString() == "IOF")
-								club_iof_id =  reader.readElementText().toInt();
-							else if (reader.name() == "Name") {
-//								if (reader.attributes().hasAttribute("code"))
-//									code_cz = reader.attributes().value("code").toString();
+							if (reader.name() == "Name") {
 								club_name = reader.readElementText();
-							}/*
-							else if (reader.name() == "Extensions")
-							{
-								while(reader.readNextStartElement()) {
-									if (reader.name() == "Abbreviation")
-										abbr_cz = reader.readElementText();
-									else
-										reader.skipCurrentElement();
-								}
-							}*/
+							}
 							else if (reader.name() == "Country") {
 								if (reader.attributes().hasAttribute("code"))
 									country_code = reader.attributes().value("code").toString();
@@ -387,13 +369,13 @@ bool XmlImporter::importEntries(QXmlStreamReader &reader, const XmlCreators crea
 					int run_id = doc.lastInsertedRunsIds().first();
 					q.execThrow("UPDATE runs SET"
 								" relayId=" + QString::number(relay_id) + ","
-								" leg=" + QString::number(leg.first) + //","
-//								" importId=2"
+								" leg=" + QString::number(leg.first) + ","
+								" importId=2"
 								" WHERE id=" + QString::number(run_id)
 								);
 				}
 				else
-					qfInfo() << '\t' << leg.first << leg.second.nameFamily << leg.second.nameGiven << leg.second.regCz << leg.second.siNumber;
+					qfInfo() << '\t' << "not supported" << leg.first << leg.second.nameFamily << leg.second.nameGiven << leg.second.regCz << leg.second.siNumber;
 			}
 		}
 		else if (reader.name() == "Event") {
