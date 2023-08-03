@@ -2584,9 +2584,11 @@ void RunsPlugin::addStartTimeTextToClass(qf::core::utils::TreeTable &tt2, const 
 		if (start_time_format == quickevent::gui::ReportOptionsDialog::StartTimeFormat::DayTime) {
 			QDateTime stime_datetime = QDateTime::fromMSecsSinceEpoch(start00_epoch_sec * 1000 + start_time);
 			tt2_row.setValue(QStringLiteral("startTimeText"), stime_datetime.toString("h:mm:ss"));
+			tt2_row.setValue(QStringLiteral("startTimeMsText"), stime_datetime.toString("h:mm:ss.zzz"));
 		}
-		else
+		else {
 			tt2_row.setValue(QStringLiteral("startTimeText"), quickevent::core::og::TimeMs(start_time).toString());
+		}
 		tt2.setRow(j, tt2_row);
 	}
 }
@@ -2647,6 +2649,55 @@ bool RunsPlugin::exportStartListCurrentStageCsvSime(const QString &file_name, bo
 			csv << tt2_row.value(QStringLiteral("registration")).toString() << separator;
 			csv << tt1_row.value(QStringLiteral("classes.name")).toString() << separator;
 			csv << tt2_row.value(QStringLiteral("startTimeText")).toString();
+			csv << Qt::endl;
+		}
+	}
+
+	f.close();
+	qfInfo() << "exported:" << file_name;
+	return true;
+}
+
+bool RunsPlugin::exportStartListCurrentStageTvGraphics(const QString &file_name)
+{
+	// file format (IOF): IOF ID;First Name;Last Name;Country;Start;Category;Bib;CountryFull;SI
+	QFile f(file_name);
+	if(!f.open(QIODevice::WriteOnly)) {
+		qfError() << "Cannot open file" << f.fileName() << "for writing.";
+		return false;
+	}
+	const QString separator = ";";
+	QTextStream csv(&f);
+	csv.setCodec("UTF-8");
+#ifdef Q_OS_WINDOWS
+	// enable BOM for Windows
+	csv.setGenerateByteOrderMark(true);
+#endif
+
+	auto tt1 = startListClassesTable("",true, quickevent::gui::ReportOptionsDialog::StartTimeFormat::DayTime);
+	int id = 0;
+	csv << "IOF ID;First Name;Last Name;Country;Start;Category;Bib;CountryFull;SI";
+	csv << Qt::endl;
+	for(int i=0; i<tt1.rowCount(); i++) {
+		qf::core::utils::TreeTableRow tt1_row = tt1.row(i);
+		qf::core::utils::TreeTable tt2 = tt1.row(i).table();
+		for(int j=0; j<tt2.rowCount(); j++) {
+			qf::core::utils::TreeTableRow tt2_row = tt2.row(j);
+			csv << tt2_row.value(QStringLiteral("competitors.iofId")).toString() << separator;
+			csv << tt2_row.value(QStringLiteral("competitors.firstName")).toString() << separator;
+			csv << tt2_row.value(QStringLiteral("competitors.lastName")).toString() << separator;
+			QString country = tt2_row.value(QStringLiteral("competitors.country")).toString();
+			QString country_code = getClubAbbrFromName(country);
+			csv << country_code << separator;
+			csv << tt2_row.value(QStringLiteral("startTimeMsText")).toString() << separator;
+			csv << tt1_row.value(QStringLiteral("classes.name")).toString() << separator;
+			int bib = tt2_row.value(QStringLiteral("competitors.startNumber")).toInt();
+			if (bib != 0)
+				csv << bib  << separator;
+			else
+				csv << ++id << separator;
+			csv << country << separator;
+			csv << tt2_row.value(QStringLiteral("runs.siId")).toString();
 			csv << Qt::endl;
 		}
 	}

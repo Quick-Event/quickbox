@@ -272,7 +272,11 @@ void RunsWidget::settleDownInPartWidget(::PartWidget *part_widget)
 			connect(a, &qfw::Action::triggered, this, &RunsWidget::export_startList_stage_csv_sime);
 			m_export_stlist_csv->addActionInto(a);
 		}
-	}
+		{
+			auto *a = new qfw::Action(tr("&Startlist for TV Graphics"));
+			connect(a, &qfw::Action::triggered, this, &RunsWidget::export_startList_stage_tv_graphics);
+			m_export_stlist_csv->addActionInto(a);
+		}	}
 
 	qfw::Action *a_export_results = a_export->addMenuInto("results", tr("Results"));
 	qfw::Action *a_export_results_stage = a_export_results->addMenuInto("currentStage", tr("Current stage"));
@@ -983,4 +987,12 @@ void RunsWidget::export_startList_stage_csv_sime()
 			return;
 		getPlugin<RunsPlugin>()->exportStartListCurrentStageCsvSime(fn, dlg.isStartListPrintStartNumbers(), dlg.sqlWhereExpression());
 	}
+}
+
+void RunsWidget::export_startList_stage_tv_graphics()
+{
+	QString fn = getSaveFileName("startlist_tv.csv", selectedStageId());
+	if(fn.isEmpty())
+		return;
+	getPlugin<RunsPlugin>()->exportStartListCurrentStageTvGraphics(fn);
 }
