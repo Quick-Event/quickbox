@@ -175,6 +175,7 @@ CompetitorWidget::CompetitorWidget(QWidget *parent) :
 	}
 
 	connect(ui->edFind, &FindRegistrationEdit::registrationSelected, this, &CompetitorWidget::onRegistrationSelected);
+	connect(ui->btnSwitchNames, &QPushButton::clicked, this, &CompetitorWidget::onSwitchNames);
 
 	dataController()->setDocument(new Competitors::CompetitorDocument(this));
 	m_runsModel = new CompetitorRunsModel(this);
@@ -424,4 +425,12 @@ bool CompetitorWidget::saveData()
 	return false;
 }
 
+void CompetitorWidget::onSwitchNames()
+{
+	auto *doc = dataController()->document();
+	QString fn = doc->value("firstname").toString();
+	QString ln = doc->value("lastname").toString();
+	doc->setValue("firstname",ln);
+	doc->setValue("lastname",fn);
+}
 
