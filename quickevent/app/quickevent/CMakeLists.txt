@@ -10,6 +10,11 @@ add_executable(quickevent
 	plugins/CardReader/src/services/racomclientwidget.cpp
 	plugins/CardReader/src/cardreadersettingspage.cpp
 	plugins/CardReader/src/cardreadersettings.cpp
+
+	plugins/CardReader/src/services/qropunch.cpp
+	plugins/CardReader/src/services/qropunchwidget.cpp
+	plugins/CardReader/src/services/qropunchwidget.ui
+
 	plugins/Classes/src/classdefdocument.cpp
 	plugins/Classes/src/classdefwidget.cpp
 	plugins/Classes/src/classdocument.cpp

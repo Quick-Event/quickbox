@@ -7,8 +7,6 @@
 #include <quickevent/core/codedef.h>
 #include <quickevent/core/si/punchrecord.h>
 
-//#include <siut/simessage.h>
-
 #include <qf/qmlwidgets/framework/mainwindow.h>
 
 #include <qf/core/assert.h>
