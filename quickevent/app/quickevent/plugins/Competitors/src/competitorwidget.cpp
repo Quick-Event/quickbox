@@ -107,6 +107,7 @@ CompetitorWidget::CompetitorWidget(QWidget *parent) :
 	}
 
 	connect(ui->edFind, &FindRegistrationEdit::registrationSelected, this, &CompetitorWidget::onRegistrationSelected);
+	connect(ui->btnSwitchNames, &QPushButton::clicked, this, &CompetitorWidget::onSwitchNames);
 
 	dataController()->setDocument(new Competitors::CompetitorDocument(this));
 	m_runsModel = (RunsTableModel*) new CompetitorRunsModel(this);
@@ -356,6 +357,15 @@ bool CompetitorWidget::saveData()
 	return false;
 }
 
+void CompetitorWidget::onSwitchNames()
+{
+	auto *doc = dataController()->document();
+	QString fn = doc->value("firstname").toString();
+	QString ln = doc->value("lastname").toString();
+	doc->setValue("firstname",ln);
+	doc->setValue("lastname",fn);
+}
+
 QVariant CompetitorRunsModel::value(int row_ix, int column_ix) const
 {
 	if(column_ix == col_runs_runFlags) {
@@ -406,4 +416,3 @@ QVariant CompetitorRunsModel::value(int row_ix, int column_ix) const
 	}
 	return Super::value(row_ix, column_ix);
 }
-
