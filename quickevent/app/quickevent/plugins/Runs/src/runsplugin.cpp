@@ -596,7 +596,7 @@ qf::core::utils::TreeTable RunsPlugin::stageResultsTable(int stage_id, const QSt
 
 	{
 		qf::core::sql::QueryBuilder qb;
-		qb.select2("competitors", "registration, iofId, lastName, firstName, startNumber, country")
+        qb.select2("competitors", "registration, iofId, lastName, firstName, startNumber, club, country")
 			.select("COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName")
 			.select2("runs", "*")
 			.select2("clubs", "name, abbr, importId")
@@ -1214,7 +1214,7 @@ qf::core::utils::TreeTable RunsPlugin::startListClassesTable(const QString &wher
 	tt.appendColumn("courses.startNumber", QMetaType(QMetaType::Int));
 
 	qfs::QueryBuilder qb2;
-	qb2.select2("competitors", "lastName, firstName, registration, iofId, startNumber, country")
+	qb2.select2("competitors", "lastName, firstName, registration, iofId, startNumber, country, club")
 		.select("COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName")
 		.select2("runs", "id, siId, startTimeMs")
 		.select2("clubs","name, abbr, importId")
