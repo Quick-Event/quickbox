@@ -5,6 +5,7 @@
 
 #include <quickevent/core/og/sqltablemodel.h>
 #include <quickevent/gui/og/itemdelegate.h>
+#include <quickevent/core/exporters/stageresultscsvexporter.h>
 
 #include <qf/qmlwidgets/dialogs/dialog.h>
 #include <qf/qmlwidgets/framework/mainwindow.h>
@@ -276,7 +277,8 @@ void RunsWidget::settleDownInPartWidget(::PartWidget *part_widget)
 			auto *a = new qfw::Action(tr("&Startlist for TV Graphics"));
 			connect(a, &qfw::Action::triggered, this, &RunsWidget::export_startList_stage_tv_graphics);
 			m_export_stlist_csv->addActionInto(a);
-		}	}
+		}
+	}
 
 	qfw::Action *a_export_results = a_export->addMenuInto("results", tr("Results"));
 	qfw::Action *a_export_results_stage = a_export_results->addMenuInto("currentStage", tr("Current stage"));
@@ -297,6 +299,10 @@ void RunsWidget::settleDownInPartWidget(::PartWidget *part_widget)
 		{
 			qfw::Action *a = a_export_results_stage->addActionInto("csos", tr("CSOS"));
 			connect(a, &qfw::Action::triggered, this, &RunsWidget::export_results_stage_csos);
+		}
+		{
+			qfw::Action *a = a_export_results_stage->addActionInto("csv", tr("&CSV"));
+			connect(a, &qfw::Action::triggered, this, &RunsWidget::export_results_stage_csv);
 		}
 	}
 	qfw::Action *a_export_results_overall = a_export_results->addMenuInto("overall", tr("Overall"));
@@ -995,4 +1001,19 @@ void RunsWidget::export_startList_stage_tv_graphics()
 	if(fn.isEmpty())
 		return;
 	getPlugin<RunsPlugin>()->exportStartListCurrentStageTvGraphics(fn);
+}
+
+void RunsWidget::export_results_stage_csv()
+{
+	QString fn = getSaveFileName("results.csv", selectedStageId());
+	if(fn.isEmpty())
+		return;
+
+	quickevent::core::exporters::StageResultsCsvExporter exp;
+	QFileInfo fi(fn);
+	exp.setOutDir(fi.absolutePath());
+	exp.setOutFile(fi.fileName());
+	exp.setSimplePath(true);
+	exp.setWithDidNotStart(true);
+	exp.generateCsvSingle();
 }

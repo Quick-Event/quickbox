@@ -52,7 +52,13 @@ void StageResultsCsvExporter::exportClasses(bool single_file)
 	csv_dir.mkpath(sub_dir);
 
 	if (single_file) {
-		QFile f_csv(csv_dir.absolutePath() + '/' + sub_dir + '/' + "results.csv");
+		QString file_name = outFile();
+		if (file_name.isEmpty())
+			file_name = "results.csv";
+		QString path = csv_dir.absolutePath() +'/';
+		if (!simplePath())
+			path += sub_dir + '/';
+		QFile f_csv(path + file_name);
 		qfInfo() << "Generating:" << f_csv.fileName();
 		if (!f_csv.open(QFile::WriteOnly))
 			qfError() << "Cannot open file" << f_csv.fileName() + "for writing.";
@@ -102,17 +108,18 @@ void StageResultsCsvExporter::exportClass(int class_id, QTextStream &csv)
 	QString qs = qb.toString();
 	qs.replace("{{stage_id}}", QString::number(currentStage()));
 	qs.replace("{{class_id}}", QString::number(class_id));
+	QString with_dns = (withDidNotStart()) ? "" : " AND runs.finishTimeMs>0";
 	qf::core::sql::Query q = execSql(qs);
 	if(q.next()) {
 		QString class_name = q.value("classes.name").toString();
 		qf::core::sql::QueryBuilder qb2;
-		qb2.select2("competitors", "registration, lastName, firstName, country, club")
+		qb2.select2("competitors", "registration, lastName, firstName, country, club, iofId, startNumber")
 				.select("COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName")
 				.select2("runs", "*")
 				.select2("clubs","name, abbr")
 				.from("competitors")
 				.join("LEFT JOIN clubs ON substr(competitors.registration, 1, 3) = clubs.abbr")
-				.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId={{stage_id}} AND runs.isRunning AND runs.finishTimeMs>0", "JOIN")
+				.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId={{stage_id}} AND runs.isRunning"+with_dns, "JOIN")
 				.where("competitors.classId={{class_id}}")
 				.orderBy("runs.notCompeting, runs.disqualified, runs.timeMs");
 		QString qs2 = qb2.toString();
@@ -143,11 +150,23 @@ void StageResultsCsvExporter::exportClass(int class_id, QTextStream &csv)
 				if (club.isEmpty())
 					club = q2.value("competitors.registration").toString().left(3);
 			}
+
+			QString country_abbr;
+			qf::core::sql::QueryBuilder qb3;
+			qb3.select2("clubs","name, abbr")
+					.from("competitors")
+					.join("LEFT JOIN clubs ON competitors.country = clubs.name");
+			qf::core::sql::Query q3 = execSql(qb3.toString());
+			if(q3.next())
+				country_abbr = q2.value("clubs.abbr").toString();
+			csv << q2.value("competitors.iofId").toString() << m_separator;
+			csv << q2.value("competitors.startNumber").toString() << m_separator;
 			csv << class_name << m_separator;
 			csv << spos << m_separator;
 			csv << q2.value("competitorName").toString() << m_separator;
 			csv << club << m_separator;
 			csv << q2.value("competitors.country").toString() << m_separator;
+			csv << country_abbr << m_separator;
 			csv << stime << m_separator;
 			csv << run_status.toHtmlExportString();
 			csv << Qt::endl;
@@ -157,11 +176,14 @@ void StageResultsCsvExporter::exportClass(int class_id, QTextStream &csv)
 
 void StageResultsCsvExporter::exportCsvHeader(QTextStream &csv)
 {
+	csv << "IofId" << m_separator;
+	csv << "Bib" << m_separator;
 	csv << "Class" << m_separator;
 	csv << "Position" << m_separator;
 	csv << "Name" << m_separator;
 	csv << "Club" << m_separator;
 	csv << "Country" << m_separator;
+	csv << "CountryAbbr" << m_separator;
 	csv << "Time" << m_separator;
 	csv << "Status";
 	csv << Qt::endl;
