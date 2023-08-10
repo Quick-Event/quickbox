@@ -15,6 +15,10 @@ class QUICKEVENTCORE_DECL_EXPORT StageResultsCsvExporter : public FileExporter
 
 	using Super = FileExporter;
 public:
+	QF_PROPERTY_IMPL(QString, o, O, utFile)
+	QF_PROPERTY_IMPL(bool, s, S, implePath)
+	QF_PROPERTY_IMPL(bool, w, W, ithDidNotStart)
+public:
 	StageResultsCsvExporter(QObject *parent = nullptr);
 	void generateCsvMulti();
 	void generateCsvSingle();

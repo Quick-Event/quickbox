@@ -99,6 +99,7 @@ bool ResultsExporter::exportResults()
 		exp.setOutDir(ss.exportDir());
 		if (!ss.csvSeparator().isNull())
 			exp.setSeparator(ss.csvSeparator());
+		exp.setWithDidNotStart(ss.exportCsvWithDNS());
 		exp.generateCsvMulti();
 
 		whenFinishedRunCmd();
@@ -109,6 +110,7 @@ bool ResultsExporter::exportResults()
 		exp.setOutDir(ss.exportDir());
 		if (!ss.csvSeparator().isNull())
 			exp.setSeparator(ss.csvSeparator());
+		exp.setWithDidNotStart(ss.exportCsvWithDNS());
 		exp.generateCsvSingle();
 
 		whenFinishedRunCmd();

@@ -54,6 +54,7 @@ public:
 	void export_results_stage_iofxml30();
 	void export_results_stage_csos();
 	void export_results_overall_csos();
+	void export_results_stage_csv();
 
 private slots:
 	void on_btDraw_clicked();
