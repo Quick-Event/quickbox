@@ -9,22 +9,19 @@ namespace internal {
 
 QRect DesktopUtils::moveRectToVisibleDesktopScreen(const QRect &r)
 {
+	QRect ret = r;
 #if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
-	if(QApplication::screenAt(r.topLeft())) {
-		return r;
-	}
-	else {
-		if(auto *first_screen = QApplication::screens().value(0)) {
-			auto ret = r;
-			ret.moveTopLeft(first_screen->geometry().topLeft());
-			return ret;
-		}
-		return r;
-	}
+	QScreen *scr = QApplication::screenAt(ret.topLeft());
+	QRect screen_rect = scr? scr->geometry(): QRect();
 #else
-	return ret;
+	QDesktopWidget *dw = QApplication::desktop();
+	QRect screen_rect = dw->screenGeometry(ret.topLeft());
 #endif
+	if(screen_rect.isValid() && !screen_rect.contains(ret.topLeft()))
+		ret.moveTopLeft(screen_rect.topLeft());
+	return ret;
 }
+
 
 } // namespace internal
 } // namespace qmlwidgets
