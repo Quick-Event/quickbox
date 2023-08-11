@@ -1,6 +1,5 @@
 #include "dialog.h"
 #include "internal/captionframe.h"
-#include "../frame.h"
 #include "../framework/dialogwidget.h"
 #include "../framework/datadialogwidget.h"
 #include "../menubar.h"
