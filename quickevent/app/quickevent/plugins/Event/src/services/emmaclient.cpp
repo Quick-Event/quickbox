@@ -406,7 +406,7 @@ void EmmaClient::exportStartListRacomTxt()
 	int current_stage = getPlugin<EventPlugin>()->currentStageId();
 	qfs::QueryBuilder qb;
 	qb.select2("runs", "startTimeMs, siId, competitorId, isrunning, leg")
-            .select2("competitors","firstName, lastName, registration, club")
+			.select2("competitors","firstName, lastName, registration, club")
 			.select2("classes","name")
 			.select2("cards", "id, startTime")
 			.from("runs")
@@ -482,53 +482,32 @@ void EmmaClient::exportStartListRacomTxt()
 			// has start in si card (P, T, HDR) & not used in relays
 			start_time_card *= 1000; // msec
 			start_time_card -= start00;
-//          new emma client can handle negative times
-//			if (start_time_card < 0) // 12h format
-//				start_time_card += (12*60*60*1000);
 			msec = start_time_card;
 		}
 
-		QString tm2;
-		//TODO zmenit na format mmm.ss,zzzz
-//      new emma client can handle negative times
-//		if (msec < 0)
-//			continue; // emma client has problem with negative times
+		// new emma client can handle negative times
+
 		int min = (msec / 60000);
-		if(min < 10)
-			tm2 += "00";
-		else if(min < 100)
-			tm2 += "0";
-		tm2 += QString::number(min);
-		tm2 += '.';
-		int sec = (msec % 60000 / 1000);
-		if(sec < 10)
-			tm2 += "0";
-		tm2 += QString::number(sec);
-		tm2 += ',';
-		int zzzz = msec % 1000 * 10;
-		if(zzzz < 10)
-			tm2 += "000";
-		else if(zzzz < 100)
-			tm2 += "00";
-		else if(zzzz < 1000)
-			tm2 += "000";
-		tm2 += QString::number(zzzz);
+		int sec = (abs(msec) % 60000 / 1000);
+		int zzzz = abs(msec) % 1000 * 10;
+
+		QString tm2 = QString("%1.%2,%3").arg(min,3,10,QChar('0')).arg(sec,2,10,QChar('0')).arg(zzzz,4,10,QChar('0'));
 
 		if (id != 0) // filter bad data
 		{
-            QString s = QString("%1 %2 %3 %4 %5 %6").arg(id_or_bib , 5, 10, QChar(' ')).arg(si, 8, 10, QChar(' ')).arg(class_name).arg(reg).arg(name).arg(tm2);
-            ts << s;
-            QString club = q2.value("competitors.club").toString();
-            if (club.isEmpty()) {
-                qf::core::sql::Query q;
-                q.exec(QStringLiteral("SELECT name FROM clubs WHERE abbr='%1'").arg(reg.left(3)), qf::core::Exception::Throw);
-                if (q.next()) {
-                    club = q.value(0).toString();
-                    ts << " " << club << "\n";
-                }
-            }
-            else
-                ts << " " << club << "\n";
+			QString s = QString("%1 %2 %3 %4 %5 %6").arg(id_or_bib , 5, 10, QChar(' ')).arg(si, 8, 10, QChar(' ')).arg(class_name).arg(reg).arg(name).arg(tm2);
+			ts << s;
+			QString club = q2.value("competitors.club").toString();
+			if (club.isEmpty()) {
+				qf::core::sql::Query q;
+				q.exec(QStringLiteral("SELECT name FROM clubs WHERE abbr='%1'").arg(reg.left(3)), qf::core::Exception::Throw);
+				if (q.next()) {
+					club = q.value(0).toString();
+					ts << " " << club << "\n";
+				}
+			}
+			else
+				ts << " " << club << "\n";
 		}
 	}
 }
