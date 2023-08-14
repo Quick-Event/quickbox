@@ -814,7 +814,7 @@ bool XmlImporter::importEvent(QXmlStreamReader &reader, const XmlCreators creato
 bool XmlImporter::importXML30()
 {
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	QString fn = qfd::FileDialog::getOpenFileName(fwk, tr("Open XML Entry file"), QString(), tr("IOF XML v3 files (*.xml)"));
+	QString fn = qfd::FileDialog::getOpenFileName(fwk, tr("Open IOF XML 3.0 file"), QString(), tr("IOF XML v3 files (*.xml)"));
 	if(fn.isEmpty())
 		return false;
 	QFile file(fn);
