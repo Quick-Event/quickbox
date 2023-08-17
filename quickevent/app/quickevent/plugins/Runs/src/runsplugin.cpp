@@ -72,7 +72,7 @@ const qf::core::utils::Table &RunsPlugin::runnersTable(int stage_id)
 {
 	if(m_runnersTableCacheStageId != stage_id) {
 		qfs::QueryBuilder qb;
-		qb.select2("competitors", "registration")
+		qb.select2("competitors", "registration, startNumber")
 				.select("COALESCE(lastName, '') || ' ' || COALESCE(firstName, '') AS competitorName")
 				.select2("runs", "id, siId, competitorId")
 				.select("runs.id AS runId")
