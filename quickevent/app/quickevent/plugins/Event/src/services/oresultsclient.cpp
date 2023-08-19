@@ -259,6 +259,7 @@ void OResultsClient::onCompetitorChanged(int competitor_id)
 		   "runs.notFinish, "
 		   "runs.notCompeting, "
 		   "runs.startTimeMs, "
+		   "runs.finishTimeMs, "
 		   "runs.timeMs "
 		   "FROM runs "
 		   "INNER JOIN competitors ON competitors.id = runs.competitorId "
@@ -279,6 +280,7 @@ void OResultsClient::onCompetitorChanged(int competitor_id)
 		bool isDidNotFinish = q.value("notFinish").toBool();
 		bool isNotCompeting = q.value("notCompeting").toBool();
 		int start_time = q.value("startTimeMs").toInt();
+		int finish_time = q.value("finishTimeMs").toInt();
 		int running_time = q.value("timeMs").toInt();
 
 		int status_code = mop_run_status_code(running_time, isDisq, isDisqByOrganizer, isMissPunch, isBadCheck, isDidNotStart, isDidNotFinish, isNotCompeting);
@@ -291,7 +293,7 @@ void OResultsClient::onCompetitorChanged(int competitor_id)
 			competitor.insert("bib", start_num);
 		if(start_time != 0)
 			competitor.insert("st", mop_start(start_time));
-		if(running_time != 0)
+		if(finish_time > start_time && running_time != 0)
 			competitor.insert("rt", running_time / 100);
 
 
