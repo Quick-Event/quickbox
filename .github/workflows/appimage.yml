@@ -2,12 +2,12 @@ name: AppImage
 
 on:
   push:
-    branches: [ "master", "qt6" ]
+    branches: [ "master", "qe3" ]
   pull_request:
-    branches: [ "master", "qt6" ]
+    branches: [ "master", "qe3" ]
 
 jobs:
-  ubuntu-qt6:
+  ubuntu-qe3:
     name: Qt 6.5 / Ubuntu 20.04
     runs-on: ubuntu-20.04
     steps:

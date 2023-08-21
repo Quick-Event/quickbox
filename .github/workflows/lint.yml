@@ -2,9 +2,9 @@ name: Lint
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "master", "qe3" ]
   pull_request:
-    branches: [ "master", "qt6" ]
+    branches: [ "master", "qe3" ]
 
 jobs:
   clang-tidy:

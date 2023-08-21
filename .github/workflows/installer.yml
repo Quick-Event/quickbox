@@ -2,9 +2,9 @@ name: Installer
 
 on:
   push:
-    branches: [ "master", "qt6", "qt6-test" ]
+    branches: [ "master", "qe3" ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ "master", "qe3" ]
 
 jobs:
   windows:
