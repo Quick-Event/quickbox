@@ -1,7 +1,7 @@
 #include "runflagsdialog.h"
 #include "ui_runflagsdialog.h"
 
-#include "runstablemodel.h"
+#include <qf/core/model/sqltablemodel.h>
 
 namespace Runs {
 
@@ -24,7 +24,7 @@ RunFlagsDialog::~RunFlagsDialog()
 	delete ui;
 }
 
-void RunFlagsDialog::load(RunsTableModel *model, int row)
+void RunFlagsDialog::load(qf::core::model::SqlTableModel *model, int row)
 {
 	m_model = model;
 	m_row = row;

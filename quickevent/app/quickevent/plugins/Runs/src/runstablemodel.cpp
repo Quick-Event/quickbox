@@ -34,7 +34,7 @@ RunsTableModel::RunsTableModel(QObject *parent)
 	setColumn(col_runs_finishTimeMs, ColumnDefinition("runs.finishTimeMs", tr("Finish")).setCastType(qMetaTypeId<quickevent::core::og::TimeMs>()));
 	setColumn(col_runs_penaltyTimeMs, ColumnDefinition("runs.penaltyTimeMs", tr("Penalty")).setCastType(qMetaTypeId<quickevent::core::og::TimeMs>()));
 	setColumn(col_runFlags, ColumnDefinition("runFlags", tr("Run flags")).setReadOnly(true));
-	setColumn(col_cardFlags, ColumnDefinition("runFlags", tr("Card flags")).setReadOnly(true));
+	setColumn(col_cardFlags, ColumnDefinition("cardFlags", tr("Card flags")).setReadOnly(true));
 	//setColumn(col_runs_notCompeting, ColumnDefinition("runs.notCompeting", tr("NC")).setToolTip(tr("Not competing")));
 	//setColumn(col_runs_cardRentRequested, ColumnDefinition("runs.cardLent", tr("RR")).setToolTip(tr("Card rent requested")));
 	//setColumn(col_cardInLentTable, ColumnDefinition("cardInLentTable", tr("RT", "cardInLentTable")).setToolTip(tr("Card in rent table")));
