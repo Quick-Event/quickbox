@@ -33,7 +33,7 @@ jobs:
       - name: Get libraries
 #         if: steps.cache-libs.outputs.cache-hit != 'true'
         run: |
-          choco install openssl.light --params "/InstallDir:C:\openssl" --version 3.1.2 -y
+          choco install openssl.light --params "/InstallDir:C:\openssl" --version 1.1.1 -y
           choco install postgresql14 --version 14.5.1 -y
         shell: cmd
 
