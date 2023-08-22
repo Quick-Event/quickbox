@@ -7,16 +7,13 @@
     <x>0</x>
     <y>0</y>
     <width>747</width>
-    <height>969</height>
+    <height>1126</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Print Report Options</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
-   <property name="spacing">
-    <number>9</number>
-   </property>
+  <layout class="QGridLayout" name="gridLayout_2">
    <property name="leftMargin">
     <number>5</number>
    </property>
@@ -29,26 +26,7 @@
    <property name="bottomMargin">
     <number>5</number>
    </property>
-   <item>
-    <widget class="QGroupBox" name="grpStages">
-     <property name="title">
-      <string>Stages count</string>
-     </property>
-     <layout class="QFormLayout" name="formLayout">
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_8">
-        <property name="text">
-         <string>Number of stages</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QSpinBox" name="edStagesCount"/>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
+   <item row="1" column="0">
     <widget class="QGroupBox" name="grpLegs">
      <property name="title">
       <string>Legs count</string>
@@ -67,7 +45,26 @@
      </layout>
     </widget>
    </item>
-   <item>
+   <item row="0" column="0">
+    <widget class="QGroupBox" name="grpStages">
+     <property name="title">
+      <string>Stages count</string>
+     </property>
+     <layout class="QFormLayout" name="formLayout">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_8">
+        <property name="text">
+         <string>Number of stages</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QSpinBox" name="edStagesCount"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="2" column="0">
     <widget class="QGroupBox" name="grpClassFilter">
      <property name="title">
       <string>Class filter</string>
@@ -76,7 +73,7 @@
       <bool>true</bool>
      </property>
      <property name="checked">
-      <bool>true</bool>
+      <bool>false</bool>
      </property>
      <layout class="QGridLayout" name="gridLayout">
       <property name="leftMargin">
@@ -137,68 +134,7 @@
      </layout>
     </widget>
    </item>
-   <item>
-    <widget class="QGroupBox" name="grpClassStartSelection">
-     <property name="title">
-      <string>Class filter - start number selection</string>
-     </property>
-     <property name="checkable">
-      <bool>true</bool>
-     </property>
-     <layout class="QFormLayout" name="formLayout_2">
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_11">
-        <property name="text">
-         <string>Use only class from selected start</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QComboBox" name="cbxStartNumber"/>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
-    <widget class="QGroupBox" name="grpResultOptions">
-     <property name="title">
-      <string>Result options</string>
-     </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_41">
-      <item>
-       <widget class="QLabel" name="label_9">
-        <property name="text">
-         <string>Number of places in each class</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QSpinBox" name="edNumPlaces">
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-        <property name="minimum">
-         <number>1</number>
-        </property>
-        <property name="maximum">
-         <number>9999</number>
-        </property>
-        <property name="value">
-         <number>9999</number>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="chkExcludeDisq">
-        <property name="text">
-         <string>Exclude DISQ</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
+   <item row="4" column="0">
     <widget class="QGroupBox" name="grpStartersOptions">
      <property name="title">
       <string>Starters options</string>
@@ -239,12 +175,12 @@
      </layout>
     </widget>
    </item>
-   <item>
+   <item row="5" column="0">
     <widget class="QGroupBox" name="grpStartOptions">
      <property name="title">
       <string>Start options</string>
      </property>
-     <layout class="QHBoxLayout" name="horizontalLayout">
+     <layout class="QGridLayout" name="gridLayout_4">
       <property name="leftMargin">
        <number>5</number>
       </property>
@@ -257,89 +193,73 @@
       <property name="bottomMargin">
        <number>5</number>
       </property>
-      <item>
+      <item row="1" column="1">
        <widget class="QCheckBox" name="chkStartOpts_PrintVacants">
         <property name="text">
          <string>Print vacants</string>
         </property>
        </widget>
       </item>
-      <item>
+      <item row="1" column="2">
        <widget class="QCheckBox" name="chkStartOpts_PrintStartNumbers">
         <property name="text">
          <string>Print start numbers</string>
         </property>
        </widget>
       </item>
+      <item row="0" column="1">
+       <widget class="QLabel" name="label_11">
+        <property name="text">
+         <string>Use only class from selected start</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QComboBox" name="cbxStartNumber"/>
+      </item>
      </layout>
     </widget>
    </item>
-   <item>
-    <widget class="QGroupBox" name="grpStartTimes">
+   <item row="3" column="0">
+    <widget class="QGroupBox" name="grpResultOptions">
      <property name="title">
-      <string>Start time format</string>
+      <string>Result options</string>
      </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_4">
+     <layout class="QHBoxLayout" name="horizontalLayout_41">
       <item>
-       <widget class="QRadioButton" name="btStartTimes1">
+       <widget class="QLabel" name="label_9">
         <property name="text">
-         <string>start at 0 (mmm.ss)  </string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
+         <string>Number of places in each class</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QRadioButton" name="btStartTimes2">
+       <widget class="QSpinBox" name="edNumPlaces">
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="maximum">
+         <number>9999</number>
+        </property>
+        <property name="value">
+         <number>9999</number>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="chkExcludeDisq">
         <property name="text">
-         <string>daytime (hh:mm:ss)</string>
+         <string>Exclude DISQ</string>
         </property>
        </widget>
       </item>
      </layout>
     </widget>
    </item>
-   <item>
-    <widget class="QGroupBox" name="grpStartlistOrderBy">
-     <property name="title">
-      <string>Start list is sorted first by</string>
-     </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_5">
-      <item>
-       <widget class="QRadioButton" name="btStartOrder1">
-        <property name="toolTip">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;(class name, start time,  runner name)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-        <property name="text">
-         <string>Class names</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QRadioButton" name="btStartOrder2">
-        <property name="toolTip">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;(start time, class name, runner name)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-        <property name="text">
-         <string>Start times</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QRadioButton" name="btStartOrder3">
-        <property name="toolTip">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;(runner name, class name, start time)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-        <property name="text">
-         <string>Runner names</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
+   <item row="8" column="0">
     <widget class="QGroupBox" name="grpPageLayout">
      <property name="title">
       <string>Page layout</string>
@@ -507,20 +427,7 @@
      </layout>
     </widget>
    </item>
-   <item>
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item>
+   <item row="10" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
       <widget class="QPushButton" name="btSaveAsDefault">
@@ -548,6 +455,84 @@
      </item>
     </layout>
    </item>
+   <item row="7" column="0">
+    <widget class="QGroupBox" name="grpStartlistOrderBy">
+     <property name="title">
+      <string>Start list is sorted first by</string>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_5">
+      <item>
+       <widget class="QRadioButton" name="btStartOrder1">
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;(class name, start time,  runner name)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="text">
+         <string>Class names</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="btStartOrder2">
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;(start time, class name, runner name)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="text">
+         <string>Start times</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="btStartOrder3">
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;(runner name, class name, start time)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="text">
+         <string>Runner names</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="9" column="0">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="6" column="0">
+    <widget class="QGroupBox" name="grpStartTimes">
+     <property name="title">
+      <string>Start time format</string>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_4">
+      <item>
+       <widget class="QRadioButton" name="btStartTimes1">
+        <property name="text">
+         <string>start at 0 (mmm.ss)  </string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="btStartTimes2">
+        <property name="text">
+         <string>daytime (hh:mm:ss)</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
   </layout>
  </widget>
  <tabstops>
@@ -559,8 +544,6 @@
   <tabstop>btClassNames</tabstop>
   <tabstop>edFilter</tabstop>
   <tabstop>chkClassFilterDoesntMatch</tabstop>
-  <tabstop>grpClassStartSelection</tabstop>
-  <tabstop>cbxStartNumber</tabstop>
   <tabstop>edNumPlaces</tabstop>
   <tabstop>chkExcludeDisq</tabstop>
   <tabstop>edStartersOptionsLineSpacing</tabstop>

@@ -1448,7 +1448,6 @@ void RunsPlugin::report_startListClasses()
 	dlg.setStartListOptionsVisible(true);
 	dlg.setPageLayoutVisible(true);
 	dlg.setStartTimeFormatVisible(true);
-	dlg.setClassStartSelectionVisible(true);
 	if(dlg.exec()) {
 		auto tt = startListClassesTable(dlg.sqlWhereExpression(getPlugin<EventPlugin>()->currentStageId()), dlg.isStartListPrintVacants(), dlg.startTimeFormat());
 		auto opts = dlg.optionsMap();
@@ -1502,7 +1501,6 @@ void RunsPlugin::report_startListStarters()
 	dlg.setStartListOptionsVisible(true);
 	dlg.setStartListPrintVacantsVisible(false);
 	dlg.setStartersOptionsVisible(true);
-	dlg.setClassStartSelectionVisible(true);
 	if(dlg.exec()) {
 		auto tt = startListStartersTable(dlg.sqlWhereExpression(getPlugin<EventPlugin>()->currentStageId()));
 		auto opts = dlg.optionsMap();
@@ -1592,7 +1590,8 @@ void RunsPlugin::report_resultsClasses()
 	dlg.setResultOptionsVisible(true);
 	//dlg.setPageLayoutVisible(false);
 	if(dlg.exec()) {
-		auto tt = currentStageResultsTable(dlg.sqlWhereExpression(), dlg.resultNumPlaces(), dlg.options().isResultExcludeDisq());
+		auto sql_where = dlg.sqlWhereExpression();
+		auto tt = currentStageResultsTable(sql_where, dlg.resultNumPlaces(), dlg.options().isResultExcludeDisq());
 		auto opts = dlg.optionsMap();
 		QVariantMap props;
 		props["options"] = opts;
