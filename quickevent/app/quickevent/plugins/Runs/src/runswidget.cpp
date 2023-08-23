@@ -1002,7 +1002,8 @@ void RunsWidget::export_results_stage_csv()
 	if(fn.isEmpty())
 		return;
 
-	quickevent::core::exporters::StageResultsCsvExporter exp;
+	bool is_iof_race = getPlugin<EventPlugin>()->eventConfig()->isIofRace();
+	quickevent::core::exporters::StageResultsCsvExporter exp(is_iof_race);
 	QFileInfo fi(fn);
 	exp.setOutDir(fi.absolutePath());
 	exp.setOutFile(fi.fileName());

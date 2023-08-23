@@ -14,8 +14,9 @@ namespace quickevent {
 namespace core {
 namespace exporters {
 
-StageResultsCsvExporter::StageResultsCsvExporter(QObject *parent)
-	: Super(parent)
+StageResultsCsvExporter::StageResultsCsvExporter(bool is_iof_race, QObject *parent)
+	: Super(parent),
+	m_isIofRace(is_iof_race)
 {
 }
 
@@ -113,7 +114,7 @@ void StageResultsCsvExporter::exportClass(int class_id, QTextStream &csv)
 	if(q.next()) {
 		QString class_name = q.value("classes.name").toString();
 		qf::core::sql::QueryBuilder qb2;
-		qb2.select2("competitors", "registration, lastName, firstName, country, club, iofId, startNumber")
+		qb2.select2("competitors", "registration, lastName, firstName, country, club, iofId, startNumber, licence")
 				.select("COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName")
 				.select2("runs", "*")
 				.select2("clubs","name, abbr")
@@ -131,11 +132,12 @@ void StageResultsCsvExporter::exportClass(int class_id, QTextStream &csv)
 		int prev_time_ms = 0;
 		QString spos; // keep last number when same time
 		while(q2.next()) {
-			pos++;
 			auto run_status = quickevent::core::RunStatus::fromQuery(q2);
 			int time_ms = q2.value(QStringLiteral("timeMs")).toInt();
 			QString stime = og::TimeMs(time_ms).toString('.');
-			if(run_status.isOk()) {
+			bool is_finish = q2.value(QStringLiteral("finishTimeMs")).toInt() > 0;
+			if(run_status.isOk() && is_finish) {
+				pos++;
 				if(time_ms != prev_time_ms)
 					spos = QString::number(pos);
 			}
@@ -151,24 +153,36 @@ void StageResultsCsvExporter::exportClass(int class_id, QTextStream &csv)
 					club = q2.value("competitors.registration").toString().left(3);
 			}
 
-			QString country_abbr;
-			qf::core::sql::QueryBuilder qb3;
-			qb3.select2("clubs","name, abbr")
-					.from("competitors")
-					.join("LEFT JOIN clubs ON competitors.country = clubs.name");
-			qf::core::sql::Query q3 = execSql(qb3.toString());
-			if(q3.next())
-				country_abbr = q2.value("clubs.abbr").toString();
-			csv << q2.value("competitors.iofId").toString() << m_separator;
+			if (m_isIofRace)
+				csv << q2.value("competitors.iofId").toString() << m_separator;
+			else
+				csv << q2.value("competitors.registration").toString() << m_separator;
 			csv << q2.value("competitors.startNumber").toString() << m_separator;
 			csv << class_name << m_separator;
 			csv << spos << m_separator;
 			csv << q2.value("competitorName").toString() << m_separator;
 			csv << club << m_separator;
-			csv << q2.value("competitors.country").toString() << m_separator;
-			csv << country_abbr << m_separator;
+			if (m_isIofRace) {
+				QString country_abbr;
+				qf::core::sql::QueryBuilder qb3;
+				qb3.select2("clubs","name, abbr")
+						.from("competitors")
+						.join("LEFT JOIN clubs ON competitors.country = clubs.name");
+				qf::core::sql::Query q3 = execSql(qb3.toString());
+				if(q3.next())
+					country_abbr = q2.value("clubs.abbr").toString();
+
+				csv << q2.value("competitors.country").toString() << m_separator;
+				csv << country_abbr << m_separator;
+			}
+			else {
+				csv << q2.value("competitors.licence").toString() << m_separator;
+				csv << q2.value("competitors.iofId").toString() << m_separator;
+				csv << q2.value("competitors.registration").toString().left(3) << m_separator;
+			}
 			csv << stime << m_separator;
-			csv << run_status.toHtmlExportString();
+			QString rs = run_status.toHtmlExportString();
+			csv << ((rs == "OK" && !is_finish) ? "ERR" : rs);	// older races without proper run flags
 			csv << Qt::endl;
 		}
 	}
@@ -176,14 +190,24 @@ void StageResultsCsvExporter::exportClass(int class_id, QTextStream &csv)
 
 void StageResultsCsvExporter::exportCsvHeader(QTextStream &csv)
 {
-	csv << "IofId" << m_separator;
+	if (m_isIofRace)
+		csv << "IofId" << m_separator;
+	else
+		csv << "Reg" << m_separator;
 	csv << "Bib" << m_separator;
 	csv << "Class" << m_separator;
 	csv << "Position" << m_separator;
 	csv << "Name" << m_separator;
 	csv << "Club" << m_separator;
-	csv << "Country" << m_separator;
-	csv << "CountryAbbr" << m_separator;
+	if (m_isIofRace) {
+		csv << "Country" << m_separator;
+		csv << "CountryAbbr" << m_separator;
+	}
+	else {
+		csv << "Lic" << m_separator;
+		csv << "IofId" << m_separator;
+		csv << "ClubAbbr" << m_separator;
+	}
 	csv << "Time" << m_separator;
 	csv << "Status";
 	csv << Qt::endl;
