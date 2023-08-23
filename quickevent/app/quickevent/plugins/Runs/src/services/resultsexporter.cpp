@@ -95,7 +95,8 @@ bool ResultsExporter::exportResults()
 		return true;
 	}
 	else if(ss.outputFormat() == static_cast<int>(ResultsExporterSettings::OutputFormat::CSVMulti)) {
-		quickevent::core::exporters::StageResultsCsvExporter exp;
+		bool is_iof_race = getPlugin<EventPlugin>()->eventConfig()->isIofRace();
+		quickevent::core::exporters::StageResultsCsvExporter exp(is_iof_race);
 		exp.setOutDir(ss.exportDir());
 		if (!ss.csvSeparator().isNull())
 			exp.setSeparator(ss.csvSeparator());
@@ -106,7 +107,8 @@ bool ResultsExporter::exportResults()
 		return true;
 	}
 	else if(ss.outputFormat() == static_cast<int>(ResultsExporterSettings::OutputFormat::CSV)) {
-		quickevent::core::exporters::StageResultsCsvExporter exp;
+		bool is_iof_race = getPlugin<EventPlugin>()->eventConfig()->isIofRace();
+		quickevent::core::exporters::StageResultsCsvExporter exp(is_iof_race);
 		exp.setOutDir(ss.exportDir());
 		if (!ss.csvSeparator().isNull())
 			exp.setSeparator(ss.csvSeparator());
