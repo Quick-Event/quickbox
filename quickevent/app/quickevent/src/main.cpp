@@ -111,7 +111,8 @@ int main(int argc, char *argv[])
 		if(lc_name.isEmpty() || lc_name == QLatin1String("system"))
 			lc_name = QLocale::system().name();
 
-		qfInfo() << "Loading translations for:" << lc_name;
+		auto lc_dir = QCoreApplication::applicationDirPath() + "translations";
+		qfInfo() << "Loading translations for:" << lc_name << "search dir:" << lc_dir;
 
 		for(const auto &file_name : {
 				QStringLiteral("libqfcore"),
@@ -122,7 +123,7 @@ int main(int argc, char *argv[])
 				QStringLiteral("quickevent"),
 		}) {
 			QTranslator *translator = new QTranslator(&app);
-			bool ok = translator->load(QLocale(lc_name), file_name, QString("-"), QString("translations"));
+			bool ok = translator->load(QLocale(lc_name), file_name, QString("-"), lc_dir);
 			if (ok) {
 				ok = QCoreApplication::installTranslator(translator);
 			}
