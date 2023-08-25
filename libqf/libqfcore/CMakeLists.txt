@@ -32,6 +32,7 @@ add_library(libqfcore SHARED
     src/utils/timescope.cpp
     src/utils/treeitembase.cpp
     src/utils/treetable.cpp
+	images/qfcore_images.qrc
     )
 
 target_link_libraries(libqfcore PUBLIC libnecrolog Qt::Core Qt::Sql PRIVATE Qt::Gui Qt::Qml Qt::Xml libnecrolog)
