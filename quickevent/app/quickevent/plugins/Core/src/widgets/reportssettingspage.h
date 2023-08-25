@@ -25,6 +25,8 @@ private:
 	void load() override;
 	void save() override;
 
+	QString defaultReportsDirectory() const;
+
 	void setReportsDirectory(const QString dir);
 private:
 	Ui::ReportsSettingsPage *ui;

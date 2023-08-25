@@ -21,6 +21,8 @@ ReportsSettingsPage::ReportsSettingsPage(QWidget *parent) :
 	//m_settingsDir = plugin->settingsDir() + "/reports";
 	m_caption = tr("Reports");
 	ui->setupUi(this);
+
+	ui->lblHelp->setText(ui->lblHelp->text().arg(defaultReportsDirectory()));
 }
 
 ReportsSettingsPage::~ReportsSettingsPage()
@@ -66,12 +68,17 @@ void ReportsSettingsPage::save()
 	qf::qmlwidgets::framework::Plugin::setReportsDir(dir);
 }
 
+QString ReportsSettingsPage::defaultReportsDirectory() const
+{
+	return QCoreApplication::applicationDirPath() + "/reports";
+}
+
 QString ReportsSettingsPage::reportsDirectory() const
 {
 	ReportsSettings settings;
 	auto dir = settings.reportsDirectory();
 	if(dir.isEmpty())
-		dir = QCoreApplication::applicationDirPath() + "/reports";
+		dir = defaultReportsDirectory();
 	return dir;
 }
 

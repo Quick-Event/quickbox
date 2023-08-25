@@ -43,9 +43,9 @@
     </layout>
    </item>
    <item>
-    <widget class="QLabel" name="label_2">
+    <widget class="QLabel" name="lblHelp">
      <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Reports directory is an directory, where QuickEvent is looking for reports definition QML files. It is populated during installation. Default reports directory is 'bin/reports' in QuickEvent install directory. If you want to have own reports, then you can make reports dir copy, modify QML files and redirect reports dir.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Reports directory is an directory, where QuickEvent is looking for reports definition QML files. It is populated during installation. Default reports directory is '%1' in QuickEvent install directory. If you want to have own reports, then you can make '%1' dir copy, modify QML files and redirect reports dir.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="wordWrap">
       <bool>true</bool>
