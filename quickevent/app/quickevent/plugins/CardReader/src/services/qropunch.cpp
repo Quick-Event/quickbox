@@ -10,7 +10,9 @@
 
 #include <qf/core/log.h>
 
+#include <QJsonParseError>
 #include <QTcpSocket>
+
 #include <regex>
 
 using qf::qmlwidgets::framework::getPlugin;
