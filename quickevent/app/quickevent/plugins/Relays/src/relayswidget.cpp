@@ -27,6 +27,7 @@
 #include <qf/qmlwidgets/dialogbuttonbox.h>
 #include <qf/qmlwidgets/reports/widgets/reportviewwidget.h>
 
+#include <qf/core/sql/query.h>
 #include <qf/core/model/sqltablemodel.h>
 #include <qf/core/sql/querybuilder.h>
 #include <qf/core/sql/transaction.h>

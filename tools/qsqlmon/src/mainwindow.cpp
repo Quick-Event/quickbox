@@ -19,6 +19,7 @@
 #include <qf/core/string.h>
 #include <qf/core/utils/fileutils.h>
 #include <qf/core/model/sqltablemodel.h>
+#include <qf/core/sql/query.h>
 #include <qf/qmlwidgets/tableview.h>
 #include <qf/qmlwidgets/dialogs/messagebox.h>
 #include <qf/qmlwidgets/dialogs/filedialog.h>

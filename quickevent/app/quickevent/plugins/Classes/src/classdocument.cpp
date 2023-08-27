@@ -1,11 +1,13 @@
 #include "classdocument.h"
 
+#include <plugins/Event/src/eventplugin.h>
+
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/framework/plugin.h>
 
 #include <qf/core/sql/querybuilder.h>
 #include <qf/core/assert.h>
-#include <plugins/Event/src/eventplugin.h>
+#include <qf/core/sql/query.h>
 
 using qf::qmlwidgets::framework::getPlugin;
 using Event::EventPlugin;

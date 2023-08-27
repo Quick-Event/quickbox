@@ -4,10 +4,9 @@
 #include "tablemodel.h"
 #include "../core/utils.h"
 #include "../sql/querybuilder.h"
-#include "../sql/query.h"
 
 #include <QMap>
-#include <QString>
+#include <QSqlError>
 
 namespace qf {
 namespace core {

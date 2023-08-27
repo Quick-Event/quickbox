@@ -3,8 +3,12 @@
 
 #include "competitordocument.h"
 
-#include <quickevent/gui/og/itemdelegate.h>
+#include <plugins/Event/src/eventplugin.h>
+#include <plugins/Runs/src/cardflagsdialog.h>
+#include <plugins/Runs/src/runflagsdialog.h>
+#include <plugins/Runs/src/runsplugin.h>
 
+#include <quickevent/gui/og/itemdelegate.h>
 #include <quickevent/core/og/sqltablemodel.h>
 #include <quickevent/core/og/timems.h>
 #include <quickevent/core/si/siid.h>
@@ -15,11 +19,8 @@
 
 #include <qf/core/sql/dbenum.h>
 #include <qf/core/sql/transaction.h>
+#include <qf/core/sql/query.h>
 #include <qf/core/assert.h>
-#include <plugins/Event/src/eventplugin.h>
-#include <plugins/Runs/src/cardflagsdialog.h>
-#include <plugins/Runs/src/runflagsdialog.h>
-#include <plugins/Runs/src/runsplugin.h>
 
 #include <QMenu>
 #include <QAction>

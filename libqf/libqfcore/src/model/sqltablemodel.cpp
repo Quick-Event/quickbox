@@ -5,8 +5,8 @@
 #include "../sql/connection.h"
 #include "../sql/dbenum.h"
 #include "../sql/dbenumcache.h"
+#include "../sql/query.h"
 
-#include <QSqlError>
 #include <QSqlRecord>
 #include <QSqlIndex>
 #include <QSqlField>

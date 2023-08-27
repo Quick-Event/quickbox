@@ -6,6 +6,8 @@
 #include "competitordocument.h"
 #include "competitorsplugin.h"
 
+#include <plugins/Event/src/eventplugin.h>
+
 #include <quickevent/core/si/siid.h>
 #include <quickevent/core/si/punchrecord.h>
 
@@ -21,11 +23,11 @@
 #include <qf/qmlwidgets/dialogbuttonbox.h>
 #include <qf/qmlwidgets/reports/widgets/reportviewwidget.h>
 #include <qf/core/model/sqltablemodel.h>
+#include <qf/core/sql/query.h>
 #include <qf/core/sql/querybuilder.h>
 #include <qf/core/sql/transaction.h>
 #include <qf/core/assert.h>
 #include <qf/core/utils/treetable.h>
-#include <plugins/Event/src/eventplugin.h>
 
 #include <QCheckBox>
 #include <QLabel>

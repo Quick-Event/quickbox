@@ -18,6 +18,7 @@
 #include <qf/qmlwidgets/dialogs/filedialog.h>
 #include <qf/qmlwidgets/dialogs/messagebox.h>
 
+#include <qf/core/sql/query.h>
 #include <qf/core/string.h>
 #include <qf/core/utils.h>
 #include <qf/core/collator.h>
