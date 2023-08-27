@@ -24,7 +24,8 @@ public:
 	static QString pluginDataDir();
 
 	static void setReportsDir(const QString &dir) { m_reportsDir = dir; }
-	static QString reportsDir() { return m_reportsDir; }
+	static QString reportsDir();
+	static QString defaultReportsDir();
 
 	QString homeDir() const { return pluginDataDir() + '/' +  featureId(); }
 	QString qmlDir() const { return homeDir() + "/qml"; }
@@ -46,7 +47,6 @@ public:
 	Q_SIGNAL void installed();
 private:
 	QString m_featureId;
-	static QString m_pluginDataDir;
 	static QString m_reportsDir;
 };
 

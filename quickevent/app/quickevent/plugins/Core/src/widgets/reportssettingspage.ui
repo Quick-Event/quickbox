@@ -34,9 +34,23 @@
       </widget>
      </item>
      <item>
-      <widget class="QToolButton" name="btSelectCustomReportsDirectory">
+      <widget class="QToolButton" name="btSelectCustomReportsDirectory_2">
        <property name="text">
         <string>...</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="btSetDefaultReportsDir">
+       <property name="toolTip">
+        <string>Set default reports directory</string>
+       </property>
+       <property name="text">
+        <string>...</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../../../../../../../libqf/libqfqmlwidgets/images/flat/qf_qmlwidgets_images_flat.qrc">
+         <normaloff>:/qf/qmlwidgets/images/flat/reload.svg</normaloff>:/qf/qmlwidgets/images/flat/reload.svg</iconset>
        </property>
       </widget>
      </item>
@@ -67,6 +81,8 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../../../../../../../libqf/libqfqmlwidgets/images/flat/qf_qmlwidgets_images_flat.qrc"/>
+ </resources>
  <connections/>
 </ui>

@@ -18,10 +18,12 @@ ReportsSettingsPage::ReportsSettingsPage(QWidget *parent) :
 	Super(parent),
 	ui(new Ui::ReportsSettingsPage)
 {
-	//auto *plugin = qf::qmlwidgets::framework::getPlugin<Core::CorePlugin>();
-	//m_settingsDir = plugin->settingsDir() + "/reports";
 	m_caption = tr("Reports");
 	ui->setupUi(this);
+
+	connect(ui->btSetDefaultReportsDir, &QAbstractButton::clicked, this, [this]() {
+		ui->edReportsDirectory->setText(qf::qmlwidgets::framework::Plugin::defaultReportsDir());
+	});
 }
 
 ReportsSettingsPage::~ReportsSettingsPage()

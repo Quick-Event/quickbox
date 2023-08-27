@@ -25,8 +25,6 @@ Plugin::Plugin(QObject *parent)
 	: QObject(parent)
 {
 	qfLogFuncFrame();
-	if(m_reportsDir.isEmpty())
-		m_reportsDir = QCoreApplication::applicationDirPath() + "/reports";
 }
 
 Plugin::~Plugin()
@@ -37,6 +35,19 @@ Plugin::~Plugin()
 QString Plugin::pluginDataDir()
 {
 	static QString dir = ":/quickevent";
+	return dir;
+}
+
+QString Plugin::reportsDir()
+{
+	if(m_reportsDir.isEmpty())
+		m_reportsDir = defaultReportsDir();
+	return m_reportsDir;
+}
+
+QString Plugin::defaultReportsDir()
+{
+	static auto dir = QCoreApplication::applicationDirPath() + "/reports";
 	return dir;
 }
 
