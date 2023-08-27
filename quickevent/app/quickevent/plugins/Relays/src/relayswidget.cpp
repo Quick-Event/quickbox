@@ -41,6 +41,7 @@
 
 //#define QF_TIMESCOPE_ENABLED
 #include <qf/core/utils/timescope.h>
+#include <random>
 
 namespace qfs = qf::core::sql;
 namespace qfw = qf::qmlwidgets;
@@ -325,8 +326,11 @@ void RelaysWidget::relays_assignNumbers()
 			ids << q2.value(0).toInt();
 			nums << start_num++;
 		}
-		if(method == 0)
-			std::random_shuffle(nums.begin(), nums.end());
+		if(method == 0) {
+			std::random_device rd;
+			std::mt19937 g(rd());
+			std::shuffle(nums.begin(), nums.end(), g);
+		}
 		for (int i = 0; i < ids.count(); ++i) {
 			q2.execThrow("UPDATE relays SET number=" + QString::number(nums[i]) + " WHERE id=" + QString::number(ids[i]));
 		}
