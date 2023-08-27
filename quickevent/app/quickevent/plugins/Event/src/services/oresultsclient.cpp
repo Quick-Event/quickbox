@@ -13,6 +13,7 @@
 #include <qf/core/utils/htmlutils.h>
 #include <qf/core/sql/query.h>
 
+#include <QCoreApplication>
 #include <QDir>
 #include <QFile>
 #include <QHttpPart>

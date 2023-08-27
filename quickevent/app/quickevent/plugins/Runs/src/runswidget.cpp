@@ -386,7 +386,9 @@ static bool list_length_greater_than(const QList<int> &lst1, const QList<int> &l
 
 static void shuffle(QList<int> &lst)
 {
-	std::random_shuffle(lst.begin(), lst.end());
+	std::random_device rd;
+	std::mt19937 g(rd());
+	std::shuffle(lst.begin(), lst.end(), g);
 }
 
 QList< QList<int> > RunsWidget::runnersByClubSortedByCount(int stage_id, int class_id, QMap<int, QString> &runner_id_to_club)

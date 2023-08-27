@@ -26,7 +26,6 @@ public:
 	~Application() Q_DECL_OVERRIDE;
 public:
 	static Application* instance(bool must_exist = true);
-	QString pluginDataDir() {return m_pluginDataDir;}
 	MainWindow* frameWork();
 
 	void loadStyleSheet(const QString &file = QString());
@@ -37,7 +36,6 @@ public slots:
 protected:
 	QJsonDocument profile();
 protected:
-	QString m_pluginDataDir;
 	QJsonDocument m_profile;
 	bool m_profileLoaded = false;
 	MainWindow* m_frameWork = nullptr;

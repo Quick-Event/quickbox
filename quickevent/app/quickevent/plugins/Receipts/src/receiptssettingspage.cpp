@@ -23,10 +23,6 @@ ReceiptsSettingsPage::ReceiptsSettingsPage(QWidget *parent)
 	ui->cbxWhenRunnerNotFound->setCurrentIndex(0);
 
 	connect(ui->btPrinterOptions, &QAbstractButton::clicked, this, &ReceiptsSettingsPage::onPrinterOptionsClicked);
-
-	loadReceptList();
-
-	QTimer::singleShot(0, this, &ReceiptsSettingsPage::load);
 }
 
 ReceiptsSettingsPage::~ReceiptsSettingsPage()
@@ -36,6 +32,7 @@ ReceiptsSettingsPage::~ReceiptsSettingsPage()
 
 void ReceiptsSettingsPage::load()
 {
+	loadReceptList();
 	ReceiptsSettings settings;
 	ui->chkAutoPrint->setChecked(settings.isAutoPrint());
 	ui->chkThisReaderOnly->setChecked(settings.isThisReaderOnly());
@@ -81,6 +78,7 @@ void ReceiptsSettingsPage::save()
 
 void ReceiptsSettingsPage::loadReceptList()
 {
+	qfLogFuncFrame();
 	ui->cbxReceipt->clear();
 	auto *receipts_plugin = qf::qmlwidgets::framework::getPlugin<ReceiptsPlugin>();
 	for(const auto &i : receipts_plugin->listReportFiles("receipts")) {

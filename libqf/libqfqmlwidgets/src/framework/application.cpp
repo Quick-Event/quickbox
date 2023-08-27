@@ -15,7 +15,6 @@ using namespace qf::qmlwidgets::framework;
 Application::Application(int &argc, char **argv) :
 	Super(argc, argv)
 {
-	m_pluginDataDir = ":/quickevent";
 }
 
 Application::~Application()
