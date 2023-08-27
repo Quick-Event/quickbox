@@ -2,7 +2,6 @@
 #define QF_QMLWIDGETS_FRAMEWORK_PLUGIN_H
 
 #include "../qmlwidgetsglobal.h"
-#include "application.h"
 
 #include <qf/core/utils.h>
 
@@ -22,12 +21,14 @@ public:
 	explicit Plugin(QObject *parent = nullptr);
 	~Plugin() Q_DECL_OVERRIDE;
 
+	static QString pluginDataDir();
+
 	static void setReportsDir(const QString &dir) { m_reportsDir = dir; }
 	static QString reportsDir() { return m_reportsDir; }
 
-	QString homeDir() const { return qf::qmlwidgets::framework::Application::instance()->pluginDataDir() + '/' +  featureId(); }
+	QString homeDir() const { return pluginDataDir() + '/' +  featureId(); }
 	QString qmlDir() const { return homeDir() + "/qml"; }
-	QString qmlReportsDir() const { return qmlDir() + "/reports"; }
+	//QString qmlReportsDir() const { return qmlDir() + "/reports"; }
 	QString featureId() const { return m_featureId; }
 	//QString settingsDir() const { return "plugin/" +  featureId(); }
 	QString findReportFile(const QString &report_file_path) const;
@@ -45,6 +46,7 @@ public:
 	Q_SIGNAL void installed();
 private:
 	QString m_featureId;
+	static QString m_pluginDataDir;
 	static QString m_reportsDir;
 };
 

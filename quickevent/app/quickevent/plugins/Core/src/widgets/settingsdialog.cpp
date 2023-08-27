@@ -2,7 +2,6 @@
 #include "ui_settingsdialog.h"
 
 #include "settingspage.h"
-#include "reportssettingspage.h"
 
 #include <qf/core/log.h>
 #include <qf/qmlwidgets/framework/mainwindow.h>
@@ -13,7 +12,6 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QTimer>
-//#include <QDebug>
 
 namespace Core {
 

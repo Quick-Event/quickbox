@@ -5,6 +5,7 @@
 #include <qf/core/log.h>
 #include <qf/qmlwidgets/framework/plugin.h>
 #include <qf/qmlwidgets/framework/mainwindow.h>
+#include <qf/qmlwidgets/framework/plugin.h>
 
 #include <QDirIterator>
 #include <QFileDialog>
@@ -71,7 +72,7 @@ QString ReportsSettingsPage::reportsDirectory() const
 	ReportsSettings settings;
 	auto dir = settings.reportsDirectory();
 	if(dir.isEmpty())
-		dir = QCoreApplication::applicationDirPath() + "/reports";
+		dir = qf::qmlwidgets::framework::Plugin::reportsDir();
 	return dir;
 }
 
