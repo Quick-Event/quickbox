@@ -4,6 +4,8 @@
 #include "eventstatisticsoptions.h"
 #include "runsplugin.h"
 
+#include <plugins/Event/src/eventplugin.h>
+
 #include <quickevent/gui/reportoptionsdialog.h>
 
 #include <quickevent/core/og/sqltablemodel.h>
@@ -15,7 +17,7 @@
 
 #include <qf/core/sql/querybuilder.h>
 #include <qf/core/assert.h>
-#include <plugins/Event/src/eventplugin.h>
+#include <qf/core/sql/query.h>
 
 #include <QElapsedTimer>
 #include <QSettings>

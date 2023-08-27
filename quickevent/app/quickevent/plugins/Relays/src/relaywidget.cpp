@@ -17,6 +17,7 @@
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/dialogbuttonbox.h>
 
+#include <qf/core/sql/query.h>
 #include <qf/core/sql/dbenum.h>
 #include <qf/core/sql/transaction.h>
 #include <qf/core/assert.h>

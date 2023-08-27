@@ -7,6 +7,7 @@
 #include <qf/core/log.h>
 #include <qf/core/exception.h>
 #include <qf/core/assert.h>
+#include <qf/core/sql/query.h>
 #include <qf/core/model/sqltablemodel.h>
 #include <plugins/Competitors/src/competitorsplugin.h>
 #include <plugins/Competitors/src/competitordocument.h>

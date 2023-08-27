@@ -13,6 +13,7 @@
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/framework/plugin.h>
 
+#include <qf/core/sql/query.h>
 #include <qf/core/sql/transaction.h>
 #include <qf/core/log.h>
 #include <qf/core/assert.h>
