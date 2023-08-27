@@ -111,7 +111,7 @@ int main(int argc, char *argv[])
 		if(lc_name.isEmpty() || lc_name == QLatin1String("system"))
 			lc_name = QLocale::system().name();
 
-		auto lc_dir = QCoreApplication::applicationDirPath() + "translations";
+		auto lc_dir = QCoreApplication::applicationDirPath() + "/translations";
 		qfInfo() << "Loading translations for:" << lc_name << "search dir:" << lc_dir;
 
 		for(const auto &file_name : {
