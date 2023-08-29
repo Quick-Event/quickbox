@@ -221,6 +221,7 @@ void RunsWidget::settleDownInPartWidget(::PartWidget *part_widget)
 			qff::MainWindow *fwk = qff::MainWindow::frameWork();
 			QVariantMap props;
 			props["stageId"] = selectedStageId();
+			props["options"] = QVariantMap();
 			qf::qmlwidgets::reports::ReportViewWidget::showReport(fwk
 										, getPlugin<RunsPlugin>()->findReportFile("competitorsWithCardRent.qml")
 										, QVariant()

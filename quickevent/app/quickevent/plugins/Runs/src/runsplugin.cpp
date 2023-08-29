@@ -1697,13 +1697,14 @@ void RunsPlugin::report_resultsNStagesSpeaker()
 	//tt.setValue("stageStart", getPlugin<EventPlugin>()->stageStartDateTime(stages_count));
 	QVariantMap props;
 	props["stagesCount"] = dlg.stagesCount();
+	props["options"] = opts;
 	qf::qmlwidgets::reports::ReportViewWidget::showReport(fwk
 								, findReportFile("results_nstagesSpeaker.qml")
 								, tt.toVariant()
 								, tr("Results after %n stage(s)", "", dlg.stagesCount())
 								, "printResultsNStagesWide"
 								, props
-														  );
+							);
 }
 
 void RunsPlugin::report_nStagesAwards()
