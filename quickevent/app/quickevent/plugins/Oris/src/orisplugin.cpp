@@ -93,18 +93,22 @@ void OrisPlugin::onInstalled()
 		qfw::Action *a = act_import_txt->addActionInto("competitorsRanking", tr("&Ranking CSV (ORIS format)"));
 		connect(a, &qfw::Action::triggered, m_txtImporter, &TxtImporter::importRankingCsv);
 	}
-	act_import->addSeparatorInto();
+	act_import_txt->addSeparatorInto();
 	{
-		qfw::Action *a = act_import->addActionInto("iofXmlEntry", tr("Import IOF XML 3.0"));
-		connect(a, &qfw::Action::triggered, m_xmlImporter, &XmlImporter::importXML30);
-	}
-	{
-		qfw::Action *a = act_import->addActionInto("runsCzeCSV", tr("Import CSV (key is CZE registration)"));
+		qfw::Action *a = act_import_txt->addActionInto("runsCzeCSV", tr("Import CSV (key is CZE registration)"));
 		connect(a, &qfw::Action::triggered, m_txtImporter, &TxtImporter::importRunsCzeCSV);
 	}
 	{
-		qfw::Action *a = act_import->addActionInto("runsIofCSV", tr("Import CSV (key is Iof ID)"));
+		qfw::Action *a = act_import_txt->addActionInto("runsIdCSV", tr("Import CSV (key is runs.id)"));
+		connect(a, &qfw::Action::triggered, m_txtImporter, &TxtImporter::importRunsIdCSV);
+	}
+	{
+		qfw::Action *a = act_import_txt->addActionInto("runsIofCSV", tr("Import CSV (key is Iof ID)"));
 		connect(a, &qfw::Action::triggered, m_txtImporter, &TxtImporter::importRunsIofCSV);
+	}
+	{
+		qfw::Action *a = act_import->addActionInto("iofXmlEntry", tr("Import IOF XML 3.0"));
+		connect(a, &qfw::Action::triggered, m_xmlImporter, &XmlImporter::importXML30);
 	}
 
 }

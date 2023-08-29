@@ -262,7 +262,7 @@ void TxtImporter::importRunsCzeCSV()
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 	qf::qmlwidgets::dialogs::MessageBox mbx(fwk);
 	mbx.setIcon(QMessageBox::Information);
-	mbx.setText(tr("Import comma separated values UTF8 text files with header, Separator is semicolon(;)<br/>Uupdates only existing runners (key is Czech registration)."));
+	mbx.setText(tr("Import comma separated values UTF8 text files with header.<br/>Separator is semicolon(;).<br/>Updates only existing runners (key is Czech registration)."));
 	mbx.setInformativeText(tr("Each row should have following columns: "
 							  "<ol>"
 							  "<li>Registration <i>- key</i></li>"
@@ -300,11 +300,12 @@ void TxtImporter::importRunsCzeCSV()
 
 		qfLogScope("importRunsCzeCSV");
 		qf::core::sql::Transaction transaction;
-		qf::core::sql::Query q1,q2,q3,q4;
+		qf::core::sql::Query q1a,q1b,q2,q3,q4;
 		q.prepare("SELECT id FROM competitors WHERE registration=:registration", qf::core::Exception::Throw);
-		q1.prepare("UPDATE competitors SET siId=:si WHERE registration=:registration", qf::core::Exception::Throw);
-		q2.prepare("UPDATE competitors SET classId=:class WHERE registration=:registration", qf::core::Exception::Throw);
-		q3.prepare("UPDATE competitors SET startNumber=:bib WHERE registration=:registration", qf::core::Exception::Throw);
+		q1a.prepare("UPDATE competitors SET siId=:si WHERE id=:id", qf::core::Exception::Throw);
+		q1b.prepare("UPDATE runs SET siId=:si WHERE competitorId=:id", qf::core::Exception::Throw);
+		q2.prepare("UPDATE competitors SET classId=:class WHERE id=:id", qf::core::Exception::Throw);
+		q3.prepare("UPDATE competitors SET startNumber=:bib WHERE id=:id", qf::core::Exception::Throw);
 		q4.prepare("UPDATE runs SET startTimeMs=:starttime WHERE competitorId=:id", qf::core::Exception::Throw);
 
 		int n = 0;
@@ -322,7 +323,7 @@ void TxtImporter::importRunsCzeCSV()
 			q.exec(qf::core::Exception::Throw);
 			if(q.next()) {
 				// if registration found in db - start update data
-				int comp_id = q.value(0).toInt();
+				int competitor_id = q.value(0).toInt();
 
 				int si = line.value(ColSI).toInt();
 				QString class_name = line.value(ColClass).trimmed();
@@ -331,9 +332,12 @@ void TxtImporter::importRunsCzeCSV()
 
 				qfDebug() << registration << "-> (" << si << "," << class_name << "," << bib << "," << starttime << ")";
 				if (si != 0) {
-					q1.bindValue(":si", si);
-					q1.bindValue(":registration", registration);
-					q1.exec(qf::core::Exception::Throw);
+					q1a.bindValue(":si", si);
+					q1a.bindValue(":id", competitor_id);
+					q1a.exec(qf::core::Exception::Throw);
+					q1b.bindValue(":si", si);
+					q1b.bindValue(":id", competitor_id);
+					q1b.exec(qf::core::Exception::Throw);
 				}
 				if (!class_name.isEmpty()) {
 					int class_id = classes_map.value(class_name);
@@ -341,18 +345,18 @@ void TxtImporter::importRunsCzeCSV()
 						QF_EXCEPTION(tr("Undefined class name: '%1'").arg(class_name));
 
 					q2.bindValue(":class", class_id);
-					q2.bindValue(":registration", registration);
+					q2.bindValue(":id", competitor_id);
 					q2.exec(qf::core::Exception::Throw);
 				}
 				if (bib != 0) {
 					q3.bindValue(":bib", bib);
-					q3.bindValue(":registration", registration);
+					q3.bindValue(":id", competitor_id);
 					q3.exec(qf::core::Exception::Throw);
 				}
 				if (!starttime.isEmpty()) {
 					int st_time = getStartTimeMSec(starttime, start00_day_msec);
 					q4.bindValue(":starttime", st_time);
-					q4.bindValue(":id", comp_id);
+					q4.bindValue(":id", competitor_id);
 					q4.exec(qf::core::Exception::Throw);
 				}
 			}
@@ -366,12 +370,127 @@ void TxtImporter::importRunsCzeCSV()
 		qf::qmlwidgets::dialogs::MessageBox::showException(fwk, e);
 	}
 }
+
+void TxtImporter::importRunsIdCSV()
+{
+	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	qf::qmlwidgets::dialogs::MessageBox mbx(fwk);
+	mbx.setIcon(QMessageBox::Information);
+	mbx.setText(tr("Import comma separated values UTF8 text files with header.<br/>Separator is semicolon(;).<br/>Updates only existing runners (key is <b>id</b> in module(table) <b>runs</b>)."));
+	mbx.setInformativeText(tr("Each row should have following columns: "
+							  "<ol>"
+							  "<li>Runs Id <i>- key</i></li>"
+							  "<li>SI</li>"
+							  "<li>Class</li>"
+							  "<li>Bib</li>"
+							  "<li>Start time <i>(in format: <b>mmm.ss</b> from zero time or <b>hh:mm:ss</b>)</i></li>"
+							  "</ol> Only first column is mandatory, others can be empty."));
+	mbx.setDoNotShowAgainPersistentKey("importRunsIdCSV");
+	int res = mbx.exec();
+	if(res != QMessageBox::Ok)
+		return;
+	QString fn = qfd::FileDialog::getOpenFileName(fwk, tr("Open file"), QString(), tr("CSV files (*.csv *.txt)"));
+	if(fn.isEmpty())
+		return;
+
+	QMap<QString, int> classes_map; // classes.name->classes.id
+	qf::core::sql::Query q;
+	q.exec("SELECT id, name FROM classes", qf::core::Exception::Throw);
+	while(q.next()) {
+		classes_map[q.value(1).toString()] = q.value(0).toInt();
+	}
+
+	int stage_id = getPlugin<EventPlugin>()->currentStageId();
+	auto start00_day_msec = getPlugin<EventPlugin>()->stageStartTime(stage_id).msecsSinceStartOfDay();
+
+	try {
+		QFile f(fn);
+		if(!f.open(QFile::ReadOnly))
+			QF_EXCEPTION(tr("Cannot open file '%1' for reading.").arg(fn));
+		QTextStream ts(&f);
+		qf::core::utils::CSVReader reader(&ts);
+		reader.setSeparator(';');
+		enum {ColRunsId = 0, ColSI, ColClass, ColBib, ColStarttime};
+
+		qfLogScope("importRunsIdCSV");
+		qf::core::sql::Transaction transaction;
+		qf::core::sql::Query q1a,q1b,q2,q3,q4;
+		q.prepare("SELECT id, competitorId FROM runs WHERE id=:id", qf::core::Exception::Throw);
+		q1a.prepare("UPDATE competitors SET siId=:si WHERE id=:id", qf::core::Exception::Throw);
+		q1b.prepare("UPDATE runs SET siId=:si WHERE id=:id", qf::core::Exception::Throw);
+		q2.prepare("UPDATE competitors SET classId=:class WHERE id=:id", qf::core::Exception::Throw);
+		q3.prepare("UPDATE competitors SET startNumber=:bib WHERE id=:id", qf::core::Exception::Throw);
+		q4.prepare("UPDATE runs SET startTimeMs=:starttime WHERE id=:id", qf::core::Exception::Throw);
+
+		int n = 0;
+		while (!ts.atEnd()) {
+			QStringList line = reader.readCSVLineSplitted();
+			if(line.count() <= 1)
+				QF_EXCEPTION(tr("Fields separation error, invalid CSV format, Error reading CSV line: [%1]").arg(line.join(';').mid(0, 100)));
+			if(n++ == 0) // skip column names
+				continue;
+			QString runs_id = line.value(ColRunsId).trimmed();
+			if(runs_id.isEmpty()) {
+				QF_EXCEPTION(tr("Error reading CSV line: [%1]").arg(line.join(';')));
+			}
+			q.bindValue(":id", runs_id);
+			q.exec(qf::core::Exception::Throw);
+			if(q.next()) {
+				// if runsId found in db - start update data
+				int competitor_id = q.value(1).toInt();
+
+				int si = line.value(ColSI).toInt();
+				QString class_name = line.value(ColClass).trimmed();
+				int bib = line.value(ColBib).toInt();
+				QString starttime = line.value(ColStarttime).trimmed();
+
+				qfDebug() << runs_id << "-> (" << si << "," << class_name << "," << bib << "," << starttime << ")";
+				if (si != 0) {
+					q1a.bindValue(":si", si);
+					q1a.bindValue(":id", competitor_id);
+					q1a.exec(qf::core::Exception::Throw);
+					q1b.bindValue(":si", si);
+					q1b.bindValue(":id", runs_id);
+					q1b.exec(qf::core::Exception::Throw);
+				}
+				if (!class_name.isEmpty()) {
+					int class_id = classes_map.value(class_name);
+					if(class_id == 0)
+						QF_EXCEPTION(tr("Undefined class name: '%1'").arg(class_name));
+
+					q2.bindValue(":class", class_id);
+					q2.bindValue(":id", competitor_id);
+					q2.exec(qf::core::Exception::Throw);
+				}
+				if (bib != 0) {
+					q3.bindValue(":bib", bib);
+					q3.bindValue(":id", competitor_id);
+					q3.exec(qf::core::Exception::Throw);
+				}
+				if (!starttime.isEmpty()) {
+					int st_time = getStartTimeMSec(starttime, start00_day_msec);
+					q4.bindValue(":starttime", st_time);
+					q4.bindValue(":id", runs_id);
+					q4.exec(qf::core::Exception::Throw);
+				}
+			}
+			else
+				qfWarning() << runs_id << "not found in database.";
+		}
+		transaction.commit();
+		qfInfo() << fn << n << "lines imported";
+	}
+	catch (const qf::core::Exception &e) {
+		qf::qmlwidgets::dialogs::MessageBox::showException(fwk, e);
+	}
+}
+
 void TxtImporter::importRunsIofCSV()
 {
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 	qf::qmlwidgets::dialogs::MessageBox mbx(fwk);
 	mbx.setIcon(QMessageBox::Information);
-	mbx.setText(tr("Import comma separated values UTF8 text files with header, Separator is semicolon(;)<br/>Updates only existing runners (key is IOF ID)."));
+	mbx.setText(tr("Import comma separated values UTF8 text files with header.<br/>Separator is semicolon(;).<br/>Updates only existing runners (key is IOF ID)."));
 	mbx.setInformativeText(tr("Each row should have following columns: "
 							  "<ol>"
 							  "<li>IOF ID <i>- key</i></li>"
@@ -409,9 +528,10 @@ void TxtImporter::importRunsIofCSV()
 
 		qfLogScope("importRunsCzeCSV");
 		qf::core::sql::Transaction transaction;
-		qf::core::sql::Query q1,q2,q3,q4;
+		qf::core::sql::Query q1a,q1b,q2,q3,q4;
 		q.prepare("SELECT id FROM competitors WHERE iofId=:iofId", qf::core::Exception::Throw);
-		q1.prepare("UPDATE competitors SET siId=:si WHERE iofId=:iofId", qf::core::Exception::Throw);
+		q1a.prepare("UPDATE competitors SET siId=:si WHERE iofId=:iofId", qf::core::Exception::Throw);
+		q1b.prepare("UPDATE runs SET siId=:si WHERE competitorId=:id", qf::core::Exception::Throw);
 		q2.prepare("UPDATE competitors SET classId=:class WHERE iofId=:iofId", qf::core::Exception::Throw);
 		q3.prepare("UPDATE competitors SET startNumber=:bib WHERE iofId=:iofId", qf::core::Exception::Throw);
 		q4.prepare("UPDATE runs SET startTimeMs=:starttime WHERE competitorId=:id", qf::core::Exception::Throw);
@@ -431,7 +551,7 @@ void TxtImporter::importRunsIofCSV()
 			q.exec(qf::core::Exception::Throw);
 			if(q.next()) {
 				// if registration found in db - start update data
-				int comp_id = q.value(0).toInt();
+				int competitor_id = q.value(0).toInt();
 
 				int si = line.value(ColSI).toInt();
 				QString class_name = line.value(ColClass).trimmed();
@@ -440,9 +560,12 @@ void TxtImporter::importRunsIofCSV()
 
 				qfDebug() << iof_id << "-> (" << si << "," << class_name << "," << bib << "," << starttime << ")";
 				if (si != 0) {
-					q1.bindValue(":si", si);
-					q1.bindValue(":iofId", iof_id);
-					q1.exec(qf::core::Exception::Throw);
+					q1a.bindValue(":si", si);
+					q1a.bindValue(":iofId", iof_id);
+					q1a.exec(qf::core::Exception::Throw);
+					q1b.bindValue(":si", si);
+					q1b.bindValue(":id", competitor_id);
+					q1b.exec(qf::core::Exception::Throw);
 				}
 				if (!class_name.isEmpty()) {
 					int class_id = classes_map.value(class_name);
@@ -461,7 +584,7 @@ void TxtImporter::importRunsIofCSV()
 				if (!starttime.isEmpty()) {
 					int st_time = getStartTimeMSec(starttime, start00_day_msec);
 					q4.bindValue(":starttime", st_time);
-					q4.bindValue(":id", comp_id);
+					q4.bindValue(":id", competitor_id);
 					q4.exec(qf::core::Exception::Throw);
 				}
 			}
