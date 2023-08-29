@@ -10,7 +10,7 @@ namespace internal {
 class DesktopUtils
 {
 public:
-	static QRect moveRectToVisibleDesktopScreen(const QRect &r);
+	static QRect moveRectToVisibleDesktopScreen(const QRect &rect);
 };
 
 } // namespace internal
