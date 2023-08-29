@@ -25,6 +25,7 @@ public:
 	Q_INVOKABLE void importCompetitorsCSV();
 	Q_INVOKABLE void importRankingCsv();
 	Q_INVOKABLE void importRunsCzeCSV();
+	Q_INVOKABLE void importRunsIdCSV();
 	Q_INVOKABLE void importRunsIofCSV();
 protected:
 	void importParsedCsv(const QList<QVariantList> &csv);
