@@ -239,12 +239,12 @@ quickevent::core::CourseDef RunsPlugin::courseForCourseId(int course_id)
 
 	/*if(including_distance)*/
 	{
-		int course_len = 0;
+		//int course_len = 0;
 		quickevent::core::CodeDef prev_cd = start_code;
 		for (int i = 0; i < codes.count(); ++i) {
 			quickevent::core::CodeDef cd(codes[i].toMap());
 			int d = latlng_distance(prev_cd.latitude(), prev_cd.longitude(), cd.latitude(), cd.longitude());
-			course_len += d;
+			//course_len += d;
 			cd.setDistance(d);
 			codes[i] = cd;
 			qfDebug() << "pos:" << (i+1) << prev_cd.toString() << "-->" << cd.toString() << "distance:" << d;
@@ -252,11 +252,11 @@ quickevent::core::CourseDef RunsPlugin::courseForCourseId(int course_id)
 		}
 		{
 			int d = latlng_distance(prev_cd.latitude(), prev_cd.longitude(), finish_code.latitude(), finish_code.longitude());
-			course_len += d;
+			//course_len += d;
 			qfDebug() << "finish distance:" << d;
 			finish_code.setDistance(d);
 		}
-		qfDebug() << "course len:" << course_len;
+		//qfDebug() << "course len:" << course_len;
 	}
 	ret.setCodes(codes);
 	ret.setStartCode(start_code);
