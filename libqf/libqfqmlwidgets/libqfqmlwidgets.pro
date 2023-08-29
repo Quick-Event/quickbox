@@ -53,11 +53,11 @@ include($$PWD/src/src.pri)
 
 RESOURCES += \
     $$PWD/style/style.qrc \
-    $$PWD/images/images.qrc \
-    $$PWD/images/flat/flat.qrc
+    $$PWD/images/qfqmlwidgets_images.qrc \
+    $$PWD/images/flat/qfqmlwidgets_flat.qrc
 
 TRANSLATIONS += \
-        libqfqmlwidgets-cs_CZ.ts \
+	libqfqmlwidgets-cs_CZ.ts \
 	libqfqmlwidgets-fr_FR.ts \
 	libqfqmlwidgets-nb_NO.ts \
 	libqfqmlwidgets-nl_BE.ts \

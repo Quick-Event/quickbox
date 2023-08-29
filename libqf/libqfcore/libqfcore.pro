@@ -53,10 +53,10 @@ unix: LIBS +=  \
 include($$PWD/src/src.pri)
 
 RESOURCES += \
-	$$PWD/images/images.qrc \
+	$$PWD/images/qfcore_images.qrc \
 
 TRANSLATIONS += \
-        libqfcore-cs_CZ.ts \
+	libqfcore-cs_CZ.ts \
 	libqfcore-fr_FR.ts \
 	libqfcore-nb_NO.ts \
 	libqfcore-nl_BE.ts \

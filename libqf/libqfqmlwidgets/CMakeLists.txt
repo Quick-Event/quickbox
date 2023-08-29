@@ -87,8 +87,8 @@ add_library(libqfqmlwidgets SHARED
     src/timeedit.cpp
     src/toolbar.cpp
     style/style.qrc
-    images/images.qrc
-    images/flat/flat.qrc
+    images/qfqmlwidgets_images.qrc
+    images/flat/qfqmlwidgets_flat.qrc
     )
 
 if(USE_QT6)
