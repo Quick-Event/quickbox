@@ -9,6 +9,12 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "GNU
     set(CMAKE_CXX_FLAGS "-Wall -Wextra -pedantic ${CMAKE_CXX_FLAGS}")
 endif()
 
+if (WIN32)
+	if(CMAKE_BUILD_TYPE STREQUAL "Release")
+		set(CMAKE_WIN32_EXECUTABLE ON) # Don't open a console window for Windows apps on Relase mode.
+	endif()
+endif (WIN32)
+
 if (NOT TARGET libnecrolog)
     add_subdirectory(3rdparty/necrolog)
 endif()
