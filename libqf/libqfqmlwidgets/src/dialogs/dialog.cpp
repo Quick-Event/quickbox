@@ -159,12 +159,12 @@ void Dialog::loadPersistentSettings()
 		QRect geometry = settings.value("geometry").toRect();
 		if(geometry.isValid()) {
 			if(isSavePersistentPosition()) {
-				geometry = qf::qmlwidgets::internal::DesktopUtils::moveRectToVisibleDesktopScreen(geometry);
-				this->setGeometry(geometry);
+				if(auto geometry2 = qf::qmlwidgets::internal::DesktopUtils::moveRectToVisibleDesktopScreen(geometry); geometry2.isValid()) {
+					setGeometry(geometry2);
+					return;
+				}
 			}
-			else {
-				this->resize(geometry.size());
-			}
+			this->resize(geometry.size());
 		}
 	}
 }

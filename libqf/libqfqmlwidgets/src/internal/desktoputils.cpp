@@ -7,19 +7,33 @@ namespace qf {
 namespace qmlwidgets {
 namespace internal {
 
-QRect DesktopUtils::moveRectToVisibleDesktopScreen(const QRect &r)
+QRect DesktopUtils::moveRectToVisibleDesktopScreen(const QRect &rect)
 {
-	QRect ret = r;
 #if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
-	QScreen *scr = QApplication::screenAt(ret.topLeft());
-	QRect screen_rect = scr? scr->geometry(): QRect();
+	QScreen *scr = QApplication::screenAt(rect.topLeft());
+	if(!scr) {
+		scr = QApplication::primaryScreen();
+	}
+	if(!scr) {
+		return {};
+	}
+	QRect screen_rect = scr->geometry();
+	if(screen_rect.contains(rect.topLeft())) {
+		return rect;
+	}
+	else {
+		auto ret = rect;
+		ret.moveCenter(screen_rect.center());
+		return ret;
+	}
 #else
+	auto ret = rect;
 	QDesktopWidget *dw = QApplication::desktop();
 	QRect screen_rect = dw->screenGeometry(ret.topLeft());
-#endif
 	if(screen_rect.isValid() && !screen_rect.contains(ret.topLeft()))
 		ret.moveTopLeft(screen_rect.topLeft());
 	return ret;
+#endif
 }
 
 
