@@ -516,6 +516,11 @@ void EmmaClient::exportStartListRacomCsv()
 
 	QTextStream ts(&f);
 	ts.setGenerateByteOrderMark(true); // BOM
+#if QT_VERSION_MAJOR >= 6
+	ts.setEncoding(QStringConverter::encodingForName("UTF-8").value());
+#else
+	ts.setCodec("UTF-8");
+#endif
 	bool is_relays = getPlugin<EventPlugin>()->eventConfig()->isRelays();
 	int current_stage = getPlugin<EventPlugin>()->currentStageId();
 	const QString separator(";");
