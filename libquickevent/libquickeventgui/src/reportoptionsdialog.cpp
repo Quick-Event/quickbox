@@ -53,9 +53,9 @@ ReportOptionsDialog::ReportOptionsDialog(QWidget *parent)
 			ui->cbxStartNumber->addItem(QString("Start %1").arg(n.value()),n.value());
 		}
 	}
-	if (ui->cbxStartNumber->count() < 1) {
+	ui->grpClassStartSelection->setChecked(false);
+	if (ui->cbxStartNumber->count() <= 1) {
 		ui->grpClassStartSelection->setEnabled(false);
-		ui->grpClassStartSelection->setChecked(false);
 		ui->cbxStartNumber->clear();
 	}
 	connect(ui->btSaveAsDefault, &QPushButton::clicked, [this]() {
@@ -272,7 +272,7 @@ void ReportOptionsDialog::setOptions(const ReportOptionsDialog::Options &options
 	ui->btWildCard->setChecked(filter_type == FilterType::WildCard);
 	ui->btRegExp->setChecked(filter_type == FilterType::RegExp);
 	ui->btClassNames->setChecked(filter_type == FilterType::ClassName);
-	if (ui->grpClassStartSelection->isEnabled() && ui->grpClassStartSelection->isVisible())
+	if (ui->grpClassStartSelection->isEnabled())
 		ui->grpClassStartSelection->setChecked(options.isUseClassStartSelectionFilter());
 	auto index = ui->cbxStartNumber->findData(options.classStartNumber());
 	ui->cbxStartNumber->setCurrentIndex(index);
