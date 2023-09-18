@@ -54,6 +54,11 @@ ReportOptionsDialog::ReportOptionsDialog(QWidget *parent)
 			}
 		}
 	}
+	ui->grpClassStartSelection->setChecked(false);
+	if (ui->cbxStartNumber->count() <= 1) {
+		ui->grpClassStartSelection->setEnabled(false);
+		ui->cbxStartNumber->clear();
+	}
 	connect(ui->btSaveAsDefault, &QPushButton::clicked, [this]() {
 		savePersistentSettings();
 	});
@@ -239,7 +244,9 @@ void ReportOptionsDialog::setOptions(const ReportOptionsDialog::Options &options
 	ui->btWildCard->setChecked(filter_type == FilterType::WildCard);
 	ui->btRegExp->setChecked(filter_type == FilterType::RegExp);
 	ui->btClassNames->setChecked(filter_type == FilterType::ClassName);
-	auto index = ui->cbxStartNumber->findData(options.startNumber());
+	if (ui->grpClassStartSelection->isEnabled())
+		ui->grpClassStartSelection->setChecked(options.isUseClassStartSelectionFilter());
+	auto index = ui->cbxStartNumber->findData(options.classStartNumber());
 	ui->cbxStartNumber->setCurrentIndex(index);
 	ui->chkStartOpts_PrintVacants->setChecked(options.isStartListPrintVacants());
 	ui->chkStartOpts_PrintStartNumbers->setChecked(options.isStartListPrintStartNumbers());
