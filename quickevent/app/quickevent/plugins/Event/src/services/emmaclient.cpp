@@ -36,6 +36,8 @@ using Runs::RunsPlugin;
 namespace Event {
 namespace services {
 
+constexpr int HR_12_MSEC = 12 * 60 * 60 * 1000;
+
 EmmaClient::EmmaClient(QObject *parent)
 	: Super(EmmaClient::serviceName(), parent)
 {
@@ -408,7 +410,7 @@ void EmmaClient::exportStartListRacomTxt()
 	bool is_relays = getPlugin<EventPlugin>()->eventConfig()->isRelays();
 	int current_stage = getPlugin<EventPlugin>()->currentStageId();
 	qfs::QueryBuilder qb;
-	qb.select2("runs", "startTimeMs, siId, competitorId, isrunning, leg")
+	qb.select2("runs", "startTimeMs, siId, competitorId, isrunning, leg, finishTimeMs")
 			.select2("competitors","firstName, lastName, registration")
 			.select2("classes","name")
 			.select2("cards", "id, startTime")
@@ -450,7 +452,8 @@ void EmmaClient::exportStartListRacomTxt()
 		QString name = q2.value("competitors.lastName").toString() + " " + q2.value("competitors.firstName").toString();
 		QString class_name = q2.value("classes.name").toString();
 		class_name.remove(" ");
-		if (class_name.isEmpty())
+		// don't export runners without class and SI card
+		if (class_name.isEmpty() || si == 0)
 			continue;
 		QString reg = q2.value("competitors.registration").toString();
 		name = name.leftJustified(22,QChar(' '),true);
@@ -484,6 +487,8 @@ void EmmaClient::exportStartListRacomTxt()
 		{
 			// has start in si card (P, T, HDR) & not used in relays
 			start_time_card *= 1000; // msec
+			if (start00 > HR_12_MSEC) // if start00 is PM, move start time
+				start_time_card += HR_12_MSEC;
 			start_time_card -= start00;
 			msec = start_time_card;
 		}
@@ -574,7 +579,8 @@ void EmmaClient::exportStartListRacomCsv()
 			start_time_card = 0;
 		QString name = q2.value("competitors.lastName").toString() + " " + q2.value("competitors.firstName").toString();
 		QString class_name = q2.value("classes.name").toString();
-		if (class_name.isEmpty())
+		// don't export runners without class and SI card
+		if (class_name.isEmpty() || si == 0)
 			continue;
 		int id_or_bib = id;
 		int leg_no = q2.value("runs.leg").toInt();
@@ -598,6 +604,8 @@ void EmmaClient::exportStartListRacomCsv()
 		{
 			// has start in si card (P, T, HDR) & not used in relays
 			start_time_card *= 1000; // msec
+			if (start00 > HR_12_MSEC) // if start00 is PM, move start time
+				start_time_card += HR_12_MSEC;
 			start_time_card -= start00;
 			msec = start_time_card;
 		}
