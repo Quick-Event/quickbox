@@ -14,8 +14,8 @@ namespace framework {
 class QFQMLWIDGETS_DECL_EXPORT IPersistentSettings
 {
 public:
-	virtual ~IPersistentSettings();
 	IPersistentSettings(QObject *controlled_object);
+	virtual ~IPersistentSettings();
 public:
 	virtual QString persistentSettingsId();
 	virtual bool setPersistentSettingsId(const QString &id);

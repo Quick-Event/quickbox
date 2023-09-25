@@ -4,8 +4,6 @@
 
 #include <qf/core/log.h>
 
-//#include <QDialog>
-#include <Qt>
 #include <QMessageBox>
 #include <QLocale>
 
