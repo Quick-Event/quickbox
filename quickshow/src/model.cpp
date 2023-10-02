@@ -81,20 +81,26 @@ bool Model::addCategoryToStorage()
 		return false;
 	}
 	Application *app = Application::instance();
+	bool is_relay = app->eventInfo().value("isRelay").toBool();
 	int cat_id_to_load = m_categoriesToProceed.takeFirst().toInt();
+	if (is_relay) {
+		qf::core::sql::QueryBuilder qb;
+		QString qs = "select cd.relaylegcount as leg_count from classdefs as cd where cd.classid = {{class_id}} and cd.stageid = {{stage_id}}";
+		qfInfo() << "Get leg count for category:" << qs;
+		qs.replace("{{stage_id}}", QString::number(app->cliOptions()->stage()));
+		qs.replace("{{class_id}}", QString::number(cat_id_to_load));
+		qf::core::sql::Query q = app->execSql(qs);
+		q.next();
+		int leg_count_from_class = q.value("leg_count").toInt();
+		for (int leg_num = 1; leg_num <= leg_count_from_class; leg_num++) {
 	QVariantMap category_map;
 	{
 		qf::core::sql::QueryBuilder qb;
-		qb.select2("classes", "name")
-				//.select2("classdefs", "")
-				.select2("courses", "length, climb")
-				.from("classes")
-				.joinRestricted("classes.id", "classdefs.classId", "classdefs.stageId={{stage_id}}")
-				.join("classdefs.courseId", "courses.id")
-				.where("classes.id={{class_id}}");
-		QString qs = qb.toString();
-		qs.replace("{{stage_id}}", QString::number(app->cliOptions()->stage()));
-		qs.replace("{{class_id}}", QString::number(cat_id_to_load));
+				QString qs = "select c.name || '-' || '{{leg_num}}' as name, 0 as length, 0 as climb from classes as c where c.id = {{class_id}}";
+				qfInfo() << "Get category:" << qs;
+				qs.replace("{{stage_id}}", QString::number(app->cliOptions()->stage()));
+				qs.replace("{{class_id}}", QString::number(cat_id_to_load));
+				qs.replace("{{leg_num}}", QString::number(leg_num));
 		if(first_run)
 			qfInfo() << "classes:" << qs;
 		qf::core::sql::Query q = app->execSql(qs);
@@ -113,31 +119,33 @@ bool Model::addCategoryToStorage()
 		QString qs;
 		qf::core::sql::QueryBuilder qb;
 		if(app->cliOptions()->profile() == QLatin1String("results")) {
+					qs = "SELECT c.registration, c.lastName, c.firstName, r.*, (finishTimeMs - starttimemin*60*1000) as legFinishTimeMs, "
+						 "relay.disqualified as relaydisqualified, "
+						 "rel.club || ' ' || rel.name as relayname "
+						 "FROM competitors as c join runs as r on r.competitorId = c.id "
+						 "join relays as rel on r.relayid = rel.id "
+						 "join classdefs as cd on cd.classid = rel.classId "
+						 "join (select relayid, bool_or(disqualified) as disqualified from runs r group by relayid) relay on r.relayid = relay.relayid "
+						 "where r.isRunning and r.finishTimeMs>0 and rel.classId = {{class_id}} and r.leg = {{leg_num}} "
+						 "order by r.notCompeting, relaydisqualified, r.finishtimeMs";
+					if(first_run)
+						qfInfo() << "results:" << qs;
+				}
+				else {
 			qb.select2("competitors", "registration, lastName, firstName")
 					//.select("COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName")
 					.select2("runs", "*")
 					.from("competitors")
-					.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId={{stage_id}} AND runs.isRunning AND runs.finishTimeMs>0", "JOIN")
+							.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId={{stage_id}} AND runs.isRunning", "JOIN")
 					.where("competitors.classId={{class_id}}")
-					.orderBy("runs.notCompeting, runs.disqualified, runs.timeMs");
-			qs = qb.toString();
-			if(first_run)
-				qfInfo() << "results:" << qs;
-		}
-		else {
-			qb.select2("competitors", "registration, lastName, firstName")
-					//.select("COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName")
-					.select2("runs", "*")
-					.from("competitors")
-					.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId={{stage_id}} AND runs.isRunning", "JOIN")
-					.where("competitors.classId={{class_id}}")
-					.orderBy("runs.startTimeMs");
+							.orderBy("runs.startTimeMs");
 			qs = qb.toString();
 			if(first_run)
 				qfInfo() << "startlist:" << qs;
 		}
 		qs.replace("{{stage_id}}", QString::number(app->cliOptions()->stage()));
 		qs.replace("{{class_id}}", QString::number(cat_id_to_load));
+				qs.replace("{{leg_num}}", QString::number(leg_num));
 		qf::core::sql::Query q = app->execSql(qs);
 		int pos = 0;
 		while(q.next()) {
@@ -150,6 +158,80 @@ bool Model::addCategoryToStorage()
 			/// pridej k detailu i kategorii, protoze na prvnim miste listu se zobrazuje vzdy zahlavi aktualni kategorie kvuli prehlednosti
 			//m["category"] = category_map;
 			m_storage << m;
+		}
+	}
+		}
+	} else { //event type 'individual'
+		QVariantMap category_map;
+		{
+			qf::core::sql::QueryBuilder qb;
+			qb.select2("classes", "name")
+					//.select2("classdefs", "")
+					.select2("courses", "length, climb")
+					.from("classes")
+					.joinRestricted("classes.id", "classdefs.classId", "classdefs.stageId={{stage_id}}")
+					.join("classdefs.courseId", "courses.id")
+					.where("classes.id={{class_id}}");
+			QString qs = qb.toString();
+			qs.replace("{{stage_id}}", QString::number(app->cliOptions()->stage()));
+			qs.replace("{{class_id}}", QString::number(cat_id_to_load));
+			if(first_run)
+				qfInfo() << "classes:" << qs;
+			qf::core::sql::Query q = app->execSql(qs);
+			if(q.next()) {
+				QVariantMap m;
+				category_map = q.values();
+				m["type"] = "classInfo";
+				m["record"] = category_map;
+				m_storage << m;
+			}
+			else {
+				qfError() << "Entry for classname" << cat_id_to_load << "does not exist !!!";
+			}
+		}
+		{
+			QString qs;
+			qf::core::sql::QueryBuilder qb;
+			if(app->cliOptions()->profile() == QLatin1String("results")) {
+				qfInfo() << "vytazeni zavodniku pro kategorii" << qs;
+				qb.select2("competitors", "registration, lastName, firstName")
+						//.select("COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName")
+						.select2("runs", "*")
+						.from("competitors")
+						.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId={{stage_id}} AND runs.isRunning AND runs.finishTimeMs>0", "JOIN")
+						.where("competitors.classId={{class_id}}")
+						.orderBy("runs.notCompeting, runs.disqualified, runs.timeMs");
+				qs = qb.toString();
+				if(first_run)
+					qfInfo() << "results:" << qs;
+			}
+			else {
+				qb.select2("competitors", "registration, lastName, firstName")
+						//.select("COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName")
+						.select2("runs", "*")
+						.from("competitors")
+						.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId={{stage_id}} AND runs.isRunning", "JOIN")
+						.where("competitors.classId={{class_id}}")
+						.orderBy("runs.startTimeMs");
+				qs = qb.toString();
+				if(first_run)
+					qfInfo() << "startlist:" << qs;
+			}
+			qs.replace("{{stage_id}}", QString::number(app->cliOptions()->stage()));
+			qs.replace("{{class_id}}", QString::number(cat_id_to_load));
+			qf::core::sql::Query q = app->execSql(qs);
+			int pos = 0;
+			while(q.next()) {
+				QVariantMap m;
+				//QVariantMap detail_map = app->sqlRecordToMap(rec);
+				QVariantMap detail_map = q.values();
+				detail_map["pos"] = ++pos;
+				m["type"] = app->cliOptions()->profile();
+				m["record"] = detail_map;
+				/// pridej k detailu i kategorii, protoze na prvnim miste listu se zobrazuje vzdy zahlavi aktualni kategorie kvuli prehlednosti
+				//m["category"] = category_map;
+				m_storage << m;
+			}
 		}
 	}
 	first_run = false;
