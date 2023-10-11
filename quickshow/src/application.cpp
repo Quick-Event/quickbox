@@ -103,7 +103,7 @@ QVariantMap Application::eventInfo()
 			info[q.value(0).toString().mid(6)] = q.value(1);
 		info["profile"] = profile();
 		//set info about relay
-		info["isRelay"] = (info["disciplineId"] == 5 || info["disciplineId"] == 6) ? true : false;
+		info["isRelay"] = (info["disciplineId"] == 5 || info["disciplineId"] == 6);
 	}
 	return info;
 }
