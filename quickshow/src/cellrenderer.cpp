@@ -1,7 +1,8 @@
 #include "cellrenderer.h"
-
+#include "application.h"
 #include <qf/core/log.h>
 #include <qf/core/utils.h>
+#include "src/appclioptions.h"
 
 #include <QFontMetrics>
 #include <QPainter>
@@ -199,6 +200,8 @@ ResultsCellRenderer::ResultsCellRenderer(const QSize &size, QWidget *widget)
 QString ResultsCellRenderer::columnText(int col, const QVariantMap &data)
 {
 	QString ret;
+	Application *app = Application::instance();
+	bool is_relay = app->eventInfo().value("isRelay").toBool();
 	switch(col) {
 	case Position: {
 		bool disq = data.value(QStringLiteral("disqualified")).toBool();
@@ -208,14 +211,30 @@ QString ResultsCellRenderer::columnText(int col, const QVariantMap &data)
 		break;
 	}
 	case Name: ret = QStringLiteral("{{lastname}} {{firstname}}"); break;
-	case Registration: ret = QStringLiteral("{{registration}}"); break;
+	case Registration:
+		if (is_relay) {
+			ret = data.value(QStringLiteral("relayname")).toString();
+		} else { //individual
+			ret = QStringLiteral("{{registration}}");
+		}
+		break;
 	case Time: {
-		int sec = data.value(QStringLiteral("timems")).toInt() / 1000;
+		int sec;
+		if (is_relay) {
+			sec = data.value(QStringLiteral("legfinishtimems")).toInt() / 1000;
+		} else { //individual
+			sec = data.value(QStringLiteral("timems")).toInt() / 1000;
+		}
 		ret = QString("%1.%2").arg(sec / 60).arg(sec % 60, 2, 10, QChar('0'));
 		return ret;
 	}
 	case Status: {
-		bool disq = data.value(QStringLiteral("disqualified")).toBool();
+		bool disq;
+		if (is_relay) {
+			disq = data.value(QStringLiteral("relaydisqualified")).toBool();
+		} else {
+			disq = data.value(QStringLiteral("disqualified")).toBool();
+		}
 		return disq? tr("DISQ"): QString();
 	}
 	default:
