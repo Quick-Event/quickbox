@@ -6,12 +6,12 @@
     <message>
         <location filename="src/sicard.cpp" line="42"/>
         <source>stationNumber: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>numer stacji: %1</translation>
     </message>
     <message>
         <location filename="src/sicard.cpp" line="43"/>
         <source>cardNumber: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>numer karty: %1</translation>
     </message>
     <message>
         <location filename="src/sicard.cpp" line="47"/>
@@ -21,12 +21,12 @@
     <message>
         <location filename="src/sicard.cpp" line="48"/>
         <source>start: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>początek: %1</translation>
     </message>
     <message>
         <location filename="src/sicard.cpp" line="49"/>
         <source>finish: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>koniec: %1</translation>
     </message>
 </context>
 <context>
@@ -49,7 +49,7 @@ Read out after punch: {{ReadOutAfterPunch}}
         <location filename="src/device/sitask.cpp" line="110"/>
         <location filename="src/device/sitask.cpp" line="111"/>
         <source>True</source>
-        <translation type="unfinished"></translation>
+        <translation>Prawda</translation>
     </message>
     <message>
         <location filename="src/device/sitask.cpp" line="107"/>
@@ -58,7 +58,7 @@ Read out after punch: {{ReadOutAfterPunch}}
         <location filename="src/device/sitask.cpp" line="110"/>
         <location filename="src/device/sitask.cpp" line="111"/>
         <source>False</source>
-        <translation type="unfinished"></translation>
+        <translation>Fałsz</translation>
     </message>
 </context>
 <context>
@@ -66,7 +66,7 @@ Read out after punch: {{ReadOutAfterPunch}}
     <message>
         <location filename="src/device/commport.cpp" line="42"/>
         <source>Available ports: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Dostępne porty: %1</translation>
     </message>
     <message>
         <location filename="src/device/commport.cpp" line="50"/>
