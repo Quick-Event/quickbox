@@ -187,7 +187,7 @@
     <message>
         <location filename="src/tableview.cpp" line="995"/>
         <source>Cannot open file &apos;%1&apos; for writing.</source>
-        <translation>Nie można otworzyć pliku  %1 do zapisu.</translation>
+        <translation>Nie można otworzyć pliku %1 do zapisu.</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1608"/>
@@ -395,7 +395,7 @@
         <location filename="src/tableview.cpp" line="1850"/>
         <source>Ctrl+Shift+C</source>
         <comment>Select current column</comment>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+C</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1859"/>
@@ -466,12 +466,12 @@
     <message>
         <location filename="src/tableview.cpp" line="2180"/>
         <source>Do you really want to remove row?</source>
-        <translation type="unfinished"></translation>
+        <translation>Czy na pewno chcerz usunąć ten wiersz?</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="2183"/>
         <source>Do you really want to remove all selected rows?</source>
-        <translation type="unfinished"></translation>
+        <translation>Czy na pewno chcesz usunąć wszystkie zaznaczone wiersze?</translation>
     </message>
 </context>
 <context>
@@ -502,7 +502,7 @@
     <message>
         <location filename="src/texteditwidget.cpp" line="92"/>
         <source>Cannot open file %1 for writing.</source>
-        <translation>Nie można otworzyć pliku  %1 do zapisu.</translation>
+        <translation>Nie można otworzyć pliku %1 do zapisu.</translation>
     </message>
     <message>
         <location filename="src/texteditwidget.cpp" line="103"/>
@@ -569,7 +569,7 @@
     <message>
         <location filename="src/dialogs/messagebox.cpp" line="27"/>
         <source>Show this message again</source>
-        <translation type="unfinished"></translation>
+        <translation>Pokazuj tą wiadomość ponownie</translation>
     </message>
     <message>
         <location filename="src/dialogs/messagebox.cpp" line="44"/>
@@ -608,7 +608,7 @@
     <message>
         <location filename="src/dialogs/previewdialog.cpp" line="63"/>
         <source>Cannot open file &apos;%1&apos; for reading.</source>
-        <translation>Nie można otworzyć pliku  %1 do odczytu.</translation>
+        <translation>Nie można otworzyć pliku %1 do odczytu.</translation>
     </message>
 </context>
 <context>
@@ -657,7 +657,7 @@
     <message>
         <location filename="src/framework/logwidget.ui" line="88"/>
         <source>Copy to clipboard.</source>
-        <translation type="unfinished"></translation>
+        <translation>Skopiuj do schowka.</translation>
     </message>
     <message>
         <location filename="src/framework/logwidget.ui" line="102"/>
@@ -717,7 +717,7 @@
     <message>
         <location filename="src/framework/partswitch.cpp" line="37"/>
         <source>Part switch</source>
-        <translation type="unfinished"></translation>
+        <translation>Przełącznik modułu</translation>
     </message>
 </context>
 <context>
@@ -731,7 +731,7 @@
         <location filename="src/internal/dlgtableviewcopyspecial.ui" line="22"/>
         <source>fields separator</source>
         <oldsource>fields separtor</oldsource>
-        <translation type="unfinished">Separator pola</translation>
+        <translation>separator pola</translation>
     </message>
     <message>
         <location filename="src/internal/dlgtableviewcopyspecial.ui" line="29"/>
@@ -742,7 +742,7 @@
         <location filename="src/internal/dlgtableviewcopyspecial.ui" line="36"/>
         <source>rows separator</source>
         <oldsource>rows separtor</oldsource>
-        <translation type="unfinished">Separator wierszy</translation>
+        <translation>separator wierszy</translation>
     </message>
     <message>
         <location filename="src/internal/dlgtableviewcopyspecial.ui" line="43"/>
