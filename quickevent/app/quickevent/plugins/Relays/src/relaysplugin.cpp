@@ -104,6 +104,12 @@ void RelaysPlugin::processRunnerFinished(const quickevent::core::si::CheckedCard
 
 namespace {
 
+struct Organization {
+	int id = 0;
+	QString name;
+	QString shortName;
+};
+
 struct Leg
 {
 	QString fullName;
@@ -111,6 +117,8 @@ struct Leg
 	QString lastName;
 	QString reg;
 	QString iofId;
+	Organization org;
+	QString country;
 	int runId = 0;
 	//int courseId = 0;
 	int time = 0;
@@ -122,7 +130,7 @@ struct Leg
 	quickevent::core::RunStatus runStatus;
 
 	bool isFinishedOk() const {
-		return ogTime() < quickevent::core::og::TimeMs::UNREAL_TIME_MSEC;
+		return ogTime() < quickevent::core::og::TimeMs::MAX_REAL_TIME_MSEC;
 	}
 
 	int ogTime() const {
@@ -133,11 +141,6 @@ struct Leg
 		}
 		return runStatus.ogTime();
 	}
-};
-
-struct Organization {
-	QString name;
-	QString shortName;
 };
 
 struct Relay
@@ -158,15 +161,18 @@ struct Relay
 			else
 				return leg.ogTime();
 		}
-		return ret;
+		return (legs.count() < leg_cnt) ? 0 : ret;
 	}
 	QString status(int leg_cnt) const
-	{
+	{	// status after N legs (summary status)
 		for (int i = 0; i < qMin(legs.count(), leg_cnt); ++i) {
 			const Leg &leg = legs[i];
-			return leg.runStatus.toXmlExportString();
+			if(!leg.runStatus.isOk())
+				return leg.runStatus.toXmlExportString();
 		}
-		return QStringLiteral("DidNotStart");	// relay leg not found
+		if (legs.count() < leg_cnt)
+			return QStringLiteral("DidNotStart");	// relay leg not found
+		return QStringLiteral("OK");
 	}
 };
 }
@@ -207,6 +213,16 @@ qf::core::utils::TreeTable RelaysPlugin::nLegsResultsTable(const QString &where_
 	return tt;
 }
 
+QPair <int, QString> getClubFromName(QString name)
+{
+	qf::core::sql::Query q;
+	q.exec(QStringLiteral("SELECT importId, abbr, name FROM clubs WHERE name='%1'").arg(name), qf::core::Exception::Throw);
+	if (q.next())
+		return qMakePair(q.value(0).toInt(), q.value(1).toString());
+	return qMakePair<int, QString>(0,"");
+}
+
+
 qf::core::utils::TreeTable RelaysPlugin::nLegsClassResultsTable(int class_id, int leg_count, int max_places, bool exclude_not_finish)
 {
 	int max_leg = 0;
@@ -232,7 +248,7 @@ qf::core::utils::TreeTable RelaysPlugin::nLegsClassResultsTable(int class_id, in
 	{
 		qfs::QueryBuilder qb;
 		qb.select2("relays", "id, club, name, number")
-				.select2("clubs", "name, abbr")
+				.select2("clubs", "id, name, abbr, importId")
 				.select("COALESCE(relays.club, '') || ' ' || COALESCE(relays.name, '') AS relayName")
 				.from("relays")
 				.join("relays.club", "clubs.abbr")
@@ -244,6 +260,7 @@ qf::core::utils::TreeTable RelaysPlugin::nLegsClassResultsTable(int class_id, in
 			r.relayNumber = q.value("relays.number").toInt();
 			r.name = q.value("relayName").toString();
 			r.org = {
+				.id = q.value("clubs.importId").toInt(),
 				.name = q.value("clubs.name").toString(),
 				.shortName = q.value("clubs.abbr").toString()
 			};
@@ -258,7 +275,7 @@ qf::core::utils::TreeTable RelaysPlugin::nLegsClassResultsTable(int class_id, in
 		qfs::QueryBuilder qb;
 		qb.select2("competitors", "id, registration, iofId")
 				.select2("runs", "id, relayId, leg, isRunning")
-				.select2("competitors", "firstName, lastName")
+				.select2("competitors", "firstName, lastName, club, country")
 				.select("COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName")
 				.from("runs")
 				.join("runs.competitorId", "competitors.id")
@@ -283,6 +300,11 @@ qf::core::utils::TreeTable RelaysPlugin::nLegsClassResultsTable(int class_id, in
 					leg.reg = q.value("competitors.registration").toString();
 					leg.iofId = q.value("competitors.iofId").toString();
 					//leg.courseId = getPlugin<RunsPlugin>()->courseForRun(leg.runId);
+					leg.org.name = q.value("competitors.club").toString();
+					auto club = getClubFromName(leg.org.name);
+					leg.org.id = club.first;
+					leg.org.shortName = club.second;
+					leg.country = q.value("competitors.country").toString();
 					break;
 				}
 			}
@@ -349,7 +371,7 @@ qf::core::utils::TreeTable RelaysPlugin::nLegsClassResultsTable(int class_id, in
 		}
 		std::sort(relay_stime.begin(), relay_stime.end(), [](const LegTime &a, const LegTime &b) {return a.stime < b.stime;});
 		int pos = 0;
-		int winner_time = relay_stime.begin()->stime;
+		int winner_time = (relay_stime.size() != 0) ? relay_stime.begin()->stime : 0;
 		for(const auto &p : relay_stime) {
 			int relay_id = p.relayId;
 			for (int i = 0; i < relays.count(); ++i) {
@@ -399,6 +421,7 @@ qf::core::utils::TreeTable RelaysPlugin::nLegsClassResultsTable(int class_id, in
 		tt_row.setValue("pos", (time <= qog::TimeMs::MAX_REAL_TIME_MSEC && time > prev_time)? i+1: 0);
 		tt_row.setValue("name", relay.name);
 		tt_row.setValue("relayNumber", relay.relayNumber);
+		tt_row.setValue("orgId", relay.org.id);
 		tt_row.setValue("orgName", relay.org.name);
 		tt_row.setValue("orgShortName", relay.org.shortName);
 		tt_row.setValue("id", relay.relayId);
@@ -439,6 +462,10 @@ qf::core::utils::TreeTable RelaysPlugin::nLegsClassResultsTable(int class_id, in
 			tt2_row.setValue("spos", leg.spos);
 			tt2_row.setValue("runId", leg.runId);
 			tt2_row.setValue("sstatus", relay.status(j+1));
+			tt2_row.setValue("orgId", leg.org.id);
+			tt2_row.setValue("orgName", leg.org.name);
+			tt2_row.setValue("orgShortName", leg.org.shortName);
+			tt2_row.setValue("country", leg.country);
 			//tt2_row.setValue("courseId", leg.courseId);
 			tt2.setRow(ix2, tt2_row);
 			qfDebug() << '\t' << leg.pos << leg.fullName;
@@ -531,6 +558,8 @@ QString RelaysPlugin::resultsIofXml30()
 {
 	QDateTime start00 = getPlugin<EventPlugin>()->stageStartDateTime(1);
 	qfDebug() << "creating table";
+	Event::EventConfig *event_config = getPlugin<EventPlugin>()->eventConfig();
+	bool is_iof_race = event_config->isIofRace();
 	//auto tt_classes = getPlugin<RelaysPlugin>()->nLegsResultsTable("classes.name='D105'", 999, 999999, false);
 	auto tt_classes = getPlugin<RelaysPlugin>()->nLegsResultsTable(QString(), 999, 999999, false);
 	QVariantList result_list{
@@ -546,7 +575,8 @@ QString RelaysPlugin::resultsIofXml30()
 	{
 		QVariantList event_lst{"Event"};
 		QVariantMap event = tt_classes.value("event").toMap();
-		event_lst.insert(event_lst.count(), QVariantList{"Id", QVariantMap{{"type", "ORIS"}}, event.value("importId")});
+		if (!is_iof_race)
+			event_lst.insert(event_lst.count(), QVariantList{"Id", QVariantMap{{"type", "ORIS"}}, event.value("importId")});
 		event_lst.insert(event_lst.count(), QVariantList{"Name", event.value("name")});
 		event_lst.insert(event_lst.count(), QVariantList{"StartTime",
 				   QVariantList{"Date", event.value("date")},
@@ -599,13 +629,27 @@ QString RelaysPlugin::resultsIofXml30()
 				QVariantList{"Name", tt_teams_row.value(QStringLiteral("name")) }
 			);
 
-			append_list(team_result,
-				QVariantList{"Organisation",
-					QVariantList{"Name", tt_teams_row.value(QStringLiteral("orgName"))},
-					QVariantList{"ShortName", tt_teams_row.value(QStringLiteral("orgShortName"))},
+			QString orgName = tt_teams_row.value(QStringLiteral("orgName")).toString();
+			if (!orgName.isEmpty()) {
+				if (is_iof_race) {
+					append_list(team_result,
+						QVariantList{"Organisation",
+							QVariantList{"Id", QVariantMap{{"type", "IOF"}},tt_teams_row.value(QStringLiteral("orgId"))},
+							QVariantList{"Name", tt_teams_row.value(QStringLiteral("orgName"))},
+							// relay doesn't have country - Eventor national races use club as country
+							QVariantList{"Country", QVariantMap{{"code", tt_teams_row.value(QStringLiteral("orgShortName"))}},tt_teams_row.value(QStringLiteral("orgName"))},
+						}
+					);
 				}
-			);
-
+				else {
+					append_list(team_result,
+						QVariantList{"Organisation",
+							QVariantList{"Name", tt_teams_row.value(QStringLiteral("orgName"))},
+							QVariantList{"ShortName", tt_teams_row.value(QStringLiteral("orgShortName"))},
+						}
+					);
+				}
+			}
 			int relay_number = tt_teams_row.value(QStringLiteral("relayNumber")).toInt();
 			append_list(team_result,
 				QVariantList{"BibNumber", relay_number }
@@ -622,7 +666,8 @@ QString RelaysPlugin::resultsIofXml30()
 					continue;
 				QVariantList member_result{"TeamMemberResult"};
 				QVariantList person{"Person"};
-				append_list(person, QVariantList{"Id", QVariantMap{{"type", "CZE"}}, tt_leg_row.value(QStringLiteral("registration"))});
+				if (!is_iof_race)
+					append_list(person, QVariantList{"Id", QVariantMap{{"type", "CZE"}}, tt_leg_row.value(QStringLiteral("registration"))});
 				auto iof_id = tt_leg_row.value(QStringLiteral("iofId"));
 				if (!iof_id.isNull())
 					append_list(person, QVariantList{"Id", QVariantMap{{"type", "IOF"}}, iof_id});
@@ -631,6 +676,30 @@ QString RelaysPlugin::resultsIofXml30()
 				auto given = tt_leg_row.value(QStringLiteral("firstName"));
 				append_list(person, QVariantList{"Name", QVariantList{"Family", family}, QVariantList{"Given", given}});
 				append_list(member_result, person);
+
+				QString club_name = tt_leg_row.value(QStringLiteral("orgName")).toString();
+				QString club_abbr = tt_leg_row.value(QStringLiteral("orgShortName")).toString();
+				if (is_iof_race && !club_name.isEmpty()){
+					append_list(member_result, QVariantList{"Organisation",
+							QVariantList{"Id", QVariantMap{{"type", "IOF"}},tt_leg_row.value(QStringLiteral("orgId"))},
+							QVariantList{"Name", club_name},
+						}
+					);
+				}
+				else if (!club_name.isEmpty() && !club_abbr.isEmpty()) {
+					append_list(member_result, QVariantList{"Organisation",
+							QVariantList{"Name", club_name},
+							QVariantList{"ShortName", club_abbr},
+						}
+					);
+				}
+				else {
+					append_list(member_result, QVariantList{"Organisation",
+							QVariantList{"Name", club_name},
+							QVariantList{"ShortName", tt_leg_row.value(QStringLiteral("registration")).toString().left(3)}
+						}
+					);
+				}
 
 				QVariantList person_result{"Result"};
 				append_list(person_result, QVariantList{"Leg", k+1 } );
@@ -682,8 +751,10 @@ QString RelaysPlugin::resultsIofXml30()
 						q.execThrow(qb.toString());
 						if(q.next()) {
 							append_list(course, QVariantList{"Name", q.value(0)});
-							append_list(course, QVariantList{"Length", q.value(1)});
-							append_list(course, QVariantList{"Climb", q.value(2)});
+							if (!q.value(1).toString().isEmpty())
+								append_list(course, QVariantList{"Length", q.value(1)});
+							if (!q.value(2).toString().isEmpty())
+								append_list(course, QVariantList{"Climb", q.value(2)});
 						}
 						else {
 							qfWarning() << "Cannot load course for id:" << course_id;
@@ -742,8 +813,9 @@ QString RelaysPlugin::resultsIofXml30()
 QString RelaysPlugin::startListIofXml30()
 {
 	QDateTime start00 = getPlugin<EventPlugin>()->stageStartDateTime(1);
+	Event::EventConfig *event_config = getPlugin<EventPlugin>()->eventConfig();
+	bool is_iof_race = event_config->isIofRace();
 	qfDebug() << "creating table";
-	//auto tt_classes = getPlugin<RelaysPlugin>()->nLegsResultsTable("classes.name='D105'", 999, 999999, false);
 	qf::core::utils::TreeTable tt_classes = startListByClassesTableData(QString());
 	QVariantList start_list{
 		"StartList",
@@ -757,7 +829,8 @@ QString RelaysPlugin::startListIofXml30()
 	{
 		QVariantList event_lst{"Event"};
 		QVariantMap event = tt_classes.value("event").toMap();
-		event_lst.insert(event_lst.count(), QVariantList{"Id", QVariantMap{{"type", "ORIS"}}, event.value("importId")});
+		if (!is_iof_race)
+			event_lst.insert(event_lst.count(), QVariantList{"Id", QVariantMap{{"type", "ORIS"}}, event.value("importId")});
 		event_lst.insert(event_lst.count(), QVariantList{"Name", event.value("name")});
 		event_lst.insert(event_lst.count(), QVariantList{"StartTime",
 				   QVariantList{"Date", event.value("date")},
@@ -798,25 +871,47 @@ QString RelaysPlugin::startListIofXml30()
 			}
 		);
 		qf::core::utils::TreeTable tt_teams = tt_classes_row.table();
+		int prev_relay_number = -1;
+		QString prev_relay_name = "";
 		for(int j=0; j<tt_teams.rowCount(); j++) {
 			QVariantList team_start{"TeamStart"};
 			const qf::core::utils::TreeTableRow tt_teams_row = tt_teams.row(j);
-			QF_TIME_SCOPE("exporting team: " + tt_teams_row.value(QStringLiteral("relayName")).toString());
-			append_list(team_start,
-				QVariantList{"EntryId", tt_teams_row.value(QStringLiteral("id")) }
-			);
-			append_list(team_start,
-				QVariantList{"Name", tt_teams_row.value(QStringLiteral("relayName")) }
-			);
-
-			append_list(team_start,
-				QVariantList{"Organisation",
-					QVariantList{"Name", tt_teams_row.value(QStringLiteral("clubs.name"))},
-					QVariantList{"ShortName", tt_teams_row.value(QStringLiteral("abbr"))},
-				}
-			);
-
 			int relay_number = tt_teams_row.value(QStringLiteral("relays.number")).toInt();
+			QString relay_name = tt_teams_row.value(QStringLiteral("relayName")).toString();
+			if (relay_number == prev_relay_number && relay_name == prev_relay_name)
+				continue; // skip duplicate rows
+			prev_relay_number = relay_number;
+			prev_relay_name = relay_name;
+			QF_TIME_SCOPE("exporting team: " + tt_teams_row.value(QStringLiteral("relayName")).toString());
+			if (!is_iof_race)
+				append_list(team_start,
+					QVariantList{"EntryId", tt_teams_row.value(QStringLiteral("id")) }
+				);
+			append_list(team_start,
+				QVariantList{"Name", relay_name }
+			);
+			if (is_iof_race) {
+				qf::core::sql::Query q;
+				q.exec(QStringLiteral("SELECT importId FROM clubs WHERE abbr='%1'").arg(tt_teams_row.value(QStringLiteral("abbr")).toString()), qf::core::Exception::Throw);
+				QString importId = (q.next()) ? q.value(0).toString() : "";
+
+				append_list(team_start,
+					QVariantList{"Organisation",
+						QVariantList{"Id", QVariantMap{{"type", "IOF"}},importId},
+						QVariantList{"Name", tt_teams_row.value(QStringLiteral("clubs.name"))},
+						// relay doesn't have country - Eventor national races use club as country
+						QVariantList{"Country", QVariantMap{{"code", tt_teams_row.value(QStringLiteral("abbr"))}},tt_teams_row.value(QStringLiteral("clubs.name"))},
+					}
+				);
+			}
+			else {
+				append_list(team_start,
+					QVariantList{"Organisation",
+						QVariantList{"Name", tt_teams_row.value(QStringLiteral("clubs.name"))},
+						QVariantList{"ShortName", tt_teams_row.value(QStringLiteral("abbr"))},
+					}
+				);
+			}
 			append_list(team_start,
 				QVariantList{"BibNumber", relay_number }
 			);
@@ -828,11 +923,12 @@ QString RelaysPlugin::startListIofXml30()
 				const qf::core::utils::TreeTableRow tt_leg_row = tt_legs.row(k);
 				QVariantList member_start{"TeamMemberStart"};
 				QVariantList person{"Person"};
-				append_list(person, QVariantList{"Id", QVariantMap{{"type", "CZE"}}, tt_leg_row.value(QStringLiteral("registration"))});
+				if (!is_iof_race)
+					append_list(person, QVariantList{"Id", QVariantMap{{"type", "CZE"}}, tt_leg_row.value(QStringLiteral("registration"))});
 				auto iof_id = tt_leg_row.value(QStringLiteral("iofId"));
 				if (!iof_id.isNull())
 					append_list(person, QVariantList{"Id", QVariantMap{{"type", "IOF"}}, iof_id});
-				append_list(person, QVariantList{"Id", tt_leg_row.value(QStringLiteral("runs.id"))});
+				append_list(person, QVariantList{"Id", QVariantMap{{"type", "QuickEvent"}}, tt_leg_row.value(QStringLiteral("runs.id"))});
 				auto family = tt_leg_row.value(QStringLiteral("lastName"));
 				auto given = tt_leg_row.value(QStringLiteral("firstName"));
 				append_list(person, QVariantList{"Name", QVariantList{"Family", family}, QVariantList{"Given", given}});
@@ -842,8 +938,9 @@ QString RelaysPlugin::startListIofXml30()
 				append_list(start, QVariantList{"Leg", k+1 } );
 				append_list(start, QVariantList{"BibNumber", QString::number(relay_number) + '.' + QString::number(k+1)});
 				append_list(start, QVariantList{"StartTime", datetime_to_string(start00.addMSecs(tt_leg_row.value(QStringLiteral("runs.startTimeMs")).toInt()))});
-				int course_id = getPlugin<RunsPlugin>()->courseForRelay(relay_number, leg);
+				if (!is_iof_race)
 				{
+					int course_id = getPlugin<RunsPlugin>()->courseForRelay(relay_number, leg);
 					QF_TIME_SCOPE("exporting course: " + QString::number(course_id));
 					QVariantList course{"Course"};
 					append_list(course, QVariantList{"Id", course_id});
@@ -877,7 +974,7 @@ QString RelaysPlugin::startListIofXml30()
 		append_list(start_list, class_start);
 	}
 	qf::core::utils::HtmlUtils::FromXmlListOptions opts;
-	opts.setDocumentTitle(tr("Relays IOF-XML 3.0 results"));
+	opts.setDocumentTitle(tr("Relays IOF-XML 3.0 startlist"));
 	return qf::core::utils::HtmlUtils::fromXmlList(start_list, opts);
 }
 

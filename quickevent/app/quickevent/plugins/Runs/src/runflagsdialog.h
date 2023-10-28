@@ -3,7 +3,13 @@
 
 #include <QDialog>
 
-class RunsTableModel;
+namespace qf {
+namespace core {
+namespace model {
+
+class SqlTableModel;
+
+}}}
 
 namespace Runs {
 
@@ -18,14 +24,14 @@ public:
 	explicit RunFlagsDialog(QWidget *parent = nullptr);
 	~RunFlagsDialog() override;
 
-	void load(RunsTableModel *model, int row);
+	void load(qf::core::model::SqlTableModel *model, int row);
 	void save();
 private:
 	void updateStatus();
 	bool isDisqualified() const;
 private:
 	Ui::RunFlagsDialog *ui;
-	RunsTableModel *m_model;
+	qf::core::model::SqlTableModel *m_model;
 	int m_row;
 	bool m_isDisqualified;
 };

@@ -15,7 +15,11 @@ class QUICKEVENTCORE_DECL_EXPORT StageResultsCsvExporter : public FileExporter
 
 	using Super = FileExporter;
 public:
-	StageResultsCsvExporter(QObject *parent = nullptr);
+	QF_PROPERTY_IMPL(QString, o, O, utFile)
+	QF_PROPERTY_IMPL(bool, s, S, implePath)
+	QF_PROPERTY_IMPL(bool, w, W, ithDidNotStart)
+public:
+	StageResultsCsvExporter(bool is_iof_race = false, QObject *parent = nullptr);
 	void generateCsvMulti();
 	void generateCsvSingle();
 	void setSeparator(QChar sep) { m_separator = sep; }
@@ -25,6 +29,7 @@ protected:
 	void exportCsvHeader(QTextStream &csv);
 private:
 	QChar m_separator = ';';
+	bool m_isIofRace = false;
 };
 
 }}}
