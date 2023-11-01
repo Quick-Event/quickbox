@@ -583,7 +583,7 @@
     <message>
         <location filename="plugins/CardReader/src/cardreaderwidget.cpp" line="636"/>
         <source>Saved punch: %1 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Uložený čip: %1 %2</translation>
     </message>
     <message>
         <location filename="plugins/CardReader/src/cardreaderwidget.cpp" line="703"/>
@@ -2925,7 +2925,7 @@ V případě chyb neváhejte napsat na support@oresults.eu</translation>
     <message>
         <location filename="src/loggerwidget.cpp" line="11"/>
         <source>&lt;empty&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;empty&gt;</translation>
     </message>
 </context>
 <context>
