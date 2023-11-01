@@ -353,7 +353,7 @@
     <message>
         <location filename="src/tableview.cpp" line="1805"/>
         <source>Insert rows statement</source>
-        <translation type="unfinished"></translation>
+        <translation>Příkaz Vložit řádky</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1814"/>
