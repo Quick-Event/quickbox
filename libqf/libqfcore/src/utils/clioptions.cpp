@@ -427,6 +427,11 @@ bool ConfigCLIOptions::loadConfigFile()
 	return true;
 }
 
+QString ConfigCLIOptions::effectiveConfigDir()
+{
+	return QFileInfo(configFile()).path();
+}
+
 QString ConfigCLIOptions::configFile()
 {
 	auto config = QStringLiteral("config");

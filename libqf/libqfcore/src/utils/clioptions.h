@@ -151,6 +151,7 @@ public:
 
 	void parse(const QStringList &cmd_line_args) Q_DECL_OVERRIDE;
 	bool loadConfigFile();
+	QString effectiveConfigDir();
 protected:
 	QString configFile();
 protected:
