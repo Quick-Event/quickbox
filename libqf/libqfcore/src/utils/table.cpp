@@ -613,16 +613,13 @@ Table::~Table()
 void Table::cleanupData(CleanupDataOption fields_options)
 {
 	qfLogFuncFrame();
-	switch(fields_options) {
-		case ClearFieldsRows:
+	if(fields_options == ClearFieldsRows) {
 			qfDebug() << "\tcleaning fields";
 			fieldsRef().clear();
-			[[clang::fallthrough]];
-		default:
-			qfDebug() << "\tcleaning rows";
-			d->rows.clear();
-			createRowIndex();
 	}
+	qfDebug() << "\tcleaning rows";
+	d->rows.clear();
+	createRowIndex();
 }
 
 int Table::rowCount() const
