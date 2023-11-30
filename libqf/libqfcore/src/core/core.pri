@@ -13,6 +13,7 @@ SOURCES += \
 	$$PWD/exception.cpp \
     $$PWD/logentrymap.cpp \
 	$$PWD/stacktrace.cpp \
+	$$PWD/log.cpp \
 	$$PWD/string.cpp \
     $$PWD/utils.cpp \
     $$PWD/collator.cpp \

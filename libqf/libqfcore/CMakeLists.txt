@@ -1,6 +1,7 @@
 add_library(libqfcore SHARED
     src/core/collator.cpp
     src/core/exception.cpp
+    src/core/log.cpp
     src/core/logentrymap.cpp
     src/core/stacktrace.cpp
     src/core/string.cpp
