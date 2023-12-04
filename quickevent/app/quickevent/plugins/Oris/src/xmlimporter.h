@@ -8,6 +8,8 @@
 #include <QTime>
 #include <QDate>
 
+#include <optional>
+
 class XmlImporter : public QObject
 {
 	Q_OBJECT
