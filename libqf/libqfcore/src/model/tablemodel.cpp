@@ -821,7 +821,7 @@ bool TableModel::removeTableRow(int row_ix, bool throw_exc)
 	return ok;
 }
 
-bool TableModel::removeRows(int row_ix, int count, bool throw_exc)
+bool TableModel::dropRows(int row_ix, int count, bool throw_exc)
 {
 	qfLogFuncFrame() << "row:" << row_ix << "count:" << count;
 	if(count < 0)

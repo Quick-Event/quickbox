@@ -144,17 +144,17 @@ public:
 	Q_SLOT virtual int reloadRow(int row_no);
 	Q_SLOT virtual int reloadInserts(const QString &id_column_name) { Q_UNUSED(id_column_name) return 0;}
 	int appendRow() {return insertRows(rowCount(), 1);}
-	bool dropRow(int row_ix, bool throw_exc) {return removeRows(row_ix, 1, throw_exc);}
+	bool dropRow(int row_ix, bool throw_exc) {return dropRows(row_ix, 1, throw_exc);}
 	bool prepareForCopyRow(int row_no);
 
 	bool insertRows(int row_ix, int count, const QModelIndex &parent = QModelIndex()) Q_DECL_OVERRIDE;
 	bool removeRows(int row_ix, int count, const QModelIndex &parent = QModelIndex()) Q_DECL_OVERRIDE
 	{
 		Q_UNUSED(parent)
-		return removeRows(row_ix, count, qf::core::Exception::Throw);
+		return dropRows(row_ix, count, qf::core::Exception::Throw);
 	}
 	virtual void cloneRow(int row_ix);
-	virtual bool removeRows(int row_ix, int count, bool throw_exc);
+	virtual bool dropRows(int row_ix, int count, bool throw_exc);
 	// used by TableView to delete row, when it was deleted externaly
 	bool removeRowNoOverload(int row_ix, bool throw_exc);
 
