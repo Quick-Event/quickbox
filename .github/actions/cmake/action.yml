@@ -44,7 +44,7 @@ runs:
         # CFLAGS="-Werror ${CFLAGS}" \
         # CXXFLAGS="-Werror ${CXXFLAGS}" \
         cmake \
-        -G Ninja \
+        #-G Ninja \
         -S '${{github.workspace}}' \
         -B '${{github.workspace}}/build' \
         -DQF_BUILD_QML_PLUGINS=ON \
