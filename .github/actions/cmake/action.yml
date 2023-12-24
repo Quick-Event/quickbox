@@ -41,10 +41,10 @@ runs:
     - name: Configure CMake
       run: |
         # Enable these when all warnings are fixed :^)
+        #-G Ninja \
         # CFLAGS="-Werror ${CFLAGS}" \
         # CXXFLAGS="-Werror ${CXXFLAGS}" \
         cmake \
-        #-G Ninja \
         -S '${{github.workspace}}' \
         -B '${{github.workspace}}/build' \
         -DQF_BUILD_QML_PLUGINS=ON \
