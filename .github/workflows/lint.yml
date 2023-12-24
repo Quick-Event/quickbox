@@ -2,7 +2,7 @@ name: Lint
 
 on:
   push:
-    branches: [ "master", "qe3" ]
+    branches: [ "master" ]
   pull_request:
     branches: [ "master", "qe3" ]
 
