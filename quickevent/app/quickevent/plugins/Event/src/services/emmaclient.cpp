@@ -37,6 +37,7 @@ namespace Event {
 namespace services {
 
 constexpr int HR_12_MSEC = 12 * 60 * 60 * 1000;
+constexpr int INVALID_SI_TIME = 61166; // 0xEEEE
 
 EmmaClient::EmmaClient(QObject *parent)
 	: Super(EmmaClient::serviceName(), parent)
@@ -445,9 +446,10 @@ void EmmaClient::exportStartListRacomTxt()
 		last_id = id;
 		int si = q2.value("runs.siId").toInt();
 		int start_time = q2.value("runs.startTimeMs").toInt();
-		bool start_time_card_null = q2.value("runs.startTimeMs").isNull();
+		bool start_time_null = q2.value("runs.startTimeMs").isNull();
 		int start_time_card = q2.value("cards.startTime").toInt();
-		if (start_time_card == 61166 || start_time_card_null)
+		bool start_time_card_null = q2.value("cards.startTime").isNull();
+		if ((start_time_card == INVALID_SI_TIME || start_time_card_null) && start_time_null)
 			start_time_card = 0;
 		QString name = q2.value("competitors.lastName").toString() + " " + q2.value("competitors.firstName").toString();
 		QString class_name = q2.value("classes.name").toString();
@@ -573,9 +575,10 @@ void EmmaClient::exportStartListRacomCsv()
 		int si = q2.value("runs.siId").toInt();
 		int start_time = q2.value("runs.startTimeMs").toInt();
 		int bib = q2.value("competitors.startNumber").toInt();
-		bool start_time_card_null = q2.value("runs.startTimeMs").isNull();
+		bool start_time_null = q2.value("runs.startTimeMs").isNull();
 		int start_time_card = q2.value("cards.startTime").toInt();
-		if (start_time_card == 61166 || start_time_card_null)
+		bool start_time_card_null = q2.value("cards.startTime").isNull();
+		if ((start_time_card == INVALID_SI_TIME || start_time_card_null) && start_time_null)
 			start_time_card = 0;
 		QString name = q2.value("competitors.lastName").toString() + " " + q2.value("competitors.firstName").toString();
 		QString class_name = q2.value("classes.name").toString();
