@@ -220,8 +220,21 @@ void RunsWidget::settleDownInPartWidget(quickevent::gui::PartWidget *part_widget
 		auto *a = new qfw::Action(tr("&Competitors with rented cards"));
 		connect(a, &qfw::Action::triggered, [this]() {
 			qff::MainWindow *fwk = qff::MainWindow::frameWork();
+			quickevent::gui::ReportOptionsDialog dlg(fwk);
+			dlg.setPersistentSettingsId("competitorsWithRentedCards");
+			dlg.loadPersistentSettings();
+			dlg.setClassFilterVisible(false);
+			dlg.setStartListOptionsVisible(false);
+			dlg.setStartListPrintVacantsVisible(false);
+			dlg.setPageLayoutVisible(true);
+			dlg.setStartTimeFormatVisible(false);
+			dlg.setStartlistOrderFirstByVisible(false);
+			if(!dlg.exec())
+				return;
+			auto opts = dlg.optionsMap();
 			QVariantMap props;
 			props["stageId"] = selectedStageId();
+			props["options"] = opts;
 			qf::qmlwidgets::reports::ReportViewWidget::showReport(fwk
 										, getPlugin<RunsPlugin>()->findReportFile("competitorsWithCardRent.qml")
 										, QVariant()
