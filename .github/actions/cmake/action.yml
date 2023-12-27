@@ -3,16 +3,16 @@ description: "Invoke CMake and generate build files"
 inputs:
   qt_version:
     description: "Specify Qt version to use"
-    default: "6.5.2"
+    required: true
   qt_arch:
     description: "Specify Qt version to use"
     default: "gcc_64"
   use_qt6:
     description: "Specify whether we're using Qt 5 or Qt 6"
-    default: "ON"
+    required: true
   modules:
     description: "Specify which modules should be installed"
-    default: "qtserialport qtmultimedia"
+    required: true
   additional_cmake_args:
     description: "Additional args to pass to CMake"
     default: ""
@@ -27,6 +27,14 @@ runs:
       with:
         packages: ninja-build libgl1-mesa-dev libpulse-dev libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-shape0 libxcb-util1 libxcb-xinerama0 libxkbcommon-x11-0 libxcb-cursor-dev clazy libfuse-dev libgstreamer-gl1.0-0 libgstreamer-plugins-base1.0-0
         version: 1.0
+
+    # Windows deps
+    - name: Install windows deps
+      if: runner.os == 'Windows'
+      run: |
+        vcpkg install doctest:x64-mingw-dynamic trompeloeil:x64-mingw-dynamic
+        echo cmake_extra_args="'-DCMAKE_TOOLCHAIN_FILE=$VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake' '-DMINGW=ON' '-G MinGW Makefiles'" >> "$GITHUB_ENV"
+      shell: bash
 
     # Qt
     - name: Install Qt
