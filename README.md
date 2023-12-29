@@ -49,17 +49,17 @@ Qt6 version
 ```
 git clone https://github.com/Quick-Event/quickbox.git
 cd quickbox
-git switch qt6
-git submodule update --init --recursive
-cmake -S . -B build -DCMAKE_PREFIX_PATH:PATH=~/app/qt/6.5.1/gcc_64 -DQF_BUILD_QML_PLUGINS=ON --install-prefix `pwd`/build/install
+git switch qe3
+git submodule update --init
+cmake -S . -B build -DCMAKE_PREFIX_PATH:PATH=~/app/qt/6.6.1/gcc_64 -DQF_BUILD_QML_PLUGINS=ON --install-prefix `pwd`/build/install
 cd build
 cmake --build . -j8
 # to install
 cmake --install .
 # to run
-LD_LIBRARY_PATH=../lib:~/app/qt5/6.5.1/gcc_64/lib ./install/quickevent
+LD_LIBRARY_PATH=../lib:~/app/qt5/6.6.1/gcc_64/lib ./install/quickevent
 ```
-If you want to use system Qt for build, then remove CLI option `-DCMAKE_PREFIX_PATH:PATH=/home/fanda/app/qt5/6.5.1/gcc_64`
+If you want to use system Qt for build, then remove CLI option `-DCMAKE_PREFIX_PATH:PATH=/home/fanda/app/qt5/6.6.1/gcc_64`
 
 ## Install
 #### Windows
