@@ -1,6 +1,7 @@
 #include "orisplugin.h"
 #include "orisimporter.h"
 #include "txtimporter.h"
+#include "xmlimporter.h"
 
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/menubar.h>
@@ -22,6 +23,7 @@ OrisPlugin::OrisPlugin(QObject *parent)
 	//setPersistentSettingsId("Oris");
 	m_orisImporter = new OrisImporter(this);
 	m_txtImporter = new TxtImporter(this);
+	m_xmlImporter = new XmlImporter(this);
 
 	connect(this, &OrisPlugin::installed, this, &OrisPlugin::onInstalled);
 }
@@ -91,6 +93,20 @@ void OrisPlugin::onInstalled()
 		qfw::Action *a = act_import_txt->addActionInto("competitorsRanking", tr("&Ranking CSV (ORIS format)"));
 		connect(a, &qfw::Action::triggered, m_txtImporter, &TxtImporter::importRankingCsv);
 	}
+	act_import->addSeparatorInto();
+	{
+		qfw::Action *a = act_import->addActionInto("iofXmlEntry", tr("Import IOF XML 3.0"));
+		connect(a, &qfw::Action::triggered, m_xmlImporter, &XmlImporter::importXML30);
+	}
+	{
+		qfw::Action *a = act_import->addActionInto("runsCzeCSV", tr("Import CSV (key is CZE registration)"));
+		connect(a, &qfw::Action::triggered, m_txtImporter, &TxtImporter::importRunsCzeCSV);
+	}
+	{
+		qfw::Action *a = act_import->addActionInto("runsIofCSV", tr("Import CSV (key is Iof ID)"));
+		connect(a, &qfw::Action::triggered, m_txtImporter, &TxtImporter::importRunsIofCSV);
+	}
+
 }
 
 }

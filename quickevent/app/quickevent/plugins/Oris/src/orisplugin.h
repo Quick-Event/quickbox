@@ -5,6 +5,7 @@
 
 class OrisImporter;
 class TxtImporter;
+class XmlImporter;
 
 namespace Oris {
 
@@ -19,6 +20,7 @@ private:
 private:
 	OrisImporter *m_orisImporter = nullptr;
 	TxtImporter *m_txtImporter = nullptr;
+	XmlImporter *m_xmlImporter = nullptr;
 };
 
 }
