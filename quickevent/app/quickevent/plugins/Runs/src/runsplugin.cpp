@@ -2668,7 +2668,11 @@ bool RunsPlugin::exportStartListCurrentStageTvGraphics(const QString &file_name)
 	}
 	const QString separator = ";";
 	QTextStream csv(&f);
+#if QT_VERSION_MAJOR >= 6
+	csv.setEncoding(QStringConverter::encodingForName("UTF-8").value());
+#else
 	csv.setCodec("UTF-8");
+#endif
 #ifdef Q_OS_WINDOWS
 	// enable BOM for Windows
 	csv.setGenerateByteOrderMark(true);

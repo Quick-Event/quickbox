@@ -28,9 +28,9 @@ bool XmlImporter::readPersonNode (SPerson &s, QXmlStreamReader &reader, [[maybe_
 {
 	bool result = false;
 	while(reader.readNextStartElement()) {
-		if (reader.name() == "Person") {
+		if (reader.name().toString() == "Person") {
 			while(reader.readNextStartElement()) {
-				if (reader.name() == "Id") {
+				if (reader.name().toString() == "Id") {
 					if (reader.attributes().hasAttribute("type") && reader.attributes().value("type").toString() == "IOF")
 						s.iofId = reader.readElementText().toInt();
 					else if (reader.attributes().hasAttribute("type") && reader.attributes().value("type").toString() == "CZE")
@@ -41,16 +41,16 @@ bool XmlImporter::readPersonNode (SPerson &s, QXmlStreamReader &reader, [[maybe_
 						reader.skipCurrentElement();
 					result = (s.iofId.has_value() || !s.regCz.isEmpty());
 				}
-				else if (reader.name() == "Nationality") {
+				else if (reader.name().toString() == "Nationality") {
 					if (reader.attributes().hasAttribute("code"))
 						s.nationalityCode = reader.attributes().value("code").toString();
 					s.nationalityName = reader.readElementText();
 				}
-				else if (reader.name() == "Name") {
+				else if (reader.name().toString() == "Name") {
 					while(reader.readNextStartElement()) {
-						if (reader.name() == "Family")
+						if (reader.name().toString() == "Family")
 							s.nameFamily = reader.readElementText();
-						else if (reader.name() == "Given")
+						else if (reader.name().toString() == "Given")
 							s.nameGiven = reader.readElementText();
 						else
 							reader.skipCurrentElement();
@@ -60,15 +60,15 @@ bool XmlImporter::readPersonNode (SPerson &s, QXmlStreamReader &reader, [[maybe_
 					reader.skipCurrentElement();
 			}
 		}
-		else if (reader.name() == "Organisation" && reader.attributes().hasAttribute("type")) {
+		else if (reader.name().toString() == "Organisation" && reader.attributes().hasAttribute("type")) {
 			if (reader.attributes().value("type").toString() == "NationalFederation") {
 				while(reader.readNextStartElement()) {
-					if (reader.name() == "Country") {
+					if (reader.name().toString() == "Country") {
 						if (reader.attributes().hasAttribute("code"))
 							s.countryCode = reader.attributes().value("code").toString();
 						s.countryName = reader.readElementText();
 					}
-					else if (reader.name() == "Id" && reader.attributes().hasAttribute("type") && reader.attributes().value("type").toString() == "IOF")
+					else if (reader.name().toString() == "Id" && reader.attributes().hasAttribute("type") && reader.attributes().value("type").toString() == "IOF")
 						s.clubIdIof = reader.readElementText().toInt();
 					else
 						reader.skipCurrentElement();
@@ -76,12 +76,12 @@ bool XmlImporter::readPersonNode (SPerson &s, QXmlStreamReader &reader, [[maybe_
 			}
 			else if (reader.attributes().value("type").toString() == "Club") {
 				while(reader.readNextStartElement()) {
-					if (reader.name() == "Name") {
+					if (reader.name().toString() == "Name") {
 						if (reader.attributes().hasAttribute("code"))
 							s.clubCode = reader.attributes().value("code").toString();
 						s.clubName = reader.readElementText();
 					}
-					else if (reader.name() == "Id" && reader.attributes().hasAttribute("type") && reader.attributes().value("type").toString() == "IOF")
+					else if (reader.name().toString() == "Id" && reader.attributes().hasAttribute("type") && reader.attributes().value("type").toString() == "IOF")
 						s.clubIdIof = reader.readElementText().toInt();
 					else
 						reader.skipCurrentElement();
@@ -90,26 +90,26 @@ bool XmlImporter::readPersonNode (SPerson &s, QXmlStreamReader &reader, [[maybe_
 			else
 				reader.skipCurrentElement();
 		}
-		else if (reader.name() == "ControlCard" && reader.attributes().hasAttribute("punchingSystem") && reader.attributes().value("punchingSystem").toString() == "SI") {
+		else if (reader.name().toString() == "ControlCard" && reader.attributes().hasAttribute("punchingSystem") && reader.attributes().value("punchingSystem").toString() == "SI") {
 			s.siNumber = reader.readElementText().toInt();
 		}
-		else if (reader.name() == "Class") {
+		else if (reader.name().toString() == "Class") {
 			while(reader.readNextStartElement()) {
-				if (reader.name() == "Name")
+				if (reader.name().toString() == "Name")
 					s.className = reader.readElementText();
-				else if (reader.name() == "ShortName")
+				else if (reader.name().toString() == "ShortName")
 					s.classNameShort = reader.readElementText();
 				else
 					reader.skipCurrentElement();
 			}
 		}
-		else if (reader.name() == "RaceNumber")
+		else if (reader.name().toString() == "RaceNumber")
 			s.enterRaces.insert(reader.readElementText().toInt());
-		else if (reader.name() == "Leg")
+		else if (reader.name().toString() == "Leg")
 			s.legNumber = reader.readElementText().toInt();
-		else if (reader.name() == "Extensions") {
+		else if (reader.name().toString() == "Extensions") {
 			while(reader.readNextStartElement()) {
-				if (reader.name() == "Note")
+				if (reader.name().toString() == "Note")
 					s.noteOris = reader.readElementText();
 				else
 					reader.skipCurrentElement();
@@ -127,15 +127,15 @@ bool XmlImporter::readRaceNode(SRace &s, QXmlStreamReader &reader)
 	QDateTime dt;
 	dt.setTimeSpec(Qt::UTC);
 	while(reader.readNextStartElement()) {
-		if (reader.name() == "Name")
+		if (reader.name().toString() == "Name")
 			s.name = reader.readElementText();
-		else if (reader.name() == "RaceNumber")
+		else if (reader.name().toString() == "RaceNumber")
 			s.number = reader.readElementText().toInt();
-		else if (reader.name() == "StartTime") {
+		else if (reader.name().toString() == "StartTime") {
 			while(reader.readNextStartElement()) {
-				if (reader.name() == "Date")
+				if (reader.name().toString() == "Date")
 					dt.setDate(QDate::fromString(reader.readElementText(),Qt::ISODate));
-				else if (reader.name() == "Time") {
+				else if (reader.name().toString() == "Time") {
 					dt.setTime(QTime::fromString(reader.readElementText(),Qt::ISODate));
 				}
 				else
@@ -180,7 +180,7 @@ bool XmlImporter::importEntries(QXmlStreamReader &reader, const XmlCreators crea
 	int relays_processed = 0;
 	qf::core::sql::Transaction transaction;
 	while(reader.readNextStartElement()) {
-		if(reader.name() == "PersonEntry") {
+		if(reader.name().toString() == "PersonEntry") {
 			SPerson person;
 			if (readPersonNode(person,reader, creator)) {
 
@@ -241,7 +241,7 @@ bool XmlImporter::importEntries(QXmlStreamReader &reader, const XmlCreators crea
 							<< ((person.iofId.has_value()) ? person.iofId.value(): -1 ) << "," << person.regCz << ","
 							<< person.countryCode << "]";
 		}
-		else if (reader.name() == "TeamEntry") {
+		else if (reader.name().toString() == "TeamEntry") {
 			QString relay_name;
 			QString relay_club;
 			QString relay_number;
@@ -249,23 +249,23 @@ bool XmlImporter::importEntries(QXmlStreamReader &reader, const XmlCreators crea
 			QString country_code, country,class_name;
 			QString club_name,club_country_code,club_country;
 			while(reader.readNextStartElement()) {
-				if (reader.name() == "Name") {
+				if (reader.name().toString() == "Name") {
 					relay_name = reader.readElementText();
 					relay_number = relay_name.right(1);
 				}
-				else if (reader.name() == "TeamEntryPerson") {
+				else if (reader.name().toString() == "TeamEntryPerson") {
 					SPerson person;
 					if (readPersonNode(person,reader,creator)) {
 						if (person.legNumber > 0)
 							legs.insert({person.legNumber,person});
 					}
 				}
-				else if (reader.name() == "Organisation" && reader.attributes().hasAttribute("type")) {
+				else if (reader.name().toString() == "Organisation" && reader.attributes().hasAttribute("type")) {
 					if (reader.attributes().value("type").toString() == "NationalFederation") {
 						while(reader.readNextStartElement()) {
-							if (reader.name() == "Name")
+							if (reader.name().toString() == "Name")
 								club_name = reader.readElementText();
-							else if (reader.name() == "Country") {
+							else if (reader.name().toString() == "Country") {
 								if (reader.attributes().hasAttribute("code"))
 									relay_club = club_country_code = reader.attributes().value("code").toString();
 								club_country = reader.readElementText();
@@ -276,10 +276,10 @@ bool XmlImporter::importEntries(QXmlStreamReader &reader, const XmlCreators crea
 					}
 					else if (reader.attributes().value("type").toString() == "Club" || reader.attributes().value("type").toString() == "Other") {
 						while(reader.readNextStartElement()) {
-							if (reader.name() == "Name") {
+							if (reader.name().toString() == "Name") {
 								club_name = reader.readElementText();
 							}
-							else if (reader.name() == "Country") {
+							else if (reader.name().toString() == "Country") {
 								if (reader.attributes().hasAttribute("code"))
 									country_code = reader.attributes().value("code").toString();
 								country = reader.readElementText(); // need to be here, for next element
@@ -291,9 +291,9 @@ bool XmlImporter::importEntries(QXmlStreamReader &reader, const XmlCreators crea
 					else
 						reader.skipCurrentElement();
 				}
-				else if (reader.name() == "Class") {
+				else if (reader.name().toString() == "Class") {
 					while(reader.readNextStartElement()) {
-						if (reader.name() == "Name") {
+						if (reader.name().toString() == "Name") {
 							class_name = reader.readElementText();
 						}
 						else
@@ -378,10 +378,10 @@ bool XmlImporter::importEntries(QXmlStreamReader &reader, const XmlCreators crea
 					qfInfo() << '\t' << "not supported" << leg.first << leg.second.nameFamily << leg.second.nameGiven << leg.second.regCz << leg.second.siNumber;
 			}
 		}
-		else if (reader.name() == "Event") {
+		else if (reader.name().toString() == "Event") {
 			QMap <QString, int> races;
 			while(reader.readNextStartElement()) {
-				if (reader.name() == "Race") {
+				if (reader.name().toString() == "Race") {
 					SRace race;
 					if (readRaceNode(race,reader)) {
 						QString race_str = QString("[%1] %2 %3").arg(race.number).arg(race.name).arg(race.datetime.date().toString(Qt::ISODate));
@@ -432,7 +432,7 @@ bool XmlImporter::importStartlist(QXmlStreamReader &reader, const XmlCreators cr
 	int items_processed = 0;
 	qf::core::sql::Transaction transaction;
 	while(reader.readNextStartElement()) {
-		if(reader.name() == "PersonEntry") {
+		if(reader.name().toString() == "PersonEntry") {
 			SPerson person;
 			if (readPersonNode(person,reader, creator)) {
 				//insert to db
@@ -460,21 +460,21 @@ bool XmlImporter::importClasses(QXmlStreamReader &reader, const XmlCreators crea
 	qf::core::sql::Transaction transaction;
 	int items_processed = 0;
 	while(reader.readNextStartElement()) {
-		if(reader.name() == "Class") {
+		if(reader.name().toString() == "Class") {
 			QString class_name;
 			int class_id = 0;
 			int legs_cnt = 0;
 			while(reader.readNextStartElement()) {
-				if (reader.name() == "Name")
+				if (reader.name().toString() == "Name")
 					class_name = reader.readElementText();
-				else if (reader.name() == "Id" && reader.attributes().hasAttribute("type") && reader.attributes().value("type").toString() == "ORIS" && creator == XmlCreators::Oris)
+				else if (reader.name().toString() == "Id" && reader.attributes().hasAttribute("type") && reader.attributes().value("type").toString() == "ORIS" && creator == XmlCreators::Oris)
 					class_id = reader.readElementText().toInt();
-				else if (reader.name() == "Id" && reader.attributes().hasAttribute("type") && reader.attributes().value("type").toString() == "IOF" && creator == XmlCreators::Eventor)
+				else if (reader.name().toString() == "Id" && reader.attributes().hasAttribute("type") && reader.attributes().value("type").toString() == "IOF" && creator == XmlCreators::Eventor)
 					class_id = reader.readElementText().toInt();
-				else if (reader.name() == "Leg") {
+				else if (reader.name().toString() == "Leg") {
 					legs_cnt++;
 					while(reader.readNextStartElement()) {
-						if (reader.name() == "Name")
+						if (reader.name().toString() == "Name")
 							qfInfo() << "Leg name:"<< reader.readElementText(); // need to be here, for next element
 						else
 							reader.skipCurrentElement();
@@ -548,7 +548,7 @@ bool XmlImporter::importClubs(QXmlStreamReader &reader, const XmlCreators creato
 	if (creator == XmlCreators::Eventor)
 		fakeCzClubMap.clear();
 	while(reader.readNextStartElement()) {
-		if(reader.name() == "Organisation" && reader.attributes().hasAttribute("type")) {
+		if(reader.name().toString() == "Organisation" && reader.attributes().hasAttribute("type")) {
 			QString name;
 
 			// ORIS
@@ -564,11 +564,11 @@ bool XmlImporter::importClubs(QXmlStreamReader &reader, const XmlCreators creato
 			if (reader.attributes().value("type").toString() == "NationalFederation") {
 				federation_iof = true;
 				while(reader.readNextStartElement()) {
-					if (reader.name() == "Id" && reader.attributes().hasAttribute("type")&& reader.attributes().value("type").toString() == "IOF")
+					if (reader.name().toString() == "Id" && reader.attributes().hasAttribute("type")&& reader.attributes().value("type").toString() == "IOF")
 						id_iof =  reader.readElementText().toInt();
-					else if (reader.name() == "Name")
+					else if (reader.name().toString() == "Name")
 						name = reader.readElementText();
-					else if (reader.name() == "Country") {
+					else if (reader.name().toString() == "Country") {
 						if (reader.attributes().hasAttribute("code"))
 							country_code = reader.attributes().value("code").toString();
 						country = reader.readElementText();
@@ -579,25 +579,25 @@ bool XmlImporter::importClubs(QXmlStreamReader &reader, const XmlCreators creato
 			}
 			else if (reader.attributes().value("type").toString() == "Club" || reader.attributes().value("type").toString() == "Other") {
 				while(reader.readNextStartElement()) {
-					if (reader.name() == "Id" && reader.attributes().hasAttribute("type")&& reader.attributes().value("type").toString() == "ORIS")
+					if (reader.name().toString() == "Id" && reader.attributes().hasAttribute("type")&& reader.attributes().value("type").toString() == "ORIS")
 						id_cz =  reader.readElementText().toInt();
-					else if (reader.name() == "Id" && reader.attributes().hasAttribute("type")&& reader.attributes().value("type").toString() == "IOF")
+					else if (reader.name().toString() == "Id" && reader.attributes().hasAttribute("type")&& reader.attributes().value("type").toString() == "IOF")
 						id_iof =  reader.readElementText().toInt();
-					else if (reader.name() == "Name") {
+					else if (reader.name().toString() == "Name") {
 						if (reader.attributes().hasAttribute("code"))
 							code_cz = reader.attributes().value("code").toString();
 						name = reader.readElementText();
 					}
-					else if (reader.name() == "Extensions")
+					else if (reader.name().toString() == "Extensions")
 					{
 						while(reader.readNextStartElement()) {
-							if (reader.name() == "Abbreviation")
+							if (reader.name().toString() == "Abbreviation")
 								abbr_cz = reader.readElementText();
 							else
 								reader.skipCurrentElement();
 						}
 					}
-					else if (reader.name() == "Country") {
+					else if (reader.name().toString() == "Country") {
 						if (reader.attributes().hasAttribute("code"))
 							country_code = reader.attributes().value("code").toString();
 						reader.readElementText(); // need to be here, for next element
@@ -676,7 +676,7 @@ bool XmlImporter::importRegistration(QXmlStreamReader &reader, const XmlCreators
 	// load data from XML
 	int items_processed = 0;
 	while(reader.readNextStartElement()) {
-		if(reader.name() == "Competitor") {
+		if(reader.name().toString() == "Competitor") {
 			SPerson person;
 			if (readPersonNode(person,reader, creator)) {
 				q.bindValue(":firstName", person.nameGiven);
@@ -737,13 +737,13 @@ bool XmlImporter::importEvent(QXmlStreamReader &reader, const XmlCreators creato
 	Event::EventConfig::Discipline discipline_id = Event::EventConfig::Discipline::Classic;
 
 	while(reader.readNextStartElement()) {
-		if(reader.name() == "Event") {
+		if(reader.name().toString() == "Event") {
 			while(reader.readNextStartElement()) {
-				if (reader.name() == "Name")
+				if (reader.name().toString() == "Name")
 					race_name = reader.readElementText();
-				else if (reader.name() == "Id" && reader.attributes().hasAttribute("type") && reader.attributes().value("type").toString() == "IOF")
+				else if (reader.name().toString() == "Id" && reader.attributes().hasAttribute("type") && reader.attributes().value("type").toString() == "IOF")
 					event_id = reader.readElementText().toInt();
-				else if (reader.name() == "Form") {
+				else if (reader.name().toString() == "Form") {
 					auto form = reader.readElementText();
 					if (form == "Relay")
 						discipline_id = Event::EventConfig::Discipline::Relays;
@@ -751,7 +751,7 @@ bool XmlImporter::importEvent(QXmlStreamReader &reader, const XmlCreators creato
 						discipline_id = Event::EventConfig::Discipline::Teams;
 					// default Individual == Event::EventConfig::Discipline::Classic
 				}
-				else if (reader.name() == "Race") {
+				else if (reader.name().toString() == "Race") {
 					SRace race;
 					if (readRaceNode(race,reader)) {
 						QString race_str = QString("[%1] %2 %3").arg(race.number).arg(race.name).arg(race.datetime.date().toString(Qt::ISODate));
@@ -832,17 +832,17 @@ bool XmlImporter::importXML30()
 				creator = XmlCreators::Eventor;
 		}
 
-		if (reader.name() == "EntryList")
+		if (reader.name().toString() == "EntryList")
 			return importEntries(reader, creator);
-		else if (reader.name() == "StartList")
+		else if (reader.name().toString() == "StartList")
 			return importStartlist(reader, creator);
-		else if (reader.name() == "ClassList")
+		else if (reader.name().toString() == "ClassList")
 			return importClasses(reader, creator);
-		else if (reader.name() == "OrganisationList") // clubs
+		else if (reader.name().toString() == "OrganisationList") // clubs
 			return importClubs(reader, creator);
-		else if (reader.name() == "CompetitorList") // registration
+		else if (reader.name().toString() == "CompetitorList") // registration
 			return importRegistration(reader, creator);
-		else if (reader.name() == "EventList")
+		else if (reader.name().toString() == "EventList")
 			return importEvent(reader, creator);
 		else
 			qfd::MessageBox::showWarning(fwk, QString(tr("Unsuported IOF XML 3.0 type (%1)")).arg(reader.name()));
