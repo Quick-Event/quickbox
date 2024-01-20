@@ -22,7 +22,7 @@ namespace qfu = qf::core::utils;
 using namespace qf::qmlwidgets::reports;
 
 //===================================================
-//                                ReportProcessor
+// ReportProcessor
 //===================================================
 QString ReportProcessor::HTML_ATTRIBUTE_ITEM = QStringLiteral("__qf_qml_report_item");
 QString ReportProcessor::HTML_ATTRIBUTE_LAYOUT = QStringLiteral("__qf_qml_report_layout");
@@ -343,7 +343,7 @@ QStringList ReportProcessor::qmlEngineImportPaths()
 	lst << QCoreApplication::applicationDirPath() + "/../lib/qml";
 #endif
 	lst << QCoreApplication::applicationDirPath() + "/qml";
-	lst << framework::Plugin::reportsDir();
+	lst << framework::Plugin::effectiveReportsDir();
 	lst << ":/quickevent";
 	return lst;
 }

@@ -38,7 +38,7 @@ QString Plugin::pluginDataDir()
 	return dir;
 }
 
-QString Plugin::reportsDir()
+QString Plugin::effectiveReportsDir()
 {
 	if(m_reportsDir.isEmpty())
 		m_reportsDir = defaultReportsDir();
@@ -54,11 +54,12 @@ QString Plugin::defaultReportsDir()
 QString Plugin::findReportFile(const QString &report_file_path) const
 {
 	QStringList search_paths;
-	search_paths << reportsDir() + '/' + m_featureId + "/qml/reports";
+	search_paths << effectiveReportsDir() + '/' + m_featureId + "/qml/reports";
 	//search_paths << qmlReportsDir();
 	for(const QString &dir : search_paths) {
+		//qfInfo() << "search_path:" << dir;
 		auto fn = dir + '/' + report_file_path;
-		//qfInfo() << "dir:" << dir << "try:" << fn;
+		//qfInfo() << "trying:" << fn;
 		QFileInfo fi(fn);
 		if(fi.isFile()) {
 			//qfInfo() << "HIT:" << fn;
@@ -73,7 +74,7 @@ QList<Plugin::ReportFileInfo> Plugin::listReportFiles(const QString &report_dir)
 {
 	QList<ReportFileInfo> report_files;
 	QStringList search_paths;
-	search_paths << reportsDir() + '/' + m_featureId + "/qml/reports";
+	search_paths << effectiveReportsDir() + '/' + m_featureId + "/qml/reports";
 	for(const QString &dir : search_paths) {
 		QDirIterator it(dir + '/' + report_dir, QDirIterator::NoIteratorFlags);
 		while (it.hasNext()) {

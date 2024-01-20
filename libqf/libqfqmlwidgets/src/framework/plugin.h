@@ -24,7 +24,7 @@ public:
 	static QString pluginDataDir();
 
 	static void setReportsDir(const QString &dir) { m_reportsDir = dir; }
-	static QString reportsDir();
+	static QString effectiveReportsDir();
 	static QString defaultReportsDir();
 
 	QString homeDir() const { return pluginDataDir() + '/' +  featureId(); }

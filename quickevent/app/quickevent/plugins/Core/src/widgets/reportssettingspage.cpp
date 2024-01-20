@@ -21,10 +21,11 @@ ReportsSettingsPage::ReportsSettingsPage(QWidget *parent) :
 	m_caption = tr("Reports");
 	ui->setupUi(this);
 
-	ui->lblHelp->setText(ui->lblHelp->text().arg(defaultReportsDirectory()));
+	ui->edReportsDirectory->setPlaceholderText(qf::qmlwidgets::framework::Plugin::defaultReportsDir());
+	ui->lblHelp->setText(ui->lblHelp->text().arg(qf::qmlwidgets::framework::Plugin::defaultReportsDir()));
 	
 	connect(ui->btSetDefaultReportsDir, &QAbstractButton::clicked, this, [this]() {
-		ui->edReportsDirectory->setText(qf::qmlwidgets::framework::Plugin::defaultReportsDir());
+		setReportsDirectory({});
 	});
 }
 
@@ -35,23 +36,24 @@ ReportsSettingsPage::~ReportsSettingsPage()
 
 void ReportsSettingsPage::setReportsDirectory(const QString dir)
 {
-	auto old_dir = ui->edReportsDirectory->text();
-	auto new_dir = dir;
-	if(dir.isEmpty()) {
-		new_dir = QFileDialog::getExistingDirectory(this, tr("Open Directory"),
-														 old_dir,
-														 QFileDialog::ShowDirsOnly);
+	auto default_reports_dir = qf::qmlwidgets::framework::Plugin::defaultReportsDir();
+	if (dir == default_reports_dir) {
+		ui->edReportsDirectory->setText({});
 	}
-	if(new_dir.isEmpty())
-		return;
-	ui->edReportsDirectory->setText(new_dir);
-	//if(new_dir != old_dir)
-	//	QMessageBox::information(this, tr("Information"), tr("Custom reports directory changes will be applied after application restart."));
+	else {
+		ui->edReportsDirectory->setText(dir);
+	}
 }
 
 void ReportsSettingsPage::on_btSelectCustomReportsDirectory_clicked()
 {
-	setReportsDirectory({});
+	auto old_dir = ui->edReportsDirectory->text();
+	auto new_dir = QFileDialog::getExistingDirectory(this, tr("Open Directory"),
+													 old_dir,
+													 QFileDialog::ShowDirsOnly);
+	if(new_dir.isEmpty())
+		return;
+	setReportsDirectory(new_dir);
 }
 
 static const auto KEY_reportsDirectory = QStringLiteral("reportsDirectory");
@@ -59,8 +61,8 @@ static const auto KEY_reportsDirectory = QStringLiteral("reportsDirectory");
 
 void ReportsSettingsPage::load()
 {
-	auto dir = reportsDirectory();
-	ui->edReportsDirectory->setText(dir);
+	auto dir = reportsDirectoryFromSettings();
+	setReportsDirectory(dir);
 }
 
 void ReportsSettingsPage::save()
@@ -71,17 +73,12 @@ void ReportsSettingsPage::save()
 	qf::qmlwidgets::framework::Plugin::setReportsDir(dir);
 }
 
-QString ReportsSettingsPage::defaultReportsDirectory() const
-{
-	return QCoreApplication::applicationDirPath() + "/reports";
-}
-
-QString ReportsSettingsPage::reportsDirectory() const
+QString ReportsSettingsPage::reportsDirectoryFromSettings() const
 {
 	ReportsSettings settings;
 	auto dir = settings.reportsDirectory();
 	if(dir.isEmpty())
-		dir = defaultReportsDirectory();
+		dir = qf::qmlwidgets::framework::Plugin::defaultReportsDir();
 	return dir;
 }
 

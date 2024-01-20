@@ -18,14 +18,12 @@ public:
 	explicit ReportsSettingsPage(QWidget *parent = nullptr);
 	~ReportsSettingsPage();
 
-	QString reportsDirectory() const;
+	QString reportsDirectoryFromSettings() const;
 private slots:
 	void on_btSelectCustomReportsDirectory_clicked();
 private:
 	void load() override;
 	void save() override;
-
-	QString defaultReportsDirectory() const;
 
 	void setReportsDirectory(const QString dir);
 private:
