@@ -74,8 +74,8 @@ void QrOPunch::init()
 	}
 	if (ss.isWriteLogFile()) {
 		m_logFileFs.close();
-        m_logFileFs.open(ss.logFileName().toLocal8Bit(), std::ios_base::app);
-        if (!m_logFileFs) {
+		m_logFileFs.open(ss.logFileName().toLocal8Bit(), std::ios_base::app);
+		if (!m_logFileFs) {
 			qfError() << "Failed to open file for logging: " << ss.logFileName();
 		} else {
 			qfInfo() << "Opened file for logging: " << ss.logFileName();

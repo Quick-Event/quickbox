@@ -18,17 +18,17 @@ QBrush Brush::brush()
 {
 	qfLogFuncFrame() << this << "is dirty:" << isDirty();
 	if(isDirty()) {
-        setDirty(false);
-        {
+		setDirty(false);
+		{
 			QVariant v = basedOn();
 			qfDebug() << "\t based on:" << v.toString();
 			if(v.isValid()) {
-                QObject *o = styleobjectFromVariant(v);
+				QObject *o = styleobjectFromVariant(v);
 				Brush *based_on = qobject_cast<Brush*>(o);
 				qfDebug() << "\t\t based on object:" << based_on;
-                if(based_on) {
-                    m_brush = based_on->brush();
-                }
+				if(based_on) {
+					m_brush = based_on->brush();
+				}
 			}
 		}
 		{
@@ -54,5 +54,5 @@ QBrush Brush::brush()
 			m_brush.setStyle(Qt::SolidPattern);
 		}
 	}
-    return m_brush;
+	return m_brush;
 }

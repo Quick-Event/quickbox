@@ -72,23 +72,23 @@ Sheet *StyleObject::rootStyleSheet()
 
 QObject *StyleObject::styleobjectFromVariant(const QVariant &v, StyleGroup style_group, bool should_exist)
 {
-    QObject *ret = nullptr;
-    if(v.isValid()) {
-        ret = v.value<QObject*>();
-        if(!ret) {
+	QObject *ret = nullptr;
+	if(v.isValid()) {
+		ret = v.value<QObject*>();
+		if(!ret) {
 #if QT_VERSION_MAJOR >= 6
-            if(v.typeId() == QMetaType::QString) {
+			if(v.typeId() == QMetaType::QString) {
 #else
-            if(v.type() == QVariant::String) {
+			if(v.type() == QVariant::String) {
 #endif
-                StyleGroup sg = style_group;
-                if(sg == SGOwn)
-                    sg = m_styleGroup;
-                ret = rootStyleSheet()->styleObjectForName(sg, v.toString(), should_exist);
-            }
-        }
-    }
-    return ret;
+				StyleGroup sg = style_group;
+				if(sg == SGOwn)
+					sg = m_styleGroup;
+				ret = rootStyleSheet()->styleObjectForName(sg, v.toString(), should_exist);
+			}
+		}
+	}
+	return ret;
 }
 /*
 QString StyleObject::nextSequentialName()

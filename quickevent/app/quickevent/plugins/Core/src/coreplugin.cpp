@@ -52,8 +52,8 @@ void CorePlugin::onInstalled()
 	{
 		auto *page = new ReportsSettingsPage();
 		settingsDialog()->addPage(page);
-		setReportsDir(page->reportsDirectory());
-		qfInfo() << "Reports dir set to:" << reportsDir();
+		setReportsDir(page->reportsDirectoryFromSettings());
+		qfInfo() << "Reports dir set to:" << effectiveReportsDir();
 	}
 
 	auto *a_file = fwk->menuBar()->actionForPath("file", true);

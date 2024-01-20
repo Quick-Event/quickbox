@@ -43,21 +43,21 @@ void Sheet::createStyleCache_helper(QObject *parent)
 
 QObject *Sheet::styleObjectForName(StyleObject::StyleGroup style_object_group, const QString &name, bool should_exist)
 {
-    ObjectMap om = m_definedStyles.value(style_object_group);
-    QObject *ret = om.value(name);
-    if(ret == nullptr && should_exist)
-        qfError() << "Cannot find style object for style group:" << style_object_group << "name:" + name;
-    return ret;
+	ObjectMap om = m_definedStyles.value(style_object_group);
+	QObject *ret = om.value(name);
+	if(ret == nullptr && should_exist)
+		qfError() << "Cannot find style object for style group:" << style_object_group << "name:" + name;
+	return ret;
 }
 
 void Sheet::setStyleObjectForName(StyleObject::StyleGroup style_object_group, const QString &name, QObject *o)
 {
 	//qfInfo() << Q_FUNC_INFO << name << style_object_group << o;
-    ObjectMap &om = m_definedStyles[style_object_group];
-    if(o)
-        om[name] = o;
+	ObjectMap &om = m_definedStyles[style_object_group];
+	if(o)
+		om[name] = o;
 	else
-        om.remove(name);
+		om.remove(name);
 }
 
 QQmlListProperty<Color> Sheet::colors()

@@ -115,17 +115,17 @@ int CardReaderPlugin::findRunId(int si_id, int si_finish_time, QString *err_msg)
 	bool is_relays = getPlugin<EventPlugin>()->eventConfig()->isRelays();
 	if(is_relays) {
 		q.exec("SELECT id, leg, startTimeMs, finishTimeMs FROM runs WHERE siId=" QF_IARG(si_id)
-		       " AND isRunning"
-		       " ORDER BY leg DESC"
-		       , qf::core::Exception::Throw);
+			" AND isRunning"
+			" ORDER BY leg DESC"
+, qf::core::Exception::Throw);
 	}
 	else {
 		int stage_no = currentStageId();
 		q.exec("SELECT id, startTimeMs, finishTimeMs FROM runs WHERE stageId=" QF_IARG(stage_no)
-		       " AND siId=" QF_IARG(si_id)
-		       " AND isRunning"
-		       //" ORDER BY finishTimeMs"
-		       , qf::core::Exception::Throw);
+			" AND siId=" QF_IARG(si_id)
+			" AND isRunning"
+			//" ORDER BY finishTimeMs"
+			, qf::core::Exception::Throw);
 
 	}
 	while(q.next()) {

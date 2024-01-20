@@ -72,7 +72,7 @@ void QrOPunchWidget::onBtChooseLogFileClicked()
 	if (svc) {
 		QrOPunchSettings ss = svc->settings();
 		QString file = QFileDialog::getSaveFileName(this, tr("Choose file to log requests"), ss.logFileName(),
-		                                            {}, nullptr, QFileDialog::DontConfirmOverwrite);
+												{}, nullptr, QFileDialog::DontConfirmOverwrite);
 		if (!file.isEmpty())
 			ui->edLogFile->setText(file);
 	}
