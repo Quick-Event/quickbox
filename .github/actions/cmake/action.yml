@@ -45,11 +45,17 @@ runs:
         arch: ${{ inputs.qt_arch }}
         install-deps: false
         modules: ${{ inputs.modules }}
-
+    
+    - name: Setup Ninja
+      uses: ashutoshvarma/setup-ninja@master
+      with:
+        # ninja version to download. Default: 1.10.0
+        version: 1.10.0
+    
     - name: Configure CMake
       run: |
         # Enable these when all warnings are fixed :^)
-        #-G Ninja \
+        -G Ninja \
         # CFLAGS="-Werror ${CFLAGS}" \
         # CXXFLAGS="-Werror ${CXXFLAGS}" \
         cmake \
