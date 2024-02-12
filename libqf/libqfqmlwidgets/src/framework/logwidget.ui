@@ -74,7 +74,7 @@
         <string>Clear</string>
        </property>
        <property name="icon">
-        <iconset resource="../../images/flat/flat.qrc">
+        <iconset resource="../../images/flat/qfqmlwidgets_flat.qrc">
          <normaloff>:/qf/qmlwidgets/images/flat/delete.svg</normaloff>:/qf/qmlwidgets/images/flat/delete.svg</iconset>
        </property>
        <property name="autoRaise">
@@ -102,7 +102,7 @@
         <string>Resize columns to fit content</string>
        </property>
        <property name="icon">
-        <iconset resource="../../images/flat/flat.qrc">
+        <iconset resource="../../images/flat/qfqmlwidgets_flat.qrc">
          <normaloff>:/qf/qmlwidgets/images/flat/zoom_fitwidth.svg</normaloff>:/qf/qmlwidgets/images/flat/zoom_fitwidth.svg</iconset>
        </property>
        <property name="autoRaise">
@@ -119,7 +119,7 @@
         <string>...</string>
        </property>
        <property name="icon">
-        <iconset resource="../../images/flat/flat.qrc">
+        <iconset resource="../../images/flat/qfqmlwidgets_flat.qrc">
          <normaloff>:/qf/qmlwidgets/images/flat/settings.svg</normaloff>:/qf/qmlwidgets/images/flat/settings.svg</iconset>
        </property>
        <property name="popupMode">
@@ -159,7 +159,7 @@
  </customwidgets>
  <resources>
   <include location="../../images/images.qrc"/>
-  <include location="../../images/flat/flat.qrc"/>
+  <include location="../../images/flat/qfqmlwidgets_flat.qrc"/>
  </resources>
  <connections/>
 </ui>

@@ -62,7 +62,7 @@
    <item>
     <widget class="QPushButton" name="btPlay">
      <property name="icon">
-      <iconset resource="../../../../../../libqf/libqfqmlwidgets/images/flat/flat.qrc">
+      <iconset resource="../../../../../../libqf/libqfqmlwidgets/images/flat/qfqmlwidgets_flat.qrc">
        <normaloff>:/qf/qmlwidgets/images/flat/media-play.svg</normaloff>:/qf/qmlwidgets/images/flat/media-play.svg</iconset>
      </property>
     </widget>
@@ -70,7 +70,7 @@
    <item>
     <widget class="QPushButton" name="btShowDetail">
      <property name="icon">
-      <iconset resource="../../../../../../libqf/libqfqmlwidgets/images/flat/flat.qrc">
+      <iconset resource="../../../../../../libqf/libqfqmlwidgets/images/flat/qfqmlwidgets_flat.qrc">
        <normaloff>:/qf/qmlwidgets/images/flat/settings.svg</normaloff>:/qf/qmlwidgets/images/flat/settings.svg</iconset>
      </property>
     </widget>
@@ -79,7 +79,7 @@
  </widget>
  <resources>
   <include location="../../../../../../libqf/libqfcore/images/images.qrc"/>
-  <include location="../../../../../../libqf/libqfqmlwidgets/images/flat/flat.qrc"/>
+  <include location="../../../../../../libqf/libqfqmlwidgets/images/flat/qfqmlwidgets_flat.qrc"/>
  </resources>
  <connections/>
 </ui>
