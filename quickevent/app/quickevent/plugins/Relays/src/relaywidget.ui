@@ -179,7 +179,7 @@
          <string>Add leg Ctrl+Ins</string>
         </property>
         <property name="icon">
-         <iconset resource="../../../../../../libqf/libqfqmlwidgets/images/flat/flat.qrc">
+         <iconset resource="../../../../../../libqf/libqfqmlwidgets/images/flat/qfqmlwidgets_flat.qrc">
           <normaloff>:/qf/qmlwidgets/images/flat/insert-row.svg</normaloff>:/qf/qmlwidgets/images/flat/insert-row.svg</iconset>
         </property>
         <property name="shortcut">
@@ -193,7 +193,7 @@
          <string>Remove leg Ctrl+Del</string>
         </property>
         <property name="icon">
-         <iconset resource="../../../../../../libqf/libqfqmlwidgets/images/flat/flat.qrc">
+         <iconset resource="../../../../../../libqf/libqfqmlwidgets/images/flat/qfqmlwidgets_flat.qrc">
           <normaloff>:/qf/qmlwidgets/images/flat/delete-row.svg</normaloff>:/qf/qmlwidgets/images/flat/delete-row.svg</iconset>
         </property>
         <property name="shortcut">
@@ -207,7 +207,7 @@
          <string>Move leg down Ctrl+D</string>
         </property>
         <property name="icon">
-         <iconset resource="../../../../../../libqf/libqfqmlwidgets/images/flat/flat.qrc">
+         <iconset resource="../../../../../../libqf/libqfqmlwidgets/images/flat/qfqmlwidgets_flat.qrc">
           <normaloff>:/qf/qmlwidgets/images/flat/down.svg</normaloff>:/qf/qmlwidgets/images/flat/down.svg</iconset>
         </property>
         <property name="shortcut">
@@ -221,7 +221,7 @@
          <string>Move leg up Ctrl+U</string>
         </property>
         <property name="icon">
-         <iconset resource="../../../../../../libqf/libqfqmlwidgets/images/flat/flat.qrc">
+         <iconset resource="../../../../../../libqf/libqfqmlwidgets/images/flat/qfqmlwidgets_flat.qrc">
           <normaloff>:/qf/qmlwidgets/images/flat/up.svg</normaloff>:/qf/qmlwidgets/images/flat/up.svg</iconset>
         </property>
         <property name="shortcut">
@@ -235,7 +235,7 @@
          <string>Reload Ctrl+R</string>
         </property>
         <property name="icon">
-         <iconset resource="../../../../../../libqf/libqfqmlwidgets/images/flat/flat.qrc">
+         <iconset resource="../../../../../../libqf/libqfqmlwidgets/images/flat/qfqmlwidgets_flat.qrc">
           <normaloff>:/qf/qmlwidgets/images/flat/reload.svg</normaloff>:/qf/qmlwidgets/images/flat/reload.svg</iconset>
         </property>
         <property name="shortcut">
@@ -287,7 +287,7 @@
   <tabstop>tblLegs</tabstop>
  </tabstops>
  <resources>
-  <include location="../../../../../../libqf/libqfqmlwidgets/images/flat/flat.qrc"/>
+  <include location="../../../../../../libqf/libqfqmlwidgets/images/flat/qfqmlwidgets_flat.qrc"/>
  </resources>
  <connections/>
 </ui>
