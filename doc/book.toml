@@ -1,0 +1,6 @@
+[book]
+authors = ["Fanda Vacek"]
+language = "en"
+multilingual = false
+src = "src"
+title = "QuickBox Documentation"

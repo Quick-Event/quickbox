@@ -39,3 +39,4 @@ Makefile*
 *.qmlproject.user.*
 
 _work/*
+doc/book
