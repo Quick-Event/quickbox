@@ -88,7 +88,7 @@
         <string>Copy to clipboard.</string>
        </property>
        <property name="icon">
-        <iconset resource="../../images/images.qrc">
+        <iconset resource="../../images/qfqmlwidgets_images.qrc">
          <normaloff>:/qf/qmlwidgets/images/copy.svg</normaloff>:/qf/qmlwidgets/images/copy.svg</iconset>
        </property>
        <property name="autoRaise">
@@ -158,7 +158,7 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../../images/images.qrc"/>
+  <include location="../../images/qfqmlwidgets_images.qrc"/>
   <include location="../../images/flat/qfqmlwidgets_flat.qrc"/>
  </resources>
  <connections/>
