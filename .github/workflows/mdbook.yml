@@ -43,7 +43,7 @@ jobs:
         uses: actions/configure-pages@v4
       - name: Build with mdBook
         run: |
-          cd doc
+          cd ./doc
           mdbook build
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
