@@ -1,4 +1,5 @@
 #include "rootnode.h"
+#include "dotappnode.h"
 
 #include <qf/core/exception.h>
 #include <qf/core/log.h>
@@ -12,7 +13,7 @@ namespace Event::services::shvapi {
 RootNode::RootNode(QObject *parent)
 	: Super(parent)
 {
-
+	new DotAppNode(this);
 }
 
 const std::vector<shv::chainpack::MetaMethod> &RootNode::metaMethods()
@@ -20,12 +21,6 @@ const std::vector<shv::chainpack::MetaMethod> &RootNode::metaMethods()
 	static std::vector<MetaMethod> meta_methods {
 		{Rpc::METH_DIR, MetaMethod::Signature::RetParam, MetaMethod::Flag::None, Rpc::ROLE_BROWSE},
 		{Rpc::METH_LS, MetaMethod::Signature::RetParam, MetaMethod::Flag::None, Rpc::ROLE_BROWSE},
-		{Rpc::METH_APP_NAME, MetaMethod::Signature::RetVoid, MetaMethod::Flag::IsGetter, Rpc::ROLE_BROWSE},
-		//{Rpc::METH_DEVICE_TYPE, MetaMethod::Signature::RetVoid, MetaMethod::Flag::IsGetter, Rpc::ROLE_BROWSE},
-		//{Rpc::METH_DEVICE_ID, MetaMethod::Signature::RetVoid, MetaMethod::Flag::IsGetter, Rpc::ROLE_READ},
-		//{M_APP_VERSION, MetaMethod::Signature::RetVoid, MetaMethod::Flag::IsGetter, Rpc::ROLE_READ},
-		//{M_GIT_COMMIT, MetaMethod::Signature::RetVoid, MetaMethod::Flag::IsGetter, Rpc::ROLE_READ},
-		//{METH_DEPOT_MODEL_DESTROY_ROUTE, MetaMethod::Signature::RetParam, MetaMethod::Flag::None, Rpc::ROLE_WRITE},
 	};
 	return meta_methods;
 }
@@ -51,12 +46,6 @@ const MetaMethod *RootNode::metaMethod(const StringViewList &shv_path, size_t ix
 RpcValue RootNode::callMethod(const StringViewList &shv_path, const std::string &method, const shv::chainpack::RpcValue &params, const shv::chainpack::RpcValue &user_id)
 {
 	qfLogFuncFrame() << shv_path.join('/') << method;
-	//eyascore::utils::UserId user_id = eyascore::utils::UserId::makeUserName(QString::fromStdString(rq.userId().toMap().value("userName").toString()));
-	if(shv_path.empty()) {
-		if(method == Rpc::METH_APP_NAME) {
-			return "QuickEvent";
-		}
-	}
 	return Super::callMethod(shv_path, method, params, user_id);
 }
 
