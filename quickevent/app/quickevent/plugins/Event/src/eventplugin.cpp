@@ -9,6 +9,9 @@
 
 #include "services/serviceswidget.h"
 #include "services/emmaclient.h"
+#ifdef WITH_QE_SHVAPI
+#include "services/shvapi/client.h"
+#endif
 
 #include <quickevent/core/og/timems.h>
 
@@ -367,11 +370,16 @@ void EventPlugin::onInstalled()
 	}
 	fwk->menuBar()->actionForPath("view/toolbar")->addActionInto(tb->toggleViewAction());
 
-	services::OResultsClient *oresults_client = new services::OResultsClient(this);
+	auto *oresults_client = new services::OResultsClient(this);
 	services::Service::addService(oresults_client);
 
-	services::EmmaClient *emma_client = new services::EmmaClient(this);
+	auto *emma_client = new services::EmmaClient(this);
 	services::Service::addService(emma_client);
+
+#ifdef WITH_QE_SHVAPI
+	auto shvapi_client = new services::shvapi::Client(this);
+	services::Service::addService(shvapi_client);
+#endif
 
 	{
 		m_servicesDockWidget = new qff::DockWidget(nullptr);

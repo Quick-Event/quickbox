@@ -1,6 +1,3 @@
-#ifndef ORESULTSCLIENT_H
-#define ORESULTSCLIENT_H
-
 #pragma once
 
 #include "service.h"
@@ -56,4 +53,3 @@ private:
 
 }}
 
-#endif // ORESULTSCLIENT_H

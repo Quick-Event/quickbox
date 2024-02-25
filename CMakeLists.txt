@@ -1,4 +1,7 @@
 cmake_minimum_required(VERSION 3.18.4)
+
+set(WITH_QE_SHVAPI OFF CACHE BOOL "Build SHV API service with QuickEvent")
+
 project(quickbox LANGUAGES C CXX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -6,7 +9,7 @@ include(CTest)
 set(CMAKE_SHARED_LIBRARY_PREFIX "") # we don't want CMake to prepend "lib" to our libraries, we prefer adding that ourselves
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-    set(CMAKE_CXX_FLAGS "-Wall -Wextra -pedantic ${CMAKE_CXX_FLAGS}")
+	set(CMAKE_CXX_FLAGS "-Wall -Wextra -pedantic ${CMAKE_CXX_FLAGS}")
 endif()
 
 if (WIN32)
@@ -16,7 +19,7 @@ if (WIN32)
 endif (WIN32)
 
 if (NOT TARGET libnecrolog)
-    add_subdirectory(3rdparty/necrolog)
+	add_subdirectory(3rdparty/necrolog)
 endif()
 
 set(USE_QT6 ON)
@@ -41,6 +44,9 @@ if(Qt_FOUND)
 		add_subdirectory(quickhttpd)
 		add_subdirectory(quickshow)
 		add_subdirectory(tools/qsqlmon)
+		if(WITH_QE_SHVAPI)
+			add_subdirectory(3rdparty/libshv)
+		endif()
 	endif()
 else()
 	message(FATAL_ERROR "Qt not found")
@@ -57,6 +63,6 @@ list(REMOVE_DUPLICATES QML_IMPORT_PATH)
 # The variable is cached in ${BUILD_DIR}/CMakeCache.txt. We need FORCE to
 # change it there immediately. Also, add a comment to the cache file.
 set(QML_IMPORT_PATH ${QML_IMPORT_PATH}
-    CACHE STRING "Qt Creator extra qml import paths"
-    FORCE
+	CACHE STRING "Qt Creator extra qml import paths"
+	FORCE
 )
