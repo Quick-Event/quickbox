@@ -1,6 +1,6 @@
 #include "client.h"
 #include "clientwidget.h"
-#include "rootnode.h"
+#include "nodes.h"
 
 #include "../../eventplugin.h"
 
@@ -10,6 +10,7 @@
 #include <qf/core/sql/query.h>
 
 #include <shv/iotqt/rpc/deviceconnection.h>
+#include <shv/iotqt/node/shvnode.h>
 
 #include <QCoreApplication>
 #include <QDir>
@@ -43,9 +44,27 @@ namespace Event::services::shvapi {
 Client::Client(QObject *parent)
 	: Super(Client::serviceName(), parent)
 	, m_rpcConnection(nullptr)
-	, m_rootNode(new RootNode(this))
+	, m_rootNode(new shv::iotqt::node::ShvRootNode(this))
 {
-	connect(getPlugin<EventPlugin>(), &Event::EventPlugin::dbEventNotify, this, &Client::onDbEventNotify, Qt::QueuedConnection);
+	auto *event_plugin = getPlugin<EventPlugin>();
+
+	new DotAppNode(m_rootNode);
+	connect(event_plugin, &EventPlugin::eventOpenChanged, this, [this](bool is_open) {
+		if (is_open) {
+			auto *event_plugin = getPlugin<EventPlugin>();
+			auto *event = new EventNode(m_rootNode);
+			auto *stage = new shv::iotqt::node::ShvNode("stage", event);
+			for (auto i = 0; i < event_plugin->stageCount(); i++) {
+				auto *nd = new shv::iotqt::node::ShvNode(std::to_string(i + 1), stage);
+				new RunNode(i, nd);
+			}
+		}
+		else {
+			qDeleteAll(m_rootNode->findChildren<EventNode*>());
+		}
+	});
+
+	connect(event_plugin, &Event::EventPlugin::dbEventNotify, this, &Client::onDbEventNotify, Qt::QueuedConnection);
 	connect(m_rootNode, &shv::iotqt::node::ShvNode::sendRpcMessage, this, &Client::sendRpcMessage);
 }
 

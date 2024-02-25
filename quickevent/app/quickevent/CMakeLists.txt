@@ -129,9 +129,8 @@ if(WITH_QE_SHVAPI)
 	target_sources(quickevent PRIVATE
 		plugins/Event/src/services/shvapi/client.cpp
 		plugins/Event/src/services/shvapi/clientwidget.cpp
-		plugins/Event/src/services/shvapi/rootnode.cpp
 		plugins/Event/src/services/shvapi/shvnode.cpp
-		plugins/Event/src/services/shvapi/dotappnode.cpp
+		plugins/Event/src/services/shvapi/nodes.cpp
 	)
 endif()
 

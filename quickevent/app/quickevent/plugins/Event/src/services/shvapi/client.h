@@ -7,6 +7,7 @@ class QNetworkAccessManager;
 
 namespace shv::chainpack { class RpcMessage; }
 namespace shv::iotqt::rpc { class DeviceConnection; }
+namespace shv::iotqt::node { class ShvRootNode; }
 
 namespace Event::services::shvapi {
 
@@ -43,7 +44,7 @@ private:
 	void sendRpcMessage(const shv::chainpack::RpcMessage &rpc_msg);
 private:
 	shv::iotqt::rpc::DeviceConnection *m_rpcConnection;
-	RootNode *m_rootNode;
+	shv::iotqt::node::ShvRootNode *m_rootNode;
 };
 
 }
