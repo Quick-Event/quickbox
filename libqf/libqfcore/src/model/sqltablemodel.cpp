@@ -175,19 +175,18 @@ bool SqlTableModel::postRow(int row_no, bool throw_exc)
 				}
 				if(!is_field_dirty)
 					continue;
-				qfDebug() << "\tdirty field:" << fld.name();
 				QVariant v = row_ref.value(i);
+				qfDebug() << "\tdirty field:" << fld.name() << "type:" << v.typeName() << "val:" << v.toString();
 				if(is_field_dirty) {
 					/// null hodnotu nema smysl insertovat, pokud to neni nutne kvuli necemu jinemu
 					/// naopak se pri insertu dokumentu z vice join tabulek muze stat, ze se vlozi to not-null fieldu null hodnota
 					/// pokud je insert, join radek neexistuje, takze hodnoty jsou null a mysql v takovem pripade v resultsetu nastavi
 					/// i not-null field na nullable
-					QSqlField new_fld;
+					QSqlField new_fld(fld.shortName(), fld.type());
 					//if(v.isNull() && fld.isSerial())
 					//	v = 0;
 					new_fld.setValue(v);
-					//qfInfo() << "\t\t" << "val type:" << QVariant::typeToName(f.value().type());
-					new_fld.setName(fld.shortName());
+					//qfInfo() << "\t\t" << "val is QString:" << (v.metaType().id() == QMetaType::QString);
 					rec.append(new_fld);
 				}
 			}
@@ -203,11 +202,12 @@ bool SqlTableModel::postRow(int row_no, bool throw_exc)
 				}
 			}
 			else {
-				qs = sqldrv->sqlStatement(QSqlDriver::InsertStatement, table, rec, true);
+				qs = sqldrv->sqlStatement(QSqlDriver::InsertStatement, table, rec, false);
 				//qs = fixSerialDefaultValue(qs, serial_ix, rec);
 			}
 			if(qs.isEmpty())
 				continue;
+			/*
 			qfDebug() << "\texecuting prepared query:" << qs;
 			bool ok = q.prepare(qs);
 			if(!ok) {
@@ -215,17 +215,16 @@ bool SqlTableModel::postRow(int row_no, bool throw_exc)
 			}
 			else {
 				for(int i=0; i<rec.count(); i++) {
-#if QT_VERSION_MAJOR >= 6
 					auto meta_type = rec.field(i).value().metaType();
-#else
-					auto meta_type = QMetaType(rec.field(i).value().type());
-#endif
 					//qfInfo() << "\t" << rec.field(i).name() << "bound type:" << QVariant::typeToName(type);
 					qfDebug() << "\t\t" << rec.field(i).name() << "bound type:" << meta_type.name() << "value:" << rec.field(i).value().toString().mid(0, 100);
 					q.addBindValue(rec.field(i).value());
 				}
 			}
 			ok = q.exec();
+			*/
+			qfDebug() << "\texecuting query:" << qs;
+			bool ok = q.exec(qs);
 			if(ok) {
 				qfDebug() << "\tnum rows affected:" << q.numRowsAffected();
 				int num_rows_affected = q.numRowsAffected();
@@ -274,7 +273,6 @@ bool SqlTableModel::postRow(int row_no, bool throw_exc)
 			//table = conn.fullTableNameToQtDriverTableName(table);
 			QSqlRecord edit_rec;
 			int i = -1;
-			bool has_blob_field = true;
 			Q_FOREACH(qfu::Table::Field fld, row_ref.fields()) {
 				i++;
 				//qfDebug() << "\t\tfield:" << fld.toString();
@@ -290,11 +288,7 @@ bool SqlTableModel::postRow(int row_no, bool throw_exc)
 				//qfDebug() << "\ttableid:" << tableid << "fullTableName:" << fld.fullTableName();
 				qfDebug() << "\tdirty field" << fld.name() << "type:" << fld.type().id() << "orig val:" << row_ref.origValue(i).toString() << "new val:" << v.toString();
 				//qfDebug().noSpace() << "\tdirty value: '" << v.toString() << "' isNull(): " << v.isNull() << " type(): " << v.type();
-#if QT_VERSION_MAJOR >= 6
 				QSqlField sqlfld(fld.shortName(), fld.type());
-#else
-				QSqlField sqlfld(fld.shortName(), static_cast<QVariant::Type>(fld.type().id()));
-#endif
 				sqlfld.setValue(v);
 				//if(sqlfld.type() == QVariant::ByteArray)
 				//	has_blob_field = true;
@@ -304,7 +298,7 @@ bool SqlTableModel::postRow(int row_no, bool throw_exc)
 			if(!edit_rec.isEmpty()) {
 				qfDebug() << "updating table edits:" << table_id;
 				QString query_str;
-				query_str += sqldrv->sqlStatement(QSqlDriver::UpdateStatement, table_id, edit_rec, has_blob_field);
+				query_str += sqldrv->sqlStatement(QSqlDriver::UpdateStatement, table_id, edit_rec, false);
 				query_str += " ";
 				QSqlRecord where_rec;
 				qfDebug() << "looking for primary index of table:" << table_id;
@@ -317,24 +311,9 @@ bool SqlTableModel::postRow(int row_no, bool throw_exc)
 							  continue);
 					qfu::Table::Field fld = m_table.fields().at(fld_ix);
 					qfDebug() << "\t found field:" << fld.name() << "at index:" << fld_ix;
-#if QT_VERSION_MAJOR >= 6
 					QSqlField sqlfld(fld.shortName(), fld.type());
-#else
-					QSqlField sqlfld(fld.shortName(), static_cast<QVariant::Type>(fld.type().id()));
-#endif
 					sqlfld.setValue(row_ref.origValue(fld_ix));
-					/*
-					if(row_ref.isDirty(fld_ix))
-						sqlfld.setValue(row_ref.origValue(fld_ix));
-					else
-						sqlfld.setValue(row_ref.value(fld_ix));
-					*/
-					//qfDebug() << row_ref.toString();
-#if QT_VERSION_MAJOR >= 6
 					qfDebug() << "\tpri index field" << full_fld_name << "type:" << sqlfld.metaType().id() << "orig val:" << row_ref.origValue(fld_ix) << "current val:" << row_ref.value(fld_ix);
-#else
-					qfDebug() << "\tpri index field" << full_fld_name << "type:" << sqlfld.type() << "orig val:" << row_ref.origValue(fld_ix) << "current val:" << row_ref.value(fld_ix);
-#endif
 					where_rec.append(sqlfld);
 				}
 				QF_ASSERT(!where_rec.isEmpty(),
@@ -345,15 +324,7 @@ bool SqlTableModel::postRow(int row_no, bool throw_exc)
 				qfDebug() << "save edit query:" << query_str;
 				qfs::Query q(sql_conn);
 				bool ok;
-				if(has_blob_field) {
-					q.prepare(query_str);
-					for(int i=0; i<edit_rec.count(); i++)
-						q.addBindValue(edit_rec.field(i).value());
-					ok = q.exec();
-				}
-				else {
-					ok = q.exec(query_str);
-				}
+				ok = q.exec(query_str);
 				if(!ok && throw_exc) {
 					QF_EXCEPTION(q.lastError().text());
 				}
