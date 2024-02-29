@@ -1,6 +1,7 @@
 #include "client.h"
 #include "clientwidget.h"
 #include "nodes.h"
+#include "sqlnode.h"
 
 #include "../../eventplugin.h"
 
@@ -56,8 +57,9 @@ Client::Client(QObject *parent)
 			auto *stage = new shv::iotqt::node::ShvNode("stage", event);
 			for (auto i = 0; i < event_plugin->stageCount(); i++) {
 				auto *nd = new shv::iotqt::node::ShvNode(std::to_string(i + 1), stage);
-				new RunNode(i, nd);
+				new StartListStarterNode(i, nd);
 			}
+			new SqlNode(m_rootNode);
 		}
 		else {
 			qDeleteAll(m_rootNode->findChildren<EventNode*>());

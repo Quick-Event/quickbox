@@ -79,7 +79,7 @@ static auto METH_RECORD = "record";
 static auto METH_SET_RECORD = "setRecord";
 static auto SIG_REC_CHNG = "recchng";
 
-const std::vector<MetaMethod> &RunNode::metaMethods()
+const std::vector<MetaMethod> &StartListStarterNode::metaMethods()
 {
 	static std::vector<MetaMethod> meta_methods {
 		{Rpc::METH_DIR, MetaMethod::Signature::RetParam, MetaMethod::Flag::None, Rpc::ROLE_BROWSE},
@@ -92,7 +92,7 @@ const std::vector<MetaMethod> &RunNode::metaMethods()
 	return meta_methods;
 }
 
-RpcValue RunNode::callMethod(const StringViewList &shv_path, const std::string &method, const shv::chainpack::RpcValue &params, const shv::chainpack::RpcValue &user_id)
+RpcValue StartListStarterNode::callMethod(const StringViewList &shv_path, const std::string &method, const shv::chainpack::RpcValue &params, const shv::chainpack::RpcValue &user_id)
 {
 	qfLogFuncFrame() << shv_path.join('/') << method;
 	//eyascore::utils::UserId user_id = eyascore::utils::UserId::makeUserName(QString::fromStdString(rq.userId().toMap().value("userName").toString()));
