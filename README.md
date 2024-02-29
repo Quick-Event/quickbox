@@ -104,6 +104,8 @@ listen_addresses = '*'
 ```
 Restart the PostgreSQL service.
 
+---
+<!-- BUILD -->
 ## Build QE3 (Qt6 version)
 ```
 git clone https://github.com/Quick-Event/quickbox.git
