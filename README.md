@@ -104,6 +104,20 @@ listen_addresses = '*'
 ```
 Restart the PostgreSQL service.
 
+## Build QE3 (Qt6 version)
+```
+git clone https://github.com/Quick-Event/quickbox.git
+cd quickbox
+git sw qe3
+git submodule update --init --recursive
+mkdir build
+cd build
+cmake .. -DWITH_QE_SHVAPI=ON -DCMAKE_GENERATOR:STRING=Ninja -DCMAKE_BUILD_TYPE:STRING=Debug -DCMAKE_PREFIX_PATH:PATH=/home/fanda/app/qt5/6.6.2/gcc_64
+cmake --build . --parallel
+cmake --install . --prefix /path/to/install/qe3
+```
+  
+
 ---
 <!-- CONTRIBUTING -->
 ## Contributing
