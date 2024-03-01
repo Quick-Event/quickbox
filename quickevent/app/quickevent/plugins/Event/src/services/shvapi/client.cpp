@@ -57,7 +57,9 @@ Client::Client(QObject *parent)
 			auto *stage = new shv::iotqt::node::ShvNode("stage", event);
 			for (auto i = 0; i < event_plugin->stageCount(); i++) {
 				auto *nd = new shv::iotqt::node::ShvNode(std::to_string(i + 1), stage);
-				new StartListStarterNode(i, nd);
+				auto *runs = new SqlViewNode("runs", nd);
+				auto qb = getPlugin<RunsPlugin>()->runsQuery(i + 1);
+				runs->setQueryBuilder(qb);
 			}
 			new SqlNode(m_rootNode);
 		}

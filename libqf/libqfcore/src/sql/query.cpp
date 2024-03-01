@@ -8,7 +8,7 @@
 #include <QSqlField>
 #include <QVariant>
 
-using namespace qf::core::sql;
+namespace qf::core::sql {
 
 Query::Query(const QSqlDatabase &db)
 	: Super(db)
@@ -175,4 +175,30 @@ void Query::execCommandsThrow(const QStringList &commands, const QMap<QString, Q
 		}
 		exec(qs, qf::core::Exception::Throw);
 	}
+}
+
+QVariantMap recordToMap(const QSqlRecord &rec)
+{
+	QVariantMap record;
+	for (int i = 0; i < rec.count(); ++i) {
+		QSqlField fld = rec.field(i);
+		auto fld_name = fld.name();
+		fld_name.replace("__", ".");
+		record[fld_name] = fld.value();
+	}
+	return record;
+}
+
+QVariantMap recordDiff(const QVariantMap &from, const QVariantMap &to)
+{
+	QVariantMap ret;
+	for (const auto &[k2, v2] : to.asKeyValueRange()) {
+		auto v1 = from.value(k2);
+		if (v1 == v2)
+			continue;
+		ret[k2] = v2;
+	}
+	return ret;
+}
+
 }

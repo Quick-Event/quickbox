@@ -42,6 +42,7 @@ public:
 	static const char* DBEVENT_COMPETITOR_COUNTS_CHANGED; //< number of competitors in classes changed
 	static const char* DBEVENT_CARD_READ;
 	static const char* DBEVENT_COMPETITOR_EDITED;
+	static const char* DBEVENT_RUN_CHANGED;
 	static const char* DBEVENT_CARD_PROCESSED_AND_ASSIGNED;
 	static const char* DBEVENT_PUNCH_RECEIVED;
 	static const char* DBEVENT_REGISTRATIONS_IMPORTED;
@@ -83,7 +84,10 @@ public:
 	Q_SIGNAL void sqlServerConnectedChanged(bool is_open);
 
 	Q_INVOKABLE void emitDbEvent(const QString &domain, const QVariant &data = QVariant(), bool loopback = true);
+	/// emitted only if loopback is not set
 	Q_SIGNAL void dbEventNotify(const QString &domain, int connection_id, const QVariant &payload);
+	/// emitted always
+	Q_SIGNAL void dbEvent(const QString &domain, const QVariant &payload);
 
 	Q_INVOKABLE QString sqlDriverName();
 
@@ -94,12 +98,11 @@ public:
 
 	Q_SLOT void onInstalled();
 public:
-	// event wide signals
-	//Q_SIGNAL void editStartListRequest(int stage_id, int class_id, int competitor_id);
+	ConnectionType connectionType() const;
+	bool isSingleUser() const;
 private:
 	void setSqlServerConnected(bool ok);
 
-	ConnectionType connectionType() const;
 	QStringList existingSqlEventNames() const;
 	QStringList existingFileEventNames(const QString &dir = QString()) const;
 

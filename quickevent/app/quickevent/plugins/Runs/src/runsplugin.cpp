@@ -5,6 +5,7 @@
 #include "eventstatisticswidget.h"
 #include "printawardsoptionsdialogwidget.h"
 #include "services/resultsexporter.h"
+#include "partwidget.h"
 #include "../../CardReader/src/cardreaderplugin.h"
 #include "../../Competitors/src/competitorsplugin.h"
 #include "../../Event/src/eventplugin.h"
@@ -13,7 +14,6 @@
 #include <quickevent/core/utils.h>
 #include <quickevent/core/si/punchrecord.h>
 #include <quickevent/core/runstatus.h>
-#include "partwidget.h"
 
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/framework/dockwidget.h>
@@ -38,8 +38,7 @@
 #include <QDir>
 #include <QUrl>
 #include <QTextStream>
-
-#include <math.h>
+#include <QSqlField>
 
 namespace qfw = qf::qmlwidgets;
 namespace qff = qf::qmlwidgets::framework;
@@ -1095,6 +1094,66 @@ bool RunsPlugin::exportResultsCsosOverall(int stage_count, const QString &file_n
 		}
 	}
 	return true;
+}
+
+qf::core::sql::QueryBuilder RunsPlugin::runsQuery(int stage_id, int class_id, bool show_offrace)
+{
+	bool is_relays = getPlugin<EventPlugin>()->eventConfig()->isRelays();
+	qfs::QueryBuilder qb;
+	qb.select2("runs", "*")
+			.select2("classes", "name")
+			.select2("competitors", "id, registration, licence, ranking, siId, note")
+			.select("COALESCE(lastName, '') || ' ' || COALESCE(firstName, '') AS competitorName")
+			.select("lentcards.siid IS NOT NULL AS cardInLentTable")
+
+			// run table model contains relayName column even in individual race
+			.select("COALESCE(relays.club, '') || ' ' || COALESCE(relays.name, '') AS relayName")
+
+			.select("'' AS runFlags")
+			.select("'' AS cardFlags")
+			.from("runs")
+			.join("runs.competitorId", "competitors.id")
+			.joinRestricted("runs.siid", "lentcards.siid", "NOT lentcards.ignored")
+			.join("runs.relayId", "relays.id")
+			.orderBy("runs.id");
+	if(is_relays) {
+		qb.select("relays.number AS startNumber")
+			.join("relays.classId", "classes.id");
+		int leg = stage_id;
+		if(leg > 0)
+			qb.where("runs.leg=" QF_IARG(leg));
+	}
+	else {
+		qb.select("competitors.startNumber AS competitors__startNumber")
+			.join("competitors.classId", "classes.id");
+		if(stage_id > 0) {
+			qb.where("runs.stageId=" QF_IARG(stage_id));
+		}
+	}
+	if(class_id > 0) {
+		if(is_relays)
+			qb.where("relays.classId=" + QString::number(class_id));
+		else
+			qb.where("competitors.classId=" + QString::number(class_id));
+	}
+	if(!show_offrace)
+		qb.where("runs.isRunning");
+	return qb;
+}
+
+QVariantMap RunsPlugin::runRecord(int run_id)
+{
+	auto qb = runsQuery(0);
+	qb.where("runs.id = " + QString::number(run_id));
+	qf::core::sql::Query q;
+	QString qs = qb.toString();
+	q.exec(qs, qf::core::Exception::Throw);
+	if (q.next()) {
+		return qf::core::sql::recordToMap(q.record());
+	}
+	else {
+		return {};
+	}
 }
 
 qf::core::utils::TreeTable RunsPlugin::startListClassesTable(const QString &where_expr, const bool insert_vacants, const quickevent::gui::ReportOptionsDialog::StartTimeFormat start_time_format)

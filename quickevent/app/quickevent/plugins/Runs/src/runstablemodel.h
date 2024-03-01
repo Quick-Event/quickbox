@@ -36,22 +36,22 @@ public:
 	RunsTableModel(QObject *parent = nullptr);
 
 	int columnCount(const QModelIndex &) const override { return col_COUNT; }
-	QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
-	//bool setData(const QModelIndex &index, const QVariant &value, int role) Q_DECL_OVERRIDE;
-	Qt::ItemFlags flags(const QModelIndex &index) const Q_DECL_OVERRIDE;
+	QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+	//bool setData(const QModelIndex &index, const QVariant &value, int role) override;
+	Qt::ItemFlags flags(const QModelIndex &index) const override;
 
 	using Super::value;
-	QVariant value(int row_ix, int column_ix) const Q_DECL_OVERRIDE;
+	QVariant value(int row_ix, int column_ix) const override;
 	using Super::setValue;
-	bool setValue(int row_ix, int column_ix, const QVariant &val) Q_DECL_OVERRIDE;
+	bool setValue(int row_ix, int column_ix, const QVariant &val) override;
 
-	bool postRow(int row_no, bool throw_exc) Q_DECL_OVERRIDE;
+	bool postRow(int row_no, bool throw_exc) override;
 
-	QStringList mimeTypes() const Q_DECL_OVERRIDE;
-	QMimeData *mimeData(const QModelIndexList &indexes) const Q_DECL_OVERRIDE;
-	Qt::DropActions supportedDropActions() const Q_DECL_OVERRIDE;
-	//bool canDropMimeData(const QMimeData * data, Qt::DropAction action, int row, int column, const QModelIndex & parent) const Q_DECL_OVERRIDE;
-	bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent) Q_DECL_OVERRIDE;
+	QStringList mimeTypes() const override;
+	QMimeData *mimeData(const QModelIndexList &indexes) const override;
+	Qt::DropActions supportedDropActions() const override;
+	//bool canDropMimeData(const QMimeData * data, Qt::DropAction action, int row, int column, const QModelIndex & parent) const override;
+	bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent) override;
 
 	void switchStartTimes(int r1, int r2);
 	Q_SIGNAL void startTimesSwitched(int id1, int id2, const QString &err_msg);

@@ -47,6 +47,34 @@ using qf::qmlwidgets::framework::getPlugin;
 using Event::EventPlugin;
 using Competitors::CompetitorsPlugin;
 
+class CompetitorsModel : public qfm::SqlTableModel
+{
+	using Super = qfm::SqlTableModel;
+public:
+	CompetitorsModel(QObject *parent ) : Super(parent) {}
+
+	bool postRow(int row_no, bool throw_exc) override
+	{
+		qfu::TableRow &row_ref = m_table.rowRef(row_no);
+		auto competitor_id = row_ref.value("competitors.id").toInt();
+		QVariantMap dirty_rec;
+		if (!row_ref.isInsert()) {
+			Q_ASSERT(competitor_id > 0);
+			dirty_rec = row_ref.dirtyValuesMap();
+		}
+		auto ret = Super::postRow(row_no, throw_exc);
+		if (!dirty_rec.isEmpty()) {
+			qf::core::sql::Query q;
+			q.exec(QStringLiteral("SELECT id FROM runs WHERE competitorId = %1").arg(competitor_id));
+			while(q.next()) {
+				int run_id = q.value(0).toInt();
+				getPlugin<EventPlugin>()->emitDbEvent(Event::EventPlugin::DBEVENT_RUN_CHANGED, QVariantList {run_id, dirty_rec});
+			}
+		}
+		return ret;
+	}
+};
+
 CompetitorsWidget::CompetitorsWidget(QWidget *parent) :
 	Super(parent),
 	ui(new Ui::CompetitorsWidget)
@@ -60,7 +88,7 @@ CompetitorsWidget::CompetitorsWidget(QWidget *parent) :
 	ui->tblCompetitors->setPersistentSettingsId("tblCompetitors");
 	ui->tblCompetitors->setRowEditorMode(qfw::TableView::EditRowsMixed);
 	ui->tblCompetitors->setInlineEditSaveStrategy(qfw::TableView::OnEditedValueCommit);
-	qfm::SqlTableModel *m = new qfm::SqlTableModel(this);
+	qfm::SqlTableModel *m = new CompetitorsModel(this);
 	m->addColumn("id").setReadOnly(true);
 	m->addColumn("classes.name", tr("Class"));
 	m->addColumn("competitors.startNumber", tr("SN", "start number")).setToolTip(tr("Start number"));

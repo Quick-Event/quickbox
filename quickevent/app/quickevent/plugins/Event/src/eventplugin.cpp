@@ -104,6 +104,7 @@ static auto QBE_EXT = QStringLiteral(".qbe");
 const char* EventPlugin::DBEVENT_COMPETITOR_COUNTS_CHANGED = "competitorCountsChanged";
 const char* EventPlugin::DBEVENT_CARD_READ = "cardRead";
 const char* EventPlugin::DBEVENT_COMPETITOR_EDITED = "competitorEdited";
+const char* EventPlugin::DBEVENT_RUN_CHANGED = "runChanged";
 const char* EventPlugin::DBEVENT_CARD_PROCESSED_AND_ASSIGNED = "cardProcessedAndAssigned";
 const char* EventPlugin::DBEVENT_PUNCH_RECEIVED = "punchReceived";
 const char* EventPlugin::DBEVENT_REGISTRATIONS_IMPORTED = "registrationsImported";
@@ -446,6 +447,9 @@ void EventPlugin::emitDbEvent(const QString &domain, const QVariant &data, bool 
 {
 	qfLogFuncFrame() << "domain:" << domain << "payload:" << data;
 	int connection_id = qf::core::sql::Connection::defaultConnection().connectionId();
+	QTimer::singleShot(0, this, [this, domain, data]() {
+		emit dbEvent(domain, data);
+	});
 	if(loopback) {
 		// emit queued
 		//emit dbEventNotify(domain, payload);
@@ -453,8 +457,9 @@ void EventPlugin::emitDbEvent(const QString &domain, const QVariant &data, bool 
 			emit dbEventNotify(domain, connection_id, data);
 		});
 	}
-	if(connectionType() == ConnectionType::SingleFile)
+	if(isSingleUser()) {
 		return;
+	}
 	DbEventPayload dbpl;
 	dbpl.setEventName(eventName());
 	dbpl.setDomain(domain);
@@ -588,6 +593,11 @@ EventPlugin::ConnectionType EventPlugin::connectionType() const
 {
 	ConnectionSettings connection_settings;
 	return connection_settings.connectionType();
+}
+
+bool EventPlugin::isSingleUser() const
+{
+	return connectionType() == ConnectionType::SingleFile;
 }
 
 QStringList EventPlugin::existingSqlEventNames() const

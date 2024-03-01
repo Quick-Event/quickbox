@@ -157,6 +157,7 @@ RpcSqlResult RpcSqlResult::fromQuery(QSqlQuery &q)
 			QSqlField fld = rec.field(i);
 			RpcSqlField rfld;
 			rfld.name = fld.name();
+			rfld.name.replace("__", ".");
 			rfld.type = fld.metaType().id();
 			ret.fields.append(rfld);
 		}
@@ -178,6 +179,18 @@ RpcSqlResult RpcSqlResult::fromQuery(QSqlQuery &q)
 		ret.lastInsertId = q.lastInsertId().toInt();
 	}
 	return ret;
+}
+
+shv::chainpack::RpcValue::Map recordToMap(const QSqlRecord &rec)
+{
+	RpcValue::Map record;
+	for (int i = 0; i < rec.count(); ++i) {
+		QSqlField fld = rec.field(i);
+		auto fld_name = fld.name();
+		fld_name.replace("__", ".");
+		record[fld_name.toStdString()] = shv::coreqt::rpc::qVariantToRpcValue(fld.value());
+	}
+	return record;
 }
 
 }

@@ -529,6 +529,14 @@ bool CardReaderPlugin::processCardToRunAssignment(int card_id, int run_id)
 					setStartTime(relay_id, leg + 1, new_next_leg_start_time);
 					int competitor_id = getPlugin<RunsPlugin>()->competitorForRun(next_leg_run_id);
 					getPlugin<EventPlugin>()->emitDbEvent(Event::EventPlugin::DBEVENT_COMPETITOR_EDITED, competitor_id);
+					QVariantList param {
+						next_leg_run_id,
+						QVariantMap {
+							{"runs.id", next_leg_run_id},
+							{"runs.startTimeMs", new_next_leg_start_time},
+						}
+					};
+					getPlugin<EventPlugin>()->emitDbEvent(Event::EventPlugin::DBEVENT_RUN_CHANGED, param);
 				}
 			}
 		}

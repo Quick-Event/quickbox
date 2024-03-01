@@ -37,7 +37,7 @@ private:
 	void showRunsTable(int stage_id);
 private:
 	Ui::CompetitorWidget *ui;
-	RunsTableModel *m_runsModel;
+	quickevent::core::og::SqlTableModel *m_runsModel;
 };
 
 #endif // COMPETITORWIDGET_H

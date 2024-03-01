@@ -1,11 +1,14 @@
 #pragma once
 
+#include <shv/chainpack/rpcvalue.h>
+
 #include <QVector>
 #include <QVariantList>
 
-namespace shv::chainpack { class RpcResponse; class RpcValue; }
+namespace shv::chainpack { class RpcResponse; }
 
 class QSqlQuery;
+class QSqlRecord;
 
 namespace Event::services::shvapi {
 
@@ -44,7 +47,8 @@ public:
 	static RpcSqlResult fromVariant(const QVariant &v);
 	static RpcSqlResult fromRpcValue(const shv::chainpack::RpcValue &rv);
 	static RpcSqlResult fromQuery(QSqlQuery &q);
-
 };
+
+shv::chainpack::RpcValue::Map recordToMap(const QSqlRecord &rec);
 
 }

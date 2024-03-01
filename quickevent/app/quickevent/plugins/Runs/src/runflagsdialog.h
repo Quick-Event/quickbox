@@ -1,9 +1,8 @@
-#ifndef RUNS_RUNFLAGSDIALOG_H
-#define RUNS_RUNFLAGSDIALOG_H
+#pragma once
 
 #include <QDialog>
 
-class RunsTableModel;
+namespace quickevent::core::og { class SqlTableModel; }
 
 namespace Runs {
 
@@ -18,18 +17,16 @@ public:
 	explicit RunFlagsDialog(QWidget *parent = nullptr);
 	~RunFlagsDialog() override;
 
-	void load(RunsTableModel *model, int row);
+	void load(quickevent::core::og::SqlTableModel *model, int row);
 	void save();
 private:
 	void updateStatus();
 	bool isDisqualified() const;
 private:
 	Ui::RunFlagsDialog *ui;
-	RunsTableModel *m_model;
+	quickevent::core::og::SqlTableModel *m_model;
 	int m_row;
 	bool m_isDisqualified;
 };
 
-
 } // namespace Runs
-#endif // RUNS_RUNFLAGSDIALOG_H

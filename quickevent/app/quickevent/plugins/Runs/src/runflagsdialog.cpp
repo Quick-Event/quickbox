@@ -24,7 +24,7 @@ RunFlagsDialog::~RunFlagsDialog()
 	delete ui;
 }
 
-void RunFlagsDialog::load(RunsTableModel *model, int row)
+void RunFlagsDialog::load(quickevent::core::og::SqlTableModel *model, int row)
 {
 	m_model = model;
 	m_row = row;

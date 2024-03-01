@@ -368,6 +368,7 @@ public:
 	//QVector<QVariant>& valuesRef() {return d->values;}
 	const QVector<QVariant>& values() const {return d->values;}
 	QVariantMap valuesMap(bool full_names = false) const;
+	QVariantMap dirtyValuesMap() const;
 
 	//! Dirty flag nastavi, jen kdyz je value jina, nez ta, co uz tam byla.
 	void setValue(int col, const QVariant &v);

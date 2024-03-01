@@ -47,6 +47,9 @@ private:
 	mutable QSqlRecord m_demangledRecord;
 };
 
+QFCORE_DECL_EXPORT QVariantMap recordToMap(const QSqlRecord &rec);
+QFCORE_DECL_EXPORT QVariantMap recordDiff(const QVariantMap &from, const QVariantMap &to);
+
 }}}
 
 #endif // QF_CORE_SQL_QUERY_H

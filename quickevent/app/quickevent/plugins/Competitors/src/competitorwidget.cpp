@@ -40,7 +40,7 @@ namespace {
 
 class CompetitorRunsModel : public quickevent::core::og::SqlTableModel
 {
-	Q_DECLARE_TR_FUNCTIONS(RunsModel)
+	Q_DECLARE_TR_FUNCTIONS(CompetitorRunsModel)
 private:
 	using Super = quickevent::core::og::SqlTableModel;
 public:
@@ -60,7 +60,74 @@ public:
 		col_COUNT
 	};
 private:
-	QVariant value(int row_ix, int column_ix) const override;
+	QVariant value(int row_ix, int column_ix) const override
+	{
+		if(column_ix == col_runs_runFlags) {
+			qf::core::utils::TableRow row = tableRow(row_ix);
+			bool is_disqualified = row.value(QStringLiteral("runs.disqualified")).toBool();
+			bool is_disqualified_by_organizer = row.value(QStringLiteral("runs.disqualifiedByOrganizer")).toBool();
+			bool mis_punch = row.value(QStringLiteral("runs.misPunch")).toBool();
+			bool bad_check = row.value(QStringLiteral("runs.badCheck")).toBool();
+			bool not_start = row.value(QStringLiteral("runs.notStart")).toBool();
+			bool not_finish = row.value(QStringLiteral("runs.notFinish")).toBool();
+			bool not_competing = row.value(QStringLiteral("runs.notCompeting")).toBool();
+			QStringList sl;
+			if(is_disqualified)
+				sl << tr("DISQ", "Disqualified");
+			if(is_disqualified_by_organizer)
+				sl << tr("DO", "disqualifiedByOrganizer");
+			if(mis_punch)
+				sl << tr("MP", "MisPunch");
+			if(bad_check)
+				sl << tr("BC", "BadCheck");
+			if(not_competing)
+				sl << tr("NC", "NotCompeting");
+			if(not_start)
+				sl << tr("DNS", "DidNotStart");
+			if(not_finish)
+				sl << tr("DNF", "DidNotFinish");
+			if(sl.isEmpty())
+				return QStringLiteral("");
+			else
+				return sl.join(',');
+		}
+		else if(column_ix == col_runs_cardFlags) {
+			qf::core::utils::TableRow row = tableRow(row_ix);
+			bool card_rent_requested = row.value(QStringLiteral("runs.cardLent")).toBool();
+			bool card_returned = row.value(QStringLiteral("runs.cardReturned")).toBool();
+			bool card_in_lent_table = row.value(QStringLiteral("cardInLentTable")).toBool();
+			QStringList sl;
+			if(card_rent_requested)
+				sl << tr("CR", "Card rent requested");
+			if(card_in_lent_table)
+				sl << tr("CT", "Card in lent cards table");
+			if(card_returned)
+				sl << tr("RET", "Card returned");
+			if(sl.isEmpty())
+				return QStringLiteral("");
+			else
+				return sl.join(',');
+		}
+		return Super::value(row_ix, column_ix);
+	}
+
+	bool postRow(int row_no, bool throw_exc) override
+	{
+		auto &row_ref = m_table.rowRef(row_no);
+		auto run_id = row_ref.value("runs.id").toInt();
+		Q_ASSERT(run_id > 0);
+		QVariantMap dirty_rec;
+		for (const auto &[k, v] : row_ref.dirtyValuesMap().asKeyValueRange()) {
+			if (k.startsWith("runs.")) {
+				dirty_rec[k] = v;
+			}
+		}
+		auto ret = Super::postRow(row_no, throw_exc);
+		if (!dirty_rec.isEmpty()) {
+			getPlugin<EventPlugin>()->emitDbEvent(Event::EventPlugin::DBEVENT_RUN_CHANGED, QVariantList {run_id, dirty_rec});
+		}
+		return ret;
+	}
 };
 
 CompetitorRunsModel::CompetitorRunsModel(QObject *parent)
@@ -110,7 +177,7 @@ CompetitorWidget::CompetitorWidget(QWidget *parent) :
 	connect(ui->edFind, &FindRegistrationEdit::registrationSelected, this, &CompetitorWidget::onRegistrationSelected);
 
 	dataController()->setDocument(new Competitors::CompetitorDocument(this));
-	m_runsModel = (RunsTableModel*) new CompetitorRunsModel(this);
+	m_runsModel = new CompetitorRunsModel(this);
 	ui->tblRuns->setTableModel(m_runsModel);
 	ui->tblRuns->setPersistentSettingsId(ui->tblRuns->objectName());
 	ui->tblRuns->setInlineEditSaveStrategy(qf::qmlwidgets::TableView::OnManualSubmit);
@@ -357,54 +424,4 @@ bool CompetitorWidget::saveData()
 	return false;
 }
 
-QVariant CompetitorRunsModel::value(int row_ix, int column_ix) const
-{
-	if(column_ix == col_runs_runFlags) {
-		qf::core::utils::TableRow row = tableRow(row_ix);
-		bool is_disqualified = row.value(QStringLiteral("runs.disqualified")).toBool();
-		bool is_disqualified_by_organizer = row.value(QStringLiteral("runs.disqualifiedByOrganizer")).toBool();
-		bool mis_punch = row.value(QStringLiteral("runs.misPunch")).toBool();
-		bool bad_check = row.value(QStringLiteral("runs.badCheck")).toBool();
-		bool not_start = row.value(QStringLiteral("runs.notStart")).toBool();
-		bool not_finish = row.value(QStringLiteral("runs.notFinish")).toBool();
-		bool not_competing = row.value(QStringLiteral("runs.notCompeting")).toBool();
-		QStringList sl;
-		if(is_disqualified)
-			sl << tr("DISQ", "Disqualified");
-		if(is_disqualified_by_organizer)
-			sl << tr("DO", "disqualifiedByOrganizer");
-		if(mis_punch)
-			sl << tr("MP", "MisPunch");
-		if(bad_check)
-			sl << tr("BC", "BadCheck");
-		if(not_competing)
-			sl << tr("NC", "NotCompeting");
-		if(not_start)
-			sl << tr("DNS", "DidNotStart");
-		if(not_finish)
-			sl << tr("DNF", "DidNotFinish");
-		if(sl.isEmpty())
-			return QStringLiteral("");
-		else
-			return sl.join(',');
-	}
-	else if(column_ix == col_runs_cardFlags) {
-		qf::core::utils::TableRow row = tableRow(row_ix);
-		bool card_rent_requested = row.value(QStringLiteral("runs.cardLent")).toBool();
-		bool card_returned = row.value(QStringLiteral("runs.cardReturned")).toBool();
-		bool card_in_lent_table = row.value(QStringLiteral("cardInLentTable")).toBool();
-		QStringList sl;
-		if(card_rent_requested)
-			sl << tr("CR", "Card rent requested");
-		if(card_in_lent_table)
-			sl << tr("CT", "Card in lent cards table");
-		if(card_returned)
-			sl << tr("RET", "Card returned");
-		if(sl.isEmpty())
-			return QStringLiteral("");
-		else
-			return sl.join(',');
-	}
-	return Super::value(row_ix, column_ix);
-}
 

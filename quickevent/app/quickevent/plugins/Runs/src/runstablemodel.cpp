@@ -2,6 +2,7 @@
 
 #include <quickevent/core/og/timems.h>
 #include <quickevent/core/si/siid.h>
+#include "../../Event/src/eventplugin.h"
 
 #include <qf/qmlwidgets/log.h>
 #include <qf/qmlwidgets/framework/mainwindow.h>
@@ -12,6 +13,9 @@
 #include <qf/core/assert.h>
 
 #include <QMimeData>
+
+using qf::qmlwidgets::framework::getPlugin;
+using Event::EventPlugin;
 
 RunsTableModel::RunsTableModel(QObject *parent)
 	: Super(parent)
@@ -327,42 +331,31 @@ void RunsTableModel::onDataChanged(const QModelIndex &top_left, const QModelInde
 
 bool RunsTableModel::postRow(int row_no, bool throw_exc)
 {
-	bool is_single_user = sqlConnection().driverName().endsWith(QLatin1String("SQLITE"), Qt::CaseInsensitive);
-	if(is_single_user)
-		return Super::postRow(row_no, throw_exc);
-
-	if(isDirty(row_no, col_runs_startTimeMs)) {
-		int run_id = value(row_no, col_runs_id).toInt();
-		int orig_msec = origValue(row_no, col_runs_startTimeMs).toInt();
-		int db_msec = 0;
-
-		//qf::core::sql::Transaction transaction();
-		QString qs = "SELECT id, startTimeMs FROM runs WHERE id=" QF_IARG(run_id); // " FOR UPDATE";
-		qf::core::sql::Query q(sqlConnection());
-		q.exec(qs, qf::core::Exception::Throw);
-		if(q.next()) {
-			db_msec = q.value("startTimeMs").toInt();
-		}
-		if(orig_msec == db_msec) {
-			bool ret = Super::postRow(row_no, throw_exc);
-			//transaction.commit();
-			/*
-			QVariant v = value(row_no, col_runs_finishTimeMs);
-			if(!v.isNull()) {
-				getPlugin<RunsPlugin>()->reloadTimesFromCard(run_id);
-				reloadRow(row_no);
+	int run_id = value(row_no, col_runs_id).toInt();
+	if(!getPlugin<EventPlugin>()->isSingleUser()) {
+		if(isDirty(row_no, col_runs_startTimeMs)) {
+			int orig_msec = origValue(row_no, col_runs_startTimeMs).toInt();
+			int db_msec = 0;
+			QString qs = "SELECT id, startTimeMs FROM runs WHERE id=" QF_IARG(run_id); // " FOR UPDATE";
+			qf::core::sql::Query q(sqlConnection());
+			q.exec(qs, qf::core::Exception::Throw);
+			if(q.next()) {
+				db_msec = q.value("startTimeMs").toInt();
 			}
-			*/
-			return ret;
-		}
-		else {
-			QString err_msg = tr("Mid-air collision setting start time, reload table and try it again.");
-			setValue(row_no, col_runs_startTimeMs, db_msec);
-			if(throw_exc)
-				QF_EXCEPTION(err_msg);
-			return false;
+			if(orig_msec != db_msec) {
+				QString err_msg = tr("Mid-air collision setting start time, reload table and try it again.");
+				setValue(row_no, col_runs_startTimeMs, db_msec);
+				if(throw_exc)
+					QF_EXCEPTION(err_msg);
+				return false;
+			}
 		}
 	}
-	return Super::postRow(row_no, throw_exc);
+	auto dirty_vals = tableRow(row_no).dirtyValuesMap();
+	auto ret = Super::postRow(row_no, throw_exc);
+	if (!dirty_vals.isEmpty()) {
+		getPlugin<EventPlugin>()->emitDbEvent(Event::EventPlugin::DBEVENT_RUN_CHANGED, QVariantList {run_id, dirty_vals});
+	}
+	return ret;
 }
 

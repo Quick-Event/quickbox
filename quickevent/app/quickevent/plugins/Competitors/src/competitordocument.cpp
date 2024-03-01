@@ -1,5 +1,8 @@
 #include "competitordocument.h"
 
+#include <plugins/Event/src/eventplugin.h>
+#include <plugins/Runs/src/runsplugin.h>
+
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/framework/plugin.h>
 
@@ -7,11 +10,11 @@
 #include <qf/core/sql/query.h>
 #include <qf/core/sql/transaction.h>
 #include <qf/core/assert.h>
-#include <plugins/Event/src/eventplugin.h>
 
 using namespace Competitors;
 using qf::qmlwidgets::framework::getPlugin;
 using Event::EventPlugin;
+using Runs::RunsPlugin;
 
 CompetitorDocument::CompetitorDocument(QObject *parent)
 	: Super(parent)
@@ -30,6 +33,17 @@ bool CompetitorDocument::saveData()
 {
 	qfLogFuncFrame();
 	RecordEditMode old_mode = mode();
+	QMap<int, QVariantMap> old_records;
+	auto *runs_plugin = getPlugin<RunsPlugin>();
+	if (old_mode ==  DataDocument::ModeEdit) {
+		auto competitor_id = dataId().toInt();
+		qf::core::sql::Query q(sqlModel()->connectionName());
+		q.exec(QStringLiteral("SELECT id FROM runs WHERE competitorId = %1").arg(competitor_id));
+		while(q.next()) {
+			int run_id = q.value(0).toInt();
+			old_records[run_id] = runs_plugin->runRecord(run_id);
+		}
+	}
 	bool siid_dirty = isDirty("competitors.siId");
 	bool class_dirty = isDirty("competitors.classId");
 	bool ret = Super::saveData();
@@ -52,24 +66,37 @@ bool CompetitorDocument::saveData()
 				q.exec(qf::core::Exception::Throw);
 				m_lastInsertedRunsIds << q.lastInsertId().toInt();
 			}
-			if(m_isEmitDbEventsOnSave)
+			if(m_isEmitDbEventsOnSave) {
 				getPlugin<EventPlugin>()->emitDbEvent(Event::EventPlugin::DBEVENT_COMPETITOR_COUNTS_CHANGED);
+				for (auto run_id : m_lastInsertedRunsIds) {
+					auto rec = runs_plugin->runRecord(run_id);
+					getPlugin<EventPlugin>()->emitDbEvent(Event::EventPlugin::DBEVENT_RUN_CHANGED, QVariantList {run_id, rec});
+				}
+			}
 		}
 		else if(old_mode == DataDocument::ModeEdit) {
 			competitor_id = dataId().toInt();
 			if(siid_dirty) {
 				qfDebug() << "updating SIID in run tables";
-				if(siid_dirty) {
-					int competitor_id = dataId().toInt();
-					qf::core::sql::Query q(sqlModel()->connectionName());
-					q.prepare("UPDATE runs SET siId=:siId WHERE competitorId=:competitorId", qf::core::Exception::Throw);
-					q.bindValue(":competitorId", competitor_id);
-					q.bindValue(":siId", siid());
-					q.exec(qf::core::Exception::Throw);
+				int competitor_id = dataId().toInt();
+				qf::core::sql::Query q(sqlModel()->connectionName());
+				q.prepare("UPDATE runs SET siId=:siId WHERE competitorId=:competitorId", qf::core::Exception::Throw);
+				q.bindValue(":competitorId", competitor_id);
+				q.bindValue(":siId", siid());
+				q.exec(qf::core::Exception::Throw);
+			}
+			if(m_isEmitDbEventsOnSave) {
+				if(class_dirty) {
+					getPlugin<EventPlugin>()->emitDbEvent(Event::EventPlugin::DBEVENT_COMPETITOR_COUNTS_CHANGED);
+				}
+				for(const auto &[run_id, old_record] : old_records.asKeyValueRange()) {
+					auto record = runs_plugin->runRecord(run_id);
+					auto diff = qf::core::sql::recordDiff(old_record, record);
+					if (!diff.isEmpty()) {
+						getPlugin<EventPlugin>()->emitDbEvent(Event::EventPlugin::DBEVENT_RUN_CHANGED, QVariantList {run_id, diff});
+					}
 				}
 			}
-			if(class_dirty && m_isEmitDbEventsOnSave)
-				getPlugin<EventPlugin>()->emitDbEvent(Event::EventPlugin::DBEVENT_COMPETITOR_COUNTS_CHANGED);
 		}
 		else {
 			competitor_id = dataId().toInt();
@@ -83,19 +110,29 @@ bool CompetitorDocument::saveData()
 bool CompetitorDocument::dropData()
 {
 	bool ret = false;
-	auto id = dataId();
+	auto competitor_id = dataId().toInt();
+	QList<int> run_ids;
 	{
 		qf::core::sql::Query q(sqlModel()->connectionName());
-		q.prepare("DELETE FROM runs WHERE competitorId = :competitorId");
-		q.bindValue(":competitorId", id);
-		ret = q.exec();
+		q.exec(QStringLiteral("SELECT id FROM runs WHERE competitorId = %1").arg(competitor_id));
+		while(q.next()) {
+			run_ids << q.value(0).toInt();
+		}
+	}
+	{
+		qf::core::sql::Query q(sqlModel()->connectionName());
+		ret = q.exec(QStringLiteral("DELETE FROM runs WHERE competitorId = %1").arg(competitor_id));
 		if(!ret)
 			qfError() << q.lastError().text();
 	}
 	if(ret) {
 		ret = Super::dropData();
-		if(m_isEmitDbEventsOnSave)
+		if(m_isEmitDbEventsOnSave) {
 			getPlugin<EventPlugin>()->emitDbEvent(Event::EventPlugin::DBEVENT_COMPETITOR_COUNTS_CHANGED);
+			for (auto run_id : run_ids) {
+				getPlugin<EventPlugin>()->emitDbEvent(Event::EventPlugin::DBEVENT_RUN_CHANGED, QVariantList {run_id, {}});
+			}
+		}
 	}
 	return ret;
 }

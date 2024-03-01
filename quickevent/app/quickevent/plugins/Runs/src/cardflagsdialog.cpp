@@ -21,7 +21,7 @@ CardFlagsDialog::~CardFlagsDialog()
 	delete ui;
 }
 
-void CardFlagsDialog::load(RunsTableModel *model, int row)
+void CardFlagsDialog::load(quickevent::core::og::SqlTableModel *model, int row)
 {
 	m_model = model;
 	m_row = row;

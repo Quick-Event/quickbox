@@ -26,7 +26,7 @@ namespace qf {
 	}
 }
 
-//namespace quickevent { namespace core { class CourseDef; class CodeDef; }}
+namespace qf::core::sql { class QueryBuilder; }
 
 namespace Runs {
 
@@ -46,8 +46,6 @@ public:
 	QF_PROPERTY_IMPL2(int, s, S, electedStageId, 1)
 
 	qf::qmlwidgets::framework::PartWidget *partWidget() {return m_partWidget;}
-
-	//Q_SIGNAL void nativeInstalled();
 
 	const qf::core::utils::Table& runnersTable(int stage_id);
 	Q_SLOT void clearRunnersTableCache();
@@ -83,6 +81,9 @@ public:
 	Q_INVOKABLE bool exportResultsIofXml30Stage(int stage_id, const QString &file_name);
 	Q_INVOKABLE bool exportResultsCsosStage(int stage_id, const QString &file_name);
 	Q_INVOKABLE bool exportResultsCsosOverall(int stage_count, const QString &file_name);
+
+	qf::core::sql::QueryBuilder runsQuery(int stage_id, int class_id = 0, bool show_offrace = false);
+	QVariantMap runRecord(int run_id);
 
 	qf::core::utils::TreeTable startListClassesTable(const QString &where_expr, const bool insert_vacants, const quickevent::gui::ReportOptionsDialog::StartTimeFormat start_time_format);
 	qf::core::utils::TreeTable startListClubsTable(const quickevent::gui::ReportOptionsDialog::StartTimeFormat start_time_format, const quickevent::gui::ReportOptionsDialog::StartlistOrderFirstBy order_first_by);

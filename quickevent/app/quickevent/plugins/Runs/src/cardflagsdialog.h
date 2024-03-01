@@ -1,9 +1,8 @@
-#ifndef RUNS_CARDFLAGSDIALOG_H
-#define RUNS_CARDFLAGSDIALOG_H
+#pragma once
 
 #include <QDialog>
 
-class RunsTableModel;
+namespace quickevent::core::og { class SqlTableModel; }
 
 namespace Runs {
 
@@ -19,16 +18,15 @@ public:
 	explicit CardFlagsDialog(QWidget *parent = nullptr);
 	~CardFlagsDialog() override;
 
-	void load(RunsTableModel *model, int row);
+	void load(quickevent::core::og::SqlTableModel *model, int row);
 	void save();
 private:
 	void updateStatus();
 private:
 	Ui::CardFlagsDialog *ui;
-	RunsTableModel *m_model;
+	quickevent::core::og::SqlTableModel *m_model;
 	int m_row;
 };
 
 
 } // namespace Runs
-#endif // RUNS_CARDFLAGSDIALOG_H

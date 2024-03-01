@@ -447,17 +447,21 @@ QVariantMap TableRow::valuesMap(bool full_names) const
 	}
 	return ret;
 }
-/*
-#if defined QT_DEBUG
-static QString v2str(const QVariant &ret)
+
+QVariantMap TableRow::dirtyValuesMap() const
 {
-	if(!ret.isValid()) return "INVALID";
-	if(ret.type() == QVariant::ByteArray) return QString(ret.toByteArray().toBase64());
-	if(ret.type() == QVariant::String) return '\'' + ret.toString() + '\'';
-	return ret.toString();
+	QVariantMap ret;
+	for (int i=0; i<fields().count(); ++i) {
+		const Table::Field &fld = fields()[i];
+		if (isDirty(i)) {
+			QString key = fld.name().toLower(); // PSQL returns all fieldnames in lowercase
+			key.replace("__", ".");
+			ret[key] = value(i);
+		}
+	}
+	return ret;
 }
-#endif
-*/
+
 void TableRow::setBareBoneValue(int col, const QVariant & val)
 {
 	d->values[col] = val;
