@@ -49,10 +49,12 @@ public:
 public:
 	void export_startList_stage_iofxml30();
 	void export_startList_stage_csv_sime();
+	void export_startList_stage_tv_graphics();
 
 	void export_results_stage_iofxml30();
 	void export_results_stage_csos();
 	void export_results_overall_csos();
+	void export_results_stage_csv();
 
 private slots:
 	void on_btDraw_clicked();

@@ -124,7 +124,6 @@ quickevent::core::si::CheckedCard CardCheckerFreeOrderCpp::checkCard(const quick
 	}
 
 	error_mis_punch = !map_of_control_codes.isEmpty();
-	checked_punches = map_of_control_codes.values();
 	checked_card.setMisPunch(error_mis_punch);
 
 	quickevent::core::si::CheckedPunch finish_punch;

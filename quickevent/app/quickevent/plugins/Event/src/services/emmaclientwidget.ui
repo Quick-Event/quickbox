@@ -6,9 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>528</width>
-    <height>444</height>
+    <width>560</width>
+    <height>520</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>550</width>
+    <height>0</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>Emma Client</string>
@@ -184,6 +190,57 @@
         </item>
        </layout>
       </item>
+      <item row="0" column="1">
+       <layout class="QHBoxLayout" name="horizontalLayout_4">
+        <item>
+         <widget class="QLabel" name="label_4">
+          <property name="text">
+           <string>Startlist export type</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QRadioButton" name="rbRacomStartTxt">
+          <property name="text">
+           <string>Text</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QRadioButton" name="rbRacomStartCsv">
+          <property name="text">
+           <string>CSV</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_3">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLabel" name="label_5">
+        <property name="text">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Startlist CVS export is only supported by EmmaClient after 2023-08.&lt;br/&gt;Support can be verified in EmmaClient in 'New Racom Connection' dialog,&lt;br/&gt;if it contain checkbox 'Use extended csv file read (2023)'&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="textFormat">
+         <enum>Qt::MarkdownText</enum>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
@@ -211,6 +268,8 @@
   <tabstop>chExportResultsXml30</tabstop>
   <tabstop>btExportStartListXml30</tabstop>
   <tabstop>btExportResultsXml30</tabstop>
+  <tabstop>rbRacomStartTxt</tabstop>
+  <tabstop>rbRacomStartCsv</tabstop>
   <tabstop>chExportStartListTxt</tabstop>
   <tabstop>chExportFinishTxt</tabstop>
   <tabstop>btExportSplitsTxt</tabstop>

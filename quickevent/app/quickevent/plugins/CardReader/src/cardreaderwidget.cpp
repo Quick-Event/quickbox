@@ -49,6 +49,7 @@
 #include <plugins/Event/src/eventplugin.h>
 #include <plugins/Runs/src/findrunnerwidget.h>
 #include <plugins/Competitors/src/competitorsplugin.h>
+#include <plugins/Runs/src/runflagsdialog.h>
 
 #include <QSettings>
 #include <QFile>
@@ -86,11 +87,11 @@ public:
 		col_classes_name,
 		col_competitorName,
 		col_competitors_registration,
+		col_competirors_bib,
 		col_runs_startTimeMs,
 		col_runs_timeMs,
 		col_runs_finishTimeMs,
-		col_runs_misPunch,
-		col_runs_disqualified,
+		col_runFlags,
 		col_runs_cardLent,
 		col_runs_cardReturned,
 		col_cards_checkTime,
@@ -102,7 +103,11 @@ public:
 public:
 	explicit Model(QObject *parent);
 
+	int columnCount(const QModelIndex &) const override { return col_COUNT; }
 	QVariant data(const QModelIndex &index, int role) const Q_DECL_OVERRIDE;
+
+	using Super::value;
+	QVariant value(int row_ix, int column_ix) const Q_DECL_OVERRIDE;
 };
 
 Model::Model(QObject *parent)
@@ -114,12 +119,12 @@ Model::Model(QObject *parent)
 	setColumn(col_classes_name, ColumnDefinition("classes.name", tr("Class")));
 	setColumn(col_competitorName, ColumnDefinition("competitorName", tr("Name")));
 	setColumn(col_competitors_registration, ColumnDefinition("competitors.registration", tr("Reg")));
+	setColumn(col_competirors_bib, ColumnDefinition("competitors.startNumber", tr("Bib")));
 	setColumn(col_runs_startTimeMs, ColumnDefinition("runs.startTimeMs", tr("Start")).setCastType(qMetaTypeId<quickevent::core::og::TimeMs>()).setReadOnly(true));
 	setColumn(col_runs_timeMs, ColumnDefinition("runs.timeMs", tr("Time")).setCastType(qMetaTypeId<quickevent::core::og::TimeMs>()).setReadOnly(true));
 	setColumn(col_runs_finishTimeMs, ColumnDefinition("runs.finishTimeMs", tr("Finish")).setCastType(qMetaTypeId<quickevent::core::og::TimeMs>()).setReadOnly(true));
-	setColumn(col_runs_misPunch, ColumnDefinition("runs.misPunch", tr("Error")).setToolTip(tr("Card mispunch")).setReadOnly(true));
-	setColumn(col_runs_disqualified, ColumnDefinition("runs.disqualified", tr("DISQ")).setToolTip(tr("Disqualified")));
-	setColumn(col_runs_cardLent, ColumnDefinition("cardLent", tr("RT")).setToolTip(tr("Card in rent table")).setReadOnly(true).setCastType(QMetaType::Bool));
+	setColumn(col_runFlags, ColumnDefinition("runFlags", tr("Run flags")).setReadOnly(true));
+	setColumn(col_runs_cardLent, ColumnDefinition("cardLent", tr("RT")).setToolTip(tr("Card in rent table")).setReadOnly(true).setCastType(QVariant::Bool));
 	setColumn(col_runs_cardReturned, ColumnDefinition("runs.cardReturned", tr("R")).setToolTip(tr("Card returned")));
 	setColumn(col_cards_checkTime, ColumnDefinition("cards.checkTime", tr("CTIME")).setToolTip(tr("Card check time")).setReadOnly(true));
 	setColumn(col_cards_startTime, ColumnDefinition("cards.startTime", tr("STIME")).setToolTip(tr("Card start time")).setReadOnly(true));
@@ -160,6 +165,45 @@ QVariant Model::data(const QModelIndex &index, int role) const
 	}
 	return Super::data(index, role);
 }
+
+
+QVariant Model::value(int row_ix, int column_ix) const
+{
+	if(column_ix == col_runFlags) {
+		qf::core::utils::TableRow row = tableRow(row_ix);
+		bool is_disqualified = row.value(QStringLiteral("runs.disqualified")).toBool();
+		bool mis_punch = row.value(QStringLiteral("runs.misPunch")).toBool();
+		bool bad_check = row.value(QStringLiteral("runs.badCheck")).toBool();
+		bool not_start = row.value(QStringLiteral("runs.notStart")).toBool();
+		bool not_finish = row.value(QStringLiteral("runs.notFinish")).toBool();
+		bool is_disqualified_by_organizer = row.value(QStringLiteral("runs.disqualifiedByOrganizer")).toBool();
+		bool over_time = row.value(QStringLiteral("runs.overTime")).toBool();
+		bool not_competing = row.value(QStringLiteral("runs.notCompeting")).toBool();
+		QStringList sl;
+		if(not_competing)
+			sl << tr("NC", "NotCompeting");
+		if(mis_punch)
+			sl << tr("MP", "MisPunch");
+		if(bad_check)
+			sl << tr("BC", "BadCheck");
+		if(not_start)
+			sl << tr("DNS", "DidNotStart");
+		if(not_finish)
+			sl << tr("DNF", "DidNotFinish");
+		if(is_disqualified_by_organizer)
+			sl << tr("DO", "disqualifiedByOrganizer");
+		if(over_time)
+			sl << tr("OT", "OverTime");
+		if(is_disqualified && !mis_punch && !bad_check && !not_start && !not_finish && !is_disqualified_by_organizer && !over_time)
+			sl << tr("DSQ", "Disqualified");
+		if(sl.isEmpty())
+			return QStringLiteral("");
+		else
+			return sl.join(',');
+	}
+	return Super::value(row_ix, column_ix);
+}
+
 }
 
 CardReaderWidget::CardReaderWidget(QWidget *parent)
@@ -205,6 +249,17 @@ CardReaderWidget::CardReaderWidget(QWidget *parent)
 	}
 	ui->tblCards->setContextMenuPolicy(Qt::CustomContextMenu);
 	connect(ui->tblCards, &qfw::TableView::customContextMenuRequested, this, &CardReaderWidget::onCustomContextMenuRequest);
+
+	connect(ui->tblCards, &qfw::TableView::editCellRequest, this, [this](QModelIndex index) {
+		auto col = index.column();
+		if(col == Model::col_runFlags) {
+			Runs::RunFlagsDialog dlg(this);
+			dlg.load(m_cardsModel, ui->tblCards->toTableModelRowNo(ui->tblCards->currentIndex().row()));
+			if(dlg.exec()) {
+				dlg.save();
+			}
+		}
+	}, Qt::QueuedConnection);
 }
 
 CardReaderWidget::~CardReaderWidget()
@@ -407,11 +462,12 @@ void CardReaderWidget::reload()
 	int current_stage = getPlugin<CardReaderPlugin>()->currentStageId();
 	qfs::QueryBuilder qb;
 	qb.select2("cards", "id, siId, runId, checkTime, startTime, finishTime, runIdAssignError")
-			.select2("runs", "id, startTimeMs, timeMs, finishTimeMs, misPunch, disqualified, cardReturned")
-			.select2("competitors", "registration")
+			.select2("runs", "id, startTimeMs, timeMs, finishTimeMs, misPunch, disqualified, badCheck, notStart, notFinish, disqualifiedByOrganizer, overTime, notCompeting, cardReturned")
+			.select2("competitors", "registration, startNumber")
 			.select2("classes", "name")
 			.select("COALESCE(lastName, '') || ' ' || COALESCE(firstName, '') AS competitorName")
 			.select("lentcards.siid IS NOT NULL OR runs.cardLent AS cardLent")
+			.select("'' AS runFlags")
 			.from("cards")
 			.joinRestricted("cards.siId", "lentcards.siid", "NOT lentcards.ignored")
 			.join("cards.runId", "runs.id")

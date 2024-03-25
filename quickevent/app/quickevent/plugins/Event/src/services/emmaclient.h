@@ -10,7 +10,12 @@ namespace services {
 class EmmaClientSettings : public ServiceSettings
 {
 	using Super = ServiceSettings;
-
+public:
+	enum StartExportType {
+		TXT = 0,
+		CSV
+	};
+private:
 	QF_VARIANTMAP_FIELD2(bool, e, setE, xportStartListTypeXml3, 0)
 	QF_VARIANTMAP_FIELD2(bool, e, setE, xportResultTypeXml3, 0)
 	QF_VARIANTMAP_FIELD(QString, e, setE, xportDir)
@@ -18,6 +23,7 @@ class EmmaClientSettings : public ServiceSettings
 	QF_VARIANTMAP_FIELD2(int, e, setE, xportIntervalSec, 0)
 	QF_VARIANTMAP_FIELD2(bool, e, setE, xportStartTypeTxt, 0)
 	QF_VARIANTMAP_FIELD2(bool, e, setE, xportFinishTypeTxt, 0)
+	QF_VARIANTMAP_FIELD2(int, s, setS, tartExportType, 0)
 public:
 	EmmaClientSettings(const QVariantMap &o = QVariantMap()) : Super(o) {}
 };
@@ -41,6 +47,7 @@ public:
 	void exportStartListIofXml3();
 	void exportFinishRacomTxt();
 	void exportStartListRacomTxt();
+	void exportStartListRacomCsv();
 	bool preExport();
 	void loadSettings() override;
 private:

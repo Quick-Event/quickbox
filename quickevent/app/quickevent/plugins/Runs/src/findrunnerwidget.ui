@@ -17,7 +17,7 @@
    <item>
     <widget class="FindRunnerEdit" name="edFindRunner">
      <property name="placeholderText">
-      <string>Name, registration, SI</string>
+      <string>Name, Registration, SI, Bib</string>
      </property>
      <property name="clearButtonEnabled">
       <bool>true</bool>

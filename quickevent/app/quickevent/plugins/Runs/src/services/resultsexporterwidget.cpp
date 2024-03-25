@@ -36,12 +36,12 @@ ResultsExporterWidget::ResultsExporterWidget(QWidget *parent)
 		ui->lstOutputFormat->setCurrentIndex(ui->lstOutputFormat->findData(of));
 		if (ss.csvSeparator() == QChar::Tabulation)
 			ui->rbCsvSeparatorTab->setChecked(true);
-		else
-		{
+		else {
 			ui->rbCsvSeparatorChar->setChecked(true);
 			if (!ss.csvSeparator().isNull())
 				ui->edCsvSeparator->setText(ss.csvSeparator());
 		}
+		ui->cbCsvExportWithDNS->setChecked(ss.exportCsvWithDNS());
 	}
 
 	connect(ui->btChooseExportDir, &QPushButton::clicked, this, &ResultsExporterWidget::onBtChooseExportDirClicked);
@@ -90,6 +90,7 @@ bool ResultsExporterWidget::saveSettings()
 			ss.setCsvSeparator(QChar::Null);
 		else
 			ss.setCsvSeparator(ui->edCsvSeparator->text().at(0));
+		ss.setExportCsvWithDNS(ui->cbCsvExportWithDNS->isChecked());
 		svc->setSettings(ss);
 		if(!dir.isEmpty()) {
 			if(!QDir().mkpath(dir))

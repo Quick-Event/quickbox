@@ -20,6 +20,7 @@ public:
 	QF_VARIANTMAP_FIELD2(int, o, setO, utputFormat, static_cast<int>(OutputFormat::HtmlMulti))
 	QF_VARIANTMAP_FIELD2(bool, e, setE, xportMultiFile, true)
 	QF_VARIANTMAP_FIELD2(QChar, c, setC, svSeparator, ';')
+	QF_VARIANTMAP_FIELD2(bool, e, setE, xportCsvWithDNS, false)
 public:
 	ResultsExporterSettings(const QVariantMap &o = QVariantMap()) : Super(o) {}
 };

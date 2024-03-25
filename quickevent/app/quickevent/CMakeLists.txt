@@ -68,6 +68,7 @@ add_executable(quickevent
 	plugins/Oris/src/orisimporter.cpp
 	plugins/Oris/src/orisplugin.cpp
 	plugins/Oris/src/txtimporter.cpp
+	plugins/Oris/src/xmlimporter.cpp
 	plugins/Receipts/src/receiptsplugin.cpp
 	plugins/Receipts/src/receiptsprinter.cpp
 	#plugins/Receipts/src/receiptsprinteroptions.cpp

@@ -26,6 +26,7 @@ public:
 
 private slots:
 	void onRegistrationSelected(const QVariantMap &values);
+	void onSwitchNames();
 private:
 	Q_SLOT bool loadRunsTable();
 	Q_SLOT bool saveRunsTable();

@@ -33,6 +33,8 @@ EmmaClientWidget::EmmaClientWidget(QWidget *parent)
 		ui->chExportResultsXml30->setCheckState((ss.exportResultTypeXml3()) ? Qt::Checked : Qt::Unchecked);
 		if (ui->edFileNameBase->text().isEmpty())
 			ui->edFileNameBase->setText(getPlugin<EventPlugin>()->eventName());
+		if (ss.startExportType() == EmmaClientSettings::StartExportType::CSV)
+			ui->rbRacomStartCsv->setChecked(true);
 	}
 
 	connect(ui->btChooseExportDir, &QPushButton::clicked, this, &EmmaClientWidget::onBtChooseExportDirClicked);
@@ -99,6 +101,10 @@ bool EmmaClientWidget::saveSettings()
 		ss.setExportFinishTypeTxt(ui->chExportFinishTxt->isChecked());
 		ss.setExportStartListTypeXml3(ui->chExportStartListXml30->isChecked());;
 		ss.setExportResultTypeXml3(ui->chExportResultsXml30->isChecked());;
+		EmmaClientSettings::StartExportType type = EmmaClientSettings::StartExportType::TXT;
+		if (ui->rbRacomStartCsv->isChecked())
+			type = EmmaClientSettings::StartExportType::CSV;
+		ss.setStartExportType(type);
 		if (ss.fileNameBase().isEmpty())
 			ss.setFileNameBase(getPlugin<EventPlugin>()->eventName());
 
@@ -125,7 +131,10 @@ void EmmaClientWidget::onBtExportStartListTxtClicked()
 	EmmaClient *svc = service();
 	if(svc) {
 		saveSettings();
-		svc->exportStartListRacomTxt();
+		if (svc->settings().startExportType() == EmmaClientSettings::StartExportType::CSV)
+			svc->exportStartListRacomCsv();
+		else
+			svc->exportStartListRacomTxt();
 	}
 }
 
