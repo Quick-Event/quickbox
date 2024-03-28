@@ -58,23 +58,64 @@
       <string>Competitor</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
-      <item row="1" column="0">
-       <widget class="QLabel" name="label">
-        <property name="text">
-         <string>&amp;Class</string>
-        </property>
-        <property name="buddy">
-         <cstring>cbxClass</cstring>
+      <item row="3" column="1">
+       <widget class="qf::qmlwidgets::LineEdit" name="lineEdit_4">
+        <property name="dataId" stdset="0">
+         <string notr="true">competitors.registration</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="label_3">
+      <item row="2" column="2">
+       <widget class="QLabel" name="label_4">
         <property name="text">
-         <string>First na&amp;me</string>
+         <string>&amp;Last name</string>
         </property>
         <property name="buddy">
-         <cstring>lineEdit_2</cstring>
+         <cstring>lineEdit_3</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="2">
+       <widget class="QLabel" name="label_8">
+        <property name="text">
+         <string>Co&amp;untry</string>
+        </property>
+        <property name="buddy">
+         <cstring>lineEdit_7</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="2">
+       <widget class="QLabel" name="label_5">
+        <property name="text">
+         <string>Licenc&amp;e</string>
+        </property>
+        <property name="buddy">
+         <cstring>lineEdit_5</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="qf::qmlwidgets::ForeignKeyComboBox" name="cbxClass">
+        <property name="dataId" stdset="0">
+         <string notr="true">competitors.classId</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="3">
+       <widget class="quickevent::gui::si::SiIdEdit" name="edSiId">
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+        <property name="dataId" stdset="0">
+         <string notr="true">competitors.siId</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="3">
+       <widget class="qf::qmlwidgets::LineEdit" name="lineEdit_7">
+        <property name="dataId" stdset="0">
+         <string notr="true">competitors.country</string>
         </property>
        </widget>
       </item>
@@ -88,6 +129,33 @@
         </property>
        </widget>
       </item>
+      <item row="6" column="0">
+       <widget class="QLabel" name="label_9">
+        <property name="text">
+         <string>&amp;Note</string>
+        </property>
+        <property name="buddy">
+         <cstring>lineEdit_8</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="1">
+       <widget class="qf::qmlwidgets::LineEdit" name="lineEdit_6">
+        <property name="dataId" stdset="0">
+         <string notr="true">competitors.club</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>&amp;Class</string>
+        </property>
+        <property name="buddy">
+         <cstring>cbxClass</cstring>
+        </property>
+       </widget>
+      </item>
       <item row="4" column="0">
        <widget class="QLabel" name="label_10">
         <property name="text">
@@ -95,6 +163,13 @@
         </property>
         <property name="buddy">
          <cstring>edIofId</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="3">
+       <widget class="qf::qmlwidgets::LineEdit" name="lineEdit_5">
+        <property name="dataId" stdset="0">
+         <string notr="true">competitors.licence</string>
         </property>
        </widget>
       </item>
@@ -108,34 +183,13 @@
         </property>
        </widget>
       </item>
-      <item row="6" column="0">
-       <widget class="QLabel" name="label_9">
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_3">
         <property name="text">
-         <string>&amp;Note</string>
+         <string>First na&amp;me</string>
         </property>
         <property name="buddy">
-         <cstring>lineEdit_8</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="qf::qmlwidgets::ForeignKeyComboBox" name="cbxClass">
-        <property name="dataId" stdset="0">
-         <string notr="true">competitors.classId</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="qf::qmlwidgets::LineEdit" name="lineEdit_2">
-        <property name="dataId" stdset="0">
-         <string notr="true">competitors.firstName</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="1">
-       <widget class="qf::qmlwidgets::LineEdit" name="lineEdit_4">
-        <property name="dataId" stdset="0">
-         <string notr="true">competitors.registration</string>
+         <cstring>lineEdit_2</cstring>
         </property>
        </widget>
       </item>
@@ -152,10 +206,10 @@
         </property>
        </widget>
       </item>
-      <item row="5" column="1">
-       <widget class="qf::qmlwidgets::LineEdit" name="lineEdit_6">
+      <item row="2" column="1">
+       <widget class="qf::qmlwidgets::LineEdit" name="lineEdit_2">
         <property name="dataId" stdset="0">
-         <string notr="true">competitors.club</string>
+         <string notr="true">competitors.firstName</string>
         </property>
        </widget>
       </item>
@@ -163,16 +217,6 @@
        <widget class="qf::qmlwidgets::LineEdit" name="lineEdit_8">
         <property name="dataId" stdset="0">
          <string notr="true">competitors.note</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="2">
-       <widget class="QLabel" name="label_4">
-        <property name="text">
-         <string>&amp;Last name</string>
-        </property>
-        <property name="buddy">
-         <cstring>lineEdit_3</cstring>
         </property>
        </widget>
       </item>
@@ -186,26 +230,6 @@
         </property>
        </widget>
       </item>
-      <item row="4" column="2">
-       <widget class="QLabel" name="label_5">
-        <property name="text">
-         <string>Licenc&amp;e</string>
-        </property>
-        <property name="buddy">
-         <cstring>lineEdit_5</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="2">
-       <widget class="QLabel" name="label_8">
-        <property name="text">
-         <string>Co&amp;untry</string>
-        </property>
-        <property name="buddy">
-         <cstring>lineEdit_7</cstring>
-        </property>
-       </widget>
-      </item>
       <item row="2" column="3">
        <widget class="qf::qmlwidgets::LineEdit" name="lineEdit_3">
         <property name="dataId" stdset="0">
@@ -213,29 +237,29 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="3">
-       <widget class="quickevent::gui::si::SiIdEdit" name="edSiId">
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-        <property name="dataId" stdset="0">
-         <string notr="true">competitors.siId</string>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="3">
-       <widget class="qf::qmlwidgets::LineEdit" name="lineEdit_5">
-        <property name="dataId" stdset="0">
-         <string notr="true">competitors.licence</string>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="3">
-       <widget class="qf::qmlwidgets::LineEdit" name="lineEdit_7">
-        <property name="dataId" stdset="0">
-         <string notr="true">competitors.country</string>
-        </property>
-       </widget>
+      <item row="1" column="3">
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QPushButton" name="btnSwitchNames">
+          <property name="text">
+           <string>Switch Names</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
       </item>
      </layout>
     </widget>
@@ -318,6 +342,7 @@
   <tabstop>chkFind</tabstop>
   <tabstop>edFind</tabstop>
   <tabstop>cbxClass</tabstop>
+  <tabstop>btnSwitchNames</tabstop>
   <tabstop>lineEdit_2</tabstop>
   <tabstop>lineEdit_3</tabstop>
   <tabstop>lineEdit_4</tabstop>
