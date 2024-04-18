@@ -27,10 +27,10 @@ static auto METH_NAME = "name";
 const std::vector<shv::chainpack::MetaMethod> &DotAppNode::metaMethods()
 {
 	static std::vector<MetaMethod> meta_methods {
-		{Rpc::METH_DIR, MetaMethod::Signature::RetParam, MetaMethod::Flag::None, Rpc::ROLE_BROWSE},
-		{Rpc::METH_LS, MetaMethod::Signature::RetParam, MetaMethod::Flag::None, Rpc::ROLE_BROWSE},
-		{Rpc::METH_PING, MetaMethod::Signature::RetVoid, MetaMethod::Flag::None, Rpc::ROLE_BROWSE},
-		{METH_NAME, MetaMethod::Signature::RetVoid, MetaMethod::Flag::IsGetter, Rpc::ROLE_BROWSE},
+		methods::DIR,
+		methods::LS,
+		{Rpc::METH_PING, MetaMethod::Flag::None, {}, "RpcValue", AccessLevel::Browse},
+		{METH_NAME, MetaMethod::Flag::IsGetter, {}, "RpcValue", AccessLevel::Browse},
 	};
 	return meta_methods;
 }
@@ -78,10 +78,11 @@ EventNode::EventNode(shv::iotqt::node::ShvNode *parent)
 const std::vector<MetaMethod> &EventNode::metaMethods()
 {
 	static std::vector<MetaMethod> meta_methods {
-		{Rpc::METH_DIR, MetaMethod::Signature::RetParam, MetaMethod::Flag::None, Rpc::ROLE_BROWSE},
-		{Rpc::METH_LS, MetaMethod::Signature::RetParam, MetaMethod::Flag::None, Rpc::ROLE_BROWSE},
-		{METH_CURRENT_STAGE, MetaMethod::Signature::RetVoid, MetaMethod::Flag::IsGetter, Rpc::ROLE_READ},
-		{SIG_RUN_CHANGED, MetaMethod::Signature::VoidParam, MetaMethod::Flag::IsSignal, Rpc::ROLE_READ},
+		methods::DIR,
+		methods::LS,
+		{METH_NAME, MetaMethod::Flag::IsGetter, {}, "RpcValue", AccessLevel::Read},
+		{METH_CURRENT_STAGE, MetaMethod::Flag::IsGetter, {}, "RpcValue", AccessLevel::Read},
+		//{SIG_RUN_CHANGED, MetaMethod::Signature::VoidParam, MetaMethod::Flag::IsSignal, Rpc::ROLE_READ},
 	};
 	return meta_methods;
 }
@@ -90,6 +91,9 @@ RpcValue EventNode::callMethod(const StringViewList &shv_path, const std::string
 {
 	qfLogFuncFrame() << shv_path.join('/') << method;
 	if(shv_path.empty()) {
+		if(method == METH_NAME) {
+			return getPlugin<EventPlugin>()->eventConfig()->eventName().toStdString();
+		}
 		if(method == METH_CURRENT_STAGE) {
 			return getPlugin<EventPlugin>()->currentStageId();
 		}
@@ -113,12 +117,13 @@ void SqlViewNode::setQueryBuilder(const qf::core::sql::QueryBuilder &qb)
 const std::vector<MetaMethod> &SqlViewNode::metaMethods()
 {
 	static std::vector<MetaMethod> meta_methods {
-		{Rpc::METH_DIR, MetaMethod::Signature::RetParam, MetaMethod::Flag::None, Rpc::ROLE_BROWSE},
-		{Rpc::METH_LS, MetaMethod::Signature::RetParam, MetaMethod::Flag::None, Rpc::ROLE_BROWSE},
-		{METH_TABLE, MetaMethod::Signature::RetVoid, MetaMethod::Flag::None, Rpc::ROLE_READ},
-		{METH_RECORD, MetaMethod::Signature::RetParam, MetaMethod::Flag::None, Rpc::ROLE_READ},
-		{METH_SET_RECORD, MetaMethod::Signature::VoidParam, MetaMethod::Flag::None, Rpc::ROLE_WRITE},
-		{SIG_REC_CHNG, MetaMethod::Signature::VoidParam, MetaMethod::Flag::IsSignal, Rpc::ROLE_READ},
+		methods::DIR,
+		methods::LS,
+		{METH_TABLE, MetaMethod::Flag::None, {}, "RpcValue", AccessLevel::Read},
+		{METH_RECORD, MetaMethod::Flag::None, "RpcValue", "RpcValue", AccessLevel::Read,
+			{{SIG_REC_CHNG, nullptr}}
+		},
+		{METH_SET_RECORD, MetaMethod::Flag::None, "RpcValue", {}, AccessLevel::Write},
 	};
 	return meta_methods;
 }

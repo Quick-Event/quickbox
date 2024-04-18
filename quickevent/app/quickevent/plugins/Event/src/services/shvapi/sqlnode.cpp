@@ -23,9 +23,9 @@ static auto METH_EXEC_SQL = "execSql";
 const std::vector<MetaMethod> &SqlNode::metaMethods()
 {
 	static std::vector<MetaMethod> meta_methods {
-		{Rpc::METH_DIR, MetaMethod::Signature::RetParam, MetaMethod::Flag::None, Rpc::ROLE_BROWSE},
-		{Rpc::METH_LS, MetaMethod::Signature::RetParam, MetaMethod::Flag::None, Rpc::ROLE_BROWSE},
-		{METH_EXEC_SQL, MetaMethod::Signature::RetVoid, MetaMethod::Flag::None, Rpc::ROLE_WRITE},
+		methods::DIR,
+		methods::LS,
+		{METH_EXEC_SQL, MetaMethod::Flag::None, {}, "RpcValue", AccessLevel::Write},
 	};
 	return meta_methods;
 }
