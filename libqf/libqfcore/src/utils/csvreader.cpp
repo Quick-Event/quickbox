@@ -29,7 +29,7 @@ QString CSVReader::unquoteCSVField(const QString &s)
 	if(m_singleQuote.isEmpty())
 		m_singleQuote = QString("%1").arg(m_quote);
 	String ret = s;
-	if(ret[0] == m_quote)
+	if(!ret.isEmpty() && ret[0] == m_quote)
 		ret = ret.slice(1, -1);
 	ret = ret.replace(m_doubleQuote, m_singleQuote);
 	return ret;
