@@ -18,7 +18,15 @@ jobs:
         uses: actions/checkout@v3
         with:
           submodules: true
-
+          
+      - name: Setup CMake
+        uses: ./.github/actions/cmake
+        with:
+          qt_version: 6.5.2
+          use_qt6: ON
+          modules: qtserialport qtmultimedia
+          additional_cmake_args: -DCMAKE_INSTALL_PREFIX='${{ github.workspace }}/install/usr'
+          
       - name: Run clang-tidy
         uses: ./.github/actions/run-linter
         with:
@@ -36,6 +44,14 @@ jobs:
         with:
           submodules: true
 
+      - name: Setup CMake
+        uses: ./.github/actions/cmake
+        with:
+          qt_version: 6.5.2
+          use_qt6: ON
+          modules: qtserialport qtmultimedia
+          additional_cmake_args: -DCMAKE_INSTALL_PREFIX='${{ github.workspace }}/install/usr'
+          
       - name: Run clazy
         uses: ./.github/actions/run-linter
         with:
