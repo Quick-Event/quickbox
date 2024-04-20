@@ -74,7 +74,8 @@ Application *Application::instance(bool must_exist)
 
 int Application::dbVersion()
 {
-	return 11100;
+	// equals to minimal app version compatible with this DB
+	return 30100;
 }
 
 QString Application::versionString() const

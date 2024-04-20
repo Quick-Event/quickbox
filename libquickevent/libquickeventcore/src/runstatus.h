@@ -25,7 +25,6 @@ public:
 	QString toHtmlExportString() const;
 	QString toString() const;
 
-	bool idDisqualified() const { return m_disqualified; }
 	bool isDisqualifiedByOrganizer() const { return m_disqualifiedByOrganizer; }
 	bool isNotCompeting() const { return m_notCompeting; }
 	bool isMissingPunch() const { return m_missingPunch; }
@@ -35,7 +34,6 @@ public:
 
 	static QStringList runsTableColumns();
 private:
-	bool m_disqualified = false;
 	bool m_disqualifiedByOrganizer = false;
 	bool m_notCompeting = false;
 	bool m_missingPunch = false;
