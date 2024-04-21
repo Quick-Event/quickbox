@@ -428,10 +428,8 @@ void EventPlugin::saveCurrentStageId(int current_stage)
 
 void EventPlugin::editStage()
 {
-	qfLogFuncFrame();// << "id:" << id << "mode:" << mode;
+	//qfLogFuncFrame();// << "id:" << id << "mode:" << mode;
 	int stage_id = currentStageId();
-	if(stage_id < 0)
-		return;
 	Event::StageWidget *w = new Event::StageWidget();
 	auto fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 	qfd::Dialog dlg(QDialogButtonBox::Save | QDialogButtonBox::Cancel, fwk);
@@ -511,7 +509,7 @@ DbSchema *EventPlugin::dbSchema()
 int EventPlugin::dbVersion()
 {
 	qff::MainWindow *fwk = qff::MainWindow::frameWork();
-	int db_version;
+	int db_version = 0;
 	QMetaObject::invokeMethod(fwk, "dbVersion", Qt::DirectConnection
 							  , Q_RETURN_ARG(int, db_version));
 	return db_version;
