@@ -190,9 +190,9 @@ Schema {
 					//notNull: true
 				},
 				Field { name: 'relayId'; type: Int {} },
-				//Field { name: 'corridorEnterTS'
-				//	type: DateTime { }
-				//},
+				Field { name: 'corridorTime'; type: DateTime {}
+					comment: 'DateTime when competitor entered start corridor. (Experimental)'
+				},
 				Field { name: 'checkTimeMs'; type: Int {}
 					comment: 'in miliseconds'
 				},
