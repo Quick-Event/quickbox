@@ -2,8 +2,7 @@
 #include "og/timems.h"
 #include <QCoreApplication>
 
-namespace quickevent {
-namespace core {
+namespace quickevent::core {
 
 QStringList RunStatus::runsTableColumns()
 {
@@ -131,5 +130,4 @@ QString RunStatus::toString() const
 	return tr("OK");
 }
 
-} // namespace core
-} // namespace quickevent
+}

@@ -38,15 +38,15 @@ public:
 	QF_PROPERTY_BOOL_IMPL(e, E, ventOpen)
 	QF_PROPERTY_IMPL(QString, e, E, ventName)
 
-	static const char *DBEVENT_NOTIFY_NAME;
-	static const char* DBEVENT_COMPETITOR_COUNTS_CHANGED; //< number of competitors in classes changed
-	static const char* DBEVENT_CARD_READ;
-	static const char* DBEVENT_COMPETITOR_EDITED;
-	static const char* DBEVENT_RUN_CHANGED;
-	static const char* DBEVENT_CARD_PROCESSED_AND_ASSIGNED;
-	static const char* DBEVENT_PUNCH_RECEIVED;
-	static const char* DBEVENT_REGISTRATIONS_IMPORTED;
-	static const char* DBEVENT_STAGE_START_CHANGED;
+	static const char* const DBEVENT_NOTIFY_NAME;
+	static const char* const DBEVENT_COMPETITOR_COUNTS_CHANGED; //< number of competitors in classes changed
+	static const char* const DBEVENT_CARD_READ;
+	static const char* const DBEVENT_COMPETITOR_EDITED;
+	static const char* const DBEVENT_RUN_CHANGED;
+	static const char* const DBEVENT_CARD_PROCESSED_AND_ASSIGNED;
+	static const char* const DBEVENT_PUNCH_RECEIVED;
+	static const char* const DBEVENT_REGISTRATIONS_IMPORTED;
+	static const char* const DBEVENT_STAGE_START_CHANGED;
 
 	Q_INVOKABLE void initEventConfig();
 	Event::EventConfig* eventConfig(bool reload = false);

@@ -5,8 +5,7 @@
 #include <qf/core/utils/treetable.h>
 #include <QCoreApplication>
 
-namespace quickevent {
-namespace core {
+namespace quickevent::core {
 
 class QUICKEVENTCORE_DECL_EXPORT RunStatus
 {
@@ -42,4 +41,4 @@ private:
 	bool m_overTime = false;
 };
 
-}}
+}

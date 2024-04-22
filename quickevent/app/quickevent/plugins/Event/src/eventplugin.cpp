@@ -87,9 +87,7 @@ DbEventPayload DbEventPayload::fromJson(const QByteArray &json)
 		QVariantMap m = jsd.toVariant().toMap();
 		return DbEventPayload(m);
 	}
-	else {
-		qfError() << "JSON parse error:" << error.errorString();
-	}
+	qfError() << "JSON parse error:" << error.errorString();
 	return DbEventPayload();
 }
 
@@ -99,31 +97,37 @@ QByteArray DbEventPayload::toJson() const
 	return jsd.toJson(QJsonDocument::Compact);
 }
 
-static auto QBE_EXT = QStringLiteral(".qbe");
+/// strange is that 'quickboxDbEvent' just doesn't work without any error
+/// from psql doc: Commonly, the channel name is the same as the name of some table in the database
+/// I guess that channel name cannot contain capital letters to work
+const char* const EventPlugin::DBEVENT_NOTIFY_NAME = "quickbox_db_event";
 
-const char* EventPlugin::DBEVENT_COMPETITOR_COUNTS_CHANGED = "competitorCountsChanged";
-const char* EventPlugin::DBEVENT_CARD_READ = "cardRead";
-const char* EventPlugin::DBEVENT_COMPETITOR_EDITED = "competitorEdited";
-const char* EventPlugin::DBEVENT_RUN_CHANGED = "runChanged";
-const char* EventPlugin::DBEVENT_CARD_PROCESSED_AND_ASSIGNED = "cardProcessedAndAssigned";
-const char* EventPlugin::DBEVENT_PUNCH_RECEIVED = "punchReceived";
-const char* EventPlugin::DBEVENT_REGISTRATIONS_IMPORTED = "registrationsImported";
-const char* EventPlugin::DBEVENT_STAGE_START_CHANGED = "stageStartChanged";
+const char* const EventPlugin::DBEVENT_COMPETITOR_COUNTS_CHANGED = "competitorCountsChanged";
+const char* const EventPlugin::DBEVENT_CARD_READ = "cardRead";
+const char* const EventPlugin::DBEVENT_COMPETITOR_EDITED = "competitorEdited";
+const char* const EventPlugin::DBEVENT_RUN_CHANGED = "runChanged";
+const char* const EventPlugin::DBEVENT_CARD_PROCESSED_AND_ASSIGNED = "cardProcessedAndAssigned";
+const char* const EventPlugin::DBEVENT_PUNCH_RECEIVED = "punchReceived";
+const char* const EventPlugin::DBEVENT_REGISTRATIONS_IMPORTED = "registrationsImported";
+const char* const EventPlugin::DBEVENT_STAGE_START_CHANGED = "stageStartChanged";
 
-static QString singleFileStorageDir()
+namespace {
+const auto QBE_EXT = QStringLiteral(".qbe");
+
+QString singleFileStorageDir()
 {
 	ConnectionSettings connection_settings;
 	QString ret = connection_settings.singleWorkingDir();
 	return ret;
 }
 
-static QString eventNameToFileName(const QString &event_name)
+QString eventNameToFileName(const QString &event_name)
 {
 	QString ret = singleFileStorageDir() + '/' + event_name + QBE_EXT;
 	return ret;
 }
 
-static QString fileNameToEventName(const QString &file_name)
+QString fileNameToEventName(const QString &file_name)
 {
 	QString fn = file_name;
 	fn.replace("\\", "/");
@@ -133,11 +137,7 @@ static QString fileNameToEventName(const QString &file_name)
 		event_name = event_name.mid(0, event_name.length() - QBE_EXT.length());
 	return event_name;
 }
-
-/// strange is that 'quickboxDbEvent' just doesn't work without any error
-/// from psql doc: Commonly, the channel name is the same as the name of some table in the database
-/// I guess that channel name cannot contain capital letters to work
-const char *EventPlugin::DBEVENT_NOTIFY_NAME = "quickbox_db_event";
+}
 
 EventPlugin::EventPlugin(QObject *parent)
 	: Super("Event", parent)
@@ -343,14 +343,14 @@ void EventPlugin::onInstalled()
 	tb->setObjectName("EventToolbar");
 	tb->setWindowTitle(tr("Event"));
 	{
-		QToolButton *bt_stage = new QToolButton();
+		auto *bt_stage = new QToolButton();
 		//bt_stage->setFlat(true);
 		bt_stage->setAutoRaise(true);
 		bt_stage->setCheckable(true);
 		tb->addWidget(bt_stage);
 		m_cbxStage = new QComboBox();
 		connect(m_cbxStage, &QComboBox::activated, this, &EventPlugin::onCbxStageActivated);
-		connect(this, &EventPlugin::currentStageIdChanged, [bt_stage](int stage_id) {
+		connect(this, &EventPlugin::currentStageIdChanged, bt_stage, [bt_stage](int stage_id) {
 			bt_stage->setText(tr("Current stage E%1").arg(stage_id));
 		});
 		QAction *act_stage = tb->addWidget(m_cbxStage);
@@ -364,7 +364,7 @@ void EventPlugin::onInstalled()
 		connect(m_actEditStage, &QAction::triggered, this, &EventPlugin::editStage);
 		tb->addAction(m_actEditStage);
 
-		connect(bt_stage, &QPushButton::clicked, [this, act_stage](bool checked) {
+		connect(bt_stage, &QPushButton::clicked, this, [this, act_stage](bool checked) {
 			act_stage->setVisible(checked);
 			m_actEditStage->setVisible(checked);
 		});
@@ -430,8 +430,8 @@ void EventPlugin::editStage()
 {
 	//qfLogFuncFrame();// << "id:" << id << "mode:" << mode;
 	int stage_id = currentStageId();
-	Event::StageWidget *w = new Event::StageWidget();
-	auto fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	auto *w = new Event::StageWidget();
+	auto *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 	qfd::Dialog dlg(QDialogButtonBox::Save | QDialogButtonBox::Cancel, fwk);
 	dlg.setDefaultButton(QDialogButtonBox::Save);
 	dlg.setCentralWidget(w);
@@ -655,7 +655,7 @@ void EventPlugin::connectToSqlServer()
 	dlg.setButtons(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
 	dlg.setDefaultButton(QDialogButtonBox::Ok);
 	dlg.setSavePersistentPosition(false);
-	ConnectDbDialogWidget *conn_w = new ConnectDbDialogWidget();
+	auto *conn_w = new ConnectDbDialogWidget();
 	dlg.setCentralWidget(conn_w);
 	while(!connect_ok) {
 		conn_w->loadSettings();
@@ -736,8 +736,8 @@ void EventPlugin::connectToSqlServer()
 		openEvent(conn_w->eventName());
 	}
 }
-
-static bool run_sql_script(qf::core::sql::Query &q, const QStringList &sql_lines)
+namespace {
+bool run_sql_script(qf::core::sql::Query &q, const QStringList &sql_lines)
 {
 	qfLogFuncFrame();
 	QVariantMap replacements;
@@ -758,7 +758,7 @@ static bool run_sql_script(qf::core::sql::Query &q, const QStringList &sql_lines
 	}
 	return true;
 }
-
+}
 bool EventPlugin::createEvent(const QString &event_name, const QVariantMap &event_params)
 {
 	qfLogFuncFrame();
@@ -775,7 +775,7 @@ bool EventPlugin::createEvent(const QString &event_name, const QVariantMap &even
 	do {
 		qfd::Dialog dlg(fwk);
 		dlg.setButtons(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
-		EventDialogWidget *event_w = new EventDialogWidget();
+		auto *event_w = new EventDialogWidget();
 		event_w->setWindowTitle(tr("Create event"));
 		event_w->setEventId(event_id);
 		event_w->loadParams(new_params);
@@ -877,7 +877,7 @@ void EventPlugin::editEvent()
 	qff::MainWindow *fwk = qff::MainWindow::frameWork();
 	qfd::Dialog dlg(fwk);
 	dlg.setButtons(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
-	EventDialogWidget *event_w = new EventDialogWidget();
+	auto *event_w = new EventDialogWidget();
 	event_w->setWindowTitle(tr("Edit event"));
 	event_w->setEventId(eventName());
 	event_w->setEventIdEditable(false);
