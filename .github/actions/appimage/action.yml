@@ -34,6 +34,13 @@ runs:
         chmod +x ./*AppImage
       shell: bash
 
+    - name: Remove not needed SQL plugins
+      run: |
+        rm ${{ env.Qt6_DIR }}/plugins/sqldrivers/libqsqlmimer.so
+        rm ${{ env.Qt6_DIR }}/plugins/sqldrivers/libqsqlmysql.so
+        rm ${{ env.Qt6_DIR }}/plugins/sqldrivers/libqsqlodbc.so
+      shell: bash
+
     - name: Create AppImage
       run: |
         LD_LIBRARY_PATH="${{ github.workspace }}/install/usr/lib:$LD_LIBRARY_PATH" \
