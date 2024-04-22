@@ -9,6 +9,7 @@ QtObject {
 	property var defaultValue: null
 	property bool notNull: false
 	property string comment
+	property string generatedAs
 
 	function createSqlScript(options)
 	{
@@ -24,6 +25,11 @@ QtObject {
 				def += "'" + defaultValue + "'";
 			else
 				def += defaultValue;
+		}
+		if (generatedAs) {
+			def += ' GENERATED ALWAYS AS (';
+			def += generatedAs;
+			def += ') VIRTUAL';
 		}
 		return def;
 	}

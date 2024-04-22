@@ -5,8 +5,7 @@
 #include <qf/core/utils/treetable.h>
 #include <QCoreApplication>
 
-namespace quickevent {
-namespace core {
+namespace quickevent::core {
 
 class QUICKEVENTCORE_DECL_EXPORT RunStatus
 {
@@ -25,7 +24,6 @@ public:
 	QString toHtmlExportString() const;
 	QString toString() const;
 
-	bool idDisqualified() const { return m_disqualified; }
 	bool isDisqualifiedByOrganizer() const { return m_disqualifiedByOrganizer; }
 	bool isNotCompeting() const { return m_notCompeting; }
 	bool isMissingPunch() const { return m_missingPunch; }
@@ -35,7 +33,6 @@ public:
 
 	static QStringList runsTableColumns();
 private:
-	bool m_disqualified = false;
 	bool m_disqualifiedByOrganizer = false;
 	bool m_notCompeting = false;
 	bool m_missingPunch = false;
@@ -44,4 +41,4 @@ private:
 	bool m_overTime = false;
 };
 
-}}
+}

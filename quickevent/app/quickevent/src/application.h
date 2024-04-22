@@ -15,7 +15,7 @@ private:
 	typedef qf::qmlwidgets::framework::Application Super;
 public:
 	Application(int & argc, char ** argv, AppCliOptions *cli_opts);
-	~Application() Q_DECL_OVERRIDE;
+	~Application() override = default;
 
 	static Application* instance(bool must_exist = true);
 

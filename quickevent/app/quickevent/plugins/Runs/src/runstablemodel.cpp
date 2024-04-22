@@ -72,7 +72,6 @@ QVariant RunsTableModel::value(int row_ix, int column_ix) const
 {
 	if(column_ix == col_runFlags) {
 		qf::core::utils::TableRow row = tableRow(row_ix);
-		bool is_disqualified = row.value(QStringLiteral("runs.disqualified")).toBool();
 		bool mis_punch = row.value(QStringLiteral("runs.misPunch")).toBool();
 		bool bad_check = row.value(QStringLiteral("runs.badCheck")).toBool();
 		bool not_start = row.value(QStringLiteral("runs.notStart")).toBool();
@@ -95,14 +94,11 @@ QVariant RunsTableModel::value(int row_ix, int column_ix) const
 			sl << tr("DO", "disqualifiedByOrganizer");
 		if(over_time)
 			sl << tr("OT", "OverTime");
-		if(is_disqualified && !mis_punch && !bad_check && !not_start && !not_finish && !is_disqualified_by_organizer && !over_time)
-			sl << tr("DSQ", "Disqualified");
 		if(sl.isEmpty())
 			return QStringLiteral("");
-		else
-			return sl.join(',');
+		return sl.join(',');
 	}
-	else if(column_ix == col_cardFlags) {
+	if(column_ix == col_cardFlags) {
 		qf::core::utils::TableRow row = tableRow(row_ix);
 		bool card_rent_requested = row.value(QStringLiteral("runs.cardLent")).toBool();
 		bool card_returned = row.value(QStringLiteral("runs.cardReturned")).toBool();
@@ -116,10 +112,9 @@ QVariant RunsTableModel::value(int row_ix, int column_ix) const
 			sl << tr("RET", "Card returned");
 		if(sl.isEmpty())
 			return QStringLiteral("");
-		else
-			return sl.join(',');
+		return sl.join(',');
 	}
-	else if(column_ix == col_runs_isRunning) {
+	if(column_ix == col_runs_isRunning) {
 		bool is_running = Super::value(row_ix, column_ix).toBool();
 		return is_running;
 	}
@@ -159,7 +154,7 @@ bool RunsTableModel::setValue(int row_ix, int column_ix, const QVariant &val)
 		}
 		return Super::setValue(row_ix, column_ix, val);
 	}
-	else if(column_ix == col_runs_penaltyTimeMs) {
+	if(column_ix == col_runs_penaltyTimeMs) {
 		int penalty_ms = val.toInt();
 		int old_penalty_ms = Super::value(row_ix, col_runs_penaltyTimeMs).toInt();
 		int time_ms = value(row_ix, col_runs_timeMs).toInt();
@@ -169,7 +164,7 @@ bool RunsTableModel::setValue(int row_ix, int column_ix, const QVariant &val)
 		}
 		return Super::setValue(row_ix, column_ix, val);
 	}
-	else if(column_ix == col_runs_timeMs) {
+	if(column_ix == col_runs_timeMs) {
 		int rt = val.toInt();
 		if(rt == 0) {
 			/// run time cannot be 0
@@ -177,22 +172,20 @@ bool RunsTableModel::setValue(int row_ix, int column_ix, const QVariant &val)
 			Super::setValue(row_ix, col_runs_penaltyTimeMs, QVariant());
 			return Super::setValue(row_ix, column_ix, QVariant());
 		}
-		else {
-			QVariant start_ms = value(row_ix, col_runs_startTimeMs);
-			if(!start_ms.isNull()) {
-				int penalty_ms = value(row_ix, col_runs_penaltyTimeMs).toInt();
-				int finish_ms = val.toInt() + start_ms.toInt() - penalty_ms;
-				if(finish_ms > 0) {
-					Super::setValue(row_ix, col_runs_finishTimeMs, finish_ms);
-				}
-				else {
-					Super::setValue(row_ix, col_runs_finishTimeMs, QVariant());
-				}
+		QVariant start_ms = value(row_ix, col_runs_startTimeMs);
+		if(!start_ms.isNull()) {
+			int penalty_ms = value(row_ix, col_runs_penaltyTimeMs).toInt();
+			int finish_ms = val.toInt() + start_ms.toInt() - penalty_ms;
+			if(finish_ms > 0) {
+				Super::setValue(row_ix, col_runs_finishTimeMs, finish_ms);
 			}
-			return Super::setValue(row_ix, column_ix, val);
+			else {
+				Super::setValue(row_ix, col_runs_finishTimeMs, QVariant());
+			}
 		}
+		return Super::setValue(row_ix, column_ix, val);
 	}
-	else if(column_ix == col_runs_startTimeMs) {
+	if(column_ix == col_runs_startTimeMs) {
 		if(!val.isNull()) {
 			int start_ms = val.toInt();
 			int finish_ms = value(row_ix, col_runs_finishTimeMs).toInt();
@@ -212,7 +205,7 @@ bool RunsTableModel::setValue(int row_ix, int column_ix, const QVariant &val)
 	return ret;
 }
 
-static auto MIME_TYPE = QStringLiteral("application/quickevent.startTime");
+static const auto MIME_TYPE = QStringLiteral("application/quickevent.startTime");
 
 QStringList RunsTableModel::mimeTypes() const
 {
@@ -224,7 +217,7 @@ QStringList RunsTableModel::mimeTypes() const
 QMimeData *RunsTableModel::mimeData(const QModelIndexList &indexes) const
 {
 	qfLogFuncFrame();
-	QMimeData *mimeData = new QMimeData();
+	auto *mimeData = new QMimeData();
 	QByteArray encoded_data = QString::number(indexes.value(0).row()).toUtf8();
 	mimeData->setData(MIME_TYPE, encoded_data);
 	return mimeData;
@@ -294,8 +287,8 @@ void RunsTableModel::switchStartTimes(int r1, int r2)
 	}
 	else {
 		//qf::core::sql::Transaction transaction(sqlConnection());
-		quickevent::core::og::TimeMs t1 = v1.value<quickevent::core::og::TimeMs>();
-		quickevent::core::og::TimeMs t2 = v2.value<quickevent::core::og::TimeMs>();
+		auto t1 = v1.value<quickevent::core::og::TimeMs>();
+		auto t2 = v2.value<quickevent::core::og::TimeMs>();
 		int msec1 = -1, msec2 = -1;
 		qf::core::sql::Query q(sqlConnection());
 		QString qs = "SELECT id, startTimeMs FROM runs WHERE id IN (" QF_IARG(id1) ", " QF_IARG(id2) ")";

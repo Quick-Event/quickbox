@@ -190,7 +190,9 @@ Schema {
 					//notNull: true
 				},
 				Field { name: 'relayId'; type: Int {} },
-
+				Field { name: 'corridorTime'; type: DateTime {}
+					comment: 'DateTime when competitor entered start corridor. (Experimental)'
+				},
 				Field { name: 'checkTimeMs'; type: Int {}
 					comment: 'in miliseconds'
 				},
@@ -204,7 +206,7 @@ Schema {
 					comment: 'in miliseconds'
 				},
 				Field { name: 'timeMs'; type: Int {}
-					comment: 'in miliseconds since event run'
+					comment: 'in miliseconds'
 				},
 
 				Field { name: 'isRunning'; type: Boolean { }
@@ -235,8 +237,7 @@ Schema {
 					Cancelled
 				  */
 				Field { name: 'disqualified'; type: Boolean { } // Disqualified
-					defaultValue: false;
-					notNull: true
+					generatedAs: 'disqualifiedByOrganizer OR  misPunch OR  notStart OR  notFinish OR  badCheck OR  overTime OR notCompeting'
 				},
 				Field { name: 'disqualifiedByOrganizer'; type: Boolean { } // Disqualified by Org
 					defaultValue: false;
@@ -498,7 +499,7 @@ Schema {
 		}
 	]
 	Component.onCompleted: {
-		Log.info("DbSchema created");
+		//Log.info("DbSchema created");
 	}
 
 }
