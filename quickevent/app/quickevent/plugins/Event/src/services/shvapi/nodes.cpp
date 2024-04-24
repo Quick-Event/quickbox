@@ -104,10 +104,10 @@ RpcValue EventNode::callMethod(const StringViewList &shv_path, const std::string
 //=========================================================
 // StartListNode
 //=========================================================
-static auto METH_TABLE = "table";
-static auto METH_RECORD = "record";
-static auto METH_SET_RECORD = "setRecord";
-static auto SIG_REC_CHNG = "recchng";
+static const auto METH_TABLE = "table";
+static const auto METH_RECORD = "record";
+static const auto METH_SET_RECORD = "setRecord";
+static const auto SIG_REC_CHNG = "recchng";
 
 void SqlViewNode::setQueryBuilder(const qf::core::sql::QueryBuilder &qb)
 {
@@ -120,9 +120,7 @@ const std::vector<MetaMethod> &SqlViewNode::metaMethods()
 		methods::DIR,
 		methods::LS,
 		{METH_TABLE, MetaMethod::Flag::None, {}, "RpcValue", AccessLevel::Read},
-		{METH_RECORD, MetaMethod::Flag::None, "RpcValue", "RpcValue", AccessLevel::Read,
-			{{SIG_REC_CHNG, nullptr}}
-		},
+		{METH_RECORD, MetaMethod::Flag::None, "RpcValue", "RpcValue", AccessLevel::Read, {{SIG_REC_CHNG}} },
 		{METH_SET_RECORD, MetaMethod::Flag::None, "RpcValue", {}, AccessLevel::Write},
 	};
 	return meta_methods;
