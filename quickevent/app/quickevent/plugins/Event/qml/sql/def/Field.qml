@@ -29,7 +29,7 @@ QtObject {
 		if (generatedAs) {
 			def += ' GENERATED ALWAYS AS (';
 			def += generatedAs;
-			def += ') VIRTUAL';
+			def += ') STORED';
 		}
 		return def;
 	}
