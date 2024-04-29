@@ -41,11 +41,26 @@ public:
 		: Super(name, parent)
 	{}
 	void setQueryBuilder(const qf::core::sql::QueryBuilder &qb);
+protected:
+	virtual qf::core::sql::QueryBuilder effectiveQueryBuilder();
 private:
 	const std::vector<shv::chainpack::MetaMethod> &metaMethods() override;
 	shv::chainpack::RpcValue callMethod(const StringViewList &shv_path, const std::string &method, const shv::chainpack::RpcValue &params, const shv::chainpack::RpcValue &user_id) override;
 private:
 	qf::core::sql::QueryBuilder m_queryBuilder;
+};
+
+class CurrentStageSqlViewNode : public SqlViewNode
+{
+	Q_OBJECT
+
+	using Super = SqlViewNode;
+public:
+	explicit CurrentStageSqlViewNode(const std::string &name, shv::iotqt::node::ShvNode *parent)
+		: Super(name, parent)
+	{}
+protected:
+	qf::core::sql::QueryBuilder effectiveQueryBuilder() override;
 };
 
 }

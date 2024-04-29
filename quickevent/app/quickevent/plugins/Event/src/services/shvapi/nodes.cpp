@@ -1,6 +1,6 @@
 #include "nodes.h"
-#include "rpcsqlresult.h"
 
+#include "sqlnode.h"
 #include "../../eventplugin.h"
 
 #include <qf/qmlwidgets/framework/mainwindow.h>
@@ -10,6 +10,7 @@
 
 #include <shv/chainpack/rpc.h>
 #include <shv/coreqt/rpc.h>
+#include <shv/coreqt/data/rpcsqlresult.h>
 
 #include <QSqlField>
 
@@ -53,8 +54,10 @@ RpcValue DotAppNode::callMethod(const StringViewList &shv_path, const std::strin
 //=========================================================
 // EventNode
 //=========================================================
-static auto METH_CURRENT_STAGE = "currentStage";
-static auto SIG_RUN_CHANGED = "runChanged";
+static const auto METH_CURRENT_STAGE = "currentStage";
+static const auto METH_EVENT_CONFIG = "eventConfig";
+static const auto METH_RUN_CHANGED = "runChanged";
+static const auto SIG_RUN_CHANGED = "runChanged";
 
 EventNode::EventNode(shv::iotqt::node::ShvNode *parent)
 : Super("event", parent)
@@ -82,7 +85,8 @@ const std::vector<MetaMethod> &EventNode::metaMethods()
 		methods::LS,
 		{METH_NAME, MetaMethod::Flag::IsGetter, {}, "RpcValue", AccessLevel::Read},
 		{METH_CURRENT_STAGE, MetaMethod::Flag::IsGetter, {}, "RpcValue", AccessLevel::Read},
-		//{SIG_RUN_CHANGED, MetaMethod::Signature::VoidParam, MetaMethod::Flag::IsSignal, Rpc::ROLE_READ},
+		{METH_EVENT_CONFIG, MetaMethod::Flag::IsGetter, {}, "RpcValue", AccessLevel::Read},
+		{METH_RUN_CHANGED, MetaMethod::Flag::None, {}, {}, AccessLevel::Read, {{SIG_RUN_CHANGED, "Map"}}},
 	};
 	return meta_methods;
 }
@@ -97,6 +101,10 @@ RpcValue EventNode::callMethod(const StringViewList &shv_path, const std::string
 		if(method == METH_CURRENT_STAGE) {
 			return getPlugin<EventPlugin>()->currentStageId();
 		}
+		if(method == METH_EVENT_CONFIG) {
+			auto cfg = getPlugin<EventPlugin>()->eventConfig();
+			return shv::coreqt::rpc::qVariantToRpcValue(cfg->values());
+		}
 	}
 	return Super::callMethod(shv_path, method, params, user_id);
 }
@@ -106,12 +114,17 @@ RpcValue EventNode::callMethod(const StringViewList &shv_path, const std::string
 //=========================================================
 static const auto METH_TABLE = "table";
 static const auto METH_RECORD = "record";
-static const auto METH_SET_RECORD = "setRecord";
-static const auto SIG_REC_CHNG = "recchng";
+//static const auto METH_SET_RECORD = "setRecord";
+//static const auto SIG_REC_CHNG = "recchng";
 
 void SqlViewNode::setQueryBuilder(const qf::core::sql::QueryBuilder &qb)
 {
 	m_queryBuilder = qb;
+}
+
+qf::core::sql::QueryBuilder SqlViewNode::effectiveQueryBuilder()
+{
+	return m_queryBuilder;
 }
 
 const std::vector<MetaMethod> &SqlViewNode::metaMethods()
@@ -120,8 +133,8 @@ const std::vector<MetaMethod> &SqlViewNode::metaMethods()
 		methods::DIR,
 		methods::LS,
 		{METH_TABLE, MetaMethod::Flag::None, {}, "RpcValue", AccessLevel::Read},
-		{METH_RECORD, MetaMethod::Flag::None, "RpcValue", "RpcValue", AccessLevel::Read, {{SIG_REC_CHNG}} },
-		{METH_SET_RECORD, MetaMethod::Flag::None, "RpcValue", {}, AccessLevel::Write},
+		{METH_RECORD, MetaMethod::Flag::None, "RpcValue", "RpcValue", AccessLevel::Read },
+		//{METH_SET_RECORD, MetaMethod::Flag::None, "RpcValue", {}, AccessLevel::Write},
 	};
 	return meta_methods;
 }
@@ -134,33 +147,42 @@ RpcValue SqlViewNode::callMethod(const StringViewList &shv_path, const std::stri
 		if(method == METH_TABLE) {
 			const auto &m = params.asMap();
 			auto where = m.value("where").to<QString>();
-			auto qb = m_queryBuilder;
+			auto qb = effectiveQueryBuilder();
 			if (!where.isEmpty()) {
 				qb.where(where);
 			}
 			qf::core::sql::Query q;
 			QString qs = qb.toString();
 			q.exec(qs, qf::core::Exception::Throw);
-			auto res = RpcSqlResult::fromQuery(q);
+			auto res = SqlNode::rpcSqlResultFromQuery(q);
 			return res.toRpcValue();
 		}
 		if(method == METH_RECORD) {
 			auto id = params.toInt();
-			auto qb = m_queryBuilder;
+			auto qb = effectiveQueryBuilder();
 			qb.where("runs.id = " + QString::number(id));
 			qf::core::sql::Query q;
 			QString qs = qb.toString();
 			qfDebug() << qs;
 			q.exec(qs, qf::core::Exception::Throw);
 			if (q.next()) {
-				return shvapi::recordToMap(q.record());
+				return SqlNode::recordToMap(q.record());
 			}
-			else {
-				return RpcValue::Map{};
-			}
+			return RpcValue::Map{};
 		}
 	}
 	return Super::callMethod(shv_path, method, params, user_id);
+}
+
+//=========================================================
+// CurrentStageSqlViewNode
+//=========================================================
+qf::core::sql::QueryBuilder CurrentStageSqlViewNode::effectiveQueryBuilder()
+{
+	auto qb = Super::effectiveQueryBuilder();
+	auto *event_plugin = getPlugin<EventPlugin>();
+	qb.where(QStringLiteral("runs.stageId=%1").arg(event_plugin->currentStageId()));
+	return qb;
 }
 
 }

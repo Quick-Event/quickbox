@@ -41,7 +41,7 @@ bool CompetitorDocument::saveData()
 		q.exec(QStringLiteral("SELECT id FROM runs WHERE competitorId = %1").arg(competitor_id));
 		while(q.next()) {
 			int run_id = q.value(0).toInt();
-			old_records[run_id] = runs_plugin->runRecord(run_id);
+			old_records[run_id] = runs_plugin->runsRecord(run_id);
 		}
 	}
 	bool siid_dirty = isDirty("competitors.siId");
@@ -69,7 +69,7 @@ bool CompetitorDocument::saveData()
 			if(m_isEmitDbEventsOnSave) {
 				getPlugin<EventPlugin>()->emitDbEvent(Event::EventPlugin::DBEVENT_COMPETITOR_COUNTS_CHANGED);
 				for (auto run_id : m_lastInsertedRunsIds) {
-					auto rec = runs_plugin->runRecord(run_id);
+					auto rec = runs_plugin->runsRecord(run_id);
 					getPlugin<EventPlugin>()->emitDbEvent(Event::EventPlugin::DBEVENT_RUN_CHANGED, QVariantList {run_id, rec});
 				}
 			}
@@ -90,7 +90,7 @@ bool CompetitorDocument::saveData()
 					getPlugin<EventPlugin>()->emitDbEvent(Event::EventPlugin::DBEVENT_COMPETITOR_COUNTS_CHANGED);
 				}
 				for(const auto &[run_id, old_record] : old_records.asKeyValueRange()) {
-					auto record = runs_plugin->runRecord(run_id);
+					auto record = runs_plugin->runsRecord(run_id);
 					auto diff = qf::core::sql::recordDiff(old_record, record);
 					if (!diff.isEmpty()) {
 						getPlugin<EventPlugin>()->emitDbEvent(Event::EventPlugin::DBEVENT_RUN_CHANGED, QVariantList {run_id, diff});

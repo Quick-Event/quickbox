@@ -1170,7 +1170,7 @@ qf::core::sql::QueryBuilder RunsPlugin::runsQuery(int stage_id, int class_id, bo
 	return qb;
 }
 
-QVariantMap RunsPlugin::runRecord(int run_id)
+QVariantMap RunsPlugin::runsRecord(int run_id)
 {
 	auto qb = runsQuery(0);
 	qb.where("runs.id = " + QString::number(run_id));
@@ -1180,9 +1180,37 @@ QVariantMap RunsPlugin::runRecord(int run_id)
 	if (q.next()) {
 		return qf::core::sql::recordToMap(q.record());
 	}
-	else {
-		return {};
+	return {};
+}
+
+qf::core::sql::QueryBuilder RunsPlugin::startListQuery()
+{
+	qfs::QueryBuilder qb;
+	qb.select2("competitors", "lastName, firstName, registration, iofId, startNumber, country, club")
+			.select("COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName")
+			.select2("runs", "id, stageId, siId, startTimeMs")
+			.select2("classes","name")
+			.select2("clubs","name, abbr, importId")
+			.from("competitors")
+			.join("competitors.classId", "classes.id")
+			.join("LEFT JOIN clubs ON substr(competitors.registration, 1, 3) = clubs.abbr")
+			.joinRestricted("competitors.id", "runs.competitorId", "runs.isRunning", "INNER JOIN")
+			//.where("competitors.classId={{class_id}}")
+			.orderBy("runs.startTimeMs, classes.name");
+	return qb;
+}
+
+QVariantMap RunsPlugin::startListRecord(int run_id)
+{
+	auto qb = startListQuery();
+	qb.where("runs.id = " + QString::number(run_id));
+	qf::core::sql::Query q;
+	QString qs = qb.toString();
+	q.exec(qs, qf::core::Exception::Throw);
+	if (q.next()) {
+		return qf::core::sql::recordToMap(q.record());
 	}
+	return {};
 }
 
 qf::core::utils::TreeTable RunsPlugin::startListClassesTable(const QString &where_expr, const bool insert_vacants, const quickevent::gui::ReportOptionsDialog::StartTimeFormat start_time_format)

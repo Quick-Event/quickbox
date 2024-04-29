@@ -52,16 +52,12 @@ Client::Client(QObject *parent)
 	new DotAppNode(m_rootNode);
 	connect(event_plugin, &EventPlugin::eventOpenChanged, this, [this](bool is_open) {
 		if (is_open) {
-			auto *event_plugin = getPlugin<EventPlugin>();
-			auto *event = new EventNode(m_rootNode);
-			auto *stage = new shv::iotqt::node::ShvNode("stage", event);
-			for (auto i = 0; i < event_plugin->stageCount(); i++) {
-				auto *nd = new shv::iotqt::node::ShvNode(std::to_string(i + 1), stage);
-				auto *runs = new SqlViewNode("runs", nd);
-				auto qb = getPlugin<RunsPlugin>()->runsQuery(i + 1);
-				runs->setQueryBuilder(qb);
-			}
 			new SqlNode(m_rootNode);
+			auto *event = new EventNode(m_rootNode);
+			auto *stage = new shv::iotqt::node::ShvNode("currentStage", event);
+			auto *runs = new CurrentStageSqlViewNode("startList", stage);
+			auto qb = getPlugin<RunsPlugin>()->startListQuery();
+			runs->setQueryBuilder(qb);
 		}
 		else {
 			qDeleteAll(m_rootNode->findChildren<EventNode*>());

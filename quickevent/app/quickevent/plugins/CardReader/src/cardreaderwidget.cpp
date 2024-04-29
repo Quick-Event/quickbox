@@ -716,7 +716,7 @@ void CardReaderWidget::updateTableView(int card_id)
 void CardReaderWidget::showSelectedReceipt()
 {
 	qfLogFuncFrame();
-	int card_id = ui->tblCards->selectedRow().value("cards.id").toInt();
+	int card_id = ui->tblCards->tableRow().value("cards.id").toInt();
 	getPlugin<ReceiptsPlugin>()->previewReceipt(card_id);
 }
 
