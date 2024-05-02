@@ -660,9 +660,10 @@ QString RelaysPlugin::resultsIofXml30()
 					continue;
 				QVariantList member_result{"TeamMemberResult"};
 				QVariantList person{"Person"};
-				append_list(person, QVariantList{"Id", QVariantMap{{"type", "QuickEvent"}}, tt_leg_row.value(QStringLiteral("runId"))});
-				if (!is_iof_race)
+				if (!is_iof_race) {
 					append_list(person, QVariantList{"Id", QVariantMap{{"type", "CZE"}}, tt_leg_row.value(QStringLiteral("registration"))});
+				}
+				append_list(person, QVariantList{"Id", QVariantMap{{"type", "QuickEvent"}}, tt_leg_row.value(QStringLiteral("runId"))});
 				auto iof_id = tt_leg_row.value(QStringLiteral("iofId"));
 				if (!iof_id.isNull())
 					append_list(person, QVariantList{"Id", QVariantMap{{"type", "IOF"}}, iof_id});
@@ -893,8 +894,8 @@ QString RelaysPlugin::startListIofXml30()
 				const qf::core::utils::TreeTableRow tt_leg_row = tt_legs.row(k);
 				QVariantList member_start{"TeamMemberStart"};
 				QVariantList person{"Person"};
-				append_list(person, QVariantList{"Id", QVariantMap{{"type", "QuickEvent"}}, tt_leg_row.value(QStringLiteral("runs.id"))});
 				append_list(person, QVariantList{"Id", QVariantMap{{"type", "CZE"}}, tt_leg_row.value(QStringLiteral("registration"))});
+				append_list(person, QVariantList{"Id", QVariantMap{{"type", "QuickEvent"}}, tt_leg_row.value(QStringLiteral("runs.id"))});
 				auto iof_id = tt_leg_row.value(QStringLiteral("iofId"));
 				if (!iof_id.isNull())
 					append_list(person, QVariantList{"Id", QVariantMap{{"type", "IOF"}}, iof_id});

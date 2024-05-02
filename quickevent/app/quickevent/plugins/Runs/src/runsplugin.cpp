@@ -879,8 +879,7 @@ QString RunsPlugin::resultsIofXml30Stage(int stage_id)
 			QVariantList person_result{"PersonResult"};
 			QVariantList person{"Person"};
 			if (!is_iof_race)
-				person.insert(person.count(),
-					QVariantList{"Id", QVariantMap{{"type", "CZE"}}, tt2_row.value(QStringLiteral("competitors.registration"))});
+				person.insert(person.count(), QVariantList{"Id", QVariantMap{{"type", "CZE"}}, tt2_row.value(QStringLiteral("competitors.registration"))});
 			auto iof_id = tt2_row.value(QStringLiteral("competitors.iofId"));
 			if (!iof_id.isNull())
 				person.insert(person.count(), QVariantList{"Id", QVariantMap{{"type", "IOF"}}, iof_id});
