@@ -373,17 +373,17 @@ void CardReaderPlugin::updateCheckedCardValuesSql(const quickevent::core::si::Ch
 			}
 		}
 	}
-	bool should_be_disq = false;
-	{
-		q.execThrow("SELECT * FROM runs WHERE id=" + QString::number(run_id));
-		if(q.next()) {
-			if(q.value("disqualifiedByOrganizer").toBool()) should_be_disq = true;
-			if(q.value("notStart").toBool()) should_be_disq = true;
-			if(q.value("notFinish").toBool()) should_be_disq = true;
-		}
-	}
+	//bool should_be_disq = false;
+	//{
+	//	q.execThrow("SELECT * FROM runs WHERE id=" + QString::number(run_id));
+	//	if(q.next()) {
+	//		if(q.value("disqualifiedByOrganizer").toBool()) should_be_disq = true;
+	//		if(q.value("notStart").toBool()) should_be_disq = true;
+	//		if(q.value("notFinish").toBool()) should_be_disq = true;
+	//	}
+	//}
 	QString qs = "UPDATE runs SET checkTimeMs=:checkTimeMs, timeMs=:timeMs, finishTimeMs=:finishTimeMs, penaltyTimeMs=NULL,"
-				 " misPunch=:misPunch, badCheck=:badCheck, disqualified=:disqualified"
+				 " misPunch=:misPunch, badCheck=:badCheck"
 				 " WHERE id=" + QString::number(run_id);
 	q.prepare(qs, qf::core::Exception::Throw);
 	q.bindValue(QStringLiteral(":checkTimeMs"), checked_card.checkTimeMs());
@@ -391,7 +391,7 @@ void CardReaderPlugin::updateCheckedCardValuesSql(const quickevent::core::si::Ch
 	q.bindValue(QStringLiteral(":finishTimeMs"), checked_card.finishTimeMs());
 	q.bindValue(QStringLiteral(":misPunch"), checked_card.isMisPunch());
 	q.bindValue(QStringLiteral(":badCheck"), checked_card.isBadCheck());
-	q.bindValue(QStringLiteral(":disqualified"), should_be_disq || !checked_card.isOk());
+	//q.bindValue(QStringLiteral(":disqualified"), should_be_disq || !checked_card.isOk());
 	q.exec(qf::core::Exception::Throw);
 	if(q.numRowsAffected() != 1) {
 		qfError() << "Update runs error, query:" << qs;
