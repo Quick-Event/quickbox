@@ -430,7 +430,10 @@ QVariant TableRow::value(const QString &field_name) const
 {
 	QVariant ret;
 	int ix = fields().fieldIndex(field_name);
-	QF_ASSERT(ix >= 0, QString("Field name '%1' not found.").arg(field_name), return ret);
+	if (ix < 0) {
+		qfError() << QString("Field name '%1' not found.").arg(field_name);
+		return ret;
+	}
 	ret = value(ix);
 	return ret;
 }

@@ -191,7 +191,7 @@ void SaveOptionsWidget::save_helper(const QVariantMap& all_settings)
 	QString persistent_settings_path = persistentOptionsPath();
 	if(!persistent_settings_path.isEmpty()) {
 		QJsonDocument json_doc = QJsonDocument::fromVariant(all_settings);
-		QString json_str = QString::fromUtf8(json_doc.toJson());
+		QString json_str = QString::fromUtf8(json_doc.toJson(QJsonDocument::Compact));
 		savePersistentOptionsMap(persistent_settings_path, json_str);
 	}
 }
