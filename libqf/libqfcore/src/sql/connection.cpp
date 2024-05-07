@@ -335,21 +335,70 @@ bool Connection::tableExists(const QString &_table_name)
 	}
 	return ret;
 }
-
+namespace {
+int sqliteGetColumnType(const QString &tpName)
+{
+	const QString typeName = tpName.toLower();
+	if (typeName == "integer" || typeName == "int")
+		return QMetaType::Int;
+	if (typeName == "double"
+			|| typeName == "float"
+			|| typeName == "real"
+			|| typeName.startsWith( "numeric"))
+		return QMetaType::Double;
+	if (typeName == "blob")
+		return QMetaType::QByteArray;
+	if (typeName == "boolean" || typeName == "bool")
+		return QMetaType::Bool;
+	return QMetaType::QString;
+}
+}
 QSqlRecord Connection::record(const QString & tablename) const
 {
 	qfLogFuncFrame() << "tblname:" << tablename;
 	QString pk_key = connectionName() + '.' + tablename;
 	QSqlRecord ret;
 	if(!s_tableRecordCache.contains(pk_key)) {
-		QString s = fullTableNameToQtDriverTableName(tablename);
+		QString table_name = fullTableNameToQtDriverTableName(tablename);
 		if(driverName().endsWith(QLatin1String("SQLITE"))) {
 			/// SQLITE neumi schema.tablename v prikazu PRAGMA table_info(...)
-			int ix = s.lastIndexOf('.');
+			int ix = table_name.lastIndexOf('.');
 			if(ix >= 0)
-				s = s.mid(ix + 1);
+				table_name = table_name.mid(ix + 1);
+			// ret = QSqlDatabase::record(table_name); // see QTBUG-125138
+			{
+				// workaround of QTBUG-125138
+				QString qs = "PRAGMA main.table_xinfo ('%1')";
+				qs = qs.arg(table_name);
+				QSqlQuery q(*this);
+				q.setForwardOnly(true);
+				q.exec(qs);
+				QSqlRecord rec;
+				while(q.next()) {
+					bool is_pk = q.value(5).toInt();
+					QString type_name = q.value( 2).toString().toLower();
+					QString def_val = q.value( 4).toString();
+					if (!def_val.isEmpty() && def_val.at( 0) == u'\'') {
+						const int end = def_val.lastIndexOf( u'\'');
+						if (end > 0)
+							def_val = def_val.mid(1,  end - 1);
+					}
+					QSqlField fld(q.value(1).toString(), QMetaType(sqliteGetColumnType( type_name)), table_name);
+					if (is_pk && (type_name == "integer")) {
+						// INTEGER PRIMARY KEY fields are auto-generated in sqlite
+						// INT PRIMARY KEY is not the same as INTEGER PRIMARY KEY!
+						fld.setAutoValue(true);
+					}
+					fld.setRequired(q.value( 3).toInt() != 0);
+					fld.setDefaultValue(def_val);
+					rec.append(fld);
+				}
+				ret = rec;
+			}
 		}
-		ret = QSqlDatabase::record(s);
+		else {
+			ret = QSqlDatabase::record(table_name);
+		}
 		s_tableRecordCache[pk_key] = ret;
 	}
 	else {
@@ -385,7 +434,6 @@ Connection::IndexList Connection::indexes(const QString& tbl_name) const
 	QString db, tbl;
 	qf::core::Utils::parseFieldName(tbl_name, &tbl, &db);
 	IndexList ret;
-	QString s;
 	if(driverName().endsWith(QLatin1String("PSQL"))) {
 		QString s = "SELECT indexname FROM pg_indexes WHERE tablename=" QF_SARG(tbl);
 		if(!db.isEmpty())
