@@ -26,6 +26,7 @@ class EventNode : public shvapi::ShvNode
 	using Super = shvapi::ShvNode;
 public:
 	explicit EventNode(shv::iotqt::node::ShvNode *parent);
+	void sendRunChangedSignal(const QVariant &qparam);
 private:
 	const std::vector<shv::chainpack::MetaMethod> &metaMethods() override;
 	shv::chainpack::RpcValue callMethod(const StringViewList &shv_path, const std::string &method, const shv::chainpack::RpcValue &params, const shv::chainpack::RpcValue &user_id) override;
@@ -50,15 +51,39 @@ private:
 	qf::core::sql::QueryBuilder m_queryBuilder;
 };
 
-class CurrentStageSqlViewNode : public SqlViewNode
+class CurrentStageConfigNode : public shvapi::ShvNode
+{
+	Q_OBJECT
+
+	using Super = shvapi::ShvNode;
+public:
+	explicit CurrentStageConfigNode(shv::iotqt::node::ShvNode *parent)
+		: Super("config", parent)
+	{}
+private:
+	const std::vector<shv::chainpack::MetaMethod> &metaMethods() override;
+	shv::chainpack::RpcValue callMethod(const StringViewList &shv_path, const std::string &method, const shv::chainpack::RpcValue &params, const shv::chainpack::RpcValue &user_id) override;
+};
+
+class CurrentStageStartListNode : public SqlViewNode
 {
 	Q_OBJECT
 
 	using Super = SqlViewNode;
 public:
-	explicit CurrentStageSqlViewNode(const std::string &name, shv::iotqt::node::ShvNode *parent)
-		: Super(name, parent)
-	{}
+	explicit CurrentStageStartListNode(shv::iotqt::node::ShvNode *parent);
+protected:
+	qf::core::sql::QueryBuilder effectiveQueryBuilder() override;
+};
+
+class CurrentStageClassesNode : public SqlViewNode
+{
+	Q_OBJECT
+
+	using Super = SqlViewNode;
+public:
+	explicit CurrentStageClassesNode(shv::iotqt::node::ShvNode *parent);
+
 protected:
 	qf::core::sql::QueryBuilder effectiveQueryBuilder() override;
 };

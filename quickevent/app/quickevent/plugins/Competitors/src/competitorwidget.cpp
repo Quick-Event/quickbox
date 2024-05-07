@@ -105,8 +105,7 @@ private:
 				sl << tr("RET", "Card returned");
 			if(sl.isEmpty())
 				return QStringLiteral("");
-			else
-				return sl.join(',');
+			return sl.join(',');
 		}
 		return Super::value(row_ix, column_ix);
 	}

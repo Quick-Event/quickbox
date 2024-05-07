@@ -2,6 +2,7 @@
 
 #include "sqlnode.h"
 #include "../../eventplugin.h"
+#include "../../../../Runs/src/runsplugin.h"
 
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/core/exception.h>
@@ -14,9 +15,11 @@
 
 #include <QSqlField>
 
+using namespace qf::core::sql;
 using namespace shv::chainpack;
-
 using qf::qmlwidgets::framework::getPlugin;
+using Event::EventPlugin;
+using Runs::RunsPlugin;
 
 namespace Event::services::shvapi {
 
@@ -56,26 +59,25 @@ RpcValue DotAppNode::callMethod(const StringViewList &shv_path, const std::strin
 //=========================================================
 static const auto METH_CURRENT_STAGE = "currentStage";
 static const auto METH_EVENT_CONFIG = "eventConfig";
-static const auto METH_RUN_CHANGED = "runChanged";
-static const auto SIG_RUN_CHANGED = "runChanged";
+static const auto METH_RUN_CHANGED = "runchng";
+static const auto SIG_RUN_CHANGED = "runchng";
 
 EventNode::EventNode(shv::iotqt::node::ShvNode *parent)
 : Super("event", parent)
 {
-	auto *event_plugin = getPlugin<EventPlugin>();
-	connect(event_plugin, &EventPlugin::dbEvent, this, [this](const QString &domain, const QVariant &payload) {
-		if (domain == Event::EventPlugin::DBEVENT_RUN_CHANGED) {
-			auto param = shv::coreqt::rpc::qVariantToRpcValue(payload);
-			Q_ASSERT(param.isList());
-			Q_ASSERT(param.asList().value(0).toInt() > 0);
-			RpcSignal sig;
-			sig.setShvPath(shvPath());
-			sig.setMethod(SIG_RUN_CHANGED);
-			sig.setParams(param);
-			qfDebug() << "emit:" << sig.toPrettyString();
-			emitSendRpcMessage(sig);
-		}
-	});
+}
+
+void EventNode::sendRunChangedSignal(const QVariant &qparam)
+{
+	auto param = shv::coreqt::rpc::qVariantToRpcValue(qparam);
+	Q_ASSERT(param.isList());
+	Q_ASSERT(param.asList().value(0).toInt() > 0); // run.id
+	RpcSignal sig;
+	sig.setShvPath(shvPath());
+	sig.setMethod(SIG_RUN_CHANGED);
+	sig.setParams(param);
+	qfDebug() << "emit:" << sig.toPrettyString();
+	emitSendRpcMessage(sig);
 }
 
 const std::vector<MetaMethod> &EventNode::metaMethods()
@@ -175,13 +177,70 @@ RpcValue SqlViewNode::callMethod(const StringViewList &shv_path, const std::stri
 }
 
 //=========================================================
-// CurrentStageSqlViewNode
+// CurrentStageConfigNode
 //=========================================================
-qf::core::sql::QueryBuilder CurrentStageSqlViewNode::effectiveQueryBuilder()
+const std::vector<MetaMethod> &CurrentStageConfigNode::metaMethods()
+{
+	static std::vector<MetaMethod> meta_methods {
+		methods::DIR,
+		methods::LS,
+		{Rpc::METH_GET, MetaMethod::Flag::IsGetter, {}, "Map", AccessLevel::Read},
+	};
+	return meta_methods;
+}
+
+RpcValue CurrentStageConfigNode::callMethod(const StringViewList &shv_path, const std::string &method, const shv::chainpack::RpcValue &params, const shv::chainpack::RpcValue &user_id)
+{
+	qfLogFuncFrame() << shv_path.join('/') << method;
+	//eyascore::utils::UserId user_id = eyascore::utils::UserId::makeUserName(QString::fromStdString(rq.userId().toMap().value("userName").toString()));
+	if(shv_path.empty()) {
+		if(method == Rpc::METH_GET) {
+			auto *event_plugin = getPlugin<EventPlugin>();
+			QVariantMap data = event_plugin->stageData(event_plugin->currentStageId());
+			data.remove("drawingConfig"); // remove internal key
+			return shv::coreqt::rpc::qVariantToRpcValue(data);
+		}
+	}
+	return Super::callMethod(shv_path, method, params, user_id);
+}
+
+//=========================================================
+// CurrentStageStartListNode
+//=========================================================
+CurrentStageStartListNode::CurrentStageStartListNode(shv::iotqt::node::ShvNode *parent)
+	: Super("startList", parent)
+{
+	auto qb = getPlugin<RunsPlugin>()->startListQuery();
+	setQueryBuilder(qb);
+}
+
+qf::core::sql::QueryBuilder CurrentStageStartListNode::effectiveQueryBuilder()
 {
 	auto qb = Super::effectiveQueryBuilder();
 	auto *event_plugin = getPlugin<EventPlugin>();
 	qb.where(QStringLiteral("runs.stageId=%1").arg(event_plugin->currentStageId()));
+	return qb;
+}
+
+//=========================================================
+// CurrentStageClassesNode
+//=========================================================
+CurrentStageClassesNode::CurrentStageClassesNode(shv::iotqt::node::ShvNode *parent)
+	: Super("classes", parent)
+{
+}
+
+QueryBuilder CurrentStageClassesNode::effectiveQueryBuilder()
+{
+	auto *event_plugin = getPlugin<EventPlugin>();
+	QueryBuilder qb;
+	qb.select2("classes", "*")
+			.select2("classdefs", "*")
+			.select2("courses", "id, name, length, climb")
+			.from("classes")
+			.joinRestricted("classes.id", "classdefs.classId", "classdefs.stageId=" QF_IARG(event_plugin->currentStageId()))
+			.join("classdefs.courseId", "courses.id")
+			.orderBy("classes.name");//.limit(10);
 	return qb;
 }
 

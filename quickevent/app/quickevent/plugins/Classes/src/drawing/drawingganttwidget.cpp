@@ -79,7 +79,7 @@ void DrawingGanttWidget::on_actFind_triggered()
 {
 	QString txt = m_edFind->text().trimmed().toUpper();
 	for(QGraphicsItem *it : m_ganttScene->items()) {
-		if(ClassItem *cit = dynamic_cast<ClassItem *>(it)) {
+		if(auto *cit = dynamic_cast<ClassItem *>(it)) {
 			if(cit->data().className().toUpper().contains(txt)) {
 				m_ganttScene->clearSelection();
 				cit->setSelected(true);

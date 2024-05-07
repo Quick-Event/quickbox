@@ -4,14 +4,15 @@
 #include "sqlnode.h"
 
 #include "../../eventplugin.h"
+#include "../../../../Runs/src/runsplugin.h"
 
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/core/log.h>
-#include <plugins/Runs/src/runsplugin.h>
 #include <qf/core/sql/query.h>
 
 #include <shv/iotqt/rpc/deviceconnection.h>
 #include <shv/iotqt/node/shvnode.h>
+#include <shv/coreqt/rpc.h>
 
 #include <QCoreApplication>
 #include <QDir>
@@ -54,10 +55,10 @@ Client::Client(QObject *parent)
 		if (is_open) {
 			new SqlNode(m_rootNode);
 			auto *event = new EventNode(m_rootNode);
-			auto *stage = new shv::iotqt::node::ShvNode("currentStage", event);
-			auto *runs = new CurrentStageSqlViewNode("startList", stage);
-			auto qb = getPlugin<RunsPlugin>()->startListQuery();
-			runs->setQueryBuilder(qb);
+			auto *current_stage = new shv::iotqt::node::ShvNode("currentStage", event);
+			new CurrentStageConfigNode(current_stage);
+			new CurrentStageStartListNode(current_stage);
+			new CurrentStageClassesNode(current_stage);
 		}
 		else {
 			qDeleteAll(m_rootNode->findChildren<EventNode*>());
@@ -145,9 +146,14 @@ void Client::onDbEventNotify(const QString &domain, int connection_id, const QVa
 		//int competitor_id = getPlugin<RunsPlugin>()->competitorForRun(checked_card.runId());
 		//onCompetitorChanged(competitor_id);
 	}
-	if(domain == QLatin1String(Event::EventPlugin::DBEVENT_COMPETITOR_EDITED)) {
+	else if(domain == QLatin1String(Event::EventPlugin::DBEVENT_COMPETITOR_EDITED)) {
 		//int competitor_id = data.toInt();
 		//onCompetitorChanged(competitor_id);
+	}
+	else if (domain == Event::EventPlugin::DBEVENT_RUN_CHANGED) {
+		if (auto *event_node = m_rootNode->findChild<EventNode*>(); event_node) {
+			event_node->sendRunChangedSignal(data);
+		}
 	}
 }
 
