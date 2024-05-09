@@ -75,6 +75,7 @@ void EventNode::sendRunChangedSignal(const QVariant &qparam)
 	RpcSignal sig;
 	sig.setShvPath(shvPath());
 	sig.setMethod(SIG_RUN_CHANGED);
+	sig.setSource(SIG_RUN_CHANGED);
 	sig.setParams(param);
 	qfDebug() << "emit:" << sig.toPrettyString();
 	emitSendRpcMessage(sig);
