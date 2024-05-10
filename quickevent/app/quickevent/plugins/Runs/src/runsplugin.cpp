@@ -1,5 +1,6 @@
 #include "runsplugin.h"
 #include "nstagesreportoptionsdialog.h"
+#include "plugins/Runs/src/runstablemodel.h"
 #include "runswidget.h"
 #include "runstabledialogwidget.h"
 #include "eventstatisticswidget.h"
@@ -133,15 +134,12 @@ void RunsPlugin::onInstalled()
 		connect(m_eventStatisticsDockWidget, &qff::DockWidget::visibilityChanged, ew, &EventStatisticsWidget::onVisibleChanged);
 
 		auto *a = m_eventStatisticsDockWidget->toggleViewAction();
-		//a->setCheckable(true);
 		a->setShortcut(QKeySequence("ctrl+shift+E"));
 		fwk->menuBar()->actionForPath("view")->addActionInto(a);
 	}
 
 	services::ResultsExporter *results_exporter = new services::ResultsExporter(this);
 	Event::services::Service::addService(results_exporter);
-
-	//emit nativeInstalled();
 }
 
 int RunsPlugin::courseForRun(int run_id)
@@ -1180,6 +1178,24 @@ QVariantMap RunsPlugin::runsRecord(int run_id)
 		return qf::core::sql::recordToMap(q.record());
 	}
 	return {};
+}
+
+void RunsPlugin::setRunsRecord(int run_id, const QVariantMap &rec)
+{
+	if (auto *model = m_partWidget->findChild<RunsTableModel*>({}, Qt::FindChildrenRecursively); model) {
+		int row = 0;
+		for (; row < model->rowCount(); ++row) {
+			if (model->value(row, RunsTableModel::col_runs_id).toInt() == run_id) {
+				break;
+			}
+		}
+		if (row < model->rowCount()) {
+			for (const auto &[key, val] : rec.asKeyValueRange()) {
+				model->setValue(row, key, val);
+			}
+			model->postRow(row, !qf::core::Exception::Throw);
+		}
+	}
 }
 
 qf::core::sql::QueryBuilder RunsPlugin::startListQuery()

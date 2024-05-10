@@ -59,26 +59,10 @@ RpcValue DotAppNode::callMethod(const StringViewList &shv_path, const std::strin
 //=========================================================
 static const auto METH_CURRENT_STAGE = "currentStage";
 static const auto METH_EVENT_CONFIG = "eventConfig";
-static const auto METH_RUN_CHANGED = "runchng";
-static const auto SIG_RUN_CHANGED = "runchng";
 
 EventNode::EventNode(shv::iotqt::node::ShvNode *parent)
 : Super("event", parent)
 {
-}
-
-void EventNode::sendRunChangedSignal(const QVariant &qparam)
-{
-	auto param = shv::coreqt::rpc::qVariantToRpcValue(qparam);
-	Q_ASSERT(param.isList());
-	Q_ASSERT(param.asList().value(0).toInt() > 0); // run.id
-	RpcSignal sig;
-	sig.setShvPath(shvPath());
-	sig.setMethod(SIG_RUN_CHANGED);
-	sig.setSource(SIG_RUN_CHANGED);
-	sig.setParams(param);
-	qfDebug() << "emit:" << sig.toPrettyString();
-	emitSendRpcMessage(sig);
 }
 
 const std::vector<MetaMethod> &EventNode::metaMethods()
@@ -89,7 +73,6 @@ const std::vector<MetaMethod> &EventNode::metaMethods()
 		{METH_NAME, MetaMethod::Flag::IsGetter, {}, "RpcValue", AccessLevel::Read},
 		{METH_CURRENT_STAGE, MetaMethod::Flag::IsGetter, {}, "RpcValue", AccessLevel::Read},
 		{METH_EVENT_CONFIG, MetaMethod::Flag::IsGetter, {}, "RpcValue", AccessLevel::Read},
-		{METH_RUN_CHANGED, MetaMethod::Flag::None, {}, {}, AccessLevel::Read, {{SIG_RUN_CHANGED, "Map"}}},
 	};
 	return meta_methods;
 }
@@ -117,7 +100,6 @@ RpcValue EventNode::callMethod(const StringViewList &shv_path, const std::string
 //=========================================================
 static const auto METH_TABLE = "table";
 static const auto METH_RECORD = "record";
-//static const auto METH_SET_RECORD = "setRecord";
 //static const auto SIG_REC_CHNG = "recchng";
 
 void SqlViewNode::setQueryBuilder(const qf::core::sql::QueryBuilder &qb)
@@ -224,6 +206,71 @@ qf::core::sql::QueryBuilder CurrentStageStartListNode::effectiveQueryBuilder()
 }
 
 //=========================================================
+// CurrentStageRunsNode
+//=========================================================
+CurrentStageRunsNode::CurrentStageRunsNode(shv::iotqt::node::ShvNode *parent)
+	: Super("runs", parent)
+{
+}
+
+QueryBuilder CurrentStageRunsNode::effectiveQueryBuilder()
+{
+	auto *event_plugin = getPlugin<EventPlugin>();
+	auto qb = getPlugin<RunsPlugin>()->runsQuery(event_plugin->currentStageId());
+	return qb;
+}
+
+static const auto METH_SET_RECORD = "setRecord";
+//static const auto METH_RUN_CHANGED = "runchng";
+static const auto SIG_RUN_CHANGED = "runchng";
+
+const std::vector<MetaMethod> &CurrentStageRunsNode::metaMethods()
+{
+	static std::vector<MetaMethod> meta_methods {
+		methods::DIR,
+		methods::LS,
+		{METH_TABLE, MetaMethod::Flag::None, {}, "RpcValue", AccessLevel::Read},
+		{METH_RECORD, MetaMethod::Flag::None, "Int", "Map", AccessLevel::Read, {{SIG_RUN_CHANGED, "Map"}} },
+		{METH_SET_RECORD, MetaMethod::Flag::None, "[Int, Map]", {}, AccessLevel::Write},
+	};
+	return meta_methods;
+	static auto s_meta_methods = [this]() {
+		auto mm = Super::metaMethods();
+		mm.push_back({METH_SET_RECORD, MetaMethod::Flag::None, "[int, Map]", {}, AccessLevel::Write });
+		return mm;
+	}();
+	return s_meta_methods;
+}
+
+RpcValue CurrentStageRunsNode::callMethod(const StringViewList &shv_path, const std::string &method, const shv::chainpack::RpcValue &params, const shv::chainpack::RpcValue &user_id)
+{
+	qfLogFuncFrame() << shv_path.join('/') << method;
+	if(shv_path.empty()) {
+		if(method == METH_SET_RECORD) {
+			auto *plugin = getPlugin<RunsPlugin>();
+			const auto &lst = params.asList();
+			plugin->setRunsRecord(lst.value(0).toInt(), shv::coreqt::rpc::rpcValueToQVariant(lst.value(1)).toMap());
+			return nullptr;
+		}
+	}
+	return Super::callMethod(shv_path, method, params, user_id);
+}
+
+void CurrentStageRunsNode::sendRunChangedSignal(const QVariant &qparam)
+{
+	auto param = shv::coreqt::rpc::qVariantToRpcValue(qparam);
+	Q_ASSERT(param.isList());
+	Q_ASSERT(param.asList().value(0).toInt() > 0); // run.id
+	RpcSignal sig;
+	sig.setShvPath(shvPath());
+	sig.setMethod(SIG_RUN_CHANGED);
+	sig.setSource(METH_RECORD);
+	sig.setParams(param);
+	qfDebug() << "emit:" << sig.toPrettyString();
+	emitSendRpcMessage(sig);
+}
+
+//=========================================================
 // CurrentStageClassesNode
 //=========================================================
 CurrentStageClassesNode::CurrentStageClassesNode(shv::iotqt::node::ShvNode *parent)
@@ -244,5 +291,6 @@ QueryBuilder CurrentStageClassesNode::effectiveQueryBuilder()
 			.orderBy("classes.name");//.limit(10);
 	return qb;
 }
+
 
 }

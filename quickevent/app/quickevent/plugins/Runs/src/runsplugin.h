@@ -85,6 +85,7 @@ public:
 
 	qf::core::sql::QueryBuilder runsQuery(int stage_id, int class_id = 0, bool show_offrace = false);
 	QVariantMap runsRecord(int run_id);
+	void setRunsRecord(int run_id, const QVariantMap &rec);
 
 	qf::core::sql::QueryBuilder startListQuery();
 	QVariantMap startListRecord(int run_id);

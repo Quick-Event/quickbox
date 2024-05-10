@@ -347,16 +347,8 @@ void RunsWidget::settleDownInPartWidget(::PartWidget *part_widget)
 	}
 	{
 		m_cbxClasses = new qfw::ForeignKeyComboBox();
-#if QT_VERSION_MAJOR >= 6
 		m_cbxClasses->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLengthWithIcon);
-#else
-		m_cbxClasses->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLength);
-#endif
-#if QT_VERSION >= QT_VERSION_CHECK(5, 11, 0)
 		m_cbxClasses->setMinimumWidth(fontMetrics().horizontalAdvance('X') * 15);
-#else
-		m_cbxClasses->setMinimumWidth(fontMetrics().width('X') * 15);
-#endif
 		m_cbxClasses->setMaxVisibleItems(100);
 		m_cbxClasses->setReferencedTable("classes");
 		m_cbxClasses->setReferencedField("id");

@@ -26,7 +26,6 @@ class EventNode : public shvapi::ShvNode
 	using Super = shvapi::ShvNode;
 public:
 	explicit EventNode(shv::iotqt::node::ShvNode *parent);
-	void sendRunChangedSignal(const QVariant &qparam);
 private:
 	const std::vector<shv::chainpack::MetaMethod> &metaMethods() override;
 	shv::chainpack::RpcValue callMethod(const StringViewList &shv_path, const std::string &method, const shv::chainpack::RpcValue &params, const shv::chainpack::RpcValue &user_id) override;
@@ -44,7 +43,6 @@ public:
 	void setQueryBuilder(const qf::core::sql::QueryBuilder &qb);
 protected:
 	virtual qf::core::sql::QueryBuilder effectiveQueryBuilder();
-private:
 	const std::vector<shv::chainpack::MetaMethod> &metaMethods() override;
 	shv::chainpack::RpcValue callMethod(const StringViewList &shv_path, const std::string &method, const shv::chainpack::RpcValue &params, const shv::chainpack::RpcValue &user_id) override;
 private:
@@ -60,7 +58,7 @@ public:
 	explicit CurrentStageConfigNode(shv::iotqt::node::ShvNode *parent)
 		: Super("config", parent)
 	{}
-private:
+protected:
 	const std::vector<shv::chainpack::MetaMethod> &metaMethods() override;
 	shv::chainpack::RpcValue callMethod(const StringViewList &shv_path, const std::string &method, const shv::chainpack::RpcValue &params, const shv::chainpack::RpcValue &user_id) override;
 };
@@ -73,6 +71,20 @@ class CurrentStageStartListNode : public SqlViewNode
 public:
 	explicit CurrentStageStartListNode(shv::iotqt::node::ShvNode *parent);
 protected:
+	qf::core::sql::QueryBuilder effectiveQueryBuilder() override;
+};
+
+class CurrentStageRunsNode : public SqlViewNode
+{
+	Q_OBJECT
+
+	using Super = SqlViewNode;
+public:
+	explicit CurrentStageRunsNode(shv::iotqt::node::ShvNode *parent);
+	void sendRunChangedSignal(const QVariant &qparam);
+protected:
+	const std::vector<shv::chainpack::MetaMethod> &metaMethods() override;
+	shv::chainpack::RpcValue callMethod(const StringViewList &shv_path, const std::string &method, const shv::chainpack::RpcValue &params, const shv::chainpack::RpcValue &user_id) override;
 	qf::core::sql::QueryBuilder effectiveQueryBuilder() override;
 };
 

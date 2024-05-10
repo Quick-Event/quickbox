@@ -57,7 +57,8 @@ Client::Client(QObject *parent)
 			auto *event = new EventNode(m_rootNode);
 			auto *current_stage = new shv::iotqt::node::ShvNode("currentStage", event);
 			new CurrentStageConfigNode(current_stage);
-			new CurrentStageStartListNode(current_stage);
+			//new CurrentStageStartListNode(current_stage);
+			new CurrentStageRunsNode(current_stage);
 			new CurrentStageClassesNode(current_stage);
 		}
 		else {
@@ -151,8 +152,8 @@ void Client::onDbEventNotify(const QString &domain, int connection_id, const QVa
 		//onCompetitorChanged(competitor_id);
 	}
 	else if (domain == Event::EventPlugin::DBEVENT_RUN_CHANGED) {
-		if (auto *event_node = m_rootNode->findChild<EventNode*>(); event_node) {
-			event_node->sendRunChangedSignal(data);
+		if (auto *node = m_rootNode->findChild<CurrentStageRunsNode*>(); node) {
+			node->sendRunChangedSignal(data);
 		}
 	}
 }
