@@ -111,7 +111,7 @@ void RunsPlugin::onInstalled()
 {
 	qfLogFuncFrame();
 	qff::MainWindow *fwk = qff::MainWindow::frameWork();
-	qff::initPluginWidget<RunsWidget, PartWidget>(tr("&Runs"), featureId());
+	m_partWidget = qff::initPluginWidget<RunsWidget, PartWidget>(tr("&Runs"), featureId());
 
 	//connect(getPlugin<CompetitorsPlugin>(), &CompetitorsPlugin::competitorEdited, this, &RunsPlugin::clearRunnersTableCache);
 	connect(getPlugin<EventPlugin>(), &Event::EventPlugin::dbEventNotify, this, [this](const QString &domain, const QVariant &payload) {
@@ -777,7 +777,7 @@ QVariantMap RunsPlugin::printAwardsOptionsWithDialog(const QVariantMap &opts)
 	QVariantMap ret;
 	PrintAwardsOptionsDialogWidget *w = new PrintAwardsOptionsDialogWidget();
 	w->setPrintOptions(opts);
-	qf::qmlwidgets::dialogs::Dialog dlg(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, partWidget());
+	qf::qmlwidgets::dialogs::Dialog dlg(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, m_partWidget);
 	dlg.setCentralWidget(w);
 	if(dlg.exec()) {
 		ret = w->printOptions();
@@ -1180,21 +1180,27 @@ QVariantMap RunsPlugin::runsRecord(int run_id)
 	return {};
 }
 
-void RunsPlugin::setRunsRecord(int run_id, const QVariantMap &rec)
+void RunsPlugin::setRunsRecord(int run_id, const QVariant &rec)
 {
+	Q_ASSERT(m_partWidget);
 	if (auto *model = m_partWidget->findChild<RunsTableModel*>({}, Qt::FindChildrenRecursively); model) {
-		int row = 0;
-		for (; row < model->rowCount(); ++row) {
+		for (int row = 0; row < model->rowCount(); ++row) {
 			if (model->value(row, RunsTableModel::col_runs_id).toInt() == run_id) {
-				break;
+				if (rec.metaType() == QMetaType(QMetaType::QVariantMap)) {
+					for (const auto &[key, val] : rec.toMap().asKeyValueRange()) {
+						model->setValue(row, key, val);
+					}
+					model->postRow(row, !qf::core::Exception::Throw);
+				}
+				else {
+					// drop
+					qfError() << "Drop row is not implemented yet";
+					// model->dropRow(row, !qf::core::Exception::Throw);
+				}
+				return;
 			}
 		}
-		if (row < model->rowCount()) {
-			for (const auto &[key, val] : rec.asKeyValueRange()) {
-				model->setValue(row, key, val);
-			}
-			model->postRow(row, !qf::core::Exception::Throw);
-		}
+		qfError() << "Insert row is not implemented yet";
 	}
 }
 

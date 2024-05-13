@@ -230,8 +230,8 @@ const std::vector<MetaMethod> &CurrentStageRunsNode::metaMethods()
 		methods::DIR,
 		methods::LS,
 		{METH_TABLE, MetaMethod::Flag::None, {}, "RpcValue", AccessLevel::Read},
-		{METH_RECORD, MetaMethod::Flag::None, "Int", "Map", AccessLevel::Read, {{SIG_RUN_CHANGED, "Map"}} },
-		{METH_SET_RECORD, MetaMethod::Flag::None, "[Int, Map]", {}, AccessLevel::Write},
+		{METH_RECORD, MetaMethod::Flag::None, "Int", "Map", AccessLevel::Read, {{SIG_RUN_CHANGED, "[Int, RpcValue]"}} },
+		{METH_SET_RECORD, MetaMethod::Flag::None, "[Int, RpcValue]", {}, AccessLevel::Write},
 	};
 	return meta_methods;
 	static auto s_meta_methods = [this]() {
@@ -249,7 +249,7 @@ RpcValue CurrentStageRunsNode::callMethod(const StringViewList &shv_path, const 
 		if(method == METH_SET_RECORD) {
 			auto *plugin = getPlugin<RunsPlugin>();
 			const auto &lst = params.asList();
-			plugin->setRunsRecord(lst.value(0).toInt(), shv::coreqt::rpc::rpcValueToQVariant(lst.value(1)).toMap());
+			plugin->setRunsRecord(lst.value(0).toInt(), shv::coreqt::rpc::rpcValueToQVariant(lst.value(1)));
 			return nullptr;
 		}
 	}

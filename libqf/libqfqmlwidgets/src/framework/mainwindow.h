@@ -126,13 +126,14 @@ static T* getPlugin()
 }
 
 template<typename Widget, typename PartWidget>
-static void initPluginWidget(QString title, QString featureId)
+static PartWidget* initPluginWidget(QString title, QString featureId)
 {
 	auto* widget = new Widget();
-	auto *partWidget = new PartWidget(title, featureId);
-	qf::qmlwidgets::framework::MainWindow::frameWork()->addPartWidget(partWidget);
-	partWidget->addWidget(widget);
-	widget->settleDownInPartWidget(partWidget);
+	auto *part_widget = new PartWidget(title, featureId);
+	qf::qmlwidgets::framework::MainWindow::frameWork()->addPartWidget(part_widget);
+	part_widget->addWidget(widget);
+	widget->settleDownInPartWidget(part_widget);
+	return part_widget;
 }
 
 }}}

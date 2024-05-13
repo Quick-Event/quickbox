@@ -71,7 +71,7 @@ int RelaysPlugin::editRelay(int id, int mode)
 
 void RelaysPlugin::onInstalled()
 {
-	qff::initPluginWidget<RelaysWidget, PartWidget>(tr("&Relays"), featureId());
+	m_partWidget = qff::initPluginWidget<RelaysWidget, PartWidget>(tr("&Relays"), featureId());
 
 	connect(getPlugin<EventPlugin>(), &Event::EventPlugin::dbEventNotify, this, &RelaysPlugin::onDbEventNotify);
 

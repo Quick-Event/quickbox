@@ -33,7 +33,7 @@ namespace Runs {
 class RunsPlugin : public qf::qmlwidgets::framework::Plugin
 {
 	Q_OBJECT
-	Q_PROPERTY(qf::qmlwidgets::framework::PartWidget* partWidget READ partWidget FINAL)
+	//Q_PROPERTY(qf::qmlwidgets::framework::PartWidget* partWidget READ partWidget FINAL)
 	Q_PROPERTY(int selectedStageId READ selectedStageId WRITE setSelectedStageId NOTIFY selectedStageIdChanged)
 private:
 	typedef qf::qmlwidgets::framework::Plugin Super;
@@ -45,7 +45,7 @@ public:
 
 	QF_PROPERTY_IMPL2(int, s, S, electedStageId, 1)
 
-	qf::qmlwidgets::framework::PartWidget *partWidget() {return m_partWidget;}
+	//qf::qmlwidgets::framework::PartWidget *partWidget() {return m_partWidget;}
 
 	const qf::core::utils::Table& runnersTable(int stage_id);
 	Q_SLOT void clearRunnersTableCache();
@@ -85,7 +85,7 @@ public:
 
 	qf::core::sql::QueryBuilder runsQuery(int stage_id, int class_id = 0, bool show_offrace = false);
 	QVariantMap runsRecord(int run_id);
-	void setRunsRecord(int run_id, const QVariantMap &rec);
+	void setRunsRecord(int run_id, const QVariant &rec);
 
 	qf::core::sql::QueryBuilder startListQuery();
 	QVariantMap startListRecord(int run_id);

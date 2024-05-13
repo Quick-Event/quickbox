@@ -65,7 +65,7 @@ int CompetitorsPlugin::editCompetitor(int id, int mode)
 void CompetitorsPlugin::onInstalled()
 {
 	qff::MainWindow *fwk = qff::MainWindow::frameWork();
-	qff::initPluginWidget<CompetitorsWidget, PartWidget>(tr("&Competitors"), featureId());
+	m_partWidget = qff::initPluginWidget<CompetitorsWidget, PartWidget>(tr("&Competitors"), featureId());
 	{
 		m_registrationsDockWidget = new qff::DockWidget(nullptr);
 		m_registrationsDockWidget->setObjectName("registrationsDockWidget");

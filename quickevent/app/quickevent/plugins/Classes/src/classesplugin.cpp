@@ -40,7 +40,7 @@ ClassesPlugin::ClassesPlugin(QObject *parent)
 
 void ClassesPlugin::onInstalled()
 {
-	qff::initPluginWidget<ClassesWidget, PartWidget>(tr("Classes"), featureId());
+	m_partWidget = qff::initPluginWidget<ClassesWidget, PartWidget>(tr("Classes"), featureId());
 }
 
 QObject *ClassesPlugin::createClassDocument(QObject *parent)
