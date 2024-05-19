@@ -1,7 +1,7 @@
 #include "client.h"
 #include "clientwidget.h"
 #include "nodes.h"
-#include "sqlnode.h"
+#include "sqlapinode.h"
 
 #include "../../eventplugin.h"
 #include "../../../../Runs/src/runsplugin.h"
@@ -53,7 +53,7 @@ Client::Client(QObject *parent)
 	new DotAppNode(m_rootNode);
 	connect(event_plugin, &EventPlugin::eventOpenChanged, this, [this](bool is_open) {
 		if (is_open) {
-			new SqlNode(m_rootNode);
+			new SqlApiNode(m_rootNode);
 			auto *event = new EventNode(m_rootNode);
 			auto *current_stage = new shv::iotqt::node::ShvNode("currentStage", event);
 			new CurrentStageConfigNode(current_stage);

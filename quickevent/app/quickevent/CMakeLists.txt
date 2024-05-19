@@ -131,7 +131,7 @@ if(WITH_QE_SHVAPI)
 		plugins/Event/src/services/shvapi/client.cpp
 		plugins/Event/src/services/shvapi/clientwidget.cpp
 		plugins/Event/src/services/shvapi/shvnode.cpp
-		plugins/Event/src/services/shvapi/sqlnode.cpp
+		plugins/Event/src/services/shvapi/sqlapinode.cpp
 		plugins/Event/src/services/shvapi/nodes.cpp
 	)
 endif()

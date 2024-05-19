@@ -1,6 +1,6 @@
 #include "nodes.h"
 
-#include "sqlnode.h"
+#include "sqlapinode.h"
 #include "../../eventplugin.h"
 #include "../../../../Runs/src/runsplugin.h"
 
@@ -139,7 +139,7 @@ RpcValue SqlViewNode::callMethod(const StringViewList &shv_path, const std::stri
 			qf::core::sql::Query q;
 			QString qs = qb.toString();
 			q.exec(qs, qf::core::Exception::Throw);
-			auto res = SqlNode::rpcSqlResultFromQuery(q);
+			auto res = SqlApiNode::rpcSqlResultFromQuery(q);
 			return res.toRpcValue();
 		}
 		if(method == METH_RECORD) {
@@ -151,7 +151,7 @@ RpcValue SqlViewNode::callMethod(const StringViewList &shv_path, const std::stri
 			qfDebug() << qs;
 			q.exec(qs, qf::core::Exception::Throw);
 			if (q.next()) {
-				return SqlNode::recordToMap(q.record());
+				return SqlApiNode::recordToMap(q.record());
 			}
 			return RpcValue::Map{};
 		}

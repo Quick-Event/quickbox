@@ -9,13 +9,13 @@ namespace shv::coreqt::data { class RpcSqlResult; }
 
 namespace Event::services::shvapi {
 
-class SqlNode : public ShvNode
+class SqlApiNode : public ShvNode
 {
 	Q_OBJECT
 
 	using Super = ShvNode;
 public:
-	explicit SqlNode(shv::iotqt::node::ShvNode *parent);
+	explicit SqlApiNode(shv::iotqt::node::ShvNode *parent);
 
 	static shv::coreqt::data::RpcSqlResult rpcSqlResultFromQuery(QSqlQuery &q);
 	static shv::chainpack::RpcValue::Map recordToMap(const QSqlRecord &rec);

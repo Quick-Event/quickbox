@@ -1,4 +1,4 @@
-#include "sqlnode.h"
+#include "sqlapinode.h"
 
 #include <qf/core/exception.h>
 #include <qf/core/sql/query.h>
@@ -36,13 +36,14 @@ RpcSqlResult RpcSqlResult::fromRpcValue(const shv::chainpack::RpcValue &rv)
 }
 */
 }
-SqlNode::SqlNode(shv::iotqt::node::ShvNode *parent)
+
+SqlApiNode::SqlApiNode(shv::iotqt::node::ShvNode *parent)
 	: Super("sql", parent)
 {
 
 }
 
-shv::chainpack::RpcValue::Map SqlNode::recordToMap(const QSqlRecord &rec)
+shv::chainpack::RpcValue::Map SqlApiNode::recordToMap(const QSqlRecord &rec)
 {
 	RpcValue::Map record;
 	for (int i = 0; i < rec.count(); ++i) {
@@ -54,7 +55,7 @@ shv::chainpack::RpcValue::Map SqlNode::recordToMap(const QSqlRecord &rec)
 	return record;
 }
 
-RpcSqlResult SqlNode::rpcSqlResultFromQuery(QSqlQuery &q)
+RpcSqlResult SqlApiNode::rpcSqlResultFromQuery(QSqlQuery &q)
 {
 	RpcSqlResult ret;
 	if(q.isSelect()) {
@@ -89,7 +90,7 @@ RpcSqlResult SqlNode::rpcSqlResultFromQuery(QSqlQuery &q)
 
 static auto METH_EXEC_SQL = "execSql";
 
-const std::vector<MetaMethod> &SqlNode::metaMethods()
+const std::vector<MetaMethod> &SqlApiNode::metaMethods()
 {
 	static std::vector<MetaMethod> meta_methods {
 		methods::DIR,
@@ -99,7 +100,7 @@ const std::vector<MetaMethod> &SqlNode::metaMethods()
 	return meta_methods;
 }
 
-RpcValue SqlNode::callMethod(const StringViewList &shv_path, const std::string &method, const shv::chainpack::RpcValue &params, const shv::chainpack::RpcValue &user_id)
+RpcValue SqlApiNode::callMethod(const StringViewList &shv_path, const std::string &method, const shv::chainpack::RpcValue &params, const shv::chainpack::RpcValue &user_id)
 {
 	qfLogFuncFrame() << shv_path.join('/') << method;
 	//eyascore::utils::UserId user_id = eyascore::utils::UserId::makeUserName(QString::fromStdString(rq.userId().toMap().value("userName").toString()));
