@@ -42,7 +42,7 @@ endif()
 
 target_sources(libquickeventcore PRIVATE ${QM_FILES})
 target_compile_definitions(libquickeventcore PRIVATE QUICKEVENTCORE_BUILD_DLL)
-target_link_libraries(libquickeventcore PUBLIC Qt::Core Qt::Sql libsiut)
+target_link_libraries(libquickeventcore PUBLIC Qt::Core Qt::Sql libqfcore libsiut)
 target_include_directories(libquickeventcore PUBLIC include)
 
 install(TARGETS libquickeventcore)
