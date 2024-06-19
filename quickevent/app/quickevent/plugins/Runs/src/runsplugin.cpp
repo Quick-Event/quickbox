@@ -1140,8 +1140,8 @@ qf::core::sql::QueryBuilder RunsPlugin::runsQuery(int stage_id, int class_id, bo
 			.from("runs")
 			.join("runs.competitorId", "competitors.id")
 			.joinRestricted("runs.siid", "lentcards.siid", "NOT lentcards.ignored")
-			.join("runs.relayId", "relays.id")
-			.orderBy("runs.id");
+			.join("runs.relayId", "relays.id");
+			//.orderBy("runs.id");
 	if(is_relays) {
 		qb.select("relays.number AS startNumber")
 			.join("relays.classId", "classes.id");
@@ -1215,9 +1215,9 @@ qf::core::sql::QueryBuilder RunsPlugin::startListQuery()
 			.from("competitors")
 			.join("competitors.classId", "classes.id")
 			.join("LEFT JOIN clubs ON substr(competitors.registration, 1, 3) = clubs.abbr")
-			.joinRestricted("competitors.id", "runs.competitorId", "runs.isRunning", "INNER JOIN")
+			.joinRestricted("competitors.id", "runs.competitorId", "runs.isRunning", "INNER JOIN");
 			//.where("competitors.classId={{class_id}}")
-			.orderBy("runs.startTimeMs, classes.name");
+			//.orderBy("runs.startTimeMs");
 	return qb;
 }
 

@@ -131,10 +131,12 @@ RpcValue SqlViewNode::callMethod(const StringViewList &shv_path, const std::stri
 	if(shv_path.empty()) {
 		if(method == METH_TABLE) {
 			const auto &m = params.asMap();
-			auto where = m.value("where").to<QString>();
 			auto qb = effectiveQueryBuilder();
-			if (!where.isEmpty()) {
+			if (auto where = m.value("where").to<QString>(); !where.isEmpty()) {
 				qb.where(where);
+			}
+			if (auto order_by = m.value("orderBy").to<QString>(); !order_by.isEmpty()) {
+				qb.orderBy(order_by);
 			}
 			qf::core::sql::Query q;
 			QString qs = qb.toString();
@@ -194,6 +196,7 @@ CurrentStageStartListNode::CurrentStageStartListNode(shv::iotqt::node::ShvNode *
 	: Super("startList", parent)
 {
 	auto qb = getPlugin<RunsPlugin>()->startListQuery();
+	//qb.orderBy("runs.startTimeMs");
 	setQueryBuilder(qb);
 }
 
