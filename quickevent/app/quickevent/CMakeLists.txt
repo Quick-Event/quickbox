@@ -128,8 +128,8 @@ add_executable(quickevent
 if(WITH_QE_SHVAPI)
 	target_compile_definitions(quickevent PRIVATE WITH_QE_SHVAPI)
 	target_sources(quickevent PRIVATE
-		plugins/Event/src/services/shvapi/client.cpp
-		plugins/Event/src/services/shvapi/clientwidget.cpp
+		plugins/Event/src/services/shvapi/shvclientservice.cpp plugins/Event/src/services/shvapi/shvclientservice.h
+		plugins/Event/src/services/shvapi/shvclientservicewidget.cpp plugins/Event/src/services/shvapi/shvclientservicewidget.h plugins/Event/src/services/shvapi/shvclientservicewidget.ui
 		plugins/Event/src/services/shvapi/shvnode.cpp
 		plugins/Event/src/services/shvapi/sqlapinode.cpp
 		plugins/Event/src/services/shvapi/nodes.cpp

@@ -13,26 +13,28 @@ namespace Event::services::shvapi {
 
 class RootNode;
 
-class ClientSettings : public ServiceSettings
+class ShvClientServiceSettings : public ServiceSettings
 {
 	using Super = ServiceSettings;
 
 	QF_VARIANTMAP_FIELD(QString, s, setS, hvConnectionUrl)
+	QF_VARIANTMAP_FIELD(QString, e, setE, ventPath)
+	QF_VARIANTMAP_FIELD(QString, a, setA, piKey)
 public:
-	ClientSettings(const QVariantMap &o = QVariantMap()) : Super(o) {}
+	ShvClientServiceSettings(const QVariantMap &o = QVariantMap()) : Super(o) {}
 };
 
-class Client : public Service
+class ShvClientService : public Service
 {
 	Q_OBJECT
 
 	using Super = Service;
 public:
-	Client(QObject *parent);
+	ShvClientService(QObject *parent);
 
 	void run() override;
 	void stop() override;
-	ClientSettings settings() const {return ClientSettings(m_settings);}
+	ShvClientServiceSettings settings() const {return ShvClientServiceSettings(m_settings);}
 
 	static QString serviceName();
 

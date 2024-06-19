@@ -1,6 +1,7 @@
 #include "connectionsettings.h"
 
-#include <qf/core/utils/crypt.h>
+#include <plugins/Core/src/coreplugin.h>
+
 #include <qf/core/log.h>
 
 #include <QStandardPaths>
@@ -17,8 +18,6 @@ static const auto USER = QStringLiteral("user");
 static const auto PASSWORD = QStringLiteral("password");
 static const auto WORKING_DIR = QStringLiteral("workingDir");
 static const auto EVENT_NAME = QStringLiteral("eventName");
-
-qf::core::utils::Crypt s_crypt(qf::core::utils::Crypt::createGenerator(16808, 11, 2147483647));
 }
 
 ConnectionSettings::ConnectionSettings(QObject *parent)
@@ -55,7 +54,7 @@ void ConnectionSettings::setServerUser(const QString &s)
 
 void ConnectionSettings::setServerPassword(const QString &s)
 {
-	QByteArray ba = s_crypt.encrypt(s.toUtf8(), 32);
+	QByteArray ba = Core::CorePlugin::encrypt(s.toUtf8(), 32);
 	setValue(EVENT + '/' + DATA_STORAGE + '/' + SQL_SERVER + '/' + PASSWORD, QString::fromLatin1(ba));
 }
 
@@ -95,7 +94,7 @@ QString ConnectionSettings::serverUser()
 QString ConnectionSettings::serverPassword()
 {
 	QByteArray ba = value(EVENT + '/' + DATA_STORAGE + '/' + SQL_SERVER + '/' + PASSWORD).toString().toLatin1();
-	return QString::fromUtf8(s_crypt.decrypt(ba));
+	return QString::fromUtf8(Core::CorePlugin::decrypt(ba));
 }
 
 QString ConnectionSettings::singleWorkingDir()

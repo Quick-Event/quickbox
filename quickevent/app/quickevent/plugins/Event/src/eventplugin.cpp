@@ -5,12 +5,13 @@
 #include "dbschema.h"
 #include "stagedocument.h"
 #include "stagewidget.h"
+#include "../../Core/src/coreplugin.h"
 #include "../../Core/src/widgets/appstatusbar.h"
 
 #include "services/serviceswidget.h"
 #include "services/emmaclient.h"
 #ifdef WITH_QE_SHVAPI
-#include "services/shvapi/client.h"
+#include "services/shvapi/shvclientservice.h"
 #endif
 
 #include <quickevent/core/og/timems.h>
@@ -52,6 +53,7 @@
 #include <QJsonParseError>
 #include <QJsonDocument>
 #include <QTimer>
+#include <QRandomGenerator>
 
 #include <regex>
 
@@ -378,7 +380,7 @@ void EventPlugin::onInstalled()
 	services::Service::addService(emma_client);
 
 #ifdef WITH_QE_SHVAPI
-	auto shvapi_client = new services::shvapi::Client(this);
+	auto shvapi_client = new services::shvapi::ShvClientService(this);
 	services::Service::addService(shvapi_client);
 #endif
 
@@ -499,6 +501,25 @@ QString EventPlugin::classNameById(int class_id)
 		}
 	}
 	return m_classNameCache.value(class_id);
+}
+
+QString EventPlugin::shvApiEventId() const
+{
+	return eventName() + "-" + QString::number(m_eventConfig->importId());
+}
+
+QString EventPlugin::createShvApiKey()
+{
+	QString key;
+	QList<char> cc;
+	for (auto i = 'a'; i <= 'z'; i++) { cc << i; }
+	for (auto i = 'A'; i <= 'Z'; i++) { cc << i; }
+	for (auto i = '0'; i <= '9'; i++) { cc << i; }
+	for (int i = 0; i < 16; i++) {
+		quint32 ix = QRandomGenerator::global()->generate() % cc.size();
+		key += cc[ix];
+	}
+	return key;
 }
 
 DbSchema *EventPlugin::dbSchema()

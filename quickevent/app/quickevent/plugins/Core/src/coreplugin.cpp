@@ -9,6 +9,7 @@
 
 #include <qf/core/sql/connection.h>
 #include <qf/core/log.h>
+#include <qf/core/utils/crypt.h>
 
 #include <QCoreApplication>
 #include <QProcess>
@@ -42,6 +43,20 @@ const QString CorePlugin::SETTINGS_PREFIX_APPLICATION_LOCALE_LANGUAGE()
 {
 	static const auto s = QStringLiteral("application/locale/language");
 	return s;
+}
+
+namespace {
+qf::core::utils::Crypt s_crypt(qf::core::utils::Crypt::createGenerator(16808, 11, 2147483647));
+}
+
+QByteArray CorePlugin::encrypt(const QByteArray &data, int min_length)
+{
+	return s_crypt.encrypt(data, min_length);
+}
+
+QByteArray CorePlugin::decrypt(const QByteArray &data)
+{
+	return s_crypt.decrypt(data);
 }
 
 void CorePlugin::onInstalled()

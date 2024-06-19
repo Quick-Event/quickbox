@@ -23,6 +23,9 @@ public:
 
 	static const QString SETTINGS_PREFIX_APPLICATION_LOCALE_LANGUAGE();
 
+	Q_REQUIRED_RESULT static QByteArray encrypt(const QByteArray &data, int min_length = 16);
+	Q_REQUIRED_RESULT static QByteArray decrypt(const QByteArray &data);
+
 	void onInstalled();	
 private:
 	SettingsDialog *m_settingsDialog = nullptr;

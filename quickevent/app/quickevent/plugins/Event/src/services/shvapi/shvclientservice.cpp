@@ -1,5 +1,5 @@
-#include "client.h"
-#include "clientwidget.h"
+#include "shvclientservice.h"
+#include "shvclientservicewidget.h"
 #include "nodes.h"
 #include "sqlapinode.h"
 
@@ -43,8 +43,8 @@ using Runs::RunsPlugin;
 
 namespace Event::services::shvapi {
 
-Client::Client(QObject *parent)
-	: Super(Client::serviceName(), parent)
+ShvClientService::ShvClientService(QObject *parent)
+	: Super(ShvClientService::serviceName(), parent)
 	, m_rpcConnection(nullptr)
 	, m_rootNode(new shv::iotqt::node::ShvRootNode(this))
 {
@@ -66,20 +66,20 @@ Client::Client(QObject *parent)
 		}
 	});
 
-	connect(event_plugin, &Event::EventPlugin::dbEventNotify, this, &Client::onDbEventNotify, Qt::QueuedConnection);
-	connect(m_rootNode, &shv::iotqt::node::ShvNode::sendRpcMessage, this, &Client::sendRpcMessage);
+	connect(event_plugin, &Event::EventPlugin::dbEventNotify, this, &ShvClientService::onDbEventNotify, Qt::QueuedConnection);
+	connect(m_rootNode, &shv::iotqt::node::ShvNode::sendRpcMessage, this, &ShvClientService::sendRpcMessage);
 }
 
-QString Client::serviceName()
+QString ShvClientService::serviceName()
 {
 	return QStringLiteral("ShvApi");
 }
 
-void Client::run() {
+void ShvClientService::run() {
 	QF_SAFE_DELETE(m_rpcConnection);
 	auto ss = settings();
 	m_rpcConnection = new DeviceConnection(this);
-	connect(m_rpcConnection, &DeviceConnection::rpcMessageReceived, this, &Client::onRpcMessageReceived);
+	connect(m_rpcConnection, &DeviceConnection::rpcMessageReceived, this, &ShvClientService::onRpcMessageReceived);
 	connect(m_rpcConnection, &DeviceConnection::brokerConnectedChanged, this, [this](bool is_connected) {
 		if (is_connected) {
 			setStatus(Status::Running);
@@ -91,24 +91,24 @@ void Client::run() {
 	m_rpcConnection->setConnectionString(ss.shvConnectionUrl());
 	RpcValue::Map opts;
 	RpcValue::Map device;
-	device["mountPoint"] = "test/QE";
+	device["mountPoint"] = ss.eventPath().toStdString();
 	opts["device"] = device;
 	m_rpcConnection->setConnectionOptions(opts);
 	m_rpcConnection->open();
 }
 
-void Client::stop() {
+void ShvClientService::stop() {
 	QF_SAFE_DELETE(m_rpcConnection);
 	Super::stop();
 }
 
-qf::qmlwidgets::framework::DialogWidget *Client::createDetailWidget()
+qf::qmlwidgets::framework::DialogWidget *ShvClientService::createDetailWidget()
 {
-	auto *w = new ClientWidget();
+	auto *w = new ShvClientServiceWidget();
 	return w;
 }
 
-void Client::onRpcMessageReceived(const shv::chainpack::RpcMessage &msg)
+void ShvClientService::onRpcMessageReceived(const shv::chainpack::RpcMessage &msg)
 {
 	qfDebug() << "client RPC request:"  << msg.toCpon();
 	if(msg.isSignal()) {
@@ -116,27 +116,47 @@ void Client::onRpcMessageReceived(const shv::chainpack::RpcMessage &msg)
 	}
 	if(msg.isRequest()) {
 		RpcRequest rq(msg);
-		m_rootNode->handleRpcRequest(rq);
+		auto api_key = settings().apiKey();
+		auto user_id = rq.userId().asString();
+		auto correct_user_id = QStringLiteral("api_key=%1").arg(api_key).toStdString();
+		if (user_id == correct_user_id) {
+			RpcResponse resp = RpcResponse::forRequest(rq);
+			resp.setError(RpcResponse::Error("Invalid API key", RpcResponse::Error::MethodNotFound));
+			m_rootNode->emitSendRpcMessage(resp);
+		}
+		else {
+			m_rootNode->handleRpcRequest(rq);
+		}
+		return;
 	}
-	else if(msg.isResponse()) {
+	if(msg.isResponse()) {
 		//shvInfo() << "==> NTF method:" << method.toString();
 		return;
 	}
 }
 
-void Client::sendRpcMessage(const shv::chainpack::RpcMessage &rpc_msg)
+void ShvClientService::sendRpcMessage(const shv::chainpack::RpcMessage &rpc_msg)
 {
 	if(m_rpcConnection && m_rpcConnection->isBrokerConnected()) {
 		m_rpcConnection->sendRpcMessage(rpc_msg);
 	}
 }
 
-void Client::loadSettings()
+void ShvClientService::loadSettings()
 {
 	Super::loadSettings();
+	auto ss = settings();
+	auto *event_plugin = getPlugin<EventPlugin>();
+	if (ss.eventPath().isEmpty()) {
+		ss.setEventPath("test/qe/" + event_plugin->shvApiEventId());
+	}
+	if (ss.apiKey().isEmpty()) {
+		ss.setApiKey(event_plugin->createShvApiKey());
+	}
+	m_settings = ss;
 }
 
-void Client::onDbEventNotify(const QString &domain, int connection_id, const QVariant &data)
+void ShvClientService::onDbEventNotify(const QString &domain, int connection_id, const QVariant &data)
 {
 	if (status() != Status::Running)
 		return;
