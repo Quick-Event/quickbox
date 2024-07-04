@@ -71,13 +71,12 @@ bool ShvClientServiceWidget::saveSettings()
 void ShvClientServiceWidget::updateQrCodeUrl()
 {
 	QUrl url(ui->shvUrl->text());
+	url.setScheme("https");
 	url.setPath("/" + ui->shvEventPath->text());
 	auto query = QUrlQuery(url);
 	url.setQuery(QString());
 	query.addQueryItem("api_key", ui->shvApiKey->text());
 	url.setQuery(query);
-	bool b = url.isValid();
-	auto es = url.errorString();
 	auto s = url.toString();
 	ui->qrCodeUrl->setText(s);
 }

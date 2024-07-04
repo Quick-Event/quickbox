@@ -511,13 +511,25 @@ QString EventPlugin::shvApiEventId() const
 QString EventPlugin::createShvApiKey()
 {
 	QString key;
-	QList<char> cc;
-	for (auto i = 'a'; i <= 'z'; i++) { cc << i; }
-	for (auto i = 'A'; i <= 'Z'; i++) { cc << i; }
-	for (auto i = '0'; i <= '9'; i++) { cc << i; }
-	for (int i = 0; i < 16; i++) {
-		quint32 ix = QRandomGenerator::global()->generate() % cc.size();
-		key += cc[ix];
+	static const QList<char> vowels{'a', 'e', 'i', 'o', 'u', 'y'};
+	static const QList<char> consonants = []() {
+		QList<char> cc;
+		for (auto i = 'a'; i <= 'z'; i++) {
+			if (!vowels.contains(i)) {
+				cc << i;
+			}
+		}
+		return cc;
+	} ();
+	for (int i = 0; i < 12; i++) {
+		if (i % 2 == 0) {
+			auto ix = QRandomGenerator::global()->generate() % consonants.size();
+			key += consonants[ix];
+		}
+		else {
+			auto ix = QRandomGenerator::global()->generate() % vowels.size();
+			key += vowels[ix];
+		}
 	}
 	return key;
 }
