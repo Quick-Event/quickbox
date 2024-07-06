@@ -32,6 +32,10 @@ ShvClientServiceWidget::ShvClientServiceWidget(QWidget *parent)
 	connect(ui->shvUrl, &QLineEdit::textChanged, this, &ShvClientServiceWidget::updateQrCodeUrl);
 	connect(ui->shvApiKey, &QLineEdit::textChanged, this, &ShvClientServiceWidget::updateQrCodeUrl);
 	connect(ui->shvEventPath, &QLineEdit::textChanged, this, &ShvClientServiceWidget::updateQrCodeUrl);
+	connect(ui->btGenerateApiKey, &QAbstractButton::clicked, this, [this]() {
+		auto *event_plugin = getPlugin<EventPlugin>();
+		ui->shvApiKey->setText(event_plugin->createShvApiKey());
+	});
 }
 
 ShvClientServiceWidget::~ShvClientServiceWidget()
@@ -62,7 +66,7 @@ bool ShvClientServiceWidget::saveSettings()
 	if(svc) {
 		auto ss = svc->settings();
 		ss.setShvConnectionUrl(ui->shvUrl->text());
-		//svc->setApiKey(ui->edApiKey->text().trimmed());
+		ss.setApiKey(ui->shvApiKey->text().trimmed());
 		svc->setSettings(ss);
 	}
 	return true;
