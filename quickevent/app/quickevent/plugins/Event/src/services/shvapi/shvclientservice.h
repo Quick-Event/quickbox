@@ -38,9 +38,9 @@ public:
 
 	static QString serviceName();
 
-	void loadSettings() override;
 	void onDbEventNotify(const QString &domain, int connection_id, const QVariant &data);
 private:
+	void loadSettings() override;
 	qf::qmlwidgets::framework::DialogWidget *createDetailWidget() override;
 	void onRpcMessageReceived(const shv::chainpack::RpcMessage &msg);
 	void sendRpcMessage(const shv::chainpack::RpcMessage &rpc_msg);

@@ -49,8 +49,8 @@ public:
 	void exportStartListRacomTxt();
 	void exportStartListRacomCsv();
 	bool preExport();
-	void loadSettings() override;
 private:
+	void loadSettings() override;
 	bool createExportDir();
 	void onDbEventNotify(const QString &domain, int connection_id, const QVariant &data);
 	void onCardChecked(const QVariantMap &data);

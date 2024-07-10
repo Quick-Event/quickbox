@@ -42,7 +42,7 @@ public:
 		run();
 	}
 
-	virtual void loadSettings();
+	void loadSettingsForEvent(const QString &event_name);
 	ServiceSettings settings() const {return ServiceSettings(m_settings);}
 	void saveSettings();
 	void setSettings(const QVariantMap &s);
@@ -53,8 +53,6 @@ public:
 	Status status() const {return m_status;}
 	Q_SIGNAL void statusChanged(Status new_status);
 
-	QString settingsGroup() const;
-
 	void setRunning(bool on);
 
 	static void addService(Service *service);
@@ -63,6 +61,8 @@ public:
 	static Service* serviceByName(const QString &service_name);
 	//Q_SIGNAL void serviceCountChanged(int new_count);
 protected:
+	virtual void loadSettings();
+	QString settingsGroup() const;
 	virtual void onEventOpen();
 	void setStatus(Status st)
 	{
@@ -76,6 +76,7 @@ protected:
 protected:
 	QVariantMap m_settings;
 private:
+	QString m_eventName;
 	Status m_status = Status::Unknown;
 	static QList<Service*> m_services;
 };

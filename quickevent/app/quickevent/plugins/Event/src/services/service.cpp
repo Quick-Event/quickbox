@@ -42,18 +42,21 @@ Service::~Service()
 
 QString Service::settingsGroup() const
 {
-	QString s = QStringLiteral("services/") + name();
-	return s;
+	if (m_eventName.isEmpty()) {
+		return QStringLiteral("services/%1").arg(name());
+	}
+	return QStringLiteral("services/%1/%2").arg(m_eventName, name());
 }
 
 void Service::onEventOpen()
 {
-	if(!getPlugin<EventPlugin>()->isEventOpen())
-		return;
-	loadSettings();
-	ServiceSettings ss = settings();
-	if(ss.isAutoStart()) {
-		run();
+	auto *event_plugin = getPlugin<EventPlugin>();
+	if(event_plugin->isEventOpen()) {
+		loadSettingsForEvent(event_plugin->eventName());
+		ServiceSettings ss = settings();
+		if(ss.isAutoStart()) {
+			run();
+		}
 	}
 }
 
@@ -95,6 +98,12 @@ void Service::run()
 void Service::stop()
 {
 	setStatus(Status::Stopped);
+}
+
+void Service::loadSettingsForEvent(const QString &event_name)
+{
+	m_eventName = event_name;
+	loadSettings();
 }
 
 void Service::setRunning(bool on)

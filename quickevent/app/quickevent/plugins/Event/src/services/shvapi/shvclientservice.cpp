@@ -147,6 +147,9 @@ void ShvClientService::loadSettings()
 	Super::loadSettings();
 	auto ss = settings();
 	auto *event_plugin = getPlugin<EventPlugin>();
+	if (ss.shvConnectionUrl().isEmpty()) {
+		ss.setShvConnectionUrl("tcp://nirvana.elektroline.cz:3756?user=quickevent&password=tohle_je_demo");
+	}
 	if (ss.eventPath().isEmpty()) {
 		ss.setEventPath("test/qe/" + event_plugin->shvApiEventId());
 	}

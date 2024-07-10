@@ -33,7 +33,6 @@ public:
 
 	void exportResultsIofXml3();
 	void exportStartListIofXml3(std::function<void()> on_success = nullptr);
-	void loadSettings() override;
 	void onDbEventNotify(const QString &domain, int connection_id, const QVariant &data);
 	QString apiKey() const;
 	void setApiKey(QString apiKey);
@@ -42,6 +41,7 @@ private:
 	QNetworkAccessManager *m_networkManager = nullptr;
 	const QString API_URL = "https://api.oresults.eu";
 private:
+	void loadSettings() override;
 	qf::qmlwidgets::framework::DialogWidget *createDetailWidget() override;
 	void onExportTimerTimeOut();
 	void init();

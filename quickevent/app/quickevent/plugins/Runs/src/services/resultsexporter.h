@@ -35,7 +35,6 @@ public:
 
 	void run() override;
 	void stop() override;
-	void loadSettings() override;
 	ResultsExporterSettings settings() const {return ResultsExporterSettings(m_settings);}
 
 	qf::qmlwidgets::framework::DialogWidget *createDetailWidget() override;
@@ -45,6 +44,7 @@ public:
 	bool exportResults();
 	void whenFinishedRunCmd();
 private:
+	void loadSettings() override;
 	void onExportTimerTimeOut();
 	void init();
 private:
