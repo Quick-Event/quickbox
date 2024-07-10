@@ -18,6 +18,8 @@ public:
 	void load(int stage_id);
 	void save();
 
+	GanttItem *ganttItem() { return m_ganttItem; }
+
 	/**
 	 * @brief displayUnit
 	 * @return default font line spacing / 2
@@ -33,7 +35,7 @@ public:
 private:
 	int m_stageId = -1;
 	int m_displayUnit;
-	GanttItem *m_ganttItem;
+	GanttItem *m_ganttItem = nullptr;
 	bool m_useAllMaps = false;
 };
 

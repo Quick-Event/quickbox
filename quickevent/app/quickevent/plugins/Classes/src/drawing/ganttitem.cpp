@@ -206,7 +206,7 @@ void GanttItem::checkClassClash()
 		StartSlotItem *slot_it = startSlotItemAt(i);
 		for (int j = 0; j < slot_it->classItemCount(); ++j) {
 			ClassItem *class_it = slot_it->classItemAt(j);
-			class_it->setClashingClasses(QList<ClassItem*>());
+			class_it->setClashingClasses({});
 		}
 	}
 	for (int i = 0; i < startSlotItemCount(); ++i) {
@@ -215,16 +215,22 @@ void GanttItem::checkClassClash()
 			continue;
 		for (int j = 0; j < slot_it->classItemCount(); ++j) {
 			ClassItem *class_it = slot_it->classItemAt(j);
-			QList<ClassItem*> clash_list = class_it->findClashes();
-			if(clash_list.count()) {
-				class_it->setClashingClasses(clash_list);
-				for(auto *cl : clash_list) {
-					cl->setClashingClasses(QList<ClassItem*>() << class_it);
+			auto clashing_class_list = class_it->findClashes(m_clashTypesToCheck);
+			if(!clashing_class_list.isEmpty()) {
+				class_it->setClashingClasses(clashing_class_list);
+				for(auto *cl : clashing_class_list) {
+					cl->setClashingClasses(QList<ClassItem*>{class_it});
 				}
 				return;
 			}
 		}
 	}
+}
+
+void GanttItem::setClashTypesToCheck(const QSet<ClassItem::ClashType> &clash_types)
+{
+	m_clashTypesToCheck = clash_types;
+	checkClassClash();
 }
 
 void GanttItem::moveClassItem(int from_slot_ix, int from_class_ix, int to_slot_ix, int to_class_ix)

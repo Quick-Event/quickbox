@@ -2,6 +2,7 @@
 #include "ui_drawingganttwidget.h"
 
 #include "classitem.h"
+#include "ganttitem.h"
 #include "ganttscene.h"
 
 #include <qf/qmlwidgets/style.h>
@@ -12,6 +13,7 @@
 
 #include <QLineEdit>
 #include <QMessageBox>
+#include <QCheckBox>
 
 using namespace drawing;
 
@@ -40,20 +42,41 @@ void DrawingGanttWidget::settleDownInDialog(qf::qmlwidgets::dialogs::Dialog *dlg
 	qf::qmlwidgets::ToolBar *tb = dlg->toolBar("main", true);
 	tb->addAction(ui->actSave);
 	m_edFind = new QLineEdit();
-#if QT_VERSION >= QT_VERSION_CHECK(5, 11, 0)
 	m_edFind->setMaximumWidth(QFontMetrics(font()).horizontalAdvance('X') * 8);
-#else
-	m_edFind->setMaximumWidth(QFontMetrics(font()).width('X') * 8);
-#endif
 	connect(m_edFind, &QLineEdit::textEdited, this, &DrawingGanttWidget::on_actFind_triggered);
 	tb->addWidget(m_edFind);
 	tb->addAction(ui->actFind);
 
-	auto *menu = dlg->menuBar();
-	auto *a_file = menu->actionForPath("draw");
-	a_file->setText(tr("&Draw"));
-	a_file->addActionInto(ui->actSave);
-	//a_file->addActionInto(ui->actFind);
+	auto *cb_check_runners = new QCheckBox(tr("Runners clash"));
+	auto *cb_check_courses = new QCheckBox(tr("Courses clash"));
+	auto update_class_check = [this, cb_check_runners, cb_check_courses]() {
+		QSet<ClassItem::ClashType> checks;
+		if (cb_check_runners->isChecked()) {
+			checks << ClassItem::ClashType::RunnersOverlap;
+		}
+		if (cb_check_courses->isChecked()) {
+			checks << ClassItem::ClashType::CourseOverlap;
+		}
+		m_ganttScene->ganttItem()->setClashTypesToCheck(checks);
+	};
+	{
+		auto *cb = cb_check_runners;
+		cb->setChecked(true);
+		tb->addWidget(cb);
+		connect(cb, &QCheckBox::stateChanged, this, update_class_check);
+	}
+	{
+		auto *cb = cb_check_courses;
+		cb->setChecked(true);
+		tb->addWidget(cb);
+		connect(cb, &QCheckBox::stateChanged, this, update_class_check);
+	}
+	update_class_check();
+
+	//auto *menu = dlg->menuBar();
+	//auto *a_draw = menu->actionForPath("draw");
+	//a_draw->setText(tr("&Draw"));
+	//a_draw->addActionInto(ui->actSave);
 }
 
 void DrawingGanttWidget::load(int stage_id)

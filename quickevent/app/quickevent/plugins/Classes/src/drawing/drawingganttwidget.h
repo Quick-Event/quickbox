@@ -4,6 +4,7 @@
 #include <qf/qmlwidgets/framework/dialogwidget.h>
 
 class QLineEdit;
+class QCheckBox;
 
 namespace drawing {
 

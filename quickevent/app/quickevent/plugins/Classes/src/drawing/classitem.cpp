@@ -245,7 +245,11 @@ void ClassItem::updateToolTip()
 	QString tool_tip;
 	// HTML tooltip can cause word wrap
 	tool_tip = "<html><body>";
-	tool_tip += tr("class: <b>%1</b>, %2 runners + %3 vacants<br/>").arg(dt.className()).arg(dt.runsCount()).arg(runsAndVacantCount() - dt.runsCount());
+	tool_tip += tr("class: <b>%1</b>, %2 runners + %3 vacants = %4<br/>")
+			.arg(dt.className())
+			.arg(dt.runsCount())
+			.arg(runsAndVacantCount() - dt.runsCount())
+			.arg(runsAndVacantCount()) ;
 	tool_tip += tr("first code <b>%1</b>, course %2 - %3<br/>").arg(dt.firstCode()).arg(dt.courseId()).arg(dt.courseName());
 	tool_tip += tr("vacants before: %1, every: %2, after: %3<br/>").arg(dt.vacantsBefore()).arg(dt.vacantEvery()).arg(dt.vacantsAfter());
 	tool_tip += tr("class start: %1, interval: %2, duration: %3, end: %4<br/>").arg(dt.startTimeMin()).arg(dt.startIntervalMin()).arg(durationMin()).arg(dt.startTimeMin() + durationMin());
@@ -266,7 +270,7 @@ void ClassItem::updateToolTip()
 	setToolTip(tool_tip);
 }
 
-QList<ClassItem *> ClassItem::findClashes()
+QList<ClassItem *> ClassItem::findClashes(const QSet<ClashType> &clash_types)
 {
 	QList<ClassItem*> ret;
 	auto *git = ganttItem();
@@ -278,8 +282,9 @@ QList<ClassItem *> ClassItem::findClashes()
 			ClassItem *class_it = slot_it->classItemAt(j);
 			if(class_it == this)
 				continue;
-			if(this->clashWith(class_it) != ClashType::None)
+			if(clash_types.contains(this->clashWith(class_it))) {
 				ret << class_it;
+			}
 		}
 	}
 	return ret;

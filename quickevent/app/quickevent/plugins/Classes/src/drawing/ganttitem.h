@@ -1,7 +1,7 @@
 #ifndef DRAWING_GANTTITEM_H
 #define DRAWING_GANTTITEM_H
 
-#include "iganttitem.h"
+#include "classitem.h"
 
 #include <qf/core/utils.h>
 #include <qf/core/exception.h>
@@ -38,6 +38,7 @@ public:
 
 	void updateGeometry();
 	void checkClassClash();
+	void setClashTypesToCheck(const QSet<ClassItem::ClashType> &clash_types);
 
 	void moveClassItem(int from_slot_ix, int from_class_ix, int to_slot_ix, int to_class_ix);
 	void moveStartSlotItem(int from_slot_ix, int to_slot_ix);
@@ -53,6 +54,7 @@ private:
 	QList<StartSlotItem*> m_startSlotItems;
 	DrawingConfig m_drawingConfig;
 	GanttRuler *m_ganttRuler;
+	QSet<ClassItem::ClashType> m_clashTypesToCheck;
 };
 
 }
