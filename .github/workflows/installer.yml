@@ -8,7 +8,7 @@ on:
 
 jobs:
   windows:
-    name: Qt 6.6 / Windows
+    name: Qt 6.7 / Windows
     runs-on: windows-2022
     steps:
       - name: Clone the repository
@@ -40,7 +40,7 @@ jobs:
       - name: Setup CMake
         uses: ./.github/actions/cmake
         with:
-          qt_version: 6.6.3
+          qt_version: 6.7.2
           qt_arch: win64_mingw
           use_qt6: ON
           modules: qtserialport qtmultimedia
@@ -53,7 +53,7 @@ jobs:
         run: cmake --install '${{ github.workspace }}/build'
 
       - name: Run windeployqt
-        run: windeployqt -serialport -multimedia --qmldir libqf/plugins --qmldir quickevent/app/quickevent/plugins '${{ github.workspace }}/install/bin/quickevent.exe'
+        run: windeployqt -serialport -multimedia --qmldir '${{ github.workspace }}/install/bin/qml' '${{ github.workspace }}/install/bin/quickevent.exe'
 
       - name: Copy MinGW runtime libraries
         # windeployqt is unable to copy those, because it looks for them next to where g++.exe is. On the GitHub runner,
