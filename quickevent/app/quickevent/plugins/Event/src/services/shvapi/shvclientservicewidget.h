@@ -21,7 +21,7 @@ public:
 private:
 	ShvClientService* service();
 	bool saveSettings();
-	void updateQrCodeUrl();
+	void updateStarterToolUrl();
 private:
 	Ui::ShvClientServiceWidget *ui;
 	bool acceptDialogDone(int result);

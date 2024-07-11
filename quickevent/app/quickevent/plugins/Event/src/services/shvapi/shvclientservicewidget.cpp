@@ -8,6 +8,7 @@
 
 #include <QFileDialog>
 #include <QUrlQuery>
+#include <QClipboard>
 
 #include <plugins/Event/src/eventplugin.h>
 using qf::qmlwidgets::framework::getPlugin;
@@ -28,13 +29,17 @@ ShvClientServiceWidget::ShvClientServiceWidget(QWidget *parent)
 		ui->shvEventPath->setText(ss.eventPath());
 		ui->shvApiKey->setText(ss.apiKey());
 	}
-	updateQrCodeUrl();
-	connect(ui->shvUrl, &QLineEdit::textChanged, this, &ShvClientServiceWidget::updateQrCodeUrl);
-	connect(ui->shvApiKey, &QLineEdit::textChanged, this, &ShvClientServiceWidget::updateQrCodeUrl);
-	connect(ui->shvEventPath, &QLineEdit::textChanged, this, &ShvClientServiceWidget::updateQrCodeUrl);
+	updateStarterToolUrl();
+	connect(ui->shvUrl, &QLineEdit::textChanged, this, &ShvClientServiceWidget::updateStarterToolUrl);
+	connect(ui->shvApiKey, &QLineEdit::textChanged, this, &ShvClientServiceWidget::updateStarterToolUrl);
+	connect(ui->shvEventPath, &QLineEdit::textChanged, this, &ShvClientServiceWidget::updateStarterToolUrl);
 	connect(ui->btGenerateApiKey, &QAbstractButton::clicked, this, [this]() {
 		auto *event_plugin = getPlugin<EventPlugin>();
 		ui->shvApiKey->setText(event_plugin->createShvApiKey());
+	});
+	connect(ui->btCopyUrl, &QAbstractButton::clicked, this, [this]() {
+		QClipboard *clipboard = QGuiApplication::clipboard();
+		clipboard->setText(ui->qrCodeUrl->text());
 	});
 }
 
@@ -72,10 +77,10 @@ bool ShvClientServiceWidget::saveSettings()
 	return true;
 }
 
-void ShvClientServiceWidget::updateQrCodeUrl()
+void ShvClientServiceWidget::updateStarterToolUrl()
 {
 	QUrl url(ui->shvUrl->text());
-	url.setScheme("https");
+	url.setScheme("tcp");
 	url.setPath("/" + ui->shvEventPath->text());
 	auto query = QUrlQuery(url);
 	url.setQuery(QString());

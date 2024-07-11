@@ -13,6 +13,7 @@
 #include <shv/iotqt/rpc/deviceconnection.h>
 #include <shv/iotqt/node/shvnode.h>
 #include <shv/coreqt/rpc.h>
+#include <shv/coreqt/log.h>
 
 #include <QCoreApplication>
 #include <QDir>
@@ -116,16 +117,16 @@ void ShvClientService::onRpcMessageReceived(const shv::chainpack::RpcMessage &ms
 	}
 	if(msg.isRequest()) {
 		RpcRequest rq(msg);
-		auto api_key = settings().apiKey();
-		auto user_id = rq.userId().asString();
-		auto correct_user_id = QStringLiteral("api_key=%1").arg(api_key).toStdString();
-		if (user_id == correct_user_id) {
+		auto correct_api_key = settings().apiKey().toStdString();
+		auto request_api_key = rq.userId().asMap().value("apiKey").asString();
+		qfDebug() << correct_api_key << "rq:" << request_api_key;
+		if (correct_api_key == request_api_key) {
+			m_rootNode->handleRpcRequest(rq);
+		}
+		else {
 			RpcResponse resp = RpcResponse::forRequest(rq);
 			resp.setError(RpcResponse::Error("Invalid API key", RpcResponse::Error::MethodNotFound));
 			m_rootNode->emitSendRpcMessage(resp);
-		}
-		else {
-			m_rootNode->handleRpcRequest(rq);
 		}
 		return;
 	}
