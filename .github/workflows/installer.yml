@@ -48,9 +48,11 @@ jobs:
 
       - name: Build
         run: cmake --build '${{github.workspace}}/build' --parallel "$(nproc)"
+        shell: bash
 
       - name: Install
         run: cmake --install '${{ github.workspace }}/build'
+        shell: bash
 
       - name: Run windeployqt
         run: windeployqt -serialport -multimedia --qmldir '${{ github.workspace }}/install/bin/qml' '${{ github.workspace }}/install/bin/quickevent.exe'
