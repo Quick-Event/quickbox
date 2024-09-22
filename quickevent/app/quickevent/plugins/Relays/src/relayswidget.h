@@ -45,6 +45,7 @@ private:
 	QVariant startListByClubsTableData();
 
 	void relays_assignNumbers();
+	void relays_importBibs();
 
 	void print_start_list_classes();
 	void print_start_list_clubs();

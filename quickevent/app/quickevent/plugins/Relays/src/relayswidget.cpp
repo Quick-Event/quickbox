@@ -32,6 +32,7 @@
 #include <qf/core/sql/transaction.h>
 #include <qf/core/assert.h>
 #include <qf/core/utils/treetable.h>
+#include <qf/core/utils/csvreader.h>
 #include <QCheckBox>
 #include <QInputDialog>
 #include <QLabel>
@@ -145,6 +146,11 @@ void RelaysWidget::settleDownInPartWidget(quickevent::gui::PartWidget *part_widg
 		qfw::Action *a = new qfw::Action("assignNumbers", tr("&Assign numbers"));
 		a_relays->addActionInto(a);
 		connect(a, &qfw::Action::triggered, this, &RelaysWidget::relays_assignNumbers);
+	}
+	{
+		qfw::Action *a = new qfw::Action("importBibs", tr("&Import bibs from CSV"));
+		a_relays->addActionInto(a);
+		connect(a, &qfw::Action::triggered, this, &RelaysWidget::relays_importBibs);
 	}
 
 	qfw::Action *a_print = part_widget->menuBar()->actionForPath("print");
@@ -551,4 +557,112 @@ void RelaysWidget::export_start_list_iofxml3() {
 void RelaysWidget::export_results_iofxml3() {
 	QString fn = getPlugin<EventPlugin>()->eventName() + ".results.iof30.xml";
 	save_xml_file(getPlugin<RelaysPlugin>()->resultsIofXml30(), fn);
+}
+
+void RelaysWidget::relays_importBibs() {
+	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	qf::qmlwidgets::dialogs::MessageBox mbx(fwk);
+	mbx.setIcon(QMessageBox::Information);
+	mbx.setText(tr("Import UTF8 text file with comma separated values with first row as header.<br/>Separator is semicolon(;).<br/>Updates only existing relays (key is Club, Relay Name & Class)."));
+	mbx.setInformativeText(tr("Each row should have following columns: "
+							  "<ol>"
+							  "<li>Club abbr <i>- key (part1)</i></li>"
+							  "<li>Relay name <i>- key (part2)</i></li>"
+							  "<li>Start number (Bib)</li>"
+							  "<li>Class (Optional - if not filed, trying to guess from the starting number)</li>"
+							  "</ol>"));
+
+	mbx.setDoNotShowAgainPersistentKey("importRelaysBibsCSV");
+	int res = mbx.exec();
+	if(res != QMessageBox::Ok)
+		return;
+	QString fn = qfd::FileDialog::getOpenFileName(fwk, tr("Open file"), QString(), tr("CSV files (*.csv *.txt)"));
+	if(fn.isEmpty())
+		return;
+
+	QMap<QString, int> classes_map; // classes.name->classes.id
+	std::map<int, int> classes_map_bibs; // classes.name->classes.id
+	qf::core::sql::Query q;
+	q.exec("SELECT classes.id, relayStartNumber, name FROM classdefs JOIN classes ON classdefs.classid = classes.id WHERE stageId=1", qf::core::Exception::Throw);
+	while(q.next()) {
+		classes_map[q.value(2).toString()] = q.value(0).toInt();
+		classes_map_bibs[q.value(1).toInt()] = q.value(0).toInt();
+	}
+
+	try {
+		QFile f(fn);
+		if(!f.open(QFile::ReadOnly))
+			QF_EXCEPTION(tr("Cannot open file '%1' for reading.").arg(fn));
+		QTextStream ts(&f);
+		qf::core::utils::CSVReader reader(&ts);
+		reader.setSeparator(';');
+		enum {ColRelClub = 0, ColRelName, ColBib, ColClass};
+
+		qfLogScope("importRelaysBibsCSV");
+		qf::core::sql::Transaction transaction;
+		qf::core::sql::Query q2;
+		q.prepare("SELECT id FROM relays WHERE club=:club AND name=:name AND classId=:classId", qf::core::Exception::Throw);
+		q2.prepare("UPDATE relays SET number=:number WHERE id=:id", qf::core::Exception::Throw);
+
+		int n = 0;
+		int i = 0;
+
+		while (!ts.atEnd()) {
+			QStringList line = reader.readCSVLineSplitted();
+			if(line.count() <= 1)
+				QF_EXCEPTION(tr("Fields separation error, invalid CSV format, Error reading CSV line: [%1]").arg(line.join(';').mid(0, 100)));
+			if(n++ == 0) { // skip first row (header)
+				qfDebug() << "Import CSV - skip header line";
+				continue;
+			}
+			QString relay_club = line.value(ColRelClub).trimmed();
+			QString relay_name = line.value(ColRelName).trimmed();
+			int relay_bib = line.value(ColBib).toInt();
+			QString relay_class = line.value(ColClass).trimmed();
+			if(relay_club.isEmpty() || relay_name.isEmpty() || relay_bib == 0) {
+				QF_EXCEPTION(tr("Error reading CSV line: [%1]").arg(line.join(';')));
+			}
+			int class_id = -1;
+			if (relay_class.isEmpty()) {
+				// guess class from bib number
+				for (auto&item : classes_map_bibs)
+				{
+					if (item.first < relay_bib)
+						class_id = item.second;
+				}
+				if (class_id == -1)
+					QF_EXCEPTION(tr("Cannot guess class name from bib: '%1'").arg(relay_bib));
+			}
+			else {
+				class_id = classes_map.value(relay_class);
+				if(class_id == 0)
+					QF_EXCEPTION(tr("Undefined class name: '%1'").arg(relay_class));
+			}
+			q.bindValue(":club", relay_club);
+			q.bindValue(":name", relay_name);
+			q.bindValue(":classId", class_id);
+
+			q.exec(qf::core::Exception::Throw);
+			if(q.next()) {
+				// if club & name found in db - start update data
+				int relay_id = q.value(0).toInt();
+
+				if (relay_bib != 0) {
+					q2.bindValue(":number", relay_bib);
+					q2.bindValue(":id", relay_id);
+					q2.exec(qf::core::Exception::Throw);
+					i++;
+					qfDebug() << "Import CSV line" << n << "with" << relay_club << relay_name <<"bib"<< relay_bib << "["<< relay_class << "|"<< class_id << "].";
+				}
+			}
+			else
+				qfWarning() << "CSV line" << n << "with" << relay_club << relay_name <<"bib"<< relay_bib << "["<< relay_class << "|"<< class_id << "] not found in database.";
+		}
+		transaction.commit();
+		qfInfo() << fn << "Imported"<< i << "of" << n << "lines (header ignored)";
+		QMessageBox::information(this, tr("Information"), QString(tr("Import file finished. Imported %1 of %2 lines\n\nPress refresh button to show imported data.").arg(i).arg(n)));
+	}
+	catch (const qf::core::Exception &e) {
+		qf::qmlwidgets::dialogs::MessageBox::showException(fwk, e);
+	}
 }
