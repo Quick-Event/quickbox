@@ -632,7 +632,7 @@ void RelaysWidget::relays_importBibs() {
 				// guess class from bib number
 				for (auto&item : classes_map_bibs)
 				{
-					if (item.first < relay_bib)
+					if (item.first <= relay_bib)
 						class_id = item.second;
 				}
 				if (class_id == -1)
@@ -664,8 +664,8 @@ void RelaysWidget::relays_importBibs() {
 				qfWarning() << "CSV line" << n << "with" << relay_club << relay_name <<"bib"<< relay_bib << "["<< relay_class << "|"<< class_id << "] not found in database.";
 		}
 		transaction.commit();
-		qfInfo() << fn << "Imported"<< i << "of" << n << "lines (header ignored)";
-		QMessageBox::information(this, tr("Information"), QString(tr("Import file finished. Imported %1 of %2 lines\n\nPress refresh button to show imported data.").arg(i).arg(n)));
+		qfInfo() << fn << "Imported"<< i << "of" << n-1 << "data lines"; // -1 is header
+		QMessageBox::information(this, tr("Information"), QString(tr("Import file finished. Imported %1 of %2 lines\n\nPress refresh button to show imported data.").arg(i).arg(n-1)));
 	}
 	catch (const qf::core::Exception &e) {
 		qf::qmlwidgets::dialogs::MessageBox::showException(fwk, e);
