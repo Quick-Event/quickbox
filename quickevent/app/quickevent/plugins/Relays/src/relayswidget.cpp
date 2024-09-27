@@ -606,6 +606,7 @@ void RelaysWidget::relays_importBibs() {
 
 		int n = 0;
 		int i = 0;
+		QSet<int> loaded_numbers;
 
 		while (!ts.atEnd()) {
 			QStringList line = reader.readCSVLineSplitted();
@@ -619,11 +620,11 @@ void RelaysWidget::relays_importBibs() {
 			QString relay_name = line.value(ColRelName).trimmed();
 			int relay_bib = line.value(ColBib).toInt();
 			QString relay_class = line.value(ColClass).trimmed();
-			if(relay_club.isEmpty() || relay_name.isEmpty() || relay_bib == 0) {
+			if(relay_club.isEmpty() || relay_name.isEmpty()) {
 				QF_EXCEPTION(tr("Error reading CSV line: [%1]").arg(line.join(';')));
 			}
 			int class_id = -1;
-			if (relay_class.isEmpty()) {
+			if (relay_class.isEmpty() && relay_bib > 0) {
 				// guess class from bib number
 				for (auto&item : classes_map_bibs)
 				{
@@ -633,11 +634,24 @@ void RelaysWidget::relays_importBibs() {
 				if (class_id == -1)
 					QF_EXCEPTION(tr("Cannot guess class name from bib: '%1'").arg(relay_bib));
 			}
-			else {
-				class_id = classes_map.value(relay_class);
-				if(class_id == 0)
+			else if (!relay_class.isEmpty() && relay_bib >= 0){
+				class_id = classes_map.value(relay_class,-1);
+				if(class_id == -1)
 					QF_EXCEPTION(tr("Undefined class name: '%1'").arg(relay_class));
 			}
+			else {
+				if (relay_bib == 0)
+					qfWarning() << "Import CSV line" << n << "with" << relay_club << relay_name <<", cannot update, bib number 0 without class name";
+				else
+					qfWarning() << "Import CSV line" << n << "with" << relay_club << relay_name <<", cannot update, bib number"<< relay_bib <<"is negative";
+			}
+			if (relay_bib > 0) { // zero is for clear bib, negative is ignored
+				if (loaded_numbers.contains(relay_bib))
+					qfWarning() << "Import CSV line" << n << "with" << relay_club << relay_name <<", duplicate bib number"<< relay_bib;
+				else
+					loaded_numbers.insert(relay_bib);
+			}
+
 			q.bindValue(":club", relay_club);
 			q.bindValue(":name", relay_name);
 			q.bindValue(":classId", class_id);
