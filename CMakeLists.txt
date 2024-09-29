@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.18.4)
 
 set(WITH_QE_SHVAPI OFF CACHE BOOL "Build SHV API service with QuickEvent")
+set(QF_BUILD_QML_PLUGINS ON CACHE BOOL "Build with QML Plugins support")
 
 project(quickbox LANGUAGES C CXX)
 set(CMAKE_CXX_STANDARD 20)
