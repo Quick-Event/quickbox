@@ -93,7 +93,7 @@ void TxtImporter::importCompetitorsCSV()
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 	qf::qmlwidgets::dialogs::MessageBox mbx(fwk);
 	mbx.setIcon(QMessageBox::Information);
-	mbx.setText(tr("Import comma separated values UTF8 text files with header."));
+	mbx.setText(tr("Import UTF8 text file with comma separated values with first row as header.<br/>Separator is comma(,)"));
 	mbx.setInformativeText(tr("Each row should have following columns: "
 							  "<ol>"
 							  "<li>Registration</li>"
@@ -262,7 +262,7 @@ void TxtImporter::importRunsCzeCSV()
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 	qf::qmlwidgets::dialogs::MessageBox mbx(fwk);
 	mbx.setIcon(QMessageBox::Information);
-	mbx.setText(tr("Import comma separated values UTF8 text files with header.<br/>Separator is semicolon(;).<br/>Updates only existing runners (key is Czech registration)."));
+	mbx.setText(tr("Import UTF8 text file with comma separated values with first row as header.<br/>Separator is semicolon(;).<br/>Updates only existing runners (key is Czech registration)."));
 	mbx.setInformativeText(tr("Each row should have following columns: "
 							  "<ol>"
 							  "<li>Registration <i>- key</i></li>"
@@ -376,7 +376,7 @@ void TxtImporter::importRunsIdCSV()
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 	qf::qmlwidgets::dialogs::MessageBox mbx(fwk);
 	mbx.setIcon(QMessageBox::Information);
-	mbx.setText(tr("Import comma separated values UTF8 text files with header.<br/>Separator is semicolon(;).<br/>Updates only existing runners (key is <b>id</b> in module(table) <b>runs</b>)."));
+	mbx.setText(tr("Import UTF8 text file with comma separated values with first row as header.<br/>Separator is semicolon(;).<br/>Updates only existing runners (key is <b>id</b> in module(table) <b>runs</b>)."));
 	mbx.setInformativeText(tr("Each row should have following columns: "
 							  "<ol>"
 							  "<li>Runs Id <i>- key</i></li>"
@@ -490,7 +490,7 @@ void TxtImporter::importRunsIofCSV()
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 	qf::qmlwidgets::dialogs::MessageBox mbx(fwk);
 	mbx.setIcon(QMessageBox::Information);
-	mbx.setText(tr("Import comma separated values UTF8 text files with header.<br/>Separator is semicolon(;).<br/>Updates only existing runners (key is IOF ID)."));
+	mbx.setText(tr("Import UTF8 text file with comma separated values with first row as header.<br/>Separator is semicolon(;).<br/>Updates only existing runners (key is IOF ID)."));
 	mbx.setInformativeText(tr("Each row should have following columns: "
 							  "<ol>"
 							  "<li>IOF ID <i>- key</i></li>"
