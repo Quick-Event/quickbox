@@ -1183,12 +1183,13 @@ QVariantMap RunsPlugin::runsRecord(int run_id)
 void RunsPlugin::setRunsRecord(int run_id, const QVariant &rec)
 {
 	Q_ASSERT(m_partWidget);
-	if (auto *model = m_partWidget->findChild<RunsTableModel*>({}, Qt::FindChildrenRecursively); model) {
+	for (auto *model : m_partWidget->findChildren<RunsTableModel*>()) {
 		for (int row = 0; row < model->rowCount(); ++row) {
 			if (model->value(row, RunsTableModel::col_runs_id).toInt() == run_id) {
 				if (rec.metaType() == QMetaType(QMetaType::QVariantMap)) {
 					for (const auto &[key, val] : rec.toMap().asKeyValueRange()) {
-						model->setValue(row, key, val);
+						int col = model->columnIndex(key);
+						model->setData(model->index(row, col), val);
 					}
 					model->postRow(row, !qf::core::Exception::Throw);
 				}

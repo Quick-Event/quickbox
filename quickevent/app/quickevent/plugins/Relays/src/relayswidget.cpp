@@ -41,19 +41,17 @@
 #include <QPushButton>
 #include <QTimer>
 
+#include <random>
+
 //#define QF_TIMESCOPE_ENABLED
 #include <qf/core/utils/timescope.h>
-#include <random>
 
 namespace qfs = qf::core::sql;
 namespace qfw = qf::qmlwidgets;
-namespace qff = qf::qmlwidgets::framework;
 namespace qfd = qf::qmlwidgets::dialogs;
-namespace qfc = qf::core;
 namespace qfm = qf::core::model;
 using qf::qmlwidgets::framework::getPlugin;
 using Event::EventPlugin;
-using Runs::RunsPlugin;
 using Relays::RelaysPlugin;
 
 namespace {
@@ -82,7 +80,7 @@ RelaysWidget::RelaysWidget(QWidget *parent) :
 	ui->tblRelays->setPersistentSettingsId("tblRelays");
 	ui->tblRelays->setRowEditorMode(qfw::TableView::EditRowsMixed);
 	ui->tblRelays->setInlineEditSaveStrategy(qfw::TableView::OnEditedValueCommit);
-	qfm::SqlTableModel *m = new qfm::SqlTableModel(this);
+	auto *m = new qfm::SqlTableModel(this);
 	using CD = qfm::TableModel::ColumnDefinition;
 	m->clearColumns(col_COUNT);
 	m->setColumn(col_relays_id, CD("id").setReadOnly(true));
@@ -142,58 +140,58 @@ void RelaysWidget::settleDownInPartWidget(::PartWidget *part_widget)
 		main_tb->addWidget(m_cbxEditRelayOnPunch);
 	}
 	*/
-	qfw::Action *a_relays = part_widget->menuBar()->actionForPath("relay");
+	auto *a_relays = part_widget->menuBar()->actionForPath("relay");
 	a_relays->setText(tr("&Relays"));
 	{
-		qfw::Action *a = new qfw::Action("assignNumbers", tr("&Assign numbers"));
+		auto *a = new qfw::Action("assignNumbers", tr("&Assign numbers"));
 		a_relays->addActionInto(a);
 		connect(a, &qfw::Action::triggered, this, &RelaysWidget::relays_assignNumbers);
 	}
 	{
-		qfw::Action *a = new qfw::Action("importBibs", tr("&Import bibs from CSV"));
+		auto *a = new qfw::Action("importBibs", tr("&Import bibs from CSV"));
 		a_relays->addActionInto(a);
 		connect(a, &qfw::Action::triggered, this, &RelaysWidget::relays_importBibs);
 	}
 
-	qfw::Action *a_print = part_widget->menuBar()->actionForPath("print");
+	auto *a_print = part_widget->menuBar()->actionForPath("print");
 	a_print->setText(tr("&Print"));
 
-	qfw::Action *a_print_start_list = a_print->addMenuInto("startList", tr("&Start list"));
-	qfw::Action *a_print_start_list_classes = new qfw::Action("classes", tr("&Classes"));
+	auto *a_print_start_list = a_print->addMenuInto("startList", tr("&Start list"));
+	auto *a_print_start_list_classes = new qfw::Action("classes", tr("&Classes"));
 	a_print_start_list->addActionInto(a_print_start_list_classes);
 	connect(a_print_start_list_classes, &qfw::Action::triggered, this, &RelaysWidget::print_start_list_classes);
-	qfw::Action *a_print_start_list_clubs = new qfw::Action("clubs", tr("C&lubs"));
+	auto *a_print_start_list_clubs = new qfw::Action("clubs", tr("C&lubs"));
 	a_print_start_list->addActionInto(a_print_start_list_clubs);
 	connect(a_print_start_list_clubs, &qfw::Action::triggered, this, &RelaysWidget::print_start_list_clubs);
 
-	qfw::Action *a_print_results = a_print->addMenuInto("results", tr("&Results"));
+	auto *a_print_results = a_print->addMenuInto("results", tr("&Results"));
 	{
-		qfw::Action *a = new qfw::Action("nlegs", tr("&After n legs"));
+		auto *a = new qfw::Action("nlegs", tr("&After n legs"));
 		a_print_results->addActionInto(a);
 		connect(a, &qfw::Action::triggered, this, &RelaysWidget::print_results_nlegs);
 	}
 	{
-		qfw::Action *a = new qfw::Action("nlegs", tr("&Overall"));
+		auto *a = new qfw::Action("nlegs", tr("&Overall"));
 		a_print_results->addActionInto(a);
 		connect(a, &qfw::Action::triggered, this, &RelaysWidget::print_results_overal);
 	}
 	{
-		qfw::Action *a = new qfw::Action("nlegs", tr("Overall condensed"));
+		auto *a = new qfw::Action("nlegs", tr("Overall condensed"));
 		a_print_results->addActionInto(a);
 		connect(a, &qfw::Action::triggered, this, &RelaysWidget::print_results_overal_condensed);
 	}
 
-	qfw::Action *a_export = part_widget->menuBar()->actionForPath("export");
+	auto *a_export = part_widget->menuBar()->actionForPath("export");
 	a_export->setText(tr("E&xport"));
-	qfw::Action *a_export_startlist = a_export->addMenuInto("export", tr("&Start list"));
+	auto *a_export_startlist = a_export->addMenuInto("export", tr("&Start list"));
 	{
-		qfw::Action *a = new qfw::Action("exportStartListIofXml3", tr("IOF-XML 3.0"));
+		auto *a = new qfw::Action("exportStartListIofXml3", tr("IOF-XML 3.0"));
 		a_export_startlist->addActionInto(a);
 		connect(a, &qfw::Action::triggered, this, &RelaysWidget::export_start_list_iofxml3);
 	}
-	qfw::Action *a_export_results = a_export->addMenuInto("export", tr("&Results"));
+	auto *a_export_results = a_export->addMenuInto("export", tr("&Results"));
 	{
-		qfw::Action *a = new qfw::Action("exportResultsIofXml3", tr("IOF-XML 3.0"));
+		auto *a = new qfw::Action("exportResultsIofXml3", tr("IOF-XML 3.0"));
 		a_export_results->addActionInto(a);
 		connect(a, &qfw::Action::triggered, this, &RelaysWidget::export_results_iofxml3);
 	}

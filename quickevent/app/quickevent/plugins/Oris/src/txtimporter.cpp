@@ -14,10 +14,10 @@
 
 #include <QTextStream>
 
-namespace qfc = qf::core;
-namespace qfw = qf::qmlwidgets;
+// namespace qfc = qf::core;
+// namespace qfw = qf::qmlwidgets;
 namespace qfd = qf::qmlwidgets::dialogs;
-namespace qfm = qf::core::model;
+// namespace qfm = qf::core::model;
 namespace qfs = qf::core::sql;
 using qf::qmlwidgets::framework::getPlugin;
 using Event::EventPlugin;

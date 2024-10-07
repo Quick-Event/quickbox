@@ -120,7 +120,8 @@ void ShvClientService::onRpcMessageReceived(const shv::chainpack::RpcMessage &ms
 		auto correct_api_key = settings().apiKey().toStdString();
 		auto request_api_key = rq.userId().asMap().value("apiKey").asString();
 		qfDebug() << correct_api_key << "rq:" << request_api_key;
-		if (correct_api_key == request_api_key) {
+		m_rootNode->handleRpcRequest(rq);
+		if (static_cast<AccessLevel>(rq.accessLevel()) == AccessLevel::Admin || correct_api_key == request_api_key) {
 			m_rootNode->handleRpcRequest(rq);
 		}
 		else {
