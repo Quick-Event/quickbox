@@ -403,7 +403,7 @@ bool XmlImporter::importEntries(QXmlStreamReader &reader, const XmlCreators crea
 						it++;
 					}
 					bool ok;
-					QString item = QInputDialog::getItem(qf::qmlwidgets::framework::MainWindow::frameWork(), tr("Select which race import)"),
+					QString item = QInputDialog::getItem(qf::qmlwidgets::framework::MainWindow::frameWork(), tr("Select which race import"),
 														 tr("Races:"), items, 0, false, &ok);
 					if (ok && !item.isEmpty())
 						selected_race = races[item];
@@ -778,7 +778,7 @@ bool XmlImporter::importEvent(QXmlStreamReader &reader, const XmlCreators creato
 				it++;
 			}
 			bool ok;
-			QString item = QInputDialog::getItem(qf::qmlwidgets::framework::MainWindow::frameWork(), tr("Select which race import)"),
+			QString item = QInputDialog::getItem(qf::qmlwidgets::framework::MainWindow::frameWork(), tr("Select which race import"),
 												 tr("Races:"), items, 0, false, &ok);
 			if (ok && !item.isEmpty())
 				event_race = races[item];

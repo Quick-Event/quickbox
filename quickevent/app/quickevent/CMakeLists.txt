@@ -146,6 +146,16 @@ qt6_add_translation(QM_FILES
 	quickevent-uk_UA.ts
 )
 
+qt_add_lupdate(quickevent TS_FILES
+	quickevent-cs_CZ.ts
+	quickevent-fr_FR.ts
+	quickevent-nb_NO.ts
+	quickevent-nl_BE.ts
+	quickevent-pl_PL.ts
+	quickevent-ru_RU.ts
+	quickevent-uk_UA.ts
+)
+
 target_sources(quickevent PRIVATE ${QM_FILES})
 target_include_directories(quickevent PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/src)
 target_link_libraries(quickevent PUBLIC libquickeventcore libquickeventgui libqfqmlwidgets libsiut)
