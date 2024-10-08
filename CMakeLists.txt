@@ -15,7 +15,8 @@ endif()
 
 if (WIN32)
 	if(CMAKE_BUILD_TYPE STREQUAL "Release")
-		set(CMAKE_WIN32_EXECUTABLE ON) # Don't open a console window for Windows apps on Relase mode.
+ 		# comment out winmain temporarily to work around CI bug "indefined symbol __api___args" 
+		# set(CMAKE_WIN32_EXECUTABLE ON) # Don't open a console window for Windows apps on Relase mode.
 	endif()
 endif (WIN32)
 
