@@ -33,12 +33,7 @@ runs:
     - name: Install windows deps
       if: runner.os == 'Windows'
       run: |
-        # https://github.com/microsoft/vcpkg/issues/41199#issuecomment-2378255699
-        export SystemDrive="$SYSTEMDRIVE"
-        export SystemRoot="$SYSTEMROOT"
-        export windir="$WINDIR"
-        vcpkg install doctest:x64-mingw-dynamic trompeloeil:x64-mingw-dynamic
-        echo cmake_extra_args="'-DCMAKE_TOOLCHAIN_FILE=$VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake' '-DMINGW=ON' '-G MinGW Makefiles'" >> "$GITHUB_ENV"
+        echo cmake_extra_args="'-DMINGW=ON' '-G MinGW Makefiles'" >> "$GITHUB_ENV"
       shell: bash
 
     # Qt
