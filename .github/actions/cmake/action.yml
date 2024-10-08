@@ -61,9 +61,9 @@ runs:
         -S '${{github.workspace}}' \
         -B '${{github.workspace}}/build' \
         -DQF_BUILD_QML_PLUGINS=ON \
-        #-DCMAKE_BUILD_TYPE=Release \
         -DBUILD_TESTING=OFF \
         -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+        -DCMAKE_BUILD_TYPE=RelWithDebInfo \
         -DUSE_QT6=${{ inputs.use_qt6 }} \
         ${{ env.cmake_extra_args }} \
         ${{ inputs.additional_cmake_args }}
