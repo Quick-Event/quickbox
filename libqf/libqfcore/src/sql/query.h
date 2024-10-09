@@ -19,7 +19,7 @@ class QueryBuilder;
 class QFCORE_DECL_EXPORT Query : public QSqlQuery
 {
 private:
-	typedef QSqlQuery Super;
+	using Super = QSqlQuery;
 public:
 	explicit Query(const QSqlDatabase &db);
 	/// If connection_name is empty, the application's default database will be used.
@@ -39,8 +39,8 @@ public:
 	void execCommandsThrow(const QStringList &commands, const QMap<QString, QString> &replacements = QMap<QString, QString>());
 	QSqlRecord record() const;
 	int fieldIndex(const QString& field_name) const;
-	using Super::value;
 	QVariant value(const QString& field_name) const;
+	QVariant value(int ix) const;
 	QVariantMap values() const;
 	QString lastErrorText() const;
 private:

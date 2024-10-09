@@ -63,13 +63,21 @@ void DrawingGanttWidget::settleDownInDialog(qf::qmlwidgets::dialogs::Dialog *dlg
 		auto *cb = cb_check_runners;
 		cb->setChecked(true);
 		tb->addWidget(cb);
+#if QT_VERSION < QT_VERSION_CHECK(6, 8, 0)
 		connect(cb, &QCheckBox::stateChanged, this, update_class_check);
+#else
+		connect(cb, &QCheckBox::checkStateChanged, this, update_class_check);
+#endif
 	}
 	{
 		auto *cb = cb_check_courses;
 		cb->setChecked(true);
 		tb->addWidget(cb);
+#if QT_VERSION < QT_VERSION_CHECK(6, 8, 0)
 		connect(cb, &QCheckBox::stateChanged, this, update_class_check);
+#else
+		connect(cb, &QCheckBox::checkStateChanged, this, update_class_check);
+#endif
 	}
 	update_class_check();
 

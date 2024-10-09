@@ -125,7 +125,11 @@ bool XmlImporter::readPersonNode (SPerson &s, QXmlStreamReader &reader, [[maybe_
 bool XmlImporter::readRaceNode(SRace &s, QXmlStreamReader &reader)
 {
 	QDateTime dt;
+#if QT_VERSION < QT_VERSION_CHECK(6, 8, 0)
 	dt.setTimeSpec(Qt::UTC);
+#else
+	dt.setTimeZone(QTimeZone::utc());
+#endif
 	while(reader.readNextStartElement()) {
 		if (reader.name().toString() == "Name")
 			s.name = reader.readElementText();
@@ -145,7 +149,7 @@ bool XmlImporter::readRaceNode(SRace &s, QXmlStreamReader &reader)
 		else
 			reader.skipCurrentElement();
 	}
-	s.datetime = dt.toTimeSpec(Qt::LocalTime);
+	s.datetime = dt.toLocalTime();
 	return s.number != 0 && s.datetime.isValid();
 }
 

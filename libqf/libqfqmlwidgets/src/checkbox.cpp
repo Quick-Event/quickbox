@@ -1,13 +1,16 @@
 #include "checkbox.h"
 
-namespace qf {
-namespace qmlwidgets {
+namespace qf::qmlwidgets {
 
 CheckBox::CheckBox(QWidget *parent)
 	: Super(parent)
 	, IDataWidget(this)
 {
+#if QT_VERSION < QT_VERSION_CHECK(6, 8, 0)
 	connect(this, &QCheckBox::stateChanged, this, &CheckBox::onStateChanged);
+#else
+	connect(this, &QCheckBox::checkStateChanged, this, &CheckBox::onStateChanged);
+#endif
 }
 
 QVariant CheckBox::dataValue()
@@ -44,6 +47,6 @@ void CheckBox::onStateChanged(int st)
 	emit dataValueChanged(st);
 }
 
-} // namespace qmlwidgets
-} // namespace qf
+} // namespace qf::qmlwidgets
+
 

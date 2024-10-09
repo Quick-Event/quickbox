@@ -635,10 +635,16 @@ void ClassesWidget::import_ocad_iofxml_2()
 		QFile f(fn);
 		if(f.open(QFile::ReadOnly)) {
 			QDomDocument xdoc;
+#if QT_VERSION < QT_VERSION_CHECK(6, 8, 0)
 			QString err_str; int err_line;
-			if(!xdoc.setContent(&f, &err_str, &err_line))
+			if(!xdoc.setContent(&f, &err_str, &err_line)) {
 				QF_EXCEPTION(QString("Error parsing xml file '%1' at line: %2").arg(err_str).arg(err_line));
-
+			}
+#else
+			if(auto res = xdoc.setContent(&f); !res) {
+				QF_EXCEPTION(QString("Error parsing xml file '%1' at line: %2").arg(res.errorMessage).arg(res.errorLine));
+			}
+#endif
 			QDomNodeList xml_courses = xdoc.elementsByTagName(QStringLiteral("Course"));
 
 			QList<ImportCourseDef> defined_courses_list;
@@ -700,10 +706,16 @@ void ClassesWidget::import_ocad_iofxml_3()
 		QFile f(fn);
 		if(f.open(QFile::ReadOnly)) {
 			QDomDocument xdoc;
+#if QT_VERSION < QT_VERSION_CHECK(6, 8, 0)
 			QString err_str; int err_line;
 			if(!xdoc.setContent(&f, &err_str, &err_line))
 				QF_EXCEPTION(QString("Error parsing xml file '%1' at line: %2").arg(err_str).arg(err_line));
 
+#else
+			if(auto res = xdoc.setContent(&f); !res) {
+				QF_EXCEPTION(QString("Error parsing xml file '%1' at line: %2").arg(res.errorMessage).arg(res.errorLine));
+			}
+#endif
 			QList<quickevent::core::CodeDef> defined_codes;
 			{
 				QDomElement el_course_data = xdoc.elementsByTagName(QStringLiteral("RaceCourseData")).at(0).toElement();

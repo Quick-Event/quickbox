@@ -125,6 +125,11 @@ QVariant Query::value(const QString &field_name) const
 	return ret;
 }
 
+QVariant Query::value(int ix) const
+{
+	return Super::value(ix);
+}
+
 QVariantMap Query::values() const
 {
 	QVariantMap ret;
