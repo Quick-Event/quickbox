@@ -13,12 +13,12 @@ jobs:
   build_linux:
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         submodules: 'recursive'
 
     - name: Install Qt
-      uses: jurplel/install-qt-action@v3
+      uses: jurplel/install-qt-action@v4
       with:
         cache: 'true'
         version: ${{ env.QT_VERSION }}
@@ -42,13 +42,13 @@ jobs:
         ./quickevent/make-dist.sh --src-dir . --qt-dir ${Qt5_DIR} --work-dir ./build --appimage-tool /opt/appimagetool-x86_64.AppImage 
 
     - name: Save AppImage
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: quickevent-${{ env.VERSION }}-linux64.Appimage
         path: build/artifacts/quickevent-*-linux64.AppImage
 
     - name: Save gzip
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: quickevent-${{ env.VERSION }}-linux64.tgz
         path: build/artifacts/quickevent-*-linux64.tgz
@@ -61,13 +61,13 @@ jobs:
         shell: bash
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         submodules: 'recursive'
 
     - name: Cache Libs
       id: cache-libs
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: |
           C:/openssl/bin/libssl-1_1-x64.dll
@@ -87,7 +87,7 @@ jobs:
       shell: cmd
 
     - name: Install Qt
-      uses: jurplel/install-qt-action@v3
+      uses: jurplel/install-qt-action@v4
       with:
         cache: 'true'
         version: ${{ env.QT_VERSION }}
@@ -107,11 +107,11 @@ jobs:
     - name: Create installer
       run: |
         choco install innosetup --no-progress
-        "C:\Program Files (x86)\Inno Setup 6\iscc.exe" "/DVERSION=%VERSION%" "/DQT_DIR=%Qt5_Dir%" "/DPSQL_DIR=C:/Program Files/PostgreSQL/14" "/DSSL_DIR=C:\openssl\bin" quickevent/quickevent.iss
+        "C:\Program Files (x86)\Inno Setup 6\iscc.exe" "/DVERSION=%VERSION%" "/DQT_DIR=%QT_ROOT_DIR%" "/DPSQL_DIR=C:/Program Files/PostgreSQL/14" "/DSSL_DIR=C:\openssl\bin" quickevent/quickevent.iss
       shell: cmd
 
     - name: Save setup
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: quickevent-${{ env.VERSION }}-win64-setup.exe
         path: _inno\quickevent\quickevent-${{ env.VERSION }}-win64-setup.exe
