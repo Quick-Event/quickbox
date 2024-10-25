@@ -36,9 +36,9 @@ runs:
 
     - name: Remove not needed SQL plugins
       run: |
-        rm ${{ env.Qt6_DIR }}/plugins/sqldrivers/libqsqlmimer.so
-        rm ${{ env.Qt6_DIR }}/plugins/sqldrivers/libqsqlmysql.so
-        rm ${{ env.Qt6_DIR }}/plugins/sqldrivers/libqsqlodbc.so
+        rm ${{ env.QT_ROOT_DIR }}/plugins/sqldrivers/libqsqlmimer.so
+        rm ${{ env.QT_ROOT_DIR }}/plugins/sqldrivers/libqsqlmysql.so
+        rm ${{ env.QT_ROOT_DIR }}/plugins/sqldrivers/libqsqlodbc.so
       shell: bash
 
     - name: Create AppImage
@@ -54,7 +54,7 @@ runs:
       shell: bash
 
     - name: Upload AppImage
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: quickevent-${{ env.VERSION }}-x86_64.Appimage
         path: QuickEvent-*-x86_64.AppImage

@@ -8,11 +8,11 @@ on:
 
 jobs:
   windows:
-    name: Qt 6.7 / Windows
+    name: Qt 6.8 / Windows
     runs-on: windows-2022
     steps:
       - name: Clone the repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           submodules: true
 
@@ -79,7 +79,7 @@ jobs:
         run: iscc "-DBUILD_DIR=${{ github.workspace }}/install" "-DVERSION=${{ env.VERSION }}" quickevent/quickevent.iss
 
       - name: Upload installer
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: quickevent-${{ env.VERSION }}-setup.exe
           path: ${{ github.workspace }}/install/_inno/quickevent/quickevent-*-setup.exe
