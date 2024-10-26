@@ -113,10 +113,11 @@ echo APP_NAME: $APP_NAME
 echo SRC_DIR: $SRC_DIR
 echo WORK_DIR: $WORK_DIR
 echo NO_CLEAN: $NO_CLEAN
+echo QT_ROOT_DIR: $QT_ROOT_DIR
 
 if [ -z $USE_SYSTEM_QT ]; then
-	QT_LIB_DIR=$QT_DIR/lib
-	QMAKE=$QT_DIR/bin/qmake
+	QT_LIB_DIR=$QT_ROOT_DIR/lib
+	QMAKE=$QT_ROOT_DIR/bin/qmake
 	DISTRO_NAME=$APP_NAME-$APP_VER-linux64
 else
 	QT_DIR=/usr/lib/i386-linux-gnu/qt5
