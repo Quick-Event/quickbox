@@ -662,7 +662,31 @@ QString RelaysPlugin::resultsIofXml30()
 				const qf::core::utils::TreeTableRow tt_leg_row = tt_legs.row(k);
 				auto time = quickevent::core::og::TimeMs::fromVariant(tt_leg_row.value("time"));
 				// omit from export if leg does not exist (rundId == 0) or runner with OK status did not finish yet
-				if (tt_leg_row.value("runId").toInt() == 0 || (time.isValid() && time.msec() == 0))
+				if (tt_leg_row.value("runId").toInt() == 0) {
+					// empty TeamMemberResult if leg does not exists - defined in IOF XML v3
+					// https://github.com/international-orienteering-federation/datastandard-v3/blob/24eb108e4c6b5e2904e5f8f0e49142e45e2c5230/IOF.xsd#L2580
+					qfDebug() << "Empty LEG for : Leg " << k+1 << ", Bib " << QString::number(relay_number) + '.' + QString::number(k+1);
+					QVariantList member_result{"TeamMemberResult"};
+					QVariantList person_result{"Result"};
+					append_list(person_result, QVariantList{"Leg", k+1 } );
+					append_list(person_result, QVariantList{"BibNumber", QString::number(relay_number) + '.' + QString::number(k+1)});
+					quickevent::core::RunStatus dns;
+					dns.setDisqualified(true);
+					dns.setDidNotStart(true);
+					append_list(person_result, QVariantList{"Status", dns.toXmlExportString()});
+					QVariantList overall_result{"OverallResult"};
+					{
+						quickevent::core::RunStatus dnf;
+						dnf.setDisqualified(true);
+						dnf.setDidNotFinish(true);
+						append_list(overall_result, QVariantList{"Status", dnf.toXmlExportString()});
+					}
+					append_list(person_result, overall_result);
+					append_list(member_result, person_result);
+					append_list(team_result, member_result);
+					continue;
+				}
+				else if (time.isValid() && time.msec() == 0)
 					continue;
 				QVariantList member_result{"TeamMemberResult"};
 				QVariantList person{"Person"};

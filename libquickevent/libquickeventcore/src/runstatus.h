@@ -25,6 +25,14 @@ public:
 	QString toHtmlExportString() const;
 	QString toString() const;
 
+	void setDisqualified(bool value) { m_disqualified = value; }
+	void setDisqualifiedByOrganizer(bool value)  { m_disqualifiedByOrganizer = value; }
+	void setNotCompeting(bool value) { m_notCompeting = value; }
+	void setMissingPunch(bool value) { m_missingPunch = value; }
+	void setDidNotStart(bool value) { m_didNotStart = value; }
+	void setDidNotFinish(bool value) { m_didNotFinish = value; }
+	void setOverTime(bool value) { m_overTime = value; }
+
 	bool idDisqualified() const { return m_disqualified; }
 	bool isDisqualifiedByOrganizer() const { return m_disqualifiedByOrganizer; }
 	bool isNotCompeting() const { return m_notCompeting; }
