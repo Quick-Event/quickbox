@@ -28,7 +28,6 @@
 
 #include <qf/core/utils/timescope.h>
 
-namespace qfw = qf::qmlwidgets;
 namespace qff = qf::qmlwidgets::framework;
 namespace qfd = qf::qmlwidgets::dialogs;
 namespace qfm = qf::core::model;
@@ -47,13 +46,9 @@ RelaysPlugin::RelaysPlugin(QObject *parent)
 	connect(this, &RelaysPlugin::installed, this, &RelaysPlugin::onInstalled, Qt::QueuedConnection);
 }
 
-RelaysPlugin::~RelaysPlugin()
-{
-}
-
 QObject *RelaysPlugin::createRelayDocument(QObject *parent)
 {
-	RelayDocument *ret = new  RelayDocument(parent);
+	auto *ret = new  RelayDocument(parent);
 	return ret;
 }
 
@@ -365,7 +360,7 @@ qf::core::utils::TreeTable RelaysPlugin::nLegsClassResultsTable(int class_id, in
 		}
 		std::sort(relay_stime.begin(), relay_stime.end(), [](const LegTime &a, const LegTime &b) {return a.stime < b.stime;});
 		int pos = 0;
-		int winner_time = (relay_stime.size() != 0) ? relay_stime.begin()->stime : 0;
+		int winner_time = (!relay_stime.empty()) ? relay_stime.begin()->stime : 0;
 		for(const auto &p : relay_stime) {
 			int relay_id = p.relayId;
 			for (int i = 0; i < relays.count(); ++i) {
@@ -537,17 +532,17 @@ QVariant RelaysPlugin::startListByClassesTableData(const QString &class_filter)
 	//qfInfo() << tt.toString();
 	return tt.toVariant();
 }
-
-static void append_list(QVariantList &lst, const QVariantList &new_lst)
+namespace{
+void append_list(QVariantList &lst, const QVariantList &new_lst)
 {
 	lst.insert(lst.count(), new_lst);
 }
 
-static QString datetime_to_string(const QDateTime &dt)
+QString datetime_to_string(const QDateTime &dt)
 {
 	return quickevent::core::Utils::dateTimeToIsoStringWithUtcOffset(dt);
 }
-
+}
 QString RelaysPlugin::resultsIofXml30()
 {
 	QDateTime start00 = getPlugin<EventPlugin>()->stageStartDateTime(1);
@@ -678,8 +673,9 @@ QString RelaysPlugin::resultsIofXml30()
 					append_list(team_result, member_result);
 					continue;
 				}
-				else if (time.isValid() && time.msec() == 0)
+				if (time.isValid() && time.msec() == 0) {
 					continue;
+				}
 				QVariantList member_result{"TeamMemberResult"};
 				QVariantList person{"Person"};
 				if (!is_iof_race) {

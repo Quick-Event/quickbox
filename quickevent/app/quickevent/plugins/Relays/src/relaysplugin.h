@@ -30,7 +30,7 @@ private:
 	using Super = qf::qmlwidgets::framework::Plugin;
 public:
 	RelaysPlugin(QObject *parent = nullptr);
-	~RelaysPlugin() Q_DECL_OVERRIDE;
+	~RelaysPlugin() override = default;
 
 	qf::qmlwidgets::framework::PartWidget *partWidget() {return m_partWidget;}
 

@@ -19,7 +19,7 @@ namespace qmlwidgets { class ForeignKeyComboBox; }
 namespace quickevent { namespace core { class CodeDef; }}
 
 class CourseItemDelegate;
-class ImportCourseDef;
+struct ImportCourseDef;
 
 class ClassesWidget : public QFrame
 {
