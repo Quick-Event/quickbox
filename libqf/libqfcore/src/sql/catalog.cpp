@@ -17,54 +17,8 @@
 using namespace qf::core::sql;
 
 //=========================================
-//                          FieldInfo
+// FieldInfo
 //=========================================
-#if 0
-QVariant FieldInfo::seqNextVal()
-{
-	QVariant ret;
-	if(!isValid()) return ret;
-	SqlUtils conn = catalog()->connection();
-	if(connection.driver_name.endsWith("PSQL")) {
-		QString s = seqName();
-		if(!s.isEmpty()) {
-			QSqlQuery q(connection.driver()->createResult());
-			q.setForwardOnly(true);
-			if(!q.exec(QString("SELECT nextval('%1');").arg(s))) {
-				QF_SQL_EXCEPTION(QObject::tr("Error getting the sequence nextval('%1')").arg(s));
-			}
-			while(q.next()) {ret = q.value(0); break;}
-		}
-	}
-	else if(connection.driver_name.endsWith("SQLITE")) {
-		QString s = seqName();
-		if(!s.isEmpty()) {
-			qfLogFuncFrame();
-			QString t = dbName() + ".sqlite_sequence";
-			QSqlQuery q(connection.driver()->createResult());
-			q.setForwardOnly(true);
-			bool ok = false;
-			do {
-				ok = q.exec(QString("SELECT seq FROM %1 WHERE name='%2'").arg(t).arg(s));
-				if(!ok || !q.next()) break;
-				int i = q.value(0).toInt() + 1;
-				qfTrash() << "\t" << QString("UPDATE %1 SET seq = seq + 1 WHERE name='%2'").arg(t).arg(s);
-				ok = q.exec(QString("UPDATE %1 SET seq = seq + 1 WHERE name='%2'").arg(t).arg(s));
-				if(!ok) break;
-				ok = q.exec(QString("SELECT seq FROM %1 WHERE name='%2'").arg(t).arg(s));
-				if(!ok || !q.next()) break;
-				int j = q.value(0).toInt();
-				if(i != j) {ok = false; break;}
-				qfTrash() << "\t" << "next val:" << j;
-				ret = j;
-				ok = true;
-			} while(false);
-			if(!ok) QF_SQL_EXCEPTION(QObject::tr("Error getting the sequence nextval('%1')").arg(s));
-		}
-	}
-	return ret;
-}
-#endif
 void FieldInfo::setName(const QString &n)
 {
 	QString f, t, d;
