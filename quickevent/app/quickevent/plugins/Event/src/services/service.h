@@ -31,7 +31,8 @@ public:
 	explicit Service(const QString &name, QObject *parent = nullptr);
 	~Service() override;
 
-	QString name() const {return objectName();}
+	QString serviceId() const {return objectName();}
+	virtual QString serviceDisplayName() const {return serviceId();}
 
 	virtual void run();
 	virtual void stop();

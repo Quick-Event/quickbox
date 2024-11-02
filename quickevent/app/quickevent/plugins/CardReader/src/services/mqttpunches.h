@@ -35,8 +35,6 @@ public:
 	void run() override;
 	void stop() override;
 	MqttPunchesSettings settings() const {return MqttPunchesSettings(m_settings);}
-
-	static QString serviceName();
 private:
 	void onDbEventNotify(const QString &domain, int connection_id, const QVariant &data);
 	void onRawSIDataUdpSocketReadyRead();

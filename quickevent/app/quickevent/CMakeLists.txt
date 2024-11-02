@@ -54,6 +54,7 @@ add_executable(quickevent
 	plugins/Event/src/eventconfig.cpp
 	plugins/Event/src/eventdialogwidget.cpp
 	plugins/Event/src/eventplugin.cpp
+
 	plugins/Event/src/services/emmaclient.cpp
 	plugins/Event/src/services/emmaclientwidget.cpp
 	plugins/Event/src/services/oresultsclient.cpp
@@ -61,6 +62,10 @@ add_executable(quickevent
 	plugins/Event/src/services/service.cpp
 	plugins/Event/src/services/serviceswidget.cpp
 	plugins/Event/src/services/servicewidget.cpp
+	plugins/Event/src/services/qx/qxclientservice.cpp plugins/Event/src/services/qx/qxclientservice.h
+	plugins/Event/src/services/qx/qxclientservicewidget.cpp plugins/Event/src/services/qx/qxclientservicewidget.h plugins/Event/src/services/qx/qxclientservicewidget.ui
+
+
 	plugins/Event/src/stage.cpp
 	plugins/Event/src/stagedocument.cpp
 	plugins/Event/src/stagewidget.cpp
@@ -125,17 +130,6 @@ add_executable(quickevent
 	quickevent.rc
 )
 
-if(WITH_QE_SHVAPI)
-	target_compile_definitions(quickevent PRIVATE WITH_QE_SHVAPI)
-	target_sources(quickevent PRIVATE
-		plugins/Event/src/services/shvapi/shvclientservice.cpp plugins/Event/src/services/shvapi/shvclientservice.h
-		plugins/Event/src/services/shvapi/shvclientservicewidget.cpp plugins/Event/src/services/shvapi/shvclientservicewidget.h plugins/Event/src/services/shvapi/shvclientservicewidget.ui
-		plugins/Event/src/services/shvapi/shvnode.cpp
-		plugins/Event/src/services/shvapi/sqlapinode.cpp
-		plugins/Event/src/services/shvapi/nodes.cpp
-	)
-endif()
-
 qt6_add_translation(QM_FILES
 	quickevent-cs_CZ.ts
 	quickevent-fr_FR.ts
@@ -159,9 +153,6 @@ qt_add_lupdate(quickevent TS_FILES
 target_sources(quickevent PRIVATE ${QM_FILES})
 target_include_directories(quickevent PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/src)
 target_link_libraries(quickevent PUBLIC libquickeventcore libquickeventgui libqfqmlwidgets libsiut)
-if(WITH_QE_SHVAPI)
-	target_link_libraries(quickevent PUBLIC libshviotqt)
-endif()
 
 install(TARGETS quickevent)
 install(FILES ${QM_FILES} DESTINATION ${CMAKE_INSTALL_BINDIR}/translations)

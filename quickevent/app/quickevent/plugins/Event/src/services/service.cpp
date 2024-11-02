@@ -43,9 +43,9 @@ Service::~Service()
 QString Service::settingsGroup() const
 {
 	if (m_eventName.isEmpty()) {
-		return QStringLiteral("services/%1").arg(name());
+		return QStringLiteral("services/%1").arg(serviceId());
 	}
-	return QStringLiteral("services/%1/%2").arg(m_eventName, name());
+	return QStringLiteral("services/%1/%2").arg(m_eventName, serviceId());
 }
 
 void Service::onEventOpen()
@@ -123,7 +123,7 @@ void Service::showDetail(QWidget *parent)
 		return;
 	qfd::Dialog dlg(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, parent);
 	dlg.setCentralWidget(cw);
-	dlg.setWindowTitle(name());
+	dlg.setWindowTitle(serviceId());
 	dlg.exec();
 }
 
@@ -142,7 +142,7 @@ Service *Service::serviceByName(const QString &service_name)
 {
 	for (int i = 0; i < serviceCount(); ++i) {
 		Service *svc = serviceAt(i);
-		if(svc->name() == service_name) {
+		if(svc->serviceId() == service_name) {
 			return svc;
 		}
 	}

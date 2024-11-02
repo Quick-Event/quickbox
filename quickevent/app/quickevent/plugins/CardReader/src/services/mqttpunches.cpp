@@ -52,10 +52,10 @@ void MqttPunches::stop()
 	QF_SAFE_DELETE(m_rawSIDataUdpSocket);
 }
 
-QString MqttPunches::serviceName()
-{
-	return QStringLiteral("MqttPunches");
-}
+//QString MqttPunches::serviceName()
+//{
+//	return QStringLiteral("MqttPunches");
+//}
 
 void MqttPunches::onDbEventNotify(const QString &domain, int connection_id, const QVariant &data)
 {

@@ -94,7 +94,7 @@ public:
 	Q_INVOKABLE QString classNameById(int class_id);
 
 	QString shvApiEventId() const;
-	static QString createShvApiKey();
+	static QString createApiKey(int length);
 
 	DbSchema* dbSchema();
 	static int dbVersion();

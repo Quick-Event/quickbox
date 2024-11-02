@@ -36,7 +36,7 @@ void ServicesWidget::reload()
 		ServiceWidget *sw = new ServiceWidget();
 		sw->setStatus(svc->status());
 		connect(svc, &Service::statusChanged, sw, &ServiceWidget::setStatus);
-		sw->setServiceName(svc->name());
+		sw->setServiceName(svc->serviceDisplayName());
 		sw->setMessage(svc->statusMessage());
 		connect(svc, &Service::statusMessageChanged, sw, &ServiceWidget::setMessage);
 

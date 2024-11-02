@@ -5,14 +5,11 @@
 #include "dbschema.h"
 #include "stagedocument.h"
 #include "stagewidget.h"
-#include "../../Core/src/coreplugin.h"
 #include "../../Core/src/widgets/appstatusbar.h"
 
 #include "services/serviceswidget.h"
 #include "services/emmaclient.h"
-#ifdef WITH_QE_SHVAPI
-#include "services/shvapi/shvclientservice.h"
-#endif
+#include "services/qx/qxclientservice.h"
 
 #include <quickevent/core/og/timems.h>
 
@@ -379,10 +376,8 @@ void EventPlugin::onInstalled()
 	auto *emma_client = new services::EmmaClient(this);
 	services::Service::addService(emma_client);
 
-#ifdef WITH_QE_SHVAPI
-	auto shvapi_client = new services::shvapi::ShvClientService(this);
+	auto shvapi_client = new services::qx::QxClientService(this);
 	services::Service::addService(shvapi_client);
-#endif
 
 	{
 		m_servicesDockWidget = new qff::DockWidget(nullptr);
@@ -508,7 +503,7 @@ QString EventPlugin::shvApiEventId() const
 	return eventName() + "-" + QString::number(m_eventConfig->importId());
 }
 
-QString EventPlugin::createShvApiKey()
+QString EventPlugin::createApiKey(int length)
 {
 	QString key;
 	static const QList<char> vowels{'a', 'e', 'i', 'o', 'u', 'y'};
@@ -521,7 +516,7 @@ QString EventPlugin::createShvApiKey()
 		}
 		return cc;
 	} ();
-	for (int i = 0; i < 12; i++) {
+	for (int i = 0; i < length; i++) {
 		if (i % 2 == 0) {
 			auto ix = QRandomGenerator::global()->generate() % consonants.size();
 			key += consonants[ix];

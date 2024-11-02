@@ -114,7 +114,7 @@ git sw qe3
 git submodule update --init --recursive
 mkdir build
 cd build
-cmake .. -DWITH_QE_SHVAPI=ON -DCMAKE_GENERATOR:STRING=Ninja -DCMAKE_BUILD_TYPE:STRING=Debug -DCMAKE_PREFIX_PATH:PATH=/home/fanda/app/qt5/6.6.2/gcc_64
+cmake .. -DCMAKE_GENERATOR:STRING=Ninja -DCMAKE_BUILD_TYPE:STRING=Debug -DCMAKE_PREFIX_PATH:PATH=/home/fanda/app/qt5/6.6.2/gcc_64
 cmake --build . 
 cmake --install . --prefix /path/to/install/qe3
 ```

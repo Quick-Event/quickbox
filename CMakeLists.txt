@@ -1,6 +1,5 @@
 cmake_minimum_required(VERSION 3.18.4)
 
-set(WITH_QE_SHVAPI OFF CACHE BOOL "Build SHV API service with QuickEvent")
 set(QF_BUILD_QML_PLUGINS ON CACHE BOOL "Build with QML Plugins support")
 
 project(quickbox LANGUAGES C CXX)
@@ -46,11 +45,6 @@ if(Qt_FOUND)
 		add_subdirectory(quickhttpd)
 		add_subdirectory(quickshow)
 		add_subdirectory(tools/qsqlmon)
-		if(WITH_QE_SHVAPI)
-			set(LIBSHV_WITH_BROKER OFF CACHE BOOL "")
-			set(LIBSHV_WITH_VISU OFF CACHE BOOL "")
-			add_subdirectory(3rdparty/libshv)
-		endif()
 	endif()
 else()
 	message(FATAL_ERROR "Qt not found")
