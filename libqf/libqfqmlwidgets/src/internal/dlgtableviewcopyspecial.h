@@ -3,6 +3,8 @@
 
 #include <QDialog>
 
+#include "../tableview.h"
+
 namespace qf {
 namespace qmlwidgets {
 namespace internal {
@@ -21,7 +23,7 @@ public:
 	QString fieldsSeparator();
 	QString rowsSeparator();
 	QString fieldsQuotes();
-	bool replaceEscapes();
+	qf::qmlwidgets::TableView::ReplaceEscapes replaceEscapes();
 private:
 	Ui::DlgTableViewCopySpecial *ui;
 };

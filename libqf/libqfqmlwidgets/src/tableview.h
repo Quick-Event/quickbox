@@ -158,7 +158,9 @@ public:
 
 	Q_SIGNAL void sqlException(const QString &what, const QString &where, const QString &stack_trace);
 
-	static void copySelectionToClipboard(QTableView *table_view);
+	enum class ReplaceEscapes {Never, Always, QuoteIfNeeded};
+	static void copySelectionToClipboard(const QTableView *table_view);
+	void copySelectionToClipboard() const { copySelectionToClipboard(this); }
 
 	Q_SLOT void loadPersistentSettings();
 	Q_SLOT void savePersistentSettings();
@@ -193,7 +195,7 @@ protected:
 	virtual void createActions();
 
 	void setValueInSelection_helper(const QVariant &new_val);
-	void copySpecial_helper(const QString &fields_separator, const QString &rows_separator, const QString &field_quotes, bool replace_escapes);
+	static void copySpecial_helper(const QTableView *table_view, const QString &fields_separator, const QString &rows_separator, const QString &field_quotes, ReplaceEscapes replace_escapes);
 	Q_SLOT void generateSequenceInSelection();
 
 	//static const int StandardContextMenuActionsGroups = AllActions & ~(SetValueActions | BlobActions | PasteActions);
