@@ -43,7 +43,7 @@ LogWidgetTableView::LogWidgetTableView(QWidget *parent)
 void LogWidgetTableView::copy()
 {
 	qfLogFuncFrame();
-	qf::qmlwidgets::TableView::copySelectionToClipboard(this);
+	TableView::copySelectionToClipboard(this);
 }
 
 class LogFilterProxyModel : public QSortFilterProxyModel
