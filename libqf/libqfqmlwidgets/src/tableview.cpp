@@ -144,44 +144,9 @@ QAbstractProxyModel* TableView::lastProxyModel() const
 	return ret;
 }
 
-void TableView::copySelectionToClipboard(QTableView *table_view)
+void TableView::copySelectionToClipboard(const QTableView *table_view)
 {
-	qfLogFuncFrame();
-	auto *m = table_view->model();
-	if(!m)
-		return;
-	int n = 0;
-	QString rows;
-	QItemSelection sel = table_view->selectionModel()->selection();
-	foreach(const QItemSelectionRange &sel1, sel) {
-		if(sel1.isValid()) {
-			for(int row=sel1.top(); row<=sel1.bottom(); row++) {
-				QString cells;
-				for(int col=sel1.left(); col<=sel1.right(); col++) {
-					QModelIndex ix = m->index(row, col);
-					QString s;
-					s = ix.data(Qt::DisplayRole).toString();
-					static constexpr bool replace_escapes = true;
-					if(replace_escapes) {
-						s.replace('\r', QStringLiteral("\\r"));
-						s.replace('\n', QStringLiteral("\\n"));
-						s.replace('\t', QStringLiteral("\\t"));
-					}
-					if(col > sel1.left())
-						cells += '\t';
-					cells += s;
-				}
-				if(n++ > 0)
-					rows += '\n';
-				rows += cells;
-			}
-		}
-	}
-	if(!rows.isEmpty()) {
-		//qfInfo() << "\tSetting clipboard:" << rows;
-		QClipboard *clipboard = QApplication::clipboard();
-		clipboard->setText(rows);
-	}
+	copySpecial_helper(table_view, "\t", "\n", "", ReplaceEscapes::QuoteIfNeeded);
 }
 
 void TableView::setModel(QAbstractItemModel *model)
@@ -537,14 +502,14 @@ int TableView::reloadRow(int row_no)
 void TableView::copy()
 {
 	qfLogFuncFrame();
-	copySpecial_helper("\t", "\n", QString(), true);
+	copySelectionToClipboard();
 }
 
 void TableView::copySpecial()
 {
 	internal::DlgTableViewCopySpecial dlg(this);
 	if(dlg.exec()) {
-		copySpecial_helper(dlg.fieldsSeparator(), dlg.rowsSeparator(), dlg.fieldsQuotes(), dlg.replaceEscapes());
+		copySpecial_helper(this, dlg.fieldsSeparator(), dlg.rowsSeparator(), dlg.fieldsQuotes(), dlg.replaceEscapes());
 	}
 }
 
@@ -1974,48 +1939,78 @@ void TableView::createActions()
 	}
 }
 
-void TableView::copySpecial_helper(const QString &fields_separator, const QString &rows_separator, const QString &field_quotes, bool replace_escapes)
+void TableView::copySpecial_helper(const QTableView *table_view, const QString &fields_separator, const QString &rows_separator, const QString &field_quotes, ReplaceEscapes replace_escapes)
 {
 	qfLogFuncFrame();
-	auto *m = model();
+	auto *m = table_view->model();
 	if(!m)
 		return;
-	int n = 0;
-	QString rows;
-	QItemSelection sel = selectionModel()->selection();
-	foreach(QItemSelectionRange sel1, sel) {
-		//QItemSelectionRange sel1 = sel.value(0);
-		if(sel1.isValid()) {
-			//qfInfo() << "sel count:" << sel.count() << "sel range left:" << sel1.left() << "right:" << sel1.right() << "top:" << sel1.top() << "bottom:" << sel1.bottom();
-			for(int row=sel1.top(); row<=sel1.bottom(); row++) {
-				QString cells;
-				for(int col=sel1.left(); col<=sel1.right(); col++) {
-					QModelIndex ix = m->index(row, col);
-					QString s;
-					if(!ix.data(qf::core::model::TableModel::ValueIsNullRole).toBool()) {
-						s = ix.data(Qt::DisplayRole).toString();
-						if(s.isEmpty()) {
-							QVariant v = ix.data(Qt::CheckStateRole);
-							if(v.isValid()) {
-								s = (v.toInt() == Qt::Checked)? QStringLiteral("True"): QStringLiteral("False");
-							}
+	auto selection_union = [](const QItemSelection &selection) {
+		QMap<int, QList<int>> res;
+		foreach(QItemSelectionRange sel, selection) {
+			for(int row = sel.top(); row <= sel.bottom(); row++) {
+				for(int col = sel.left(); col <= sel.right(); col++) {
+					auto &cols = res[row];
+					if (auto lower = std::lower_bound(cols.begin(), cols.end(), col); lower == cols.end()) {
+						cols << col;
+					}
+					else {
+						if (*lower != col) {
+							cols.insert((lower - cols.begin()), col);
 						}
 					}
-					if(replace_escapes) {
-						s.replace('\r', QStringLiteral("\\r"));
-						s.replace('\n', QStringLiteral("\\n"));
-						s.replace('\t', QStringLiteral("\\t"));
-					}
-					//qfInfo() << ix.row() << '\t' << ix.column() << '\t' << s;
-					if(col > sel1.left())
-						cells += fields_separator;
-					cells += (field_quotes + s + field_quotes);
 				}
-				if(n++ > 0)
-					rows += rows_separator;
-				rows += cells;
 			}
 		}
+		return res;
+	};
+	QString rows;
+	int row_cnt = 0;
+	auto sel = selection_union(table_view->selectionModel()->selection());
+	QMapIterator<int, QList<int>> it(sel);
+	while (it.hasNext()) {
+		it.next();
+		auto row = it.key();
+		auto cols = it.value();
+		int col_cnt = 0;
+		QString cells;
+		for (auto col : cols) {
+			QModelIndex ix = m->index(row, col);
+			QString s;
+			if(!ix.data(qf::core::model::TableModel::ValueIsNullRole).toBool()) {
+				s = ix.data(Qt::DisplayRole).toString();
+				if(s.isEmpty()) {
+					QVariant v = ix.data(Qt::CheckStateRole);
+					if(v.isValid()) {
+						s = (v.toInt() == Qt::Checked)? QStringLiteral("True"): QStringLiteral("False");
+					}
+				}
+			}
+			if(replace_escapes == ReplaceEscapes::Always) {
+				s.replace('\r', QStringLiteral("\\r"));
+				s.replace('\n', QStringLiteral("\\n"));
+				s.replace('\t', QStringLiteral("\\t"));
+			}
+			if(replace_escapes == ReplaceEscapes::QuoteIfNeeded) {
+				if (s.indexOf('\n') >= 0
+						|| s.indexOf('\r') >= 0
+						|| s.indexOf('\t') >= 0
+				) {
+					s = (field_quotes + s + field_quotes);
+				}
+			}
+			else {
+				s = (field_quotes + s + field_quotes);
+			}
+			//qfInfo() << "row:" << row << "col:" << col << "index:" << ix.row() << ',' << ix.column() << '\t' << s;
+			if(col_cnt++ > 0) {
+				cells += fields_separator;
+			}
+			cells += s;
+		}
+		if(row_cnt++ > 0)
+			rows += rows_separator;
+		rows += cells;
 	}
 	if(!rows.isEmpty()) {
 		qfDebug() << "\tSetting clipboard:" << rows;

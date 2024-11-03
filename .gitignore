@@ -38,3 +38,5 @@ Makefile*
 *.qmlproject.user.*
 
 _work/*
+build
+doc/book
