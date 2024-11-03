@@ -28,13 +28,27 @@ using Event::EventPlugin;
 using Runs::RunsPlugin;
 
 namespace Event::services::qx {
+//===============================================
+// QxClientServiceSettings
+//===============================================
+QString QxClientServiceSettings::xchgKey() const
+{
+	auto *event_plugin = getPlugin<EventPlugin>();
+	auto *cfg = event_plugin->eventConfig();
+	auto key = cfg->apiKey();
+	auto current_stage = cfg->currentStageId();
+	return QStringLiteral("%1%2").arg(key).arg(current_stage);
+}
 
+//===============================================
+// QxClientService
+//===============================================
 QxClientService::QxClientService(QObject *parent)
 	: Super(QxClientService::serviceId(), parent)
 {
 	auto *event_plugin = getPlugin<EventPlugin>();
 
-	connect(event_plugin, &EventPlugin::eventOpenChanged, this, [this](bool is_open) {
+	connect(event_plugin, &EventPlugin::eventOpenChanged, this, [](bool is_open) {
 		if (is_open) {
 		}
 		else {
@@ -72,15 +86,8 @@ void QxClientService::loadSettings()
 {
 	Super::loadSettings();
 	auto ss = settings();
-	auto *event_plugin = getPlugin<EventPlugin>();
-	if (ss.shvConnectionUrl().isEmpty()) {
-		ss.setShvConnectionUrl("tcp://nirvana.elektroline.cz:3756?user=quickevent&password=tohle_je_jen_demo");
-	}
-	if (ss.eventPath().isEmpty()) {
-		ss.setEventPath("test/qe/" + event_plugin->shvApiEventId());
-	}
-	if (ss.apiKey().isEmpty()) {
-		ss.setApiKey(event_plugin->createApiKey(EVENT_KEY_LEN));
+	if (ss.exchangeServerUrl().isEmpty()) {
+		ss.setExchangeServerUrl("http://localhost:8000");
 	}
 	m_settings = ss;
 }
@@ -106,5 +113,6 @@ void QxClientService::onDbEventNotify(const QString &domain, int connection_id, 
 		//}
 	}
 }
+
 
 }

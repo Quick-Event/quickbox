@@ -21,8 +21,8 @@ public:
 	~ServiceWidget();
 
 	void setStatus(Service::Status st);
-	void setServiceName(const QString &n);
-	QString serviceName() const;
+	void setServiceId(const QString &id, const QString &display_name);
+	QString serviceId() const;
 	void setMessage(const QString &m);
 
 	Q_SIGNAL void setRunningRequest(bool play);
@@ -32,6 +32,7 @@ private:
 private:
 	Ui::ServiceWidget *ui;
 	bool m_isRunning = false;
+	QString m_serviceId;
 };
 
 

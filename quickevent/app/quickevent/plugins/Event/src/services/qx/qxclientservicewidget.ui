@@ -16,10 +16,27 @@
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <layout class="QGridLayout" name="gridLayout">
+     <item row="2" column="0">
+      <widget class="QLabel" name="label_3">
+       <property name="toolTip">
+        <string>Fill this url into HTTP POST synchonization method in O-CheckList</string>
+       </property>
+       <property name="text">
+        <string>OCheckList Url</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QLineEdit" name="edOChecklistUrl">
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
      <item row="0" column="0">
       <widget class="QLabel" name="label_2">
        <property name="text">
-        <string>Server url</string>
+        <string>Exchange server url</string>
        </property>
       </widget>
      </item>
@@ -27,23 +44,19 @@
       <widget class="QLineEdit" name="edServerUrl"/>
      </item>
      <item row="1" column="0">
-      <widget class="QLabel" name="label_3">
+      <widget class="QLabel" name="label_4">
+       <property name="toolTip">
+        <string>Fill this url into HTTP POST synchonization method in O-CheckList</string>
+       </property>
        <property name="text">
-        <string>EventI key</string>
+        <string>Exchange key</string>
        </property>
       </widget>
      </item>
      <item row="1" column="1">
-      <widget class="QLineEdit" name="edEventKey">
+      <widget class="QLineEdit" name="edExchangeKey">
        <property name="readOnly">
         <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="2">
-      <widget class="QPushButton" name="btGenerateApiKey">
-       <property name="text">
-        <string>Generate</string>
        </property>
       </widget>
      </item>
@@ -97,7 +110,9 @@
  </widget>
  <tabstops>
   <tabstop>edServerUrl</tabstop>
-  <tabstop>edEventKey</tabstop>
+  <tabstop>edExchangeKey</tabstop>
+  <tabstop>edOChecklistUrl</tabstop>
+  <tabstop>btRegisterEvent</tabstop>
  </tabstops>
  <resources/>
  <connections/>

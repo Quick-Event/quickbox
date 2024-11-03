@@ -1,4 +1,5 @@
 #include "eventconfig.h"
+#include "eventplugin.h"
 
 #include <qf/core/assert.h>
 #include <qf/core/utils.h>
@@ -75,6 +76,7 @@ void EventConfig::load()
 		QVariant v = qf::core::Utils::retypeStringValue(val.toString(), type);
 		setValue(key, v);
 	}
+	checkApiKey();
 }
 
 void EventConfig::save(const QString &path_to_save)
@@ -199,6 +201,23 @@ int EventConfig::handicapLength() const
 QString EventConfig::eventName() const
 {
 	return value(QStringLiteral("event.name")).toString();
+}
+
+namespace {
+auto const API_KEY_CONFIG_PATH = QStringLiteral("event.apiKey");
+}
+QString EventConfig::apiKey() const
+{
+	return value(API_KEY_CONFIG_PATH).toString();
+}
+
+void EventConfig::checkApiKey()
+{
+	if (apiKey().isEmpty()) {
+		auto api_key = EventPlugin::createApiKey(10);
+		setValue(API_KEY_CONFIG_PATH, api_key);
+		save(API_KEY_CONFIG_PATH);
+	}
 }
 
 QString EventConfig::eventPlace() const

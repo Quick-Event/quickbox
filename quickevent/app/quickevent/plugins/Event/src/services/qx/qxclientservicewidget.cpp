@@ -11,7 +11,6 @@
 #include <QClipboard>
 
 #include <plugins/Event/src/eventplugin.h>
-using qf::qmlwidgets::framework::getPlugin;
 
 namespace Event::services::qx {
 
@@ -21,18 +20,15 @@ QxClientServiceWidget::QxClientServiceWidget(QWidget *parent)
 {
 	setPersistentSettingsId("QxClientServiceWidget");
 	ui->setupUi(this);
+	connect(ui->edServerUrl, &QLineEdit::textChanged, this, &QxClientServiceWidget::updateOCheckListPostUrl);
 
 	auto *svc = service();
 	if(svc) {
 		auto ss = svc->settings();
-		ui->edEventKey->setText(ss.apiKey());
+		ui->edExchangeKey->setText(ss.xchgKey());
+		ui->edServerUrl->setText(ss.exchangeServerUrl());
 	}
-	connect(ui->btGenerateApiKey, &QAbstractButton::clicked, this, [this]() {
-		ui->edEventKey->setText(EventPlugin::createApiKey(QxClientService::EVENT_KEY_LEN));
-	});
-	connect(ui->btRegisterEvent, &QAbstractButton::clicked, this, [this]() {
-		QClipboard *clipboard = QGuiApplication::clipboard();
-		clipboard->setText(ui->edEventKey->text());
+	connect(ui->btRegisterEvent, &QAbstractButton::clicked, this, []() {
 	});
 }
 
@@ -63,11 +59,18 @@ bool QxClientServiceWidget::saveSettings()
 	auto *svc = service();
 	if(svc) {
 		auto ss = svc->settings();
-		ss.setShvConnectionUrl(ui->edServerUrl->text());
-		ss.setApiKey(ui->edEventKey->text().trimmed());
+		ss.setExchangeServerUrl(ui->edServerUrl->text());
 		svc->setSettings(ss);
 	}
 	return true;
+}
+
+void QxClientServiceWidget::updateOCheckListPostUrl()
+{
+	auto url = QStringLiteral("%1/api/event/%2/ochecklist")
+			.arg(ui->edServerUrl->text())
+			.arg(ui->edExchangeKey->text());
+	ui->edOChecklistUrl->setText(url);
 }
 
 }

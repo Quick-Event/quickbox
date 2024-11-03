@@ -38,14 +38,15 @@ void ServiceWidget::setStatus(Service::Status st)
 	}
 }
 
-void ServiceWidget::setServiceName(const QString &n)
+void ServiceWidget::setServiceId(const QString &id, const QString &display_name)
 {
-	ui->lblServiceName->setText(n);
+	m_serviceId = id;
+	ui->lblServiceName->setText(display_name.isEmpty()? id: display_name);
 }
 
-QString ServiceWidget::serviceName() const
+QString ServiceWidget::serviceId() const
 {
-	return ui->lblServiceName->text();
+	return m_serviceId;
 }
 
 void ServiceWidget::setMessage(const QString &m)
@@ -60,7 +61,7 @@ void ServiceWidget::onBtPlayClicked()
 
 void ServiceWidget::showDetail()
 {
-	Service *svc = Service::serviceByName(serviceName());
+	Service *svc = Service::serviceByName(serviceId());
 	if(svc) {
 		svc->showDetail(this);
 	}

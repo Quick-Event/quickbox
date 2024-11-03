@@ -21,6 +21,7 @@ public:
 private:
 	QxClientService* service();
 	bool saveSettings();
+	void updateOCheckListPostUrl();
 private:
 	Ui::QxClientServiceWidget *ui;
 	bool acceptDialogDone(int result);
