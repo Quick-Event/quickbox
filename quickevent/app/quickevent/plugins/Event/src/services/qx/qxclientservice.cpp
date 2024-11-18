@@ -31,7 +31,7 @@ namespace Event::services::qx {
 //===============================================
 // QxClientServiceSettings
 //===============================================
-QString QxClientServiceSettings::xchgKey() const
+QString QxClientServiceSettings::eventKey() const
 {
 	auto *event_plugin = getPlugin<EventPlugin>();
 	auto *cfg = event_plugin->eventConfig();

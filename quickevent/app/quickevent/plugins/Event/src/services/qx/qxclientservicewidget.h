@@ -17,14 +17,15 @@ class QxClientServiceWidget : public qf::qmlwidgets::framework::DialogWidget
 	using Super = qf::qmlwidgets::framework::DialogWidget;
 public:
 	explicit QxClientServiceWidget(QWidget *parent = nullptr);
-	~QxClientServiceWidget();
+	~QxClientServiceWidget() override;
 private:
+	void setMessage(const QString &msg = {}, bool is_error = false);
 	QxClientService* service();
 	bool saveSettings();
 	void updateOCheckListPostUrl();
 private:
 	Ui::QxClientServiceWidget *ui;
-	bool acceptDialogDone(int result);
+	bool acceptDialogDone(int result) override;
 };
 
 }

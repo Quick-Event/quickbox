@@ -10,13 +10,13 @@ class QxClientServiceSettings : public ServiceSettings
 {
 	using Super = ServiceSettings;
 
-	QF_VARIANTMAP_FIELD(QString, e, setE, xchangeServerUrl)
-	//QF_VARIANTMAP_FIELD(QString, e, setE, ventPath)
-	//QF_VARIANTMAP_FIELD(QString, a, setA, piKey)
+	QF_VARIANTMAP_FIELD2(QString, e, setE, xchangeServerUrl, "http://localhost:8000")
+	// QF_VARIANTMAP_FIELD(QString, a, setA, dminPassword)
+	QF_VARIANTMAP_FIELD(QString, e, setE, ventId)
 public:
 	QxClientServiceSettings(const QVariantMap &o = QVariantMap()) : Super(o) {}
 
-	QString xchgKey() const;
+	QString eventKey() const;
 };
 
 class QxClientService : public Service

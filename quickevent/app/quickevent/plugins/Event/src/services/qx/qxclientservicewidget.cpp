@@ -2,6 +2,8 @@
 #include "ui_qxclientservicewidget.h"
 #include "qxclientservice.h"
 
+#include <plugins/Event/src/eventplugin.h>
+
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/dialogs/messagebox.h>
 #include <qf/core/assert.h>
@@ -9,8 +11,9 @@
 #include <QFileDialog>
 #include <QUrlQuery>
 #include <QClipboard>
-
-#include <plugins/Event/src/eventplugin.h>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
+#include <QJsonDocument>
 
 namespace Event::services::qx {
 
@@ -24,17 +27,61 @@ QxClientServiceWidget::QxClientServiceWidget(QWidget *parent)
 
 	auto *svc = service();
 	if(svc) {
-		auto ss = svc->settings();
-		ui->edExchangeKey->setText(ss.xchgKey());
-		ui->edServerUrl->setText(ss.exchangeServerUrl());
+		auto settings = svc->settings();
+		ui->edEventKey->setText(settings.eventKey());
+		ui->edServerUrl->setText(settings.exchangeServerUrl());
+		connect(ui->btRegisterEvent, &QAbstractButton::clicked, this, [this, settings]() {
+			auto *manager = new QNetworkAccessManager(this);
+			connect(manager, &QNetworkAccessManager::finished, this, [this, manager](QNetworkReply *reply) {
+				if (reply->error() == QNetworkReply::NoError) {
+					auto code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+					if (code == 200 || code == 201) {
+						// exists or created
+						auto event_id = QString::fromUtf8(reply->readAll());
+						ui->edEventId->setText(event_id);
+						setMessage();
+					}
+				}
+				else {
+					qfError() << reply->errorString();
+					setMessage(reply->errorString(), true);
+				}
+				reply->deleteLater();
+				// One QNetworkAccessManager instance should be enough for the whole Qt application.
+				manager->deleteLater();
+			});
+			auto url = QUrl(settings.exchangeServerUrl() + "/api/event");
+			QNetworkRequest rq(url);
+			rq.setRawHeader("eventKey", settings.eventKey().toUtf8());
+			QVariantMap data = {
+				{"name", "Zavody"},
+				{"date", QDateTime::currentDateTime().toString(Qt::ISODate)},
+				{"place", "Praha"},
+			};
+			manager->post(rq, QJsonDocument::fromVariant(data).toJson());
+		});
 	}
-	connect(ui->btRegisterEvent, &QAbstractButton::clicked, this, []() {
-	});
 }
 
 QxClientServiceWidget::~QxClientServiceWidget()
 {
 	delete ui;
+}
+
+void QxClientServiceWidget::setMessage(const QString &msg, bool is_error)
+{
+	if (msg.isEmpty()) {
+		ui->lblStatus->setStyleSheet({});
+	}
+	else {
+		if (is_error) {
+			ui->lblStatus->setStyleSheet("background: salmon");
+		}
+		else {
+			ui->lblStatus->setStyleSheet("background: lemon");
+		}
+	}
+	ui->lblStatus->setText(msg);
 }
 
 bool QxClientServiceWidget::acceptDialogDone(int result)
@@ -60,6 +107,7 @@ bool QxClientServiceWidget::saveSettings()
 	if(svc) {
 		auto ss = svc->settings();
 		ss.setExchangeServerUrl(ui->edServerUrl->text());
+		// ss.setAdminPassword(ui->edAdminPassword->text());
 		svc->setSettings(ss);
 	}
 	return true;
@@ -69,7 +117,7 @@ void QxClientServiceWidget::updateOCheckListPostUrl()
 {
 	auto url = QStringLiteral("%1/api/event/%2/ochecklist")
 			.arg(ui->edServerUrl->text())
-			.arg(ui->edExchangeKey->text());
+			.arg(ui->edEventId->text());
 	ui->edOChecklistUrl->setText(url);
 }
 
