@@ -6,7 +6,7 @@
 [![Issues][issues-shield]][issues-url]
 [![License][license-shield]][license-url]
 
-# QuickBox
+# QuickEvent
 
 QuickBox is a set of applications for organizing Orienteering Events.
 
