@@ -8,7 +8,7 @@
 
 # QuickEvent
 
-QuickBox is a set of applications for organizing Orienteering Events.
+QuickEvent is a set of applications for organizing Orienteering Events.
 
 Single, multi-day events and relays can be organized. The program is stable for general use, however, keep in mind it is still under development and bugs might occur. Tester feedback is greatly appreciated, feel free to organize your training or events using the QuickEvent application and tell us your experience in the [issue section](https://github.com/Quick-Event/quickbox/issues). Releases are available on the [release page](https://github.com/Quick-Event/quickbox/releases). The goal is to create a free full-featured software set for organizing orienteering events.
 
